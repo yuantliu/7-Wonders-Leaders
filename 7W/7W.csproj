@@ -1,0 +1,377 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6C6A3AB4-98F0-4BB8-ABAF-05289F29065E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SevenWonders</RootNamespace>
+    <AssemblyName>7W</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\7W.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\7W.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="GameManager\AI-LEADERS-BLACKLIST.cs" />
+    <Compile Include="GameManager\AIMoveAlgorithm0.cs" />
+    <Compile Include="GameManager\AIMoveAlgorithm1.cs" />
+    <Compile Include="GameManager\AIMoveAlgorithm2.cs" />
+    <Compile Include="GameManager\AIMoveAlgorithm3.cs" />
+    <Compile Include="GameManager\AIMoveAlgorithm4.cs" />
+    <Compile Include="GameManager\AIMoveAlgorithmLeaders0.cs" />
+    <Compile Include="GameManager\AIMoveAlgorithmLeaders1.cs" />
+    <Compile Include="GameManager\AIMoveAlgorithmLeaders2.cs" />
+    <Compile Include="GameManager\AIMoveAlgorithmsLeaders3.cs" />
+    <Compile Include="GameManager\AIMoveBehaviour.cs" />
+    <Compile Include="GameManager\DAG.cs" />
+    <Compile Include="GameManager\LeadersAIMoveBehaviour.cs" />
+    <Compile Include="GameManager\LeadersGameManager.cs" />
+    <Compile Include="GameUI\AIStrategy.xaml.cs">
+      <DependentUpon>AIStrategy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GameManager\Card.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="GameManager\Board.cs" />
+    <Compile Include="GameManager\GameManager.cs" />
+    <Compile Include="GameManager\Player.cs" />
+    <Compile Include="GameUI\BabylonUI.xaml.cs">
+      <DependentUpon>BabylonUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GameUI\BilkisUI.xaml.cs">
+      <DependentUpon>BilkisUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GameUI\changeNicknameUI.xaml.cs">
+      <DependentUpon>changeNicknameUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Coordinator.cs" />
+    <Compile Include="GameManager\Deck.cs" />
+    <Compile Include="GameUI\CommerceUI.xaml.cs">
+      <DependentUpon>CommerceUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GameUI\CourtesanUI.xaml.cs">
+      <DependentUpon>CourtesanUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GameUI\HalicarnassusUI.xaml.cs">
+      <DependentUpon>HalicarnassusUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GameUI\Help.xaml.cs">
+      <DependentUpon>Help.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GameUI\OlympiaUI.xaml.cs">
+      <DependentUpon>OlympiaUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GameUI\ViewDetails.xaml.cs">
+      <DependentUpon>ViewDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GMCoordinator.cs" />
+    <Compile Include="Serializer.cs" />
+    <Compile Include="Server.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="StatusChangedEventArgs.cs" />
+    <Compile Include="GameUI\TableUI.xaml.cs">
+      <DependentUpon>TableUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GameUI\JoinTableUI.xaml.cs">
+      <DependentUpon>JoinTableUI.xaml</DependentUpon>
+    </Compile>
+    <Page Include="GameUI\AIStrategy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameUI\BabylonUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameUI\BilkisUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameUI\changeNicknameUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameUI\CommerceUI.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GameUI\CourtesanUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameUI\HalicarnassusUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameUI\Help.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GameUI\OlympiaUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameUI\ViewDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Resource Include="GlassButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="GameUI\TableUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameUI\JoinTableUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\HelpSlides\right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\brick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\ore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\stone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\wood.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\glass.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\loom.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\brick1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\loom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\papyrus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\bearTrap.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\sextant.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\tablet.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\victory.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\shield.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\coin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\brown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\grey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\purple.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\yellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\indexbg4x3.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\Untitled-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\quit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\joinGame.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\newGame.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\background.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\questionMark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\HelpSlides\next.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\HelpSlides\left.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\stage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\leader.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\olympiapowerbutton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\estebanpowerbutton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\bilkispowerbutton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\bilkisbackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\bilkisbackgroundUI.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\romebackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bin\Debug\Images\courtesan_bg.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
