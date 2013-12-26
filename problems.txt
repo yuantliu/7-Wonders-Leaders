@@ -4,3 +4,5 @@ MainWindow constructor
 - load GUI
 
 showPlayerBarPanel(String playerBarPanelInformation)
+
+push this!
