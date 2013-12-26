@@ -4,16 +4,3 @@ MainWindow constructor
 - load GUI
 
 showPlayerBarPanel(String playerBarPanelInformation)
-
-viewDetailsButtonPressed()
-handleViewDetails(String information)
-
-showHandPanel(String information)
-showActionPanel(String message)
-
-- problem: in cardActionButtonPressed, state variable "playerPlayedHisTurn" is being kept in MainWindow. Should be in coordinator
-- problem: in showBoardImage, state variable "gameRunning" is being kept in MainWindow.
-
-For Player, look into storeAction(String s). How to make it so that an object representing actions are passed, instead of strings (may not be necessary)
-
-In GameManager, updateGameUI is where the serialization needs to happen. Start with this.
