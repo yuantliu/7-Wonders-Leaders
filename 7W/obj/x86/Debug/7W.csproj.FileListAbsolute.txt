@@ -109,3 +109,5 @@ C:\Users\ttliu\Desktop\7WondersLeaders_finalversion\7W\obj\x86\Debug\7W_MarkupCo
 C:\Users\ttliu\Desktop\7WondersLeaders_finalversion\7W\obj\x86\Debug\7W.g.resources
 C:\Users\ttliu\Desktop\7WondersLeaders_finalversion\7W\obj\x86\Debug\SevenWonders.Properties.Resources.resources
 C:\Users\ttliu\Desktop\7WondersLeaders_finalversion\7W\obj\x86\Debug\7W.csproj.GenerateResource.Cache
+C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\7W.exe
+C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\7W.pdb

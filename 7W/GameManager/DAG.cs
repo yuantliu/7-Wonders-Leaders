@@ -49,7 +49,7 @@ namespace SevenWonders
         /**
 	     * Remove all letters that appear in B FROM A, then return the newly trimmed A
          * The interpretation of this, with respect to this program, is that given a Cost A, and available resources B
-         * the return value represents unpaid Costs after using the resources in eliminate
+         * the return value represents unpaid Costs after using the B resources
          * For example, if the return value is "", then we know that with A was affordable with resources B
 	     * @param A = COST
 	     * @param B = RESOURCES
