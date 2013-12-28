@@ -8,7 +8,7 @@ namespace SevenWonders
     [Serializable]
     class DAG
     {
-        public List<char[]> graph = new List<char[]>();
+        private List<char[]> graph = new List<char[]>();
 
         //Add an OR resource
         public void add(string s)
@@ -18,6 +18,10 @@ namespace SevenWonders
             graph.Add(newInput);
         }
 
+        /// <summary>
+        /// Generate and return a List of all possible sequences from the DAG
+        /// </summary>
+        /// <returns>List of strings</returns>
         public List<string> generateStrings()
         {
             List<string> generated = new List<string>();
@@ -46,6 +50,9 @@ namespace SevenWonders
 
             return generated;
         }
+
+        public List<char[]> getGraph() { return graph; }
+        public void setGraph(List<char[]> graph) { this.graph = graph; }
 
         /**
 	     * Remove all letters that appear in B FROM A, then return the newly trimmed A
@@ -89,10 +96,12 @@ namespace SevenWonders
 		    return false;
 	    }
 
-        /**
-         * Given a resource DAG graph, determine if a cost is at most one resource away from affordable
-         * @return
-         */
+        /// <summary>
+        /// Given a DAG and a cost (without $ in it), determine if the DAG can afford the cost
+        /// </summary>
+        /// <param name="graph">Player's DAG</param>
+        /// <param name="cost">Card cost</param>
+        /// <returns>Whether the DAG can afford the given card cost</returns>
         public static bool canAffordOffByOne(DAG graph, string cost)
         {
             List<string> generated = graph.generateStrings();
@@ -106,6 +115,20 @@ namespace SevenWonders
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Add Three DAGs together to form a mega DAG, used to determine if something is buyable via commerce
+        /// </summary>
+        /// <param name="A">Left DAG</param>
+        /// <param name="B">Centre DAG</param>
+        /// <param name="C">Right DAG</param>
+        /// <returns>A Mega DAG that consists of A, B, C combined</returns>
+        public static DAG addThreeDAGs(DAG A, DAG B, DAG C)
+        {
+            DAG megaDAG = new DAG();
+            megaDAG.setGraph(A.getGraph().Concat(B.getGraph()).Concat(C.getGraph()).ToList());
+            return megaDAG;
         }
     }
 }

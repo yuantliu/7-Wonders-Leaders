@@ -65,9 +65,6 @@ namespace SevenWonders
         /// </summary>
         public void StartServer()
         {
-            // Create the TCP listener object using the IP of the server and the specified port
-            //tcpListener = new TcpListener(ipAddress, 1986);
-
             // The while loop will check for true in this before checking for connections
             serverRunning = true;
 
@@ -82,22 +79,31 @@ namespace SevenWonders
         private void keepListeningForNewRequests()
         {
             // Create the TCP listener object using the IP of the server and the specified port
-            tcpListener = new TcpListener(ipAddress, 1986);
+            tcpListener = new TcpListener(ipAddress, 1989);
 
             // Start the TCP listener and listen for connections
             tcpListener.Start();
 
-            // While the server is running
-            while (serverRunning == true)
+            try
             {
-                // Accept a pending connection
-                tcpClient = tcpListener.AcceptTcpClient();
+                // While the server is running
+                while (serverRunning == true)
+                {
+                    // Accept a pending connection
+                    tcpClient = tcpListener.AcceptTcpClient();
 
-                //make the connection
-                Connection newConnection = new Connection(tcpClient, numberOFAI, this);
+                    //make the connection
+                    Connection newConnection = new Connection(tcpClient, numberOFAI, this);
+                }
             }
+            catch (SocketException e)
+            {
 
-            tcpListener.Stop();
+            }
+            finally
+            {
+                tcpListener.Stop();
+            }
         }
 
         /// <summary>

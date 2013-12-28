@@ -94,7 +94,7 @@ namespace SevenWonders
         private GameManager gm;
 
         //The Multiple Resource DAG
-        DAG dag = new DAG();
+        private DAG dag { get; set; }
 
         /// <summary>
         /// Constructor. Create a Player with a given nickname
@@ -112,6 +112,7 @@ namespace SevenWonders
             loom = 5;
             papyrus = 5;
             */
+            dag = new DAG();
 
             this.nickname = nickname;
             //set whether or not this is an AI
@@ -806,12 +807,17 @@ namespace SevenWonders
                 if (newCostResult == true) return 'T';
             }
 
-            //can player afford cost with DAG resources
+            //can player afford cost with DAG resources?
             char? costAffordableWithDAGResult = isCostAffordableWithDAG(cost);
             if (costAffordableWithDAGResult != null) return (char)costAffordableWithDAGResult;
 
             //can player afford cost by conducting commerce?
-            return (isCostAffordableWithNeighbours(cost));
+            char? costAffordableWithNeighbours = isCostAffordableWithNeighbours(cost);
+            if (costAffordableWithNeighbours != null) return (char)costAffordableWithNeighbours;
+
+            //absolutely all options have been exhausted
+            //finally return 'F'
+            return 'F';
         }
 
         /// <summary>
@@ -836,6 +842,7 @@ namespace SevenWonders
             }
 
             //get rid of the coins from the cost, and see if DAG can afford the cost (already checked for coins at previous step)
+            //this is relevant for the Black cards in the Cities expansion
             cost = cost.Replace("$", "");
 
             //can I afford the cost with resources in my DAG?
@@ -844,50 +851,19 @@ namespace SevenWonders
         }
 
         /// <summary>
-        /// 
+        /// Determine, given a cost, if Player can afford a cost with his and his 2 neighbours' DAGs combined.
         /// </summary>
         /// <param name="card"></param>
         /// <returns></returns>
-        private char isCostAffordableWithNeighbours(string cost)
+        private char? isCostAffordableWithNeighbours(string cost)
         {
-            if (coin == 0) return 'F';
+            //combine the left, centre, and right DAG
+            DAG combinedDAG = DAG.addThreeDAGs(leftNeighbour.dag, dag, rightNeighbour.dag);
 
-            //parse the cost of each possible resource
-            int brickf = 0, oref = 0, stonef = 0, woodf = 0, glassf = 0, loomf = 0, papyrusf = 0;
+            //determine if the combined DAG can afford the cost
+            if (DAG.canAfford(combinedDAG, cost)) return 'C';
 
-
-            for (int i = 0; i < cost.Length; i++)
-            {
-                if (cost[i] == 'B') { brickf++; }
-                else if (cost[i] == 'O') { oref++; }
-                else if (cost[i] == 'T') { stonef++; }
-                else if (cost[i] == 'W') { woodf++; }
-                else if (cost[i] == 'G') { glassf++; }
-                else if (cost[i] == 'L') { loomf++; }
-                else if (cost[i] == 'P') { papyrusf++; }
-
-            }
-
-            ////////////////////////////////////////
-            ////////temporaray for commerce/////////
-            ////////////////////////////////////////
-            int brickC = 0, oreC = 0, stoneC = 0, woodC = 0, glassC = 0, loomC = 0, papyrusC = 0;
-
-            brickC = brick + leftNeighbour.brick + rightNeighbour.brick;
-            oreC = ore + leftNeighbour.ore + rightNeighbour.ore;
-            stoneC = stone + leftNeighbour.stone + rightNeighbour.stone;
-            woodC = wood + leftNeighbour.wood + rightNeighbour.wood;
-            glassC = glass + leftNeighbour.glass + rightNeighbour.glass;
-            loomC = loom + leftNeighbour.loom + rightNeighbour.loom;
-            papyrusC = papyrus + leftNeighbour.papyrus + rightNeighbour.papyrus;
-
-
-            int totalCost = doHaveEnoughCoinsToCommerce(cost);
-
-
-            //check if there are enough
-            if (brickC >= brickf && oreC >= oref && stoneC >= stonef && woodC >= woodf && glassC >= glassf && loomC >= loomf && papyrusC >= papyrusf && coin >= totalCost) return 'C';
-            else return 'F';
+            return null;
         }
 
         /// <summary>
@@ -916,7 +892,12 @@ namespace SevenWonders
             if (isCostAffordableWithDAG(cost) == 'T') return 'T';
 
             //can player afford cost by conducting commerce?
-            return (isCostAffordableWithNeighbours(cost));
+            //can player afford cost by conducting commerce?
+            char? costAffordableWithNeighbours = isCostAffordableWithNeighbours(cost);
+            if (costAffordableWithNeighbours != null) return (char)costAffordableWithNeighbours;
+
+            //absolutely all options exhausted. return F
+            return 'F';
         }
 
         public String commerceInformation()

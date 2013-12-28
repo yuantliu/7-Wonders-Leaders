@@ -38,7 +38,7 @@ namespace SevenWonders
 
         /// <summary>
         /// Initialize a connection with the given Nickname
-        /// Use Port 1986 (random number)
+        /// Use Port 1989 (random number)
         /// </summary>
         /// <param name="nick"></param>
         /// <param name="ipAddr"></param>
@@ -49,7 +49,7 @@ namespace SevenWonders
 
             try
             {
-                tcpUser.Connect(ipAddr, 1986);
+                tcpUser.Connect(ipAddr, 1989);
                 swSender = new StreamWriter(tcpUser.GetStream());
                 srReceiver = new StreamReader(tcpUser.GetStream());
             }
@@ -89,10 +89,6 @@ namespace SevenWonders
         /// </summary>
         public void ReceiveMessages()
         {
-            string filename = "C:\\Users\\LYT\\Documents\\GitHub\\7Wonders\\7WondersLeaders\\7W\\bin\\Debug\\receivedMessage.txt";
-            System.IO.StreamWriter objWriter;
-            //objWriter = new System.IO.StreamWriter(filename);
-
             string messageReceived;
 
             // While we are successfully connected, read incoming lines from the server and pass it to coordinator
@@ -121,9 +117,6 @@ namespace SevenWonders
                     Connected = false;
                 }
             }
-
-            //objWriter.Close();
-            //objWriter.Dispose();
         }
 
         /// <summary>
