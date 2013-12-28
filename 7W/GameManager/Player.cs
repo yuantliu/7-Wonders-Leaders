@@ -279,6 +279,8 @@ namespace SevenWonders
                     //increase the appropriate field by num
                     int num = int.Parse(act[0] + "");
 
+                    dag.add(act[1] + "");
+
                     switch (act[1])
                     {
                         case 'S':
@@ -739,7 +741,7 @@ namespace SevenWonders
         public char isCardBuildable(Card card)
         {
             //retrieve the cost
-            String cost = card.cost;
+            string cost = card.cost;
 
             
             //if the player already owns a copy of the card, Return F immediatley
@@ -799,34 +801,17 @@ namespace SevenWonders
                 (hasIDPlayed(207) && card.colour == "Blue") ||
                 (hasIDPlayed(216) && card.colour == "Red"))
             {
-                //remove a character from the cost to determine if it is possible to play the card
+                bool newCostResult = DAG.canAffordOffByOne(dag, cost);
 
-                string cardCost = card.cost;
-                char bestOption = 'F';
-
-                for (int i = 0; i < cardCost.Length; i++)
-                {
-                    string newCost = cardCost;
-                    newCost = newCost.Remove(i, 1);
-                    char newCostResult = isCostAffordable(newCost);
-
-                    if (newCostResult != 'F')
-                    {
-                        if (newCostResult == 'C' && bestOption == 'F')
-                        {
-                            bestOption = 'C';
-                        }
-                        else if (newCostResult == 'T')
-                        {
-                            return 'T';
-                        }
-                    }
-                }
-
-                return bestOption;
+                if (newCostResult == true) return 'T';
             }
 
-            return isCostAffordable(cost);
+            //can player afford cost with DAG resources
+            char? costAffordableWithDAGResult = isCostAffordableWithDAG(cost);
+            if (costAffordableWithDAGResult != null) return (char)costAffordableWithDAGResult;
+
+            //can player afford cost by conducting commerce?
+            return (isCostAffordableWithNeighbours(cost));
         }
 
         /// <summary>
@@ -836,53 +821,26 @@ namespace SevenWonders
         /// <param name="card"></param>
         /// <param name="cost"></param>
         /// <returns></returns>
-        private char isCostAffordable(string cost)
+        private char? isCostAffordableWithDAG(string cost)
         {
-            //parse the cost of each possible resource
-            int brickf = 0, oref = 0, stonef = 0, woodf = 0, glassf = 0, loomf = 0, papyrusf = 0, coinsf = 0;
-
+            //count how many coins are needed
+            int coinsf = 0;
             for (int i = 0; i < cost.Length; i++)
             {
-                if (cost[i] == 'B') { brickf++; }
-                else if (cost[i] == 'O') { oref++; }
-                else if (cost[i] == 'T') stonef++;
-                else if (cost[i] == 'W') woodf++;
-                else if (cost[i] == 'G') glassf++;
-                else if (cost[i] == 'L') loomf++;
-                else if (cost[i] == 'P') papyrusf++;
-                else if (cost[i] == '$') coinsf++;
+                if (cost[i] == '$') coinsf++;
             }
-
-            //////////////////////////////////////////
-
             //if theres not enough coins, then return false
             if (coin < coinsf)
             {
                 return 'F';
             }
 
-            //check if the singletons are able to pay for the items
-            if (brick >= brickf && ore >= oref && stone >= stonef && wood >= woodf && glass >= glassf && loom >= loomf && papyrus >= papyrusf && coin >= coinsf) return 'T';
-            //singletons are NOT able to pay for the items
+            //get rid of the coins from the cost, and see if DAG can afford the cost (already checked for coins at previous step)
+            cost = cost.Replace("$", "");
 
-            //See if item is affordable with multiples
-            //first, eliminate singletons
-            string singletons = "";
-            for(int i = 0; i < brick; i++) singletons += "B";
-            for(int i = 0; i < ore; i++) singletons += "O";
-            for(int i = 0; i < stone; i++) singletons += "T";
-            for(int i = 0; i < wood; i++) singletons += "W";
-            for(int i = 0; i < glass; i++) singletons += "G";
-            for(int i = 0; i < loom; i++) singletons += "L";
-            for(int i = 0; i < papyrus; i++) singletons += "P";
-            
-            //eliminate singletons from cost
-            cost = DAG.eliminate(cost, singletons);
-
-            //can I afford with my multiples?
+            //can I afford the cost with resources in my DAG?
             if (DAG.canAfford(dag, cost)) return 'T';
-            //otherwise, must resort to neighbours
-            else return isCostAffordableWithNeighbours(cost);
+            else return null;
         }
 
         /// <summary>
@@ -946,33 +904,19 @@ namespace SevenWonders
             //retrieve the cost
             string cost = playerBoard.cost[currentStageOfWonder];
             
-
+            //check for the stage discount card (Imhotep)
             if (hasIDPlayed(212) == true)
             {
-                char bestOption = 'F';
-                
-                for (int i = 0; i < cost.Length; i++)
-                {
-                    string newCost = cost;
-                    newCost = newCost.Remove(i, 1);
-                    char newCostResult = isCostAffordable(newCost);
-                    if (newCostResult != 'F')
-                    {
-                        if (newCostResult == 'C' && bestOption == 'F')
-                        {
-                            bestOption = 'C';
-                        }
-                        else if (newCostResult == 'T')
-                        {
-                            return 'T';
-                        }
-                    }
-                }
+                bool newCostResult = DAG.canAffordOffByOne(dag, cost);
 
-                return bestOption;
+                if (newCostResult == true) return 'T';
             }
 
-            return isCostAffordable(cost);
+            //can player afford cost with DAG resources
+            if (isCostAffordableWithDAG(cost) == 'T') return 'T';
+
+            //can player afford cost by conducting commerce?
+            return (isCostAffordableWithNeighbours(cost));
         }
 
         public String commerceInformation()

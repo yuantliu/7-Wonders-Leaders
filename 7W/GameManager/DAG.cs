@@ -88,5 +88,24 @@ namespace SevenWonders
 		
 		    return false;
 	    }
+
+        /**
+         * Given a resource DAG graph, determine if a cost is at most one resource away from affordable
+         * @return
+         */
+        public static bool canAffordOffByOne(DAG graph, string cost)
+        {
+            List<string> generated = graph.generateStrings();
+
+            for (int i = 0; i < generated.Count; i++)
+            {
+                if (eliminate(cost, generated[i]).Length <= 1)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
