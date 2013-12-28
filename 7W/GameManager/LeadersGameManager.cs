@@ -393,7 +393,7 @@ namespace SevenWonders
             if (currentAge == 0)
             {
                 //prepare to send the Age 0 hand panel information
-                String handPanelInformationString = "r" + Serializer.ObjectToString(new RecruitmentPhaseInformation(p));
+                String handPanelInformationString = "r" + Marshaller.ObjectToString(new RecruitmentPhaseInformation(p));
 
                 //send the information
                 gmCoordinator.sendMessage(p, handPanelInformationString);
@@ -437,10 +437,10 @@ namespace SevenWonders
             else if (resource == 7) p.brick++;
 
             //Update the Player Bar Panel
-            gmCoordinator.sendMessage(p, "B" + Serializer.ObjectToString(new PlayerBarInformation(player)));
+            gmCoordinator.sendMessage(p, "B" + Marshaller.ObjectToString(new PlayerBarInformation(player)));
 
             //Update the available actions panel as well
-            gmCoordinator.sendMessage(p, "U" + Serializer.ObjectToString(new HandPanelInformation(p, currentAge)));
+            gmCoordinator.sendMessage(p, "U" + Marshaller.ObjectToString(new HandPanelInformation(p, currentAge)));
         }
 
         /// <summary>
@@ -499,20 +499,20 @@ namespace SevenWonders
         private void sendCourtesanInformation(Player p)
         {
             //send the Courtesan's guild screen
-            gmCoordinator.sendMessage(p, "c" + Serializer.ObjectToString(new CourtesanGuildInformation(p)));
+            gmCoordinator.sendMessage(p, "c" + Marshaller.ObjectToString(new CourtesanGuildInformation(p)));
         }
 
         private void sendRomeInformation(Player p)
         {
             if (currentTurn > 0)
             {
-                gmCoordinator.sendMessage(p, "O" + Serializer.ObjectToString(new PlayForFreeInformation(p, 'R')));
+                gmCoordinator.sendMessage(p, "O" + Marshaller.ObjectToString(new PlayForFreeInformation(p, 'R')));
             }
             else
             {
                 //Player uses Rome power on Recruitment Turn, look into hands instead
                 //in other words, do the same thing as Olympia power for that turn.
-                gmCoordinator.sendMessage(p, "O" + Serializer.ObjectToString(new PlayForFreeInformation(p, 'O')));
+                gmCoordinator.sendMessage(p, "O" + Marshaller.ObjectToString(new PlayForFreeInformation(p, 'O')));
             }
         }
 

@@ -1013,7 +1013,7 @@ namespace SevenWonders
         {
             //Update the Player Bar Panel
             //send the playerBarPanel information
-            gmCoordinator.sendMessage(p, "B" + Serializer.ObjectToString(new PlayerBarInformation(player)));
+            gmCoordinator.sendMessage(p, "B" + Marshaller.ObjectToString(new PlayerBarInformation(player)));
             //send the current stage of wonder information and tell it to start up the timer
             gmCoordinator.sendMessage(p, "s" + p.currentStageOfWonder);
 
@@ -1037,7 +1037,7 @@ namespace SevenWonders
             if (currentAge > 0)
             {
                 //prepare to send the HandPanel information
-                String handPanelInformationString = "U" + Serializer.ObjectToString(new HandPanelInformation(p, currentAge));
+                String handPanelInformationString = "U" + Marshaller.ObjectToString(new HandPanelInformation(p, currentAge));
 
                 //send the Card Panel information to that player
                 gmCoordinator.sendMessage(p, handPanelInformationString);
@@ -1075,7 +1075,7 @@ namespace SevenWonders
             Player p = playerFromNickname(nickname);
 
             //create LastPlayedCardInformation from given Player
-            String lastPlayedCardInformationString = "P" + Serializer.ObjectToString(new LastPlayedCardInformation(p));
+            String lastPlayedCardInformationString = "P" + Marshaller.ObjectToString(new LastPlayedCardInformation(p));
 
             gmCoordinator.sendMessage(p, lastPlayedCardInformationString);
         }
@@ -1092,7 +1092,7 @@ namespace SevenWonders
             //information to be sent
             String information = "O";
 
-            information += Serializer.ObjectToString(new PlayForFreeInformation(p, 'O'));
+            information += Marshaller.ObjectToString(new PlayForFreeInformation(p, 'O'));
 
             //send the information
             gmCoordinator.sendMessage(p, information);
@@ -1268,7 +1268,7 @@ namespace SevenWonders
             if (isStageOfWonderCommerce) commerceInformation += "&";
 
             //Package the Yunus information and hasDiscount information
-            string commercePackageInformation = "C" + Serializer.ObjectToString(new CommerceInformationPackage(commerceInformation, hasDiscount));
+            string commercePackageInformation = "C" + Marshaller.ObjectToString(new CommerceInformationPackage(commerceInformation, hasDiscount));
 
             gmCoordinator.sendMessage(p, commercePackageInformation);
         }
@@ -1281,7 +1281,7 @@ namespace SevenWonders
             String information = "V";
 
             ViewDetailsInformation info = new ViewDetailsInformation(requested);
-            information += Serializer.ObjectToString(info);
+            information += Marshaller.ObjectToString(info);
 
             gmCoordinator.sendMessage(requester, information);
         }

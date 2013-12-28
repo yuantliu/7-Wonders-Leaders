@@ -9,7 +9,7 @@ using System.IO;
 
 namespace SevenWonders
 {
-    public class Serializer
+    public class Marshaller
     {
         public static string ObjectToString(object obj)
         {
@@ -26,7 +26,6 @@ namespace SevenWonders
             ms.Position = 0;
             return new BinaryFormatter().Deserialize(ms);
         }
-
     }
 
     /*
@@ -316,5 +315,37 @@ namespace SevenWonders
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Contains information sent to (New)Commerce UIs
+    /// Information are:
+    /// 3 CommerceInfos: name, rawMarket, manuMarket, DAG
+    /// discountApplies, totalCost
+    /// </summary>
+    [Serializable]
+    public class CommerceInformation
+    {
+        //Whether there is a Leader that is giving a 1 resource discount on this card
+        bool discountApplies = false;
+        //cost of card
+        string cardCost = "";
+        PlayerCommerceInfo[] playerCommerceInfo = new PlayerCommerceInfo[3];
+
+        public CommerceInformation(Player left, Player centre, Player right, bool discountApplies, string cardCost)
+        {
+            this.discountApplies = discountApplies;
+            this.cardCost = cardCost;
+        }
+
+    }
+
+    /// <summary>
+    /// Used by CommerceInformation to store/send/access each player's commerce info
+    /// </summary>
+    [Serializable]
+    public class PlayerCommerceInfo
+    {
+
     }
 }

@@ -62,7 +62,7 @@ namespace SevenWonders
             resourcesToBuy = new int[7];
 
             //unpack the information package
-            CommerceInformationPackage infoPack = (CommerceInformationPackage)Serializer.StringToObject(s);
+            CommerceInformationPackage infoPack = (CommerceInformationPackage)Marshaller.StringToObject(s);
 
             hasDiscount = infoPack.hasDiscount;
 

@@ -28,7 +28,7 @@ namespace SevenWonders
 
         public CourtesanUI(Coordinator c, string information)
         {
-            CourtesanGuildInformation info = (CourtesanGuildInformation)(Serializer.StringToObject(information));
+            CourtesanGuildInformation info = (CourtesanGuildInformation)(Marshaller.StringToObject(information));
 
             this.c = c;
 

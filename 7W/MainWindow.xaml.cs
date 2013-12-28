@@ -103,7 +103,7 @@ namespace SevenWonders
             //clear the PlayerPanel of its current contents
             playerPanel.Children.Clear();
 
-            PlayerBarInformation playerBarInformation = (PlayerBarInformation)Serializer.StringToObject(playerBarPanelInformation);
+            PlayerBarInformation playerBarInformation = (PlayerBarInformation)Marshaller.StringToObject(playerBarPanelInformation);
 
             //if Player has no money, then disable Bilkis
 
@@ -488,7 +488,7 @@ namespace SevenWonders
             playerPlayedHisTurn = false;
 
             //convert the String to an HandPanelInformation object
-            HandPanelInformation handPanelInformation = (HandPanelInformation)Serializer.StringToObject(information);
+            HandPanelInformation handPanelInformation = (HandPanelInformation)Marshaller.StringToObject(information);
 
             //Update the Age label
             //since this method is only used in Age 1, 2, and 3, therefore, just show the age number
@@ -685,7 +685,7 @@ namespace SevenWonders
             //the name
             //the id number
 
-            LastPlayedCardInformation lastPlayedCard = (LastPlayedCardInformation)Serializer.StringToObject(information);
+            LastPlayedCardInformation lastPlayedCard = (LastPlayedCardInformation)Marshaller.StringToObject(information);
 
             string colour = lastPlayedCard.colour;
             string name = lastPlayedCard.name;
@@ -829,7 +829,7 @@ namespace SevenWonders
             playerPlayedHisTurn = false;
 
             //convert the String to an HandPanelInformation object
-            RecruitmentPhaseInformation handPanelInformation = (RecruitmentPhaseInformation)Serializer.StringToObject(information);
+            RecruitmentPhaseInformation handPanelInformation = (RecruitmentPhaseInformation)Marshaller.StringToObject(information);
 
             //Update the Age label
             //since this method is only used in Age 0, it shall say Leaders phase

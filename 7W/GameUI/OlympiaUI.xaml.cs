@@ -51,7 +51,7 @@ namespace SevenWonders
         public void processInformation(String information)
         {
             //convert to Data
-            PlayForFreeInformation info = (PlayForFreeInformation)(Serializer.StringToObject(information));
+            PlayForFreeInformation info = (PlayForFreeInformation)(Marshaller.StringToObject(information));
 
             //extract the number of cards
             int numOfCards = info.cards.Length;

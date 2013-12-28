@@ -771,9 +771,8 @@ namespace SevenWonders
                 return 'T';
             }
 
-            //if the owner has Rome B board,
-            //then return T if its affordable after applying the 2 coin discount
-            //return F otherwise
+            //if the owner has Rome B board, then get 2 coin discount
+            //return F otherwise (since you cannot get more coins from initiating commerce; you can only get resources)
             if (playerBoard.freeResource == 'd' && card.colour == "White")
             {
                 if ((card.cost.Length - 2) <= coin) return 'T';
@@ -781,7 +780,7 @@ namespace SevenWonders
             }
 
             //if a neighbour own Rome B board, then get a 1 coin discount
-            else if (card.colour == "White" && (leftNeighbour.playerBoard.freeResource == 'd' || rightNeighbour.playerBoard.freeResource == 'd'))
+            else if ((leftNeighbour.playerBoard.freeResource == 'd' || rightNeighbour.playerBoard.freeResource == 'd') && card.colour == "White")
             {
                 if ((card.cost.Length - 1) <= coin) return 'T';
                 else return 'F';

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace SevenWonders
 {
+    [Serializable]
     class DAG
     {
         public List<char[]> graph = new List<char[]>();
@@ -51,6 +52,7 @@ namespace SevenWonders
          * The interpretation of this, with respect to this program, is that given a Cost A, and available resources B
          * the return value represents unpaid Costs after using the B resources
          * For example, if the return value is "", then we know that with A was affordable with resources B
+         * If the return value is "W", then we know that a Wood still must be paid.
 	     * @param A = COST
 	     * @param B = RESOURCES
 	     */

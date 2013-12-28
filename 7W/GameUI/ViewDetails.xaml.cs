@@ -29,7 +29,7 @@ namespace SevenWonders
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.Fant);
 
 
-            ViewDetailsInformation myInfo = (ViewDetailsInformation)(Serializer.StringToObject(information));
+            ViewDetailsInformation myInfo = (ViewDetailsInformation)(Marshaller.StringToObject(information));
 
 
             //get the board name
