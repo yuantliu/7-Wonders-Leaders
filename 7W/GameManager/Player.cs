@@ -94,7 +94,7 @@ namespace SevenWonders
         private GameManager gm;
 
         //The Multiple Resource DAG
-        private DAG dag { get; set; }
+        public DAG dag { get; set; }
 
         /// <summary>
         /// Constructor. Create a Player with a given nickname

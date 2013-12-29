@@ -327,15 +327,30 @@ namespace SevenWonders
     public class CommerceInformation
     {
         //Whether there is a Leader that is giving a 1 resource discount on this card
-        bool discountApplies = false;
+        public bool hasDiscount = false;
+        //whether the player (centre, aka you) have market effect for left and right
+        public bool leftRawMarket, leftManuMarket, rightRawMarket, rightManuMarket;
+
         //cost of card
-        string cardCost = "";
-        PlayerCommerceInfo[] playerCommerceInfo = new PlayerCommerceInfo[3];
+        public string cardCost = "";
+        //[0] represents left player
+        //[1] represents mid player (the user)
+        //[2] represents right player
+        public PlayerCommerceInfo[] playerCommerceInfo = new PlayerCommerceInfo[3];
 
         public CommerceInformation(Player left, Player centre, Player right, bool discountApplies, string cardCost)
         {
-            this.discountApplies = discountApplies;
+            this.hasDiscount = discountApplies;
             this.cardCost = cardCost;
+            leftRawMarket = centre.leftRaw;
+            leftManuMarket = centre.leftManu;
+            rightRawMarket = centre.rightRaw;
+            rightManuMarket = centre.rightManu;
+
+            //fill the PlayercommerceInfo for all 3 relevant players
+            playerCommerceInfo[0] = new PlayerCommerceInfo(left);
+            playerCommerceInfo[1] = new PlayerCommerceInfo(centre);
+            playerCommerceInfo[2] = new PlayerCommerceInfo(right);
         }
 
     }
@@ -346,6 +361,13 @@ namespace SevenWonders
     [Serializable]
     public class PlayerCommerceInfo
     {
+        public string name;
+        public DAG dag;
 
+        public PlayerCommerceInfo(Player player)
+        {
+            this.name = player.nickname;
+            dag = player.dag;
+        }
     }
 }

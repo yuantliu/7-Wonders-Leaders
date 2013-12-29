@@ -1,8 +1,23 @@
 ﻿<Window x:Class="SevenWonders.NewCommerce"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="NewCommerce" Height="300" Width="300">
+        Title="Commerce" Height="548" Width="599">
     <Grid>
-        
+        <Label Content="Remaining Cost:" Height="34" HorizontalAlignment="Left" Margin="12,12,0,0" Name="label1" VerticalAlignment="Top" Width="98" />
+        <StackPanel Height="24" HorizontalAlignment="Left" Margin="116,12,0,0" Name="costPanel" VerticalAlignment="Top" Width="276" Orientation="Horizontal" />
+        <Label Content="Discount Applies" Height="33" HorizontalAlignment="Left" Margin="466,12,0,0" Name="hasDiscountLabel" VerticalAlignment="Top" Visibility="Hidden" />
+        <Label Content="" Height="23" HorizontalAlignment="Left" Margin="71,52,0,0" Name="leftNameLabel" VerticalAlignment="Top" Width="89" />
+        <Label Content="" Height="23" HorizontalAlignment="Left" Margin="256,52,0,0" Name="middleNameLabel" VerticalAlignment="Top" Width="89" />
+        <Label Content="" Height="23" HorizontalAlignment="Left" Margin="429,52,0,0" Name="rightNameLabel" VerticalAlignment="Top" Width="89" />
+        <Image Height="38" HorizontalAlignment="Left" Margin="51,81,0,0" Name="leftRawImage" Stretch="Fill" VerticalAlignment="Top" Width="129" />
+        <Image Height="38" HorizontalAlignment="Left" Margin="51,125,0,0" Name="leftManuImage" Stretch="Fill" VerticalAlignment="Top" Width="129" />
+        <Image Height="38" HorizontalAlignment="Left" Margin="412,81,0,0" Name="rightRawImage" Stretch="Fill" VerticalAlignment="Top" Width="129" />
+        <Image Height="38" HorizontalAlignment="Left" Margin="412,125,0,0" Name="rightManuImage" Stretch="Fill" VerticalAlignment="Top" Width="129" />
+        <StackPanel Height="274" HorizontalAlignment="Left" Margin="53,172,0,0" Name="leftDagPanel" VerticalAlignment="Top" Width="125" Orientation="Vertical" />
+        <StackPanel Height="274" HorizontalAlignment="Left" Margin="235,172,0,0" Name="centreDagPanel" VerticalAlignment="Top" Width="125" />
+        <StackPanel Height="274" HorizontalAlignment="Left" Margin="412,172,0,0" Name="rightDagPanel" VerticalAlignment="Top" Width="125" />
+        <Button Content="Submit" Height="23" HorizontalAlignment="Left" Margin="133,474,0,0" Name="submitButton" VerticalAlignment="Top" Width="75" Click="submitButton_Click" />
+        <Button Content="Reset" Height="23" HorizontalAlignment="Left" Margin="256,474,0,0" Name="resetButton" VerticalAlignment="Top" Width="75" Click="resetButton_Click" />
+        <Button Content="Cancel" Height="23" HorizontalAlignment="Left" Margin="380,474,0,0" Name="cancelButton" VerticalAlignment="Top" Width="75" Click="cancelButton_Click" />
     </Grid>
 </Window>
