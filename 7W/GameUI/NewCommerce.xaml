@@ -14,10 +14,14 @@
         <Image Height="38" HorizontalAlignment="Left" Margin="412,81,0,0" Name="rightRawImage" Stretch="Fill" VerticalAlignment="Top" Width="129" />
         <Image Height="38" HorizontalAlignment="Left" Margin="412,125,0,0" Name="rightManuImage" Stretch="Fill" VerticalAlignment="Top" Width="129" />
         <StackPanel Height="274" HorizontalAlignment="Left" Margin="53,172,0,0" Name="leftDagPanel" VerticalAlignment="Top" Width="125" Orientation="Vertical" />
-        <StackPanel Height="274" HorizontalAlignment="Left" Margin="235,172,0,0" Name="centreDagPanel" VerticalAlignment="Top" Width="125" />
-        <StackPanel Height="274" HorizontalAlignment="Left" Margin="412,172,0,0" Name="rightDagPanel" VerticalAlignment="Top" Width="125" />
-        <Button Content="Submit" Height="23" HorizontalAlignment="Left" Margin="133,474,0,0" Name="submitButton" VerticalAlignment="Top" Width="75" Click="submitButton_Click" />
+        <StackPanel Height="274" HorizontalAlignment="Left" Margin="235,172,0,0" Name="middleDagPanel" VerticalAlignment="Top" Width="125" Orientation="Vertical" />
+        <StackPanel Height="274" HorizontalAlignment="Left" Margin="412,172,0,0" Name="rightDagPanel" VerticalAlignment="Top" Width="125" Orientation="Vertical" />
+        <Button Content="Submit" Height="23" HorizontalAlignment="Left" Margin="133,474,0,0" Name="submitButton" VerticalAlignment="Top" Width="75" Click="submitButton_Click" Opacity="1" Foreground="Black" FontSize="12" />
         <Button Content="Reset" Height="23" HorizontalAlignment="Left" Margin="256,474,0,0" Name="resetButton" VerticalAlignment="Top" Width="75" Click="resetButton_Click" />
         <Button Content="Cancel" Height="23" HorizontalAlignment="Left" Margin="380,474,0,0" Name="cancelButton" VerticalAlignment="Top" Width="75" Click="cancelButton_Click" />
+        <Label Content="Your coins: " Height="28" HorizontalAlignment="Left" Margin="235,91,0,0" Name="label2" VerticalAlignment="Top" />
+        <Label Content="Subtotal: " Height="28" HorizontalAlignment="Left" Margin="235,125,0,0" Name="label3" VerticalAlignment="Top" />
+        <Label Content="" Height="28" HorizontalAlignment="Left" Margin="307,91,0,0" Name="playerCoinsAmount" VerticalAlignment="Top" />
+        <Label Content="" Height="28" HorizontalAlignment="Left" Margin="293,125,0,0" Name="subTotalAmount" VerticalAlignment="Top" />
     </Grid>
 </Window>

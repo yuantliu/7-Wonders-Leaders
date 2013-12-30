@@ -318,10 +318,7 @@ namespace SevenWonders
     }
 
     /// <summary>
-    /// Contains information sent to (New)Commerce UIs
-    /// Information are:
-    /// 3 CommerceInfos: name, rawMarket, manuMarket, DAG
-    /// discountApplies, totalCost
+    /// Contains information needed to construct the NewCommerce UIs. Sent from Server to Client
     /// </summary>
     [Serializable]
     public class CommerceInformation
@@ -338,7 +335,12 @@ namespace SevenWonders
         //[2] represents right player
         public PlayerCommerceInfo[] playerCommerceInfo = new PlayerCommerceInfo[3];
 
-        public CommerceInformation(Player left, Player centre, Player right, bool discountApplies, string cardCost)
+        //how many coins does the (middle) player have?
+        public int playerCoins;
+        //what card is he playing? (0 means we are building current stage of wonder)
+        public int id;
+
+        public CommerceInformation(Player left, Player centre, Player right, bool discountApplies, int id, string cardCost)
         {
             this.hasDiscount = discountApplies;
             this.cardCost = cardCost;
@@ -346,6 +348,9 @@ namespace SevenWonders
             leftManuMarket = centre.leftManu;
             rightRawMarket = centre.rightRaw;
             rightManuMarket = centre.rightManu;
+
+            playerCoins = centre.coin;
+            this.id = id;
 
             //fill the PlayercommerceInfo for all 3 relevant players
             playerCommerceInfo[0] = new PlayerCommerceInfo(left);
@@ -356,7 +361,7 @@ namespace SevenWonders
     }
 
     /// <summary>
-    /// Used by CommerceInformation to store/send/access each player's commerce info
+    /// Used by CommerceInformation to store each player's commerce info
     /// </summary>
     [Serializable]
     public class PlayerCommerceInfo
@@ -369,5 +374,15 @@ namespace SevenWonders
             this.name = player.nickname;
             dag = player.dag;
         }
+    }
+
+    /// <summary>
+    /// Used by Client to send commerce response to Server
+    /// if id == 0, then we know that we are building the current stage of wonder
+    /// </summary>
+    [Serializable]
+    public class CommerceClientToServerResponse
+    {
+        public int leftCoins, rightCoins, id;
     }
 }

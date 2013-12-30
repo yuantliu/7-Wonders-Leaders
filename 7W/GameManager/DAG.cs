@@ -6,7 +6,7 @@ using System.Text;
 namespace SevenWonders
 {
     [Serializable]
-    class DAG
+    public class DAG
     {
         private List<char[]> graph = new List<char[]>();
 

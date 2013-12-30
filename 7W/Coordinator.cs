@@ -681,7 +681,6 @@ namespace SevenWonders
 
         public void createAndUpdateCommerce(String s)
         {
-
             Application.Current.Dispatcher.Invoke(new Action(delegate
             {
                 //gameUI.showCommerceUI(s);
