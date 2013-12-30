@@ -686,11 +686,22 @@ namespace SevenWonders
             }
         }
 
+        /// <summary>
+        /// Event handler for the Reset button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void resetButton_Click(object sender, RoutedEventArgs e)
         {
             reset();
         }
 
+        /// <summary>
+        /// Event handler for the Close button
+        /// Just close the window without any further actions
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
             Close();

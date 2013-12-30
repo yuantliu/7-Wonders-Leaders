@@ -900,40 +900,6 @@ namespace SevenWonders
             return 'F';
         }
 
-        public String commerceInformation()
-        {
-            //(current)_(resources)|(leftPlayer)_(resources)|(rightPlayer)_(resources)
-            String commerceInfo = "";
-
-            String rightR = "F", rightM = "F", leftR = "F", leftM = "F";
-
-            if (rightRaw) rightR = "T";
-            if (leftRaw) leftR = "T";
-            if (rightManu) rightM = "T";
-            if (leftManu) leftM = "T";
-
-            //"12_TWTO_Host_5_1_1_1_1_1_2_1|yunus_2_2_2_2_2_2_2_5|hello_3_3_3_3_3_3_3_8|T_F_T_F_)");
-
-
-            //leftPlayer
-            commerceInfo += leftNeighbour.nickname + "_";
-            commerceInfo += leftNeighbour.brick + "_" + leftNeighbour.ore + "_" + leftNeighbour.stone + "_" + leftNeighbour.wood + "_" + leftNeighbour.glass + "_" + leftNeighbour.papyrus + "_" + leftNeighbour.loom + "_" + leftNeighbour.coin + "|";
-
-            //current Player
-            commerceInfo += nickname + "_";
-            commerceInfo += brick + "_" + ore + "_" + stone + "_" + wood + "_" + glass + "_" + papyrus + "_" + loom + "_" + coin + "|";
-
-            //rightPlayer
-            commerceInfo += rightNeighbour.nickname + "_";
-            commerceInfo += rightNeighbour.brick + "_" + rightNeighbour.ore + "_" + rightNeighbour.stone + "_" + rightNeighbour.wood + "_" + rightNeighbour.glass + "_" + rightNeighbour.papyrus + "_" + rightNeighbour.loom + "_" + rightNeighbour.coin + "|";
-
-            //Add the market effect
-            commerceInfo += leftR + "_" + leftM + "_" + rightR + "_" + rightM + "_";
-
-            return commerceInfo;
-
-        }
-
         /// <summary>
         /// return the final score
         /// </summary>

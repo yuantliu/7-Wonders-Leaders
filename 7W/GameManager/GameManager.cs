@@ -1215,38 +1215,34 @@ namespace SevenWonders
         }
 
         /// <summary>
-        /// 
+        /// Server to Client message consisting of Commerce UI updates
         /// </summary>
         /// <param name="id"></param>
         /// <param name="nickname"></param>
-        public void updateCommercePanel(int id, String nickname, Boolean isStageOfWonderCommerce)
+        public void updateCommercePanel(int id, string nickname)
         {
-
             Player p = playerFromNickname(nickname);
 
             //Find the card with the id number
             Card c = null;
-            for (int i = 0; i < p.numOfHandCards; i++)
-            {
-                //found the right card
-                if (p.hand[i].id == id)
+            if(id != 0){
+                for (int i = 0; i < p.numOfHandCards; i++)
                 {
-                    c = p.hand[i];
-                    break;
+                    //found the right card
+                    if (p.hand[i].id == id)
+                    {
+                        c = p.hand[i];
+                        break;
+                    }
                 }
             }
 
-            ///////////////////
-            ////C(for commerce)_(id of the card)_(card or board cost)_//(current)_(resources)|(leftPlayer)_(resources)|(rightPlayer)_(resources)
-            ////////////////
-
-            //discount applicability
             bool hasDiscount;
 
             if ((c.colour == "Green" && p.hasIDPlayed(202)) ||
                (c.colour == "Blue" && p.hasIDPlayed(207)) ||
                (c.colour == "Red" && p.hasIDPlayed(216)) ||
-               (isStageOfWonderCommerce == true && p.hasIDPlayed(212)))
+               (id == 0 && p.hasIDPlayed(212)))
             {
                 hasDiscount = true;
             }
@@ -1255,20 +1251,19 @@ namespace SevenWonders
                 hasDiscount = false;
             }
 
-            //Yunus information
-            string commerceInformation = id + "_";
+            string cost;
+            if (id == 0)
+            {
+                cost = p.playerBoard.cost[p.currentStageOfWonder];
+            }
+            else
+            {
+                cost = c.cost;
+            }
 
-            if (isStageOfWonderCommerce) commerceInformation += p.playerBoard.cost[p.currentStageOfWonder] + "_";
-            else commerceInformation += c.cost + "_";
+            CommerceInformation commerceInfo = new CommerceInformation(p.leftNeighbour, p, p.rightNeighbour, hasDiscount, id, cost);
 
-            commerceInformation += p.commerceInformation();
-
-
-            //add this at the end to decide whether we a stage of wonder commerce or build structure commerce
-            if (isStageOfWonderCommerce) commerceInformation += "&";
-
-            //Package the Yunus information and hasDiscount information
-            string commercePackageInformation = "C" + Marshaller.ObjectToString(new CommerceInformationPackage(commerceInformation, hasDiscount));
+            string commercePackageInformation = "C" + Marshaller.ObjectToString(commerceInfo);
 
             gmCoordinator.sendMessage(p, commercePackageInformation);
         }
