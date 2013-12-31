@@ -667,11 +667,7 @@ namespace SevenWonders
         /// <param name="e"></param>
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            if (resourcesNeeded != 0)
-            {
-                MessageBox.Show("You must pay for unpaid resources");
-            }
-            else
+            if ((resourcesNeeded == 0 && hasDiscount == false) || (resourcesNeeded == 1 && hasDiscount == true))
             {
                 //construct the information
                 CommerceClientToServerResponse response = new CommerceClientToServerResponse();
@@ -700,6 +696,11 @@ namespace SevenWonders
                 c.gameUI.playerPlayedHisTurn = true;
 
                 Close();
+            }
+            //does not fulfill requirements
+            else
+            {
+                MessageBox.Show("You must pay for unpaid resources");
             }
         }
 

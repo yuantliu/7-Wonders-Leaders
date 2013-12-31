@@ -146,3 +146,7 @@ C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GenerateResource.read.1.t
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GenerateResource.write.1.tlog
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\NewCommerce.baml
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\NewCommerce.g.cs
+C:\Users\LYT\Desktop\7Wonders_Leaders\7W\bin\Debug\7W.exe.manifest
+C:\Users\LYT\Desktop\7Wonders_Leaders\7W\bin\Debug\7W.application
+C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\7W.exe.manifest
+C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\7W.application
