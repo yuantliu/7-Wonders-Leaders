@@ -9,13 +9,13 @@
         <Label Content="Remaining Cost:" Height="34" HorizontalAlignment="Left" Margin="12,12,0,0" Name="label1" VerticalAlignment="Top" Width="98" />
         <StackPanel Height="24" HorizontalAlignment="Left" Margin="116,12,0,0" Name="costPanel" VerticalAlignment="Top" Width="276" Orientation="Horizontal" />
         <Label Content="Discount Applies" Height="33" HorizontalAlignment="Left" Margin="466,12,0,0" Name="hasDiscountLabel" VerticalAlignment="Top" Visibility="Hidden" />
-        <Label Content="" Height="23" HorizontalAlignment="Left" Margin="71,52,0,0" Name="leftNameLabel" VerticalAlignment="Top" Width="89" />
-        <Label Content="" Height="23" HorizontalAlignment="Left" Margin="256,52,0,0" Name="middleNameLabel" VerticalAlignment="Top" Width="89" />
-        <Label Content="" Height="23" HorizontalAlignment="Left" Margin="429,52,0,0" Name="rightNameLabel" VerticalAlignment="Top" Width="89" />
+        <Label Content="" Height="23" HorizontalAlignment="Center" Margin="72,52,418,0" Name="leftNameLabel" VerticalAlignment="Top" Width="89" HorizontalContentAlignment="Center" />
+        <Label Content="" Height="23" HorizontalAlignment="Center" Margin="259,52,229,0" Name="middleNameLabel" VerticalAlignment="Top" Width="89" HorizontalContentAlignment="Center" />
+        <Label Content="" Height="23" HorizontalAlignment="Center" Margin="429,52,59,0" Name="rightNameLabel" VerticalAlignment="Top" Width="89" HorizontalContentAlignment="Center" />
         <Image Height="38" HorizontalAlignment="Left" Margin="51,81,0,0" Name="leftRawImage" Stretch="Fill" VerticalAlignment="Top" Width="129" />
         <Image Height="38" HorizontalAlignment="Left" Margin="51,125,0,0" Name="leftManuImage" Stretch="Fill" VerticalAlignment="Top" Width="129" />
         <Image Height="38" HorizontalAlignment="Left" Margin="412,81,0,0" Name="rightRawImage" Stretch="Fill" VerticalAlignment="Top" Width="129" />
-        <Image Height="38" HorizontalAlignment="Left" Margin="412,125,0,0" Name="rightManuImage" Stretch="Fill" VerticalAlignment="Top" Width="129" />
+        <Image Height="38" HorizontalAlignment="Center" Margin="412,125,36,0" Name="rightManuImage" Stretch="Fill" VerticalAlignment="Top" Width="129" />
         <StackPanel Height="322" HorizontalAlignment="Center" Margin="50,172,400,0" Name="leftDagPanel" VerticalAlignment="Top" Width="125" Orientation="Vertical" />
         <StackPanel Height="322" HorizontalAlignment="Center" Margin="246,172,206,0" Name="middleDagPanel" VerticalAlignment="Top" Width="125" Orientation="Vertical" />
         <StackPanel Height="322" HorizontalAlignment="Center" Margin="416,172,36,0" Name="rightDagPanel" VerticalAlignment="Top" Width="125" Orientation="Vertical" />

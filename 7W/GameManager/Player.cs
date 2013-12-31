@@ -101,17 +101,6 @@ namespace SevenWonders
         /// </summary>
         public Player(String nickname, bool isAI, GameManager gm)
         {
-            //test
-            /*
-            brick = 5;
-            ore = 5;
-            stone = 5;
-            wood = 5;
-
-            glass = 5;
-            loom = 5;
-            papyrus = 5;
-            */
             dag = new DAG();
 
             this.nickname = nickname;

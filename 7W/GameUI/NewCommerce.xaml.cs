@@ -191,6 +191,7 @@ namespace SevenWonders
                 //initialise a StackPanels for the current level
                 leftLevelPanels[i] = new StackPanel();
                 leftLevelPanels[i].Orientation = Orientation.Horizontal;
+                leftLevelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
 
                 //add to the StackPanels the appropriate buttons
                 for (int j = 0; j < leftDagGraph[i].Length; j++)
@@ -267,6 +268,7 @@ namespace SevenWonders
                 //initialise a StackPanels for the current level
                 middleLevelPanels[i] = new StackPanel();
                 middleLevelPanels[i].Orientation = Orientation.Horizontal;
+                middleLevelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
 
                 //add to the StackPanels the appropriate buttons
                 for (int j = 0; j < middleDagGraph[i].Length; j++)
@@ -343,6 +345,7 @@ namespace SevenWonders
                 //initialise a StackPanels for the current level
                 rightLevelPanels[i] = new StackPanel();
                 rightLevelPanels[i].Orientation = Orientation.Horizontal;
+                rightLevelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
 
                 //add to the StackPanels the appropriate buttons
                 for (int j = 0; j < rightDagGraph[i].Length; j++)

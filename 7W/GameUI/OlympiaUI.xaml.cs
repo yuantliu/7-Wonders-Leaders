@@ -40,6 +40,9 @@ namespace SevenWonders
 
         public OlympiaUI(Coordinator c, String information)
         {
+            //make graphics better
+            RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.Fant);
+
             //Current directory
             InitializeComponent();
             currentPath = Environment.CurrentDirectory;
