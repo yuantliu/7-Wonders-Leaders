@@ -41,11 +41,11 @@ namespace SevenWonders
         public Client client { get; set;  }
 
         //User's nickname
-        public String nickname;
+        public string nickname;
 
         //Timer
         int timeElapsed;
-        private const int MAX_TIME = 100;
+        private const int MAX_TIME = 120;
         private System.Windows.Threading.DispatcherTimer timer;
 
         //current turn
@@ -61,7 +61,7 @@ namespace SevenWonders
 
             hasGame = false;
 
-            //prepare the 100 second timer
+            //prepare the timer
             timer = new System.Windows.Threading.DispatcherTimer();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -102,6 +102,10 @@ namespace SevenWonders
                 if (timeElapsed == MAX_TIME+1)
                 {
                     discardRandomCard();
+                    //close all open windows.
+                    for(int intCounter = App.Current.Windows.Count - 1; intCounter > 0; intCounter--)
+                        App.Current.Windows[intCounter].Close();
+
                     timer.Stop();
                 }
             }));
@@ -140,7 +144,7 @@ namespace SevenWonders
 
             Application.Current.Dispatcher.Invoke(new Action(delegate
             {
-                String content = "Current Stage: " + currentAge;
+                string content = "Current Stage: " + currentAge;
                 gameUI.currentStageLabel.Content = content;
             }));
         }
@@ -155,12 +159,12 @@ namespace SevenWonders
             timer.Start();
         }
 
-        public void updateCardImage(String s)
+        public void updateCardImage(string s)
         {
             gameUI.showCardImage(s);
         }
 
-        public void updatePlayedCardsPanel(String s)
+        public void updatePlayedCardsPanel(string s)
         {
             gameUI.showPlayedCardsPanel(s);
         }
@@ -169,7 +173,7 @@ namespace SevenWonders
         /// Update the Chat logs
         /// </summary>
         /// <param name="s"></param>
-        public void updateChatTextBox(String s)
+        public void updateChatTextBox(string s)
         {
             s = s + "\n";
 
@@ -234,7 +238,7 @@ namespace SevenWonders
         /// </summary>
         private void initGameUI()
         {
-            String currentPath = Environment.CurrentDirectory;
+            string currentPath = Environment.CurrentDirectory;
             ImageBrush back = new ImageBrush();
             BitmapImage source = new BitmapImage();
             source.BeginInit();
@@ -273,7 +277,7 @@ namespace SevenWonders
                 message = tableUI.chatTextField.Text;
             }
 
-            if (message.Length > 0) //check that the String is valid
+            if (message.Length > 0) //check that the string is valid
             {
                 //Tell the coordinator to send this a chat message to the server
                 //# means chat message
@@ -313,7 +317,7 @@ namespace SevenWonders
         /*
          * Send the Join Game request to the Server.
          */
-        public void joinGame(String nickname, IPAddress serverIP)
+        public void joinGame(string nickname, IPAddress serverIP)
         {
             this.nickname = nickname;
 
@@ -388,7 +392,7 @@ namespace SevenWonders
         /// Invoke the halicarnassus screen at the end of the Age
         /// </summary>
         /// <param name="information"></param>
-        private void receiveHalicarnassus(String information)
+        private void receiveHalicarnassus(string information)
         {
             //open the halicarnssus window
             Application.Current.Dispatcher.Invoke(new Action(delegate
@@ -402,7 +406,7 @@ namespace SevenWonders
         /// Invoke the Babylon screen at the end of the Age
         /// </summary>
         /// <param name="information"></param>
-        private void receiveBabylon(String information)
+        private void receiveBabylon(string information)
         {
             //open the babylon window
             Application.Current.Dispatcher.Invoke(new Action(delegate
@@ -450,7 +454,7 @@ namespace SevenWonders
         /// nickname_(message)
         /// </summary>
         /// <param name="s"></param>
-        public void sendToHost(String s)
+        public void sendToHost(string s)
         {
             if(client != null)
                 client.SendMessageToServer(s);
@@ -462,7 +466,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void receiveMessage(String message)
+        public void receiveMessage(string message)
         {
             //First character | Meaning
             //# --------------- chat message. E.g. "#John: I need some coins!" would print the string on the Chat
@@ -658,33 +662,12 @@ namespace SevenWonders
             }
         }
 
-        //describe what happened at the end of the commerce
-        public void endOfCommerce(String information, Boolean isStageOfWonderCommerce)
-        {
-            if (information.StartsWith("Cancel"))
-            {
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    gameUI.discardCommerce();
-                }));
-
-            }
-            else
-            {
-                if (isStageOfWonderCommerce) sendToHost("CS" + information);
-                else sendToHost("CB" + information);
-                endTurn();
-
-            }
-
-        }
-
-        public void createAndUpdateCommerce(String s)
+        public void createAndUpdateCommerce(string s)
         {
             Application.Current.Dispatcher.Invoke(new Action(delegate
             {
                 //gameUI.showCommerceUI(s);
-                CommerceUI commerce = new CommerceUI(this, s);
+                NewCommerce commerce = new NewCommerce(this, s);
 
                 commerce.ShowDialog();
             }));

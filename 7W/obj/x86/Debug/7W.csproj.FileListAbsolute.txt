@@ -118,7 +118,6 @@ C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\AIStrategy.baml
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\BabylonUI.baml
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\BilkisUI.baml
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\changeNicknameUI.baml
-C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\CommerceUI.baml
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\CourtesanUI.baml
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\HalicarnassusUI.baml
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\Help.baml
@@ -131,7 +130,6 @@ C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\AIStrategy.g.cs
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\BabylonUI.g.cs
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\BilkisUI.g.cs
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\changeNicknameUI.g.cs
-C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\CommerceUI.g.cs
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\CourtesanUI.g.cs
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\HalicarnassusUI.g.cs
 C:\Users\LYT\Desktop\7Wonders_Leaders\7W\obj\x86\Debug\GameUI\Help.g.cs

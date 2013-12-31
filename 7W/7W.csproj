@@ -122,9 +122,6 @@
     </Compile>
     <Compile Include="Coordinator.cs" />
     <Compile Include="GameManager\Deck.cs" />
-    <Compile Include="GameUI\CommerceUI.xaml.cs">
-      <DependentUpon>CommerceUI.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GameUI\CourtesanUI.xaml.cs">
       <DependentUpon>CourtesanUI.xaml</DependentUpon>
     </Compile>
@@ -169,10 +166,6 @@
     <Page Include="GameUI\changeNicknameUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GameUI\CommerceUI.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="GameUI\CourtesanUI.xaml">
       <SubType>Designer</SubType>

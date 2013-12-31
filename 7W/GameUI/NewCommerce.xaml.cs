@@ -20,7 +20,7 @@ namespace SevenWonders
     public partial class NewCommerce : Window
     {
         const int ICON_WIDTH = 25;
-        const int DAG_BUTTON_WIDTH = ICON_WIDTH + 2;
+        const int DAG_BUTTON_WIDTH = ICON_WIDTH;
 
         //player's coin that will be resetted to everytime the reset button is pressed
         //unfortunately, cant make this value constant.
@@ -37,11 +37,10 @@ namespace SevenWonders
         bool leftRawMarket, leftManuMarket, rightRawMarket, rightManuMarket;
         string leftName, middleName, rightName;
         int ID;
+        bool isStage;
 
         //current accumulated resources
         string currentResource = "";
-        //player's total coins
-        int playerCoins;
         //how much coin to pay to left and right
         int leftcoin = 0, rightcoin = 0;
         //how many resources are still needed. 0 means no more resources are needed
@@ -63,6 +62,9 @@ namespace SevenWonders
         /// </summary>
         public NewCommerce(Coordinator c, string data)
         {
+            //intialise all the UI components in the xaml file (labels, etc.) to avoid null pointer
+            InitializeComponent();
+
             this.c = c;
             CommerceInformation commerceData = (CommerceInformation)Marshaller.StringToObject(data);
 
@@ -80,6 +82,7 @@ namespace SevenWonders
             this.PLAYER_COIN = commerceData.playerCoins;
 
             this.ID = commerceData.id;
+            this.isStage = commerceData.isStage;
 
             leftDag = commerceData.playerCommerceInfo[0].dag;
             middleDag = commerceData.playerCommerceInfo[1].dag;
@@ -130,6 +133,9 @@ namespace SevenWonders
             middleNameLabel.Content = middleName;
             rightNameLabel.Content = rightName;
 
+            //set the player's total coins
+            playerCoinsLabel.Content = PLAYER_COIN;
+
             //set the market images
             if(leftRawMarket == true)
                 leftRawImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\Commerce\\1r.png"));
@@ -160,8 +166,6 @@ namespace SevenWonders
 
             //generate mutable elements (DAG buttons, Price representations, currentResources, etc.)
             reset();
-
-            InitializeComponent();
         }
 
         /// <summary>
@@ -441,10 +445,9 @@ namespace SevenWonders
             {
                 if (leftRawMarket == true && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
                 {
-                    if (playerCoins > 0)
+                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
                     {
                         leftcoin++;
-                        playerCoins--;
                     }
                     else
                     {
@@ -454,10 +457,9 @@ namespace SevenWonders
                 }
                 else if (leftRawMarket == false && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
                 {
-                    if (playerCoins > 1)
+                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
                     {
                         leftcoin += 2;
-                        playerCoins -= 2;
                     }
                     else
                     {
@@ -467,10 +469,9 @@ namespace SevenWonders
                 }
                 else if (leftManuMarket == true && (resource == 'G' || resource == 'L' || resource == 'P'))
                 {
-                    if (playerCoins > 0)
+                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
                     {
                         leftcoin++;
-                        playerCoins--;
                     }
                     else
                     {
@@ -480,10 +481,9 @@ namespace SevenWonders
                 }
                 else if (leftManuMarket == false && (resource == 'G' || resource == 'L' || resource == 'P'))
                 {
-                    if (playerCoins > 1)
+                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
                     {
                         leftcoin += 2;
-                        playerCoins -= 2;
                     }
                     else
                     {
@@ -496,10 +496,9 @@ namespace SevenWonders
             {
                 if (rightRawMarket == true && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
                 {
-                    if (playerCoins > 0)
+                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
                     {
                         rightcoin++;
-                        playerCoins--;
                     }
                     else
                     {
@@ -509,10 +508,9 @@ namespace SevenWonders
                 }
                 else if (rightRawMarket == false && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
                 {
-                    if (playerCoins > 1)
+                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
                     {
                         rightcoin += 2;
-                        playerCoins -= 2;
                     }
                     else
                     {
@@ -522,10 +520,9 @@ namespace SevenWonders
                 }
                 else if (rightManuMarket == true && (resource == 'G' || resource == 'L' || resource == 'P'))
                 {
-                    if (playerCoins > 0)
+                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
                     {
                         rightcoin++;
-                        playerCoins--;
                     }
                     else
                     {
@@ -535,10 +532,9 @@ namespace SevenWonders
                 }
                 else if (rightManuMarket == false && (resource == 'G' || resource == 'L' || resource == 'P'))
                 {
-                    if (playerCoins > 1)
+                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
                     {
                         rightcoin += 2;
-                        playerCoins -= 2;
                     }
                     else
                     {
@@ -578,6 +574,9 @@ namespace SevenWonders
                     rightDagButton[level, i].Visibility = Visibility.Hidden;
                 }
             }
+
+            //refresh the cost panel
+            generateCostPanel();
         }
 
         /// <summary>
@@ -585,14 +584,14 @@ namespace SevenWonders
         /// </summary>
         private void generateCostPanel()
         {
-            generateCostPanel(DAG.eliminate(cardCost, currentResource));
+            generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost, currentResource));
         }
 
         /// <summary>
         /// Construct the labels at the cost panel, given a cost
         /// </summary>
         /// <param name="cost"></param>
-        private void generateCostPanel(string cost)
+        private void generateCostPanelAndUpdateSubtotal(string cost)
         {
             costPanel.Children.Clear();
             Label[] costLabels = new Label[cost.Length];
@@ -627,6 +626,8 @@ namespace SevenWonders
                         break;
                 }
 
+                costLabels[i] = new Label();
+
                 costLabels[i].Background = new ImageBrush(iconImage);
                 costLabels[i].Width = ICON_WIDTH;
                 costLabels[i].Height = ICON_WIDTH;
@@ -634,6 +635,11 @@ namespace SevenWonders
                 //add the labels to costPanel
                 costPanel.Children.Add(costLabels[i]);
             }
+
+            //update the subtotals
+            leftSubtotalLabel.Content = leftcoin;
+            rightSubtotalLabel.Content = rightcoin;
+            subTotalLabel.Content = leftcoin + rightcoin;
         }
 
         /// <summary>
@@ -645,7 +651,6 @@ namespace SevenWonders
             currentResource = "";
             leftcoin = 0;
             rightcoin = 0;
-            playerCoins = PLAYER_COIN;
 
             generateCostPanel();
             generateDAGs();
@@ -673,24 +678,44 @@ namespace SevenWonders
 
                 string serializedResponse = Marshaller.ObjectToString(response);
 
-                //if id == 0, then we are using commerce to build the current stage of wonder
-                if (ID == 0)
+                //send the appropriate information
+                if (isStage == true)
                 {
+                    //stage
                     c.sendToHost("CS" + serializedResponse);
                 }
-                //send as regular commerce to build a card
                 else
                 {
+                    //build struct
                     c.sendToHost("CB" + serializedResponse);
                 }
+
+                //end turn
+                c.endTurn();
+
+                //signify to MainWindow that turn has been played
+                c.gameUI.playerPlayedHisTurn = true;
+
+                Close();
             }
         }
 
+        /// <summary>
+        /// Event handler for the Reset button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void resetButton_Click(object sender, RoutedEventArgs e)
         {
             reset();
         }
 
+        /// <summary>
+        /// Event handler for the Close button
+        /// Just close the window without any further actions
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
             Close();

@@ -267,7 +267,6 @@ namespace SevenWonders
                     //s for build Stage Of Wonder Commerce
                     else if (message[1] == 's')
                     {
-                        //get the id of the card
                         int id = int.Parse(message.Substring(2));
                         gameManager.updateCommercePanel(id, nickname, true);
                     }

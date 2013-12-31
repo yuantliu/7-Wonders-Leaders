@@ -280,8 +280,6 @@ namespace SevenWonders
                     //increase the appropriate field by num
                     int num = int.Parse(act[0] + "");
 
-                    dag.add(act[1] + "");
-
                     switch (act[1])
                     {
                         case 'S':
@@ -292,27 +290,34 @@ namespace SevenWonders
                             break;
                         case 'O':
                             ore += num;
+                            dag.add("O");
                             break;
                         case 'B':
                             brick += num;
+                            dag.add("B");
                             break;
                         case 'T':
                             stone += num;
+                            dag.add("T");
                             break;
                         case 'W':
                             wood += num;
+                            dag.add("W");
                             break;
                         case '$':
                             coin += num;
                             break;
                         case 'L':
                             loom += num;
+                            dag.add("L");
                             break;
                         case 'P':
                             papyrus += num;
+                            dag.add("P");
                             break;
                         case 'G':
                             glass += num;
+                            dag.add("G");
                             break;
                         case 'd':
                         case 'D':
@@ -707,9 +712,6 @@ namespace SevenWonders
                     }
                 }
 
-                //Announce the points granted and increment the points to victory points
-                gm.gmCoordinator.sendMessage(this, "#At the end of the game, a card grants " + points + " to " + nickname + "."); 
-
                 victoryPoint += points;
             }
 
@@ -898,40 +900,6 @@ namespace SevenWonders
 
             //absolutely all options exhausted. return F
             return 'F';
-        }
-
-        public String commerceInformation()
-        {
-            //(current)_(resources)|(leftPlayer)_(resources)|(rightPlayer)_(resources)
-            String commerceInfo = "";
-
-            String rightR = "F", rightM = "F", leftR = "F", leftM = "F";
-
-            if (rightRaw) rightR = "T";
-            if (leftRaw) leftR = "T";
-            if (rightManu) rightM = "T";
-            if (leftManu) leftM = "T";
-
-            //"12_TWTO_Host_5_1_1_1_1_1_2_1|yunus_2_2_2_2_2_2_2_5|hello_3_3_3_3_3_3_3_8|T_F_T_F_)");
-
-
-            //leftPlayer
-            commerceInfo += leftNeighbour.nickname + "_";
-            commerceInfo += leftNeighbour.brick + "_" + leftNeighbour.ore + "_" + leftNeighbour.stone + "_" + leftNeighbour.wood + "_" + leftNeighbour.glass + "_" + leftNeighbour.papyrus + "_" + leftNeighbour.loom + "_" + leftNeighbour.coin + "|";
-
-            //current Player
-            commerceInfo += nickname + "_";
-            commerceInfo += brick + "_" + ore + "_" + stone + "_" + wood + "_" + glass + "_" + papyrus + "_" + loom + "_" + coin + "|";
-
-            //rightPlayer
-            commerceInfo += rightNeighbour.nickname + "_";
-            commerceInfo += rightNeighbour.brick + "_" + rightNeighbour.ore + "_" + rightNeighbour.stone + "_" + rightNeighbour.wood + "_" + rightNeighbour.glass + "_" + rightNeighbour.papyrus + "_" + rightNeighbour.loom + "_" + rightNeighbour.coin + "|";
-
-            //Add the market effect
-            commerceInfo += leftR + "_" + leftM + "_" + rightR + "_" + rightM + "_";
-
-            return commerceInfo;
-
         }
 
         /// <summary>
