@@ -712,9 +712,6 @@ namespace SevenWonders
                     }
                 }
 
-                //Announce the points granted and increment the points to victory points
-                gm.gmCoordinator.sendMessage(this, "#At the end of the game, a card grants " + points + " to " + nickname + "."); 
-
                 victoryPoint += points;
             }
 

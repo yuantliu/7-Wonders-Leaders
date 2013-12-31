@@ -39,7 +39,7 @@ namespace SevenWonders
         Button[] buildStageButton;
         Button[] discardButton;
 
-        bool playerPlayedHisTurn = false;
+        public bool playerPlayedHisTurn = false;
         //variable that represent the button that was pressed in the cardActionPanel
         Button playedButton = new Button();
 
@@ -609,22 +609,27 @@ namespace SevenWonders
                 playedButton = sender as Button;
                 String s = playedButton.Name;
 
-                playedButton.IsEnabled = false;
-                playerPlayedHisTurn = true;
+                
 
                 //send to the server the Action selected
                 if (s.StartsWith("Build_"))
                 {
+                    playedButton.IsEnabled = false;
+                    playerPlayedHisTurn = true;
                     coordinator.sendToHost("B" + s.Substring(6));
                     coordinator.endTurn();
                 }
                 else if (s.StartsWith("Stage_"))
                 {
+                    playedButton.IsEnabled = false;
+                    playerPlayedHisTurn = true;
                     coordinator.sendToHost("S" + s.Substring(6));
                     coordinator.endTurn();
                 }
                 else if (s.StartsWith("Discard_"))
                 {
+                    playedButton.IsEnabled = false;
+                    playerPlayedHisTurn = true;
                     coordinator.sendToHost("D" + s.Substring(8));
                     coordinator.endTurn();
                 }
@@ -641,6 +646,8 @@ namespace SevenWonders
 
                 else if (s.StartsWith("Recruit_"))
                 {
+                    playedButton.IsEnabled = false;
+                    playerPlayedHisTurn = true;
                     coordinator.sendToHost("l" + s.Substring(8));
                     coordinator.endTurn();
                 }
@@ -818,11 +825,7 @@ namespace SevenWonders
             }
         }
 
-
-        ///////////////////////////////////////////////////////////
-        //Leaders display
-
-        public void showHandPanelLeadersPhase(String information)
+        public void showHandPanelLeadersPhase(string information)
         {
             //the player is in a new turn now because his UI are still updating.
             //Therefore set playerPlayedHisturn to false

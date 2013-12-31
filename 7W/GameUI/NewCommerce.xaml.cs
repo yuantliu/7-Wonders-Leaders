@@ -693,6 +693,9 @@ namespace SevenWonders
                 //end turn
                 c.endTurn();
 
+                //signify to MainWindow that turn has been played
+                c.gameUI.playerPlayedHisTurn = true;
+
                 Close();
             }
         }

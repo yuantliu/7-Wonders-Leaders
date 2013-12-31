@@ -45,7 +45,7 @@ namespace SevenWonders
 
         //Timer
         int timeElapsed;
-        private const int MAX_TIME = 100;
+        private const int MAX_TIME = 120;
         private System.Windows.Threading.DispatcherTimer timer;
 
         //current turn
@@ -61,7 +61,7 @@ namespace SevenWonders
 
             hasGame = false;
 
-            //prepare the 100 second timer
+            //prepare the timer
             timer = new System.Windows.Threading.DispatcherTimer();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -102,6 +102,10 @@ namespace SevenWonders
                 if (timeElapsed == MAX_TIME+1)
                 {
                     discardRandomCard();
+                    //close all open windows.
+                    for(int intCounter = App.Current.Windows.Count - 1; intCounter > 0; intCounter--)
+                        App.Current.Windows[intCounter].Close();
+
                     timer.Stop();
                 }
             }));

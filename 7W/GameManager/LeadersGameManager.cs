@@ -623,6 +623,9 @@ namespace SevenWonders
             //add this cloned card to the hand
             p.addHand(c);
 
+            //since this card is free, reimburse the coin amount first
+            p.storeAction("1" + c.cost + "$");
+
             //play this card
             buildStructureFromHand(c.id, nickname);
         }
