@@ -280,8 +280,6 @@ namespace SevenWonders
                     //increase the appropriate field by num
                     int num = int.Parse(act[0] + "");
 
-                    dag.add(act[1] + "");
-
                     switch (act[1])
                     {
                         case 'S':
@@ -292,27 +290,34 @@ namespace SevenWonders
                             break;
                         case 'O':
                             ore += num;
+                            dag.add("O");
                             break;
                         case 'B':
                             brick += num;
+                            dag.add("B");
                             break;
                         case 'T':
                             stone += num;
+                            dag.add("T");
                             break;
                         case 'W':
                             wood += num;
+                            dag.add("W");
                             break;
                         case '$':
                             coin += num;
                             break;
                         case 'L':
                             loom += num;
+                            dag.add("L");
                             break;
                         case 'P':
                             papyrus += num;
+                            dag.add("P");
                             break;
                         case 'G':
                             glass += num;
+                            dag.add("G");
                             break;
                         case 'd':
                         case 'D':

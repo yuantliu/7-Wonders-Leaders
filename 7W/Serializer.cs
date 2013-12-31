@@ -337,10 +337,12 @@ namespace SevenWonders
 
         //how many coins does the (middle) player have?
         public int playerCoins;
-        //what card is he playing? (0 means we are building current stage of wonder)
+        //what card is being played/used
         public int id;
 
-        public CommerceInformation(Player left, Player centre, Player right, bool discountApplies, int id, string cardCost)
+        public bool isStage = false;
+
+        public CommerceInformation(Player left, Player centre, Player right, bool discountApplies, int id, string cardCost, bool isStage)
         {
             this.hasDiscount = discountApplies;
             this.cardCost = cardCost;
@@ -351,6 +353,7 @@ namespace SevenWonders
 
             playerCoins = centre.coin;
             this.id = id;
+            this.isStage = isStage;
 
             //fill the PlayercommerceInfo for all 3 relevant players
             playerCommerceInfo[0] = new PlayerCommerceInfo(left);

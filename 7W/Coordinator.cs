@@ -658,33 +658,12 @@ namespace SevenWonders
             }
         }
 
-        //describe what happened at the end of the commerce
-        public void endOfCommerce(string information, Boolean isStageOfWonderCommerce)
-        {
-            if (information.StartsWith("Cancel"))
-            {
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    gameUI.discardCommerce();
-                }));
-
-            }
-            else
-            {
-                if (isStageOfWonderCommerce) sendToHost("CS" + information);
-                else sendToHost("CB" + information);
-                endTurn();
-
-            }
-
-        }
-
         public void createAndUpdateCommerce(string s)
         {
             Application.Current.Dispatcher.Invoke(new Action(delegate
             {
                 //gameUI.showCommerceUI(s);
-                CommerceUI commerce = new CommerceUI(this, s);
+                NewCommerce commerce = new NewCommerce(this, s);
 
                 commerce.ShowDialog();
             }));

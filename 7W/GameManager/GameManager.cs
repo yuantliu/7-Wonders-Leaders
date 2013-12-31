@@ -596,7 +596,7 @@ namespace SevenWonders
         }
 
         /// <summary>
-        /// Player decides to buildStructure from Commerce WIndow
+        /// Player finishes conducting commerce to pay for a card
         /// </summary>
         /// <param name="nickname"></param>
         /// <param name="commerceInformation"></param>
@@ -604,13 +604,11 @@ namespace SevenWonders
         {
             Player p = playerFromNickname(nickname);
 
-            int index = 0;
-            String idS = "";
-            while (commerceInformation[index] != '_') idS += commerceInformation[index++];
+            CommerceClientToServerResponse response = (CommerceClientToServerResponse)Marshaller.StringToObject(commerceInformation);
 
-            index++;
-            int id = int.Parse(idS);
-
+            int id = response.id;
+            int leftcoins = response.leftCoins;
+            int rightcoins = response.rightCoins;
 
             //Find the card with the id number
             Card c = null;
@@ -638,40 +636,16 @@ namespace SevenWonders
             //store the card's action
             p.storeAction(c.effect);
 
-
-            //decrease the cost of the commerce from the players coins
-            idS = "";
-            while (commerceInformation[index] != '_') idS += commerceInformation[index++];
-
-            index++;
-            int decreaseCoins = int.Parse(idS);
+            //charge the player the appropriate amount of coins
+            int commerceCost = leftcoins + rightcoins;
 
 
             //store the deduction
-            p.storeAction("$" + decreaseCoins);
+            p.storeAction("$" + commerceCost);
 
             //give the coins that neigbours earned from commerce
-            //first left neighbor
-
-            idS = "";
-            while (commerceInformation[index] != '_') idS += commerceInformation[index++];
-
-            index++;
-            int coinsForLeftNeigbour = int.Parse(idS);
-
-            //store action
-            p.leftNeighbour.storeAction("1" + coinsForLeftNeigbour + "$");
-
-
-            //for right neighbor
-            idS = "";
-            while (commerceInformation[index] != '_') idS += commerceInformation[index++];
-
-            index++;
-            int coinsForRightNeigbour = int.Parse(idS);
-
-            //storeAction
-            p.rightNeighbour.storeAction("1" + coinsForRightNeigbour + "$");
+            p.leftNeighbour.storeAction("1" + leftcoins + "$");
+            p.rightNeighbour.storeAction("1" + rightcoins + "$");
 
             //determine if the player should get 2 coins for having those leaders (get 2 coins for playing a yellow and playing a pre-req
             giveCoinFromLeadersOnBuild(p, c);
@@ -682,8 +656,48 @@ namespace SevenWonders
             {
                 if (p.hasIDPlayed(209))
                 {
-                    if (coinsForLeftNeigbour != 0) p.storeAction("11$");
-                    if (coinsForRightNeigbour != 0) p.storeAction("11$");
+                    if (leftcoins != 0) p.storeAction("11$");
+                    if (rightcoins != 0) p.storeAction("11$");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Player finishes conducting commerce to pay for a stage of wonder
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <param name="information"></param>
+        public virtual void buildStageOfWonderFromCommerce(string nickname, string information)
+        {
+            Player p = playerFromNickname(nickname);
+
+            CommerceClientToServerResponse response = (CommerceClientToServerResponse)Marshaller.StringToObject(information);
+
+            int leftcoins = response.leftCoins;
+            int rightcoins = response.rightCoins;
+            int id = response.id;
+
+            //build the stage of wonder
+            buildStageOfWonder(id, nickname);
+
+            //charge the player the appropriate amount of coins
+            int commerceCost = leftcoins + rightcoins;
+
+            //store the deduction
+            p.storeAction("$" + commerceCost);
+
+            //give the coins that neigbours earned from commerce
+            p.leftNeighbour.storeAction("1" + leftcoins + "$");
+            p.rightNeighbour.storeAction("1" + rightcoins + "$");
+
+            //Leaders: if Player has card 209 (gain 1 coin for using commerce per neighbouring player)
+            //then gain 1 coin
+            if (this is LeadersGameManager)
+            {
+                if (p.hasIDPlayed(209))
+                {
+                    if (leftcoins != 0) p.storeAction("11$");
+                    if (rightcoins != 0) p.storeAction("11$");
                 }
             }
         }
@@ -754,10 +768,10 @@ namespace SevenWonders
         }
 
         /// <summary>
-        /// build a stage of wonder, given the Player
+        /// build a stage of wonder, given the Player nickname and the id of the card to be "sacrificed"
         /// </summary>
         /// <param name="p"></param>
-        public virtual void buildStageOfWonder(int id, String nickname)
+        public virtual void buildStageOfWonder(int id, string nickname)
         {
             Player p = playerFromNickname(nickname);
 
@@ -832,100 +846,7 @@ namespace SevenWonders
             discardPile[numDiscardPile++] = c;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="nickname"></param>
-        /// <param name="information"></param>
-        public virtual void buildStageOfWonderFromCommerce(String nickname, String information)
-        {
-            Player p = playerFromNickname(nickname);
-
-            int index = 0;
-            String idS = "";
-            while (information[index] != '_') idS += information[index++];
-
-            index++;
-            int id = int.Parse(idS);
-
-            //Player has less Stage of Wonder built than the max allowed on his board
-            if (p.currentStageOfWonder < p.playerBoard.numOfStages)
-            {
-                //Find the card with the id number
-                Card c = null;
-                for (int i = 0; i < p.numOfHandCards; i++)
-                {
-                    //found the right card
-                    if (p.hand[i].id == id)
-                    {
-                        c = p.hand[i];
-
-                        //remove it from hand
-                        for (int j = i; j < p.numOfHandCards - 1; j++)
-                        {
-                            p.hand[j] = p.hand[j + 1];
-                        }
-
-                        p.numOfHandCards--;
-
-                        break;
-                    }
-                }
-
-                p.storeAction(p.playerBoard.effect[p.currentStageOfWonder++]);
-
-            }
-            else
-            {
-                //Player is attempting to build a Stage of Wonder when he has already built all of the Wonders. Something is wrong. This should never be reached.
-                throw new System.Exception();
-            }
-
-
-            //decrease the cost of the commerce from the players coins
-            idS = "";
-            while (information[index] != '_') idS += information[index++];
-
-            index++;
-            int decreaseCoins = int.Parse(idS);
-
-
-            //store the deduction
-            p.storeAction("$" + decreaseCoins);
-
-            //give the coins that neigbours earned from commerce
-            //first left neighbor
-
-            idS = "";
-            while (information[index] != '_') idS += information[index++];
-
-            index++;
-            int coinsForLeftNeigbour = int.Parse(idS);
-
-            //store action
-            p.leftNeighbour.storeAction("1" + coinsForLeftNeigbour + "$");
-
-            //for right neighbor
-            idS = "";
-            while (information[index] != '_') idS += information[index++];
-
-            index++;
-            int coinsForRightNeigbour = int.Parse(idS);
-
-            //storeAction
-            p.rightNeighbour.storeAction("1" + coinsForRightNeigbour + "$");
-
-            //Leaders: if Player has card 209 (gain 1 coin for using commerce per neighbouring player)
-            //then gain 1 coin
-            if (this is LeadersGameManager)
-            {
-                if (p.hasIDPlayed(209))
-                {
-                    if (coinsForLeftNeigbour != 0) p.storeAction("11$");
-                    if (coinsForRightNeigbour != 0) p.storeAction("11$");
-                }
-            }
-        }
+        
 
         /// <summary>
         /// Pass remaining cards to neighbour
@@ -1219,13 +1140,16 @@ namespace SevenWonders
         /// </summary>
         /// <param name="id"></param>
         /// <param name="nickname"></param>
-        public void updateCommercePanel(int id, string nickname)
+        public void updateCommercePanel(int id, string nickname, bool isStage)
         {
             Player p = playerFromNickname(nickname);
 
+            bool hasDiscount;
+
             //Find the card with the id number
             Card c = null;
-            if(id != 0){
+            if (id != 0)
+            {
                 for (int i = 0; i < p.numOfHandCards; i++)
                 {
                     //found the right card
@@ -1237,12 +1161,21 @@ namespace SevenWonders
                 }
             }
 
-            bool hasDiscount;
-
-            if ((c.colour == "Green" && p.hasIDPlayed(202)) ||
+            if (isStage == true)
+            {
+                if (p.hasIDPlayed(212) == true)
+                {
+                    hasDiscount = true;
+                }
+                else
+                {
+                    hasDiscount = false;
+                }
+            }
+            else if (
+                (c.colour == "Green" && p.hasIDPlayed(202)) ||
                (c.colour == "Blue" && p.hasIDPlayed(207)) ||
-               (c.colour == "Red" && p.hasIDPlayed(216)) ||
-               (id == 0 && p.hasIDPlayed(212)))
+               (c.colour == "Red" && p.hasIDPlayed(216)))
             {
                 hasDiscount = true;
             }
@@ -1252,7 +1185,7 @@ namespace SevenWonders
             }
 
             string cost;
-            if (id == 0)
+            if (isStage == true)
             {
                 cost = p.playerBoard.cost[p.currentStageOfWonder];
             }
@@ -1261,7 +1194,7 @@ namespace SevenWonders
                 cost = c.cost;
             }
 
-            CommerceInformation commerceInfo = new CommerceInformation(p.leftNeighbour, p, p.rightNeighbour, hasDiscount, id, cost);
+            CommerceInformation commerceInfo = new CommerceInformation(p.leftNeighbour, p, p.rightNeighbour, hasDiscount, id, cost, isStage);
 
             string commercePackageInformation = "C" + Marshaller.ObjectToString(commerceInfo);
 

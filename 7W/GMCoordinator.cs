@@ -261,14 +261,14 @@ namespace SevenWonders
                     {
                         //get the id of the card
                         int id = int.Parse(message.Substring(2));
-                        gameManager.updateCommercePanel(id, nickname);
+                        gameManager.updateCommercePanel(id, nickname, false);
                     }
 
                     //s for build Stage Of Wonder Commerce
                     else if (message[1] == 's')
                     {
-                        //id of the current stage is always 0
-                        gameManager.updateCommercePanel(0, nickname);
+                        int id = int.Parse(message.Substring(2));
+                        gameManager.updateCommercePanel(id, nickname, true);
                     }
 
                     //player built the card from commerce window
