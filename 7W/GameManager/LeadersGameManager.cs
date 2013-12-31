@@ -235,6 +235,9 @@ namespace SevenWonders
                             else if (player[i].bilkis == 7) player[i].brick--;
 
                             player[i].bilkis = 0;
+                            
+                            player[i].dag.removeTemp();
+
                             break;
                         }
                     }
@@ -428,13 +431,13 @@ namespace SevenWonders
             //charge money
             p.coin--;
             //add the appropriate resource temporarily
-            if (resource == 1) p.ore++;
-            else if (resource == 2) p.stone++;
-            else if (resource == 3) p.glass++;
-            else if (resource == 4) p.papyrus++;
-            else if (resource == 5) p.loom++;
-            else if (resource == 6) p.wood++;
-            else if (resource == 7) p.brick++;
+            if (resource == 1) { p.ore++; p.dag.addTemp('O'); }
+            else if (resource == 2) { p.stone++; p.dag.addTemp('T'); }
+            else if (resource == 3) { p.glass++; p.dag.addTemp('G'); }
+            else if (resource == 4) { p.papyrus++; p.dag.addTemp('P'); }
+            else if (resource == 5) { p.loom++; p.dag.addTemp('L'); }
+            else if (resource == 6) { p.wood++; p.dag.addTemp('W'); }
+            else if (resource == 7) { p.brick++; p.dag.addTemp('B'); }
 
             //Update the Player Bar Panel
             gmCoordinator.sendMessage(p, "B" + Marshaller.ObjectToString(new PlayerBarInformation(player)));

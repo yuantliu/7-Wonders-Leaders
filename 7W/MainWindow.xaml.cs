@@ -616,6 +616,7 @@ namespace SevenWonders
                 {
                     playedButton.IsEnabled = false;
                     playerPlayedHisTurn = true;
+                    bilkisButton.IsEnabled = false;
                     coordinator.sendToHost("B" + s.Substring(6));
                     coordinator.endTurn();
                 }
@@ -623,6 +624,7 @@ namespace SevenWonders
                 {
                     playedButton.IsEnabled = false;
                     playerPlayedHisTurn = true;
+                    bilkisButton.IsEnabled = false;
                     coordinator.sendToHost("S" + s.Substring(6));
                     coordinator.endTurn();
                 }
@@ -630,6 +632,7 @@ namespace SevenWonders
                 {
                     playedButton.IsEnabled = false;
                     playerPlayedHisTurn = true;
+                    bilkisButton.IsEnabled = false;
                     coordinator.sendToHost("D" + s.Substring(8));
                     coordinator.endTurn();
                 }
@@ -648,6 +651,7 @@ namespace SevenWonders
                 {
                     playedButton.IsEnabled = false;
                     playerPlayedHisTurn = true;
+                    bilkisButton.IsEnabled = false;
                     coordinator.sendToHost("l" + s.Substring(8));
                     coordinator.endTurn();
                 }
@@ -656,12 +660,6 @@ namespace SevenWonders
                 {
                     throw new Exception();
                 }
-            }
-
-            //disable the Bilkis button after using one of these action buttons.
-            if (bilkisButton.IsEnabled)
-            {
-                bilkisButton.IsEnabled = false;
             }
         }
 

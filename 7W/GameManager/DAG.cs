@@ -10,12 +10,55 @@ namespace SevenWonders
     {
         private List<char[]> graph = new List<char[]>();
 
+        public bool hasTemp = false;
+
+        //Bilkis: add a temporary resource
+        //This temporary resource will be wiped after every turn
+        //Whenever add() is called, we know we have reached another turn
+        public void addTemp(char temp)
+        {
+            char[] tempResource = new char[1];
+            tempResource[0] = temp;
+
+            //add a temp resource
+            if (hasTemp == false)
+            {
+                hasTemp = true;
+            }
+            //remove the existing temp resource
+            else
+            {
+                graph.RemoveAt(graph.Count - 1);
+            }
+
+            graph.Add(tempResource);
+        }
+
+        /// <summary>
+        /// Remove the temporary resource added by Bilkis if it is there
+        /// </summary>
+        public void removeTemp()
+        {
+            if (hasTemp == true)
+            {
+                hasTemp = false;
+                graph.RemoveAt(graph.Count - 1);
+            }
+        }
+
         //Add an OR resource
         public void add(string s)
         {
             char[] newInput = s.ToCharArray();
-
-            graph.Add(newInput);
+            //when there is a temp resource, insert into a non-last position so that the removal of temp resource works later
+            if (hasTemp == true)
+            {
+                graph.Insert(0, newInput);
+            }
+            else
+            {
+                graph.Add(newInput);
+            }
         }
 
         /// <summary>
