@@ -609,8 +609,6 @@ namespace SevenWonders
                 playedButton = sender as Button;
                 String s = playedButton.Name;
 
-                
-
                 //send to the server the Action selected
                 if (s.StartsWith("Build_"))
                 {
@@ -655,7 +653,6 @@ namespace SevenWonders
                     coordinator.sendToHost("l" + s.Substring(8));
                     coordinator.endTurn();
                 }
-
                 else
                 {
                     throw new Exception();
