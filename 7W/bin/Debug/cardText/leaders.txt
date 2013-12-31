@@ -1,45 +1,5 @@
 Yes this is a 7W Card File!
 -
-200
-Alexander
-0
-3
-$$$
-!
-White
-6_200
-NOT USED
--
-201
-Amyitis
-0
-3
-$$$$
-!
-White
-5_C_S02
-NOT USED
--
-202
-Archimedes
-0
-3
-$$$$
-!
-White
-@(pay one less resource when purchasing green/science cards)
-NOT USED
--
-203
-Aristoteles
-0
-3
-$$$
-!
-White
-6_203
-NOT USED
--
 204
 Bilkis
 0
@@ -48,46 +8,6 @@ $$$$
 !
 White
 8Bilkis
-NOT USED
--
-205
-Caesar
-0
-3
-$$$$$
-!
-White
-12S
-NOT USED
--
-206
-Euklid
-0
-3
-$$$$$
-!
-White
-2S
-NOT USED
--
-207
-Hammurabi
-0
-3
-$$
-!
-White
-@(pay one less resource when purchasing blue/victory cards)
-NOT USED
--
-208
-Hannibal
-0
-3
-$$
-!
-White
-11S
 NOT USED
 -
 209
@@ -100,125 +20,15 @@ White
 @(don't know yet)
 NOT USED
 -
-210
-Hiram
+231
+Stevie
 0
 3
-$$$
+
 !
 White
-5_C_P02
-NOT USED
--
-211
-Hypatia
-0
-3
-$$$$
-!
-White
-5_C_N01
-NOT USED
--
-212
-Imhotep
-0
-3
-$$$
-!
-White
-@(pay one less when paying for stages)
+@Pay X coins for board, where X is board cost
 Not Used
--
-213
-Justinian
-0
-3
-$$$
-!
-White
-6_213
-Not used
--
-214
-Kleopatra
-0
-3
-$$$$
-!
-White
-15V
-Not used
--
-215
-Kroesus
-0
-3
-$
-!
-White
-16$
-Not used
--
-216
-Leonidas
-0
-3
-$$
-!
-White
-@(discount on red cards)
-Not used
--
-217
-Maecenas
-0
-3
-$
-!
-White
-@(free Leader cards)
-Not used
--
-218
-Midas
-0
-3
-$
-!
-White
-6_218
-Not used
--
-219
-Nebukadnezar
-0
-3
-$$$$
-!
-White
-5_C_b01
-Not used
--
-220
-Nero
-0
-3
-$
-!
-White
-@(Give 2 coins for each victory banner from hence forth).
-Not Used
--
-221
-Nofretete
-0
-3
-$$$
-!
-White
-14V
-Not used
 -
 222
 Perikles
@@ -260,16 +70,6 @@ White
 5_C_G02
 Not used
 -
-226
-Ptolemaeus
-0
-3
-$$$$$
-!
-White
-2T
-Not used
--
 227
 Pythagoras
 0
@@ -278,16 +78,6 @@ $$$$$
 !
 White
 2B
-Not used
--
-228
-Ramses
-0
-3
-$$$$$
-!
-White
-@(Free purple cards)
 Not used
 -
 229
@@ -299,26 +89,6 @@ $$$
 White
 SALOMON
 Not used
--
-230
-Sappho
-0
-3
-$
-!
-White
-12V
-Not used
--
-231
-Stevie
-0
-3
-
-!
-White
-@Pay X coins for board, where X is board cost
-Not Used
 -
 232
 Tomyris

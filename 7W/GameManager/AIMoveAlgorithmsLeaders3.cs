@@ -12,7 +12,7 @@ namespace SevenWonders
     /// </summary>
     public class AIMoveAlgorithmLeaders3 : LeadersAIMoveBehaviour
     {
-        int[] favouredLeaders = { 216, 220, 222, 232, 200, 208, 205 };
+        int[] favouredLeaders = { 216, 220, 222, 232, 200, 208, 205, 221, 214, 236, 213 };
 
         public void makeMove(Player p, LeadersGameManager gm)
         {
@@ -69,6 +69,47 @@ namespace SevenWonders
                 //no favoured card found
                 //discard a random card then
                 gm.discardCardForThreeCoins(p.hand[0].id, p.nickname);
+            }
+            //The normal phases
+            //prioritise Red cards IF falling behind on shields. Always try to keep at least a 2 shield lead on neighbours.
+            //if no red cards available, then try to build blue or green cards. If not, then any available card not in blacklist
+            else
+            {
+                if ((p.shield < p.leftNeighbour.shield + 2) || (p.shield < p.rightNeighbour.shield + 2))
+                {
+                    //Search for and build Red cards if able
+                    for (int i = 0; i < p.numOfHandCards; i++)
+                    {
+                        if (p.hand[i].colour == "Red" && p.isCardBuildable(p.hand[i]) == 'T')
+                        {
+                            gm.buildStructureFromHand(p.hand[i].id, p.nickname);
+                            return;
+                        }
+                    }
+                }
+                //look for either blue or green cards then
+                for (int i = 0; i < p.numOfHandCards; i++)
+                {
+                    if ((p.hand[i].colour == "Blue" || p.hand[i].colour == "Green") && p.isCardBuildable(p.hand[i]) == 'T')
+                    {
+                        gm.buildStructureFromHand(p.hand[i].id, p.nickname);
+                        return;
+                    }
+                }
+                //No suitable red card found
+                //try to stockpile some resources then
+                //Look for brown/grey cards
+                for (int i = 0; i < p.numOfHandCards; i++)
+                {
+                    if ((p.hand[i].colour == "Brown" || p.hand[i].colour == "Grey") && p.isCardBuildable(p.hand[i]) == 'T')
+                    {
+                        gm.buildStructureFromHand(p.hand[i].id, p.nickname);
+                        return;
+                    }
+                }
+                //All options exhausted. Discard card for some money
+                gm.discardCardForThreeCoins(p.hand[0].id, p.nickname);
+
             }
         }
 

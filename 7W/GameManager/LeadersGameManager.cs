@@ -624,7 +624,7 @@ namespace SevenWonders
             p.addHand(c);
 
             //since this card is free, reimburse the coin amount first
-            p.storeAction("1" + c.cost + "$");
+            p.storeAction("1" + c.cost.Length + "$");
 
             //play this card
             buildStructureFromHand(c.id, nickname);
@@ -650,6 +650,9 @@ namespace SevenWonders
                     break;
                 case '2':
                     thisAI.LeadersAIBehaviour = new AIMoveAlgorithmLeaders2();
+                    break;
+                case '3':
+                    thisAI.LeadersAIBehaviour = new AIMoveAlgorithmLeaders3();
                     break;
             }
 
