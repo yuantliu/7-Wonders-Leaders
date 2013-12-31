@@ -3,4 +3,15 @@ Yuan Liu
 Carleton University
 
 This is my honours project. It is the continuation of the 7 Wonders project made in Comp 3007.
-My supervisor is JP Corriveau
+My supervisor is JP Corriveau.
+
+This project's aim is to use the existing codebase ("legacy code") for a 7 Wonders application and expand it to support the 7 Wonders Leaders expansion features.
+
+This project has successfully implemented major features of the new expansion, including all new cards, Leaders and Recruitment phase, and both sides of the new Rome board, as well as a suite of expansion compatible AIs, of which each utilize different strategies.
+
+Although major gameplay features have been implemented, many other improvements are possible with this application, including:
+
+- making the UI scale (UI elements are currently fixed)
+- fixing non-game UI elements, such as making the player/AI list in the TableUI work (currently not being used)
+- support restarting a game during or after a played game without having to restart the entire application
+- fixing stability issues
