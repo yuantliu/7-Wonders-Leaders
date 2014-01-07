@@ -700,6 +700,15 @@ namespace SevenWonders
                         points += (7 - (conflictTokenOne + conflictTokenTwo + conflictTokenThree));
                     }
                 }
+                //category 7: end of game board powers
+                else if (endOfGameActions[i][0] == '7')
+                {
+                    //copy best neighbouring purple card
+                    if (endOfGameActions[i] == "7OB")
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
 
                 victoryPoint += points;
             }
