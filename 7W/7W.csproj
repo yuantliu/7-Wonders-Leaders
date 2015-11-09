@@ -84,7 +84,7 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>50F4B4B859CF2D66B1B60B604D0D67EC05D6C31B</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>DB8D3DD681BEC1B05D8E4CFC22ECDCEF61AEB57A</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>7W_TemporaryKey.pfx</ManifestKeyFile>
