@@ -1,1 +1,5 @@
 **/obj/**
+**/*.manifest
+**/*.exe
+**/*.pdb
+**/*.application
