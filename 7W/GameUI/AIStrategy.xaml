@@ -3,7 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="AIStrategy" Height="146" Width="307" WindowStartupLocation="CenterScreen">
     <Grid Height="107" Width="288">
-        <ComboBox Height="23" HorizontalAlignment="Left" Margin="28,24,0,0" Name="strategyBox" VerticalAlignment="Top" Width="211" SelectionChanged="strategyBox_SelectionChanged">
+        <ComboBox Height="23" HorizontalAlignment="Left" Margin="28,24,0,0" Name="strategyBox" VerticalAlignment="Top" Width="211" SelectionChanged="strategyBox_SelectionChanged" SelectedIndex="0" IsReadOnly="True">
+            <ComboBoxItem Content="Discard Random Card"/>
+            <ComboBoxItem Content="Build anything that's buildable"/>
+            <ComboBoxItem Content="Prefer Victory Points"/>
+            <ComboBoxItem Content="Prefer Military"/>
+            <ComboBoxItem Content="Difficult"/>
         </ComboBox>
         <Button Content="Choose Strategy" Height="23" HorizontalAlignment="Left" Margin="28,65,0,0" Name="button1" VerticalAlignment="Top" Width="211" Click="button1_Click" />
     </Grid>

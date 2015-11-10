@@ -1,7 +1,7 @@
 
 Added by James Fairweather
 The UI is missing a bunch of information:
-- The resource/material that the city board produces is not depicted (need to rescan them)
+- The resource/material that the city board produces is not depicted (the boards can be rescanned)
 - The overall game state is less than clear - what cards the player has played, and what cards the other players have played, military victories and losses
 - The last card played by each player isn't obvious
 - The list of players (the datagrid) isn't hooked up at the match-making.
