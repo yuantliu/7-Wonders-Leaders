@@ -95,7 +95,7 @@ namespace SevenWonders
         /// <param name="e"></param>
         public void dataGrid1_SourceUpdated(object sender, DataTransferEventArgs e)
         {
-            //dataGrid1.ItemsSource = Server.clients;
+            // dataGrid1.ItemsSource = "User1";// Server.htUsers;
         }
 
         /// <summary>

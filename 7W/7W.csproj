@@ -138,7 +138,9 @@
       <DependentUpon>AIStrategy.xaml</DependentUpon>
     </Compile>
     <Compile Include="GameManager\Card.cs" />
-    <Compile Include="Connection.cs" />
+    <Compile Include="..\7WServer\Connection.cs">
+      <Link>Connection.cs</Link>
+    </Compile>
     <Compile Include="GameManager\Board.cs" />
     <Compile Include="GameManager\GameManager.cs" />
     <Compile Include="GameManager\Player.cs" />
@@ -171,11 +173,15 @@
     <Compile Include="GameUI\ViewDetails.xaml.cs">
       <DependentUpon>ViewDetails.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GMCoordinator.cs" />
+    <Compile Include="GMCoordinator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Serializer.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Client.cs" />
-    <Compile Include="StatusChangedEventArgs.cs" />
+    <Compile Include="..\7WServer\StatusChangedEventArgs.cs">
+      <Link>StatusChangedEventArgs.cs</Link>
+    </Compile>
     <Compile Include="GameUI\TableUI.xaml.cs">
       <DependentUpon>TableUI.xaml</DependentUpon>
     </Compile>

@@ -35,7 +35,7 @@ namespace SevenWonders
         {
             //create server
             host = new Server();
-            // host.StartServer();
+            host.StartServer();
             host.StatusChanged += new StatusChangedEventHandler(receiveMessage);
 
             //keep track of information at table UI
@@ -82,6 +82,8 @@ namespace SevenWonders
 
                 //This is the string received from Server
                 String message = e.message;
+
+                Console.WriteLine("In receiveMessage.  Nickname: {0}, Message={1}", nickname, message);
 
                 //#: Chat string.
                 if (message[0] == '#')

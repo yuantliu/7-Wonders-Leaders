@@ -53,7 +53,7 @@ namespace SevenWonders
                 swSender = new StreamWriter(tcpUser.GetStream());
                 srReceiver = new StreamReader(tcpUser.GetStream());
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("Client.InitializeConnection: could not connect to the server at the IP address");
                 return;
@@ -112,7 +112,7 @@ namespace SevenWonders
                         break;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Connected = false;
                 }

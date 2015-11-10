@@ -87,7 +87,7 @@ namespace SevenWonders
         {
             if (isServer() == true)
             {
-                gmCoordinator.host.stopListening();
+                // gmCoordinator.host.stopListening();
             }
         }
         
@@ -359,7 +359,8 @@ namespace SevenWonders
         public void createGame()
         {
             //create a GM Coordinator
-            gmCoordinator = new GMCoordinator();
+            // JDF - this shouldn't be needed any more, the GMCoordinator has moved to a separate process.
+            // gmCoordinator = new GMCoordinator();
 
             hasGame = true;
 
@@ -425,6 +426,7 @@ namespace SevenWonders
 
         private IPAddress myIPAddress()
         {
+            /*
             IPAddress localIP = null;
             IPHostEntry host;
 
@@ -439,6 +441,9 @@ namespace SevenWonders
             }
 
             return localIP;
+             */
+
+            return IPAddress.Loopback;
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////

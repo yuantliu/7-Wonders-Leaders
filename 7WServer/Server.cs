@@ -7,7 +7,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.IO;
-using System.Windows.Controls;
 
 namespace SevenWonders
 {
@@ -17,21 +16,34 @@ namespace SevenWonders
         // This hash table stores users and connections (browsable by user)
         public Hashtable htUsers = new Hashtable(7);
 
+        public Dictionary<string, TcpClient> userMap = new Dictionary<string, TcpClient>(7);
+
         // This hash table stores connections and users (browsable by connection)
         public Hashtable htConnections = new Hashtable(7);
 
         // Will store the IP address passed to it
         private IPAddress ipAddress;
 
+        private TcpClient tcpClient;
+
         private int numberOFAI;
+
+        // The thread that will hold the connection listener
+        private Thread thrListener;
+
+        // The TCP object that listens for connections
+        private TcpListener tcpListener;
 
         private StreamWriter swSender { get; set; }
         private StreamReader swReader { get; set; }
 
         // The event and its argument will notify the form when a user has connected, disconnected, send message, etc.
-       
+
         public event StatusChangedEventHandler StatusChanged;
         public StatusChangedEventArgs e;
+
+        // Will tell the while loop to keep monitoring for connections
+        bool serverRunning = false;
 
         public bool acceptClient { get; set; }
 
@@ -43,17 +55,78 @@ namespace SevenWonders
             ipAddress = localIP();
         }
 
-        public void updateAIPlayer(bool shouldAdd) 
+        public void updateAIPlayer(bool shouldAdd)
         {
             if (shouldAdd) numberOFAI++;
             else numberOFAI--;
         }
 
+        /// <summary>
+        /// Start the server. This is called by the GMCoordinator
+        /// </summary>
+        public void StartServer()
+        {
+            // The while loop will check for true in this before checking for connections
+            serverRunning = true;
+
+            // Start the new tread that hosts the listener
+            thrListener = new Thread(keepListeningForNewRequests);
+            thrListener.Start();
+        }
+
+        /// <summary>
+        /// Have the server keep listening for request. Create a new Connection everytime it receives a TcpClient
+        /// </summary>
+        private void keepListeningForNewRequests()
+        {
+            // Create the TCP listener object using the IP of the server and the specified port
+            tcpListener = new TcpListener(ipAddress, 1989);
+
+            // Start the TCP listener and listen for connections
+            tcpListener.Start();
+
+            Console.WriteLine("Seven Wonders server ready.  Waiting for a client...");
+
+            try
+            {
+                // While the server is running
+                while (serverRunning == true)
+                {
+                    // Accept a pending connection
+                    tcpClient = tcpListener.AcceptTcpClient();
+
+
+                    //make the connection
+                    Connection newConnection = new Connection(tcpClient, numberOFAI, this);
+                }
+            }
+            /*
+            catch (SocketException e)
+            {
+
+            }
+            */
+            finally
+            {
+                tcpListener.Stop();
+            }
+        }
+
+        /// <summary>
+        /// Stop the server from listening
+        /// </summary>
+        public void stopListening()
+        {
+            serverRunning = false;
+            tcpListener.Stop();
+            thrListener.Abort();
+        }
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-    //Utility functions
+        //Utility functions
 
         // Add the user to the hash tables
-        public  void AddUser(TcpClient tcpUser, string strUsername)
+        public void AddUser(TcpClient tcpUser, string strUsername)
         {
             // add the username and associated connection to both hash tables
             htUsers.Add(strUsername, tcpUser);
@@ -88,12 +161,11 @@ namespace SevenWonders
                 if (ip.AddressFamily == AddressFamily.InterNetwork) localIP = ip;
 
             return localIP;
-             */
-
+            */
             return IPAddress.Loopback;
         }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>
         /// Receive a message from a User. Take the message and give it to GMCoordinator
@@ -127,10 +199,14 @@ namespace SevenWonders
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="Message"></param>
-        public  void sendMessageToUser(String userName, String Message)
+        public void sendMessageToUser(String userName, String Message)
         {
             StreamWriter sw;
             TcpClient a;
+
+            // Uh, why isn't this a Dictionary?
+
+            Console.WriteLine("Sending message to user {0}: {1}", userName, Message);
 
             foreach (DictionaryEntry de in htUsers)
             {
@@ -141,7 +217,7 @@ namespace SevenWonders
                     sw.WriteLine(Message); //write the message to the client
                     sw.Flush();
                     sw = null;
-                    
+
                     return;
                 }
             }
@@ -151,6 +227,8 @@ namespace SevenWonders
         {
             StreamWriter sw;
             TcpClient a;
+
+            Console.WriteLine("Sending message to all Users: {0}", Message);
 
             foreach (DictionaryEntry de in htUsers)
             {
@@ -171,7 +249,7 @@ namespace SevenWonders
 
             foreach (DictionaryEntry de in htUsers)
             {
-            
+
                 temp = (TcpClient)de.Value;
                 tempName = (String)de.Key;
 
