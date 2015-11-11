@@ -183,6 +183,7 @@ namespace SevenWonders
         /// <returns></returns>
         private String local()
         {
+            /*
             String localIP = "";
             IPHostEntry host;
 
@@ -196,6 +197,9 @@ namespace SevenWonders
                 }
             }
             return localIP;
+            */
+
+            return IPAddress.Loopback.ToString();
         }
     }
 }

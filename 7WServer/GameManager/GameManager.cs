@@ -474,6 +474,13 @@ namespace SevenWonders
 
             board.RemoveAt(index);
 
+            // Remove the other side (i.e. if we returned the Babylon A, remove Babylon B from
+            // the board list.
+            if ((index & 1) != 0)
+                board.RemoveAt(index - 1);
+            else
+                board.RemoveAt(index + 1);
+
             return randomBoard;
         }
 

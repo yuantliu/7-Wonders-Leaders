@@ -126,6 +126,8 @@ namespace SevenWonders
                             //Do not accept any more players
                             host.acceptClient = false;
 
+                            Console.WriteLine("All players have hit Ready.  Game is starting now with {0} AI players", numOfAI);
+
                             if (currentMode == GameMode.Leaders)
                             {
                                 //tell the GameManager to start on the beginning of session operations
