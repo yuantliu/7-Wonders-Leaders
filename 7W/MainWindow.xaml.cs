@@ -315,7 +315,7 @@ namespace SevenWonders
                 conflictTokensCountIcon[i] = new Image();
                 BitmapImage conflictTokensCountSource = new BitmapImage();
                 conflictTokensCountSource.BeginInit();
-                conflictTokensCountSource.UriSource = new Uri(currentPath + @"\Images\fight2.png");
+                conflictTokensCountSource.UriSource = new Uri(currentPath + @"\Resources\Images\fight2.png");
                 conflictTokensCountSource.EndInit();
                 conflictTokensCountIcon[i].Source = conflictTokensCountSource;
                 conflictTokensCountIcon[i].Width = ICON_WIDTH;
@@ -325,7 +325,7 @@ namespace SevenWonders
                 lossIcon[i] = new Image();
                 BitmapImage lossIconImageSource = new BitmapImage();
                 lossIconImageSource.BeginInit();
-                lossIconImageSource.UriSource = new Uri(currentPath + @"\Images\fight0.png");
+                lossIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\fight0.png");
                 lossIconImageSource.EndInit();
                 lossIcon[i].Source = lossIconImageSource;
                 lossIcon[i].Width = ICON_WIDTH;
