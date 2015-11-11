@@ -1,7 +1,7 @@
 ﻿<Window x:Class="SevenWonders.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="7 Wonders" Height="789" Width="1055" WindowStartupLocation="CenterScreen" Closing="Window_Closing" Icon="/7W;component/bin/Debug/Images/stage.png">
+        Title="7 Wonders" Height="789" Width="1055" WindowStartupLocation="CenterScreen" Closing="Window_Closing" Icon="Resources/Images/stage.png">
     <Grid Height="776" Width="1031" Name="mainGrid" Visibility="Visible">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="792*" />
@@ -27,35 +27,35 @@
             
             <Label Content="Played Cards" Height="25" Name="playedCardsLabel" Width="198" />
             <StackPanel Height="20" Name="stackPanel2" Width="200" Orientation="Horizontal">
-                <Image Height="20" Name="image1" Stretch="Fill" Width="20" Source="/7W;component/bin/Debug/Images/blue.png" />
+                <Image Height="20" Name="image1" Stretch="Fill" Width="20" Source="Resources/Images/blue.png" />
                 <ComboBox Height="20" Name="bluePlayedCards" Width="179" SelectionChanged="playedCards_SelectionChanged" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel3" Orientation="Horizontal" Width="200">
-                <Image Height="20" Name="image2" Stretch="Fill" Width="20" Source="/7W;component/bin/Debug/Images/brown.png" />
+                <Image Height="20" Name="image2" Stretch="Fill" Width="20" Source="Resources/Images/brown.png" />
                 <ComboBox Height="20" Name="brownPlayedCards" Width="179" SelectionChanged="playedCards_SelectionChanged" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel4" Orientation="Horizontal" Width="200">
-                <Image Height="20" Name="image3" Stretch="Fill" Width="20" Source="/7W;component/bin/Debug/Images/green.png" />
+                <Image Height="20" Name="image3" Stretch="Fill" Width="20" Source="Resources/Images/green.png" />
                 <ComboBox Height="20" Name="greenPlayedCards" Width="178" SelectionChanged="playedCards_SelectionChanged" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel5" Orientation="Horizontal" Width="200">
-                <Image Height="20" Name="image4" Stretch="Fill" Width="20" Source="/7W;component/bin/Debug/Images/grey.png" />
+                <Image Height="20" Name="image4" Stretch="Fill" Width="20" Source="Resources/Images/grey.png" />
                 <ComboBox Height="20" Name="greyPlayedCards" Width="178" SelectionChanged="playedCards_SelectionChanged" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel6" Orientation="Horizontal" Width="200">
-                <Image Height="20" Name="image5" Stretch="Fill" Width="20" Source="/7W;component/bin/Debug/Images/purple.png" />
+                <Image Height="20" Name="image5" Stretch="Fill" Width="20" Source="Resources/Images/purple.png" />
                 <ComboBox Height="20" Name="purplePlayedCards" Width="178" SelectionChanged="playedCards_SelectionChanged" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel7" Orientation="Horizontal" Width="200">
-                <Image Height="20" Name="image6" Stretch="Fill" Width="20" Source="/7W;component/bin/Debug/Images/red.png" />
+                <Image Height="20" Name="image6" Stretch="Fill" Width="20" Source="Resources/Images/red.png" />
                 <ComboBox Height="20" Name="redPlayedCards" SelectionChanged="playedCards_SelectionChanged" Width="178" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel8" Orientation="Horizontal" Width="200">
-                <Image Height="20" Name="image7" Stretch="Fill" Width="20" Source="/7W;component/bin/Debug/Images/yellow.png" />
+                <Image Height="20" Name="image7" Stretch="Fill" Width="20" Source="Resources/Images/yellow.png" />
                 <ComboBox Height="20" Name="yellowPlayedCards" SelectionChanged="playedCards_SelectionChanged" Width="177" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel9" Orientation="Horizontal" Width="200">
-                <Image Height="20" Name="image9" Stretch="Fill" Width="20" Source="/7W;component/bin/Debug/Images/leader.png" />
+                <Image Height="20" Name="image9" Stretch="Fill" Width="20" Source="Resources/Images/leader.png" />
                 <ComboBox Height="20" Name="whitePlayedCards" SelectionChanged="playedCards_SelectionChanged" Width="177" />
             </StackPanel>
         </StackPanel>
@@ -74,24 +74,24 @@
         
         <Button Height="23" HorizontalAlignment="Left" Margin="539,414,0,0" Name="olympiaButton" VerticalAlignment="Top" Width="23" Click="olympiaButton_Click" Visibility="Hidden" IsEnabled="False">
             <Button.Background>
-                <ImageBrush ImageSource="/7W;component/bin/Debug/Images/olympiapowerbutton.png" />
+                <ImageBrush ImageSource="Resources/Images/olympiapowerbutton.png" />
             </Button.Background>
         </Button>
         <Button Margin="568,414,201,339" Name="bilkisButton" Click="bilkisButton_Click" Visibility="Hidden" IsEnabled="False">
                 <Button.Background>
-                    <ImageBrush ImageSource="/7W;component/bin/Debug/Images/bilkispowerbutton.png" />
+                    <ImageBrush ImageSource="Resources/Images/bilkispowerbutton.png" />
                 </Button.Background>
         </Button>
         <Button Height="23" Name="estebanButton" Click="estebanButton_Click" Margin="597,414,172,339" Visibility="Hidden" IsEnabled="False">
                 <Button.Background>
-                    <ImageBrush ImageSource="/7W;component/bin/Debug/Images/estebanpowerbutton.png" />
+                    <ImageBrush ImageSource="Resources/Images/estebanpowerbutton.png" />
                 </Button.Background>
         </Button>
         
         <Canvas Height="351" HorizontalAlignment="Left" Margin="487,300,0,0" Name="canvas1" VerticalAlignment="Top" Width="256">
-            <Image Canvas.Left="22" Canvas.Top="126" Height="74" Name="joinGameIcon" Stretch="Fill" Width="184" MouseLeftButtonDown="joinGameIcon_MouseLeftButtonDown" Source="/7W;component/bin/Debug/Images/joinGame.png" />
-            <Image Height="78" Name="image8" Stretch="Fill" Width="205" Source="/7W;component/bin/Debug/Images/newGame.png" MouseLeftButtonDown="image8_MouseLeftButtonDown" Canvas.Left="6" Canvas.Top="42" />
-            <Image Height="65" Name="quitIcon" Stretch="Fill" Width="115" Canvas.Left="52" Canvas.Top="217" MouseLeftButtonDown="quitIcon_MouseLeftButtonDown" Source="/7W;component/bin/Debug/Images/quit.png" />
+            <Image Canvas.Left="22" Canvas.Top="126" Height="74" Name="joinGameIcon" Stretch="Fill" Width="184" MouseLeftButtonDown="joinGameIcon_MouseLeftButtonDown" Source="Resources/Images/joinGame.png" />
+            <Image Height="78" Name="image8" Stretch="Fill" Width="205" Source="Resources/Images/newGame.png" MouseLeftButtonDown="image8_MouseLeftButtonDown" Canvas.Left="6" Canvas.Top="42" />
+            <Image Height="65" Name="quitIcon" Stretch="Fill" Width="115" Canvas.Left="52" Canvas.Top="217" MouseLeftButtonDown="quitIcon_MouseLeftButtonDown" Source="Resources/Images/quit.png" />
             
         </Canvas>
         <Button Height="30" HorizontalAlignment="Left" Margin="774,414,0,0" Name="helpButton" VerticalAlignment="Top" Width="29" Grid.ColumnSpan="2" Visibility="Hidden" Click="helpButton_Click">
@@ -101,7 +101,7 @@
         </Button>
 
         <Grid.Background>
-            <ImageBrush ImageSource="/7W;component/bin/Debug/Images/indexbg4x3.jpg" />
+            <ImageBrush ImageSource="Resources/Images/indexbg4x3.jpg" />
         </Grid.Background>
     </Grid>
 </Window>
