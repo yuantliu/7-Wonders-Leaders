@@ -74,7 +74,7 @@ namespace SevenWonders
             ComboBoxItem caaa = ca.SelectedItem as ComboBoxItem;
 
             //show the image on the UI
-            showCardImage(currentPath + "\\Images\\cards\\" + caaa.Tag + ".jpg");
+            showCardImage(currentPath + @"\Resources\Images\cards\" + caaa.Tag + ".jpg");
 
             //set the selected ID
             selectedCard = int.Parse(caaa.Tag + "");

@@ -1,5 +1,3 @@
-7W/obj/**
-**/*.manifest
-**/*.exe
-**/*.pdb
-**/*.application
+**/obj/**
+**/bin/**
+**/*.suo

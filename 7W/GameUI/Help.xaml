@@ -4,7 +4,7 @@
         Title="Help" Height="842" Width="1189">
     <Grid>
         <Image Height="746" HorizontalAlignment="Left" Name="slideShowImage" Stretch="Fill" VerticalAlignment="Top" Width="1167" Margin="19,2,0,0" />
-        <Image Height="37" HorizontalAlignment="Left" Margin="529,754,0,0" Name="Previous" Stretch="Fill" VerticalAlignment="Top" Width="35" Source="/7W;component/bin/Debug/Images/HelpSlides/left.jpg" MouseLeftButtonDown="Previous_MouseLeftButtonDown" />
-        <Image Height="37" HorizontalAlignment="Right" Margin="0,754,562,0" Name="Next" Stretch="Fill" VerticalAlignment="Top" Width="35" Source="/7W;component/bin/Debug/Images/HelpSlides/next.png" MouseLeftButtonDown="Next_MouseLeftButtonDown"  />
+        <Image Height="37" HorizontalAlignment="Left" Margin="529,754,0,0" Name="Previous" Stretch="Fill" VerticalAlignment="Top" Width="35" Source="../Resources/Images/HelpSlides/left.jpg" MouseLeftButtonDown="Previous_MouseLeftButtonDown" />
+        <Image Height="37" HorizontalAlignment="Right" Margin="0,754,562,0" Name="Next" Stretch="Fill" VerticalAlignment="Top" Width="35" Source="../Resources/Images/HelpSlides/next.png" MouseLeftButtonDown="Next_MouseLeftButtonDown"  />
     </Grid>
 </Window>

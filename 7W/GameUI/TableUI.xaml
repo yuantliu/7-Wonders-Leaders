@@ -4,7 +4,7 @@
         Title="Table Manager" Height="300" Width="511" WindowStartupLocation="CenterScreen" Closed="Window_Closed" Background="White">
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="/7W;component/bin/Debug/Images/background.jpg" />
+            <ImageBrush ImageSource="../Resources/Images/background.jpg" />
         </Grid.Background>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="446*" />
@@ -15,7 +15,6 @@
         <DataGrid Height="203" HorizontalAlignment="Left" Margin="12,46,0,0" Name="playerList" VerticalAlignment="Top" Width="214" AutoGenerateColumns="True" SourceUpdated="dataGrid1_SourceUpdated" />
         <Button Content="Add AI" Height="23" HorizontalAlignment="Left" Margin="234,46,0,0" Name="addAIButton" VerticalAlignment="Top" Width="75" Click="addAIButton_Click" />
         <Button Content="Remove AI" Height="23" HorizontalAlignment="Left" Margin="234,80,0,0" Name="removeAIButton" VerticalAlignment="Top" Width="75" Click="removeAIButton_Click" />
-        <Button Content="Disband" Height="23" HorizontalAlignment="Left" Margin="234,197,0,0" Name="disbandButton" VerticalAlignment="Top" Width="75" />
         <Button Content="Ready" Height="23" HorizontalAlignment="Left" Margin="234,226,0,0" Name="readyButton" VerticalAlignment="Top" Width="75" Click="readyButton_Click" />
         <Grid Height="243" HorizontalAlignment="Left" Margin="319,18,0,0" Name="grid1" VerticalAlignment="Top" Width="158" Grid.ColumnSpan="2">
             <ScrollViewer Name="scroll"  Margin="0,0,0,35" Background="#FFFFFFFC">

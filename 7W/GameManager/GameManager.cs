@@ -427,7 +427,7 @@ namespace SevenWonders
             //open the board text file
             try
             {
-                System.IO.StreamReader file = new System.IO.StreamReader(currentPath + "\\boardText\\" + filename);
+                System.IO.StreamReader file = new System.IO.StreamReader(currentPath + @"\Resources\boardText\" + filename);
 
                 if (file.ReadLine() != "This is The Board Script file!")
                 {

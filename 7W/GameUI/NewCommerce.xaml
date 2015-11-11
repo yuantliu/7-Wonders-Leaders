@@ -4,7 +4,7 @@
         Title="Commerce" Height="620" Width="599">
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="/7W;component/bin/Debug/Images/background.jpg" />
+            <ImageBrush ImageSource="../Resources/Images/background.jpg" />
         </Grid.Background>
         <Label Content="Remaining Cost:" Height="34" HorizontalAlignment="Left" Margin="12,12,0,0" Name="label1" VerticalAlignment="Top" Width="98" />
         <StackPanel Height="24" HorizontalAlignment="Left" Margin="116,12,0,0" Name="costPanel" VerticalAlignment="Top" Width="276" Orientation="Horizontal" />

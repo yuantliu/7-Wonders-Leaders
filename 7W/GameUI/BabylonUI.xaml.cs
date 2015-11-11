@@ -47,7 +47,7 @@ namespace SevenWonders
 
             BitmapImage cardImageSource = new BitmapImage();
             cardImageSource.BeginInit();
-            cardImageSource.UriSource = new Uri(currentPath + "\\Images\\cards\\" + id + ".jpg");
+            cardImageSource.UriSource = new Uri(currentPath + @"\Resources\cards\" + id + ".jpg");
             cardImageSource.EndInit();
             image1.Source = cardImageSource;
 			

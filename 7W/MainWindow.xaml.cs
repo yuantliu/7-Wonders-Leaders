@@ -165,7 +165,7 @@ namespace SevenWonders
                 viewDetails[i] = new Button();
                 BitmapImage viewDetailsImageSource = new BitmapImage();
                 viewDetailsImageSource.BeginInit();
-                viewDetailsImageSource.UriSource = new Uri(currentPath + "\\Images\\details.png");
+                viewDetailsImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\details.png");
                 viewDetailsImageSource.EndInit();
                 viewDetails[i].Background = new ImageBrush(viewDetailsImageSource);
                 viewDetails[i].Width = ICON_WIDTH;
@@ -177,7 +177,7 @@ namespace SevenWonders
                 brickIcon[i] = new Image();
                 BitmapImage brickIconImageSource = new BitmapImage();
                 brickIconImageSource.BeginInit();
-                brickIconImageSource.UriSource = new Uri(currentPath + "\\Images\\brick.png");
+                brickIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\brick.png");
                 brickIconImageSource.EndInit();
                 brickIcon[i].Source = brickIconImageSource;
                 brickIcon[i].Width = ICON_WIDTH;
@@ -187,7 +187,7 @@ namespace SevenWonders
                 oreIcon[i] = new Image();
                 BitmapImage oreIconImageSource = new BitmapImage();
                 oreIconImageSource.BeginInit();
-                oreIconImageSource.UriSource = new Uri(currentPath + "\\Images\\ore.png");
+                oreIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\ore.png");
                 oreIconImageSource.EndInit();
                 oreIcon[i].Source = oreIconImageSource;
                 oreIcon[i].Width = ICON_WIDTH;
@@ -197,7 +197,7 @@ namespace SevenWonders
                 stoneIcon[i] = new Image();
                 BitmapImage stoneIconImageSource = new BitmapImage();
                 stoneIconImageSource.BeginInit();
-                stoneIconImageSource.UriSource = new Uri(currentPath + "\\Images\\stone.png");
+                stoneIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\stone.png");
                 stoneIconImageSource.EndInit();
                 stoneIcon[i].Source = stoneIconImageSource;
                 stoneIcon[i].Width = ICON_WIDTH;
@@ -207,7 +207,7 @@ namespace SevenWonders
                 woodIcon[i] = new Image();
                 BitmapImage woodIconImageSource = new BitmapImage();
                 woodIconImageSource.BeginInit();
-                woodIconImageSource.UriSource = new Uri(currentPath + "\\Images\\wood.png");
+                woodIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\wood.png");
                 woodIconImageSource.EndInit();
                 woodIcon[i].Source = woodIconImageSource;
                 woodIcon[i].Width = ICON_WIDTH;
@@ -217,7 +217,7 @@ namespace SevenWonders
                 glassIcon[i] = new Image();
                 BitmapImage glassIconImageSource = new BitmapImage();
                 glassIconImageSource.BeginInit();
-                glassIconImageSource.UriSource = new Uri(currentPath + "\\Images\\glass.png");
+                glassIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\glass.png");
                 glassIconImageSource.EndInit();
                 glassIcon[i].Source = glassIconImageSource;
                 glassIcon[i].Width = ICON_WIDTH;
@@ -227,7 +227,7 @@ namespace SevenWonders
                 loomIcon[i] = new Image();
                 BitmapImage loomIconImageSource = new BitmapImage();
                 loomIconImageSource.BeginInit();
-                loomIconImageSource.UriSource = new Uri(currentPath + "\\Images\\loom.png");
+                loomIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\loom.png");
                 loomIconImageSource.EndInit();
                 loomIcon[i].Source = loomIconImageSource;
                 loomIcon[i].Width = ICON_WIDTH;
@@ -237,7 +237,7 @@ namespace SevenWonders
                 papyrusIcon[i] = new Image();
                 BitmapImage papyrusIconImageSource = new BitmapImage();
                 papyrusIconImageSource.BeginInit();
-                papyrusIconImageSource.UriSource = new Uri(currentPath + "\\Images\\papyrus.png");
+                papyrusIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\papyrus.png");
                 papyrusIconImageSource.EndInit();
                 papyrusIcon[i].Source = papyrusIconImageSource;
                 papyrusIcon[i].Width = ICON_WIDTH;
@@ -247,7 +247,7 @@ namespace SevenWonders
                 bearTrapIcon[i] = new Image();
                 BitmapImage bearTrapIconImageSource = new BitmapImage();
                 bearTrapIconImageSource.BeginInit();
-                bearTrapIconImageSource.UriSource = new Uri(currentPath + "\\Images\\bearTrap.png");
+                bearTrapIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\bearTrap.png");
                 bearTrapIconImageSource.EndInit();
                 bearTrapIcon[i].Source = bearTrapIconImageSource;
                 bearTrapIcon[i].Width = ICON_WIDTH;
@@ -256,7 +256,7 @@ namespace SevenWonders
                 sextantIcon[i] = new Image();
                 BitmapImage sextantIconImageSource = new BitmapImage();
                 sextantIconImageSource.BeginInit();
-                sextantIconImageSource.UriSource = new Uri(currentPath + "\\Images\\sextant.png");
+                sextantIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\sextant.png");
                 sextantIconImageSource.EndInit();
                 sextantIcon[i].Source = sextantIconImageSource;
                 sextantIcon[i].Width = ICON_WIDTH;
@@ -265,7 +265,7 @@ namespace SevenWonders
                 tabletIcon[i] = new Image();
                 BitmapImage tabletIconImageSource = new BitmapImage();
                 tabletIconImageSource.BeginInit();
-                tabletIconImageSource.UriSource = new Uri(currentPath + "\\Images\\tablet.jpg");
+                tabletIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\tablet.jpg");
                 tabletIconImageSource.EndInit();
                 tabletIcon[i].Source = tabletIconImageSource;
                 tabletIcon[i].Width = ICON_WIDTH;
@@ -275,7 +275,7 @@ namespace SevenWonders
                 victoryIcon[i] = new Image();
                 BitmapImage victoryIconImageSource = new BitmapImage();
                 victoryIconImageSource.BeginInit();
-                victoryIconImageSource.UriSource = new Uri(currentPath + "\\Images\\victory.png");
+                victoryIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\victory.png");
                 victoryIconImageSource.EndInit();
                 victoryIcon[i].Source = victoryIconImageSource;
                 victoryIcon[i].Width = ICON_WIDTH;
@@ -285,7 +285,7 @@ namespace SevenWonders
                 shieldIcon[i] = new Image();
                 BitmapImage shieldIconImageSource = new BitmapImage();
                 shieldIconImageSource.BeginInit();
-                shieldIconImageSource.UriSource = new Uri(currentPath + "\\Images\\shield.jpg");
+                shieldIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\shield.jpg");
                 shieldIconImageSource.EndInit();
                 shieldIcon[i].Source = shieldIconImageSource;
                 shieldIcon[i].Width = ICON_WIDTH;
@@ -295,7 +295,7 @@ namespace SevenWonders
                 coinIcon[i] = new Image();
                 BitmapImage coinIconImageSource = new BitmapImage();
                 coinIconImageSource.BeginInit();
-                coinIconImageSource.UriSource = new Uri(currentPath + "\\Images\\coin.png");
+                coinIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\coin.png");
                 coinIconImageSource.EndInit();
                 coinIcon[i].Source = coinIconImageSource;
                 coinIcon[i].Width = ICON_WIDTH;
@@ -305,7 +305,7 @@ namespace SevenWonders
                 conflictIcon[i] = new Image();
                 BitmapImage conflictIconImageSource = new BitmapImage();
                 conflictIconImageSource.BeginInit();
-                conflictIconImageSource.UriSource = new Uri(currentPath + "\\Images\\fight1.png");
+                conflictIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\fight1.png");
                 conflictIconImageSource.EndInit();
                 conflictIcon[i].Source = conflictIconImageSource;
                 conflictIcon[i].Width = ICON_WIDTH;
@@ -315,7 +315,7 @@ namespace SevenWonders
                 conflictTokensCountIcon[i] = new Image();
                 BitmapImage conflictTokensCountSource = new BitmapImage();
                 conflictTokensCountSource.BeginInit();
-                conflictTokensCountSource.UriSource = new Uri(currentPath + "\\Images\\fight2.png");
+                conflictTokensCountSource.UriSource = new Uri(currentPath + @"\Images\fight2.png");
                 conflictTokensCountSource.EndInit();
                 conflictTokensCountIcon[i].Source = conflictTokensCountSource;
                 conflictTokensCountIcon[i].Width = ICON_WIDTH;
@@ -325,7 +325,7 @@ namespace SevenWonders
                 lossIcon[i] = new Image();
                 BitmapImage lossIconImageSource = new BitmapImage();
                 lossIconImageSource.BeginInit();
-                lossIconImageSource.UriSource = new Uri(currentPath + "\\Images\\fight0.png");
+                lossIconImageSource.UriSource = new Uri(currentPath + @"\Images\fight0.png");
                 lossIconImageSource.EndInit();
                 lossIcon[i].Source = lossIconImageSource;
                 lossIcon[i].Width = ICON_WIDTH;
@@ -509,7 +509,7 @@ namespace SevenWonders
                 cardImageSource[i] = new BitmapImage();
                 cardImageSource[i].BeginInit();
                 //Item1 of the id_buildable array of Tuples represents the id image
-                cardImageSource[i].UriSource = new Uri(currentPath + "\\Images\\cards\\" + handPanelInformation.id_buildable[i].Item1 + ".jpg");
+                cardImageSource[i].UriSource = new Uri(currentPath + @"\Resources\Images\cards\" + handPanelInformation.id_buildable[i].Item1 + ".jpg");
                 cardImageSource[i].EndInit();
             }
 
@@ -671,7 +671,7 @@ namespace SevenWonders
             //information holds the board image file name
             BitmapImage boardImageSource = new BitmapImage();
             boardImageSource.BeginInit();
-            boardImageSource.UriSource = new Uri(currentPath + "\\Images\\boards\\" + information + ".jpg");
+            boardImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\boards\" + information + ".jpg");
             boardImageSource.EndInit();
 
             boardImage.Source = boardImageSource;
@@ -744,7 +744,7 @@ namespace SevenWonders
             ComboBoxItem caaa = ca.SelectedItem as ComboBoxItem;
 
             //have the card Image change
-            showCardImage(currentPath + "\\Images\\cards\\" + caaa.Tag + ".jpg");
+            showCardImage(currentPath + @"\Resources\Images\cards\" + caaa.Tag + ".jpg");
         }
 
         /// <summary>
@@ -846,7 +846,7 @@ namespace SevenWonders
                 cardImageSource[i] = new BitmapImage();
                 cardImageSource[i].BeginInit();
                 //Item1 of the id_buildable array of Tuples represents the id image
-                cardImageSource[i].UriSource = new Uri(currentPath + "\\Images\\cards\\" + handPanelInformation.ids[i] + ".jpg");
+                cardImageSource[i].UriSource = new Uri(currentPath + @"\Resources\Images\cards\" + handPanelInformation.ids[i] + ".jpg");
                 cardImageSource[i].EndInit();
             }
 

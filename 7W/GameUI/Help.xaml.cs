@@ -28,7 +28,7 @@ namespace SevenWonders
         {
             InitializeComponent();
 
-            slideShowImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\HelpSlides\\" + index + ".png"));
+            slideShowImage.Source = new BitmapImage(new Uri(currentPath + @"\Resources\Images\HelpSlides\" + index + ".png"));
             ShowDialog();
         }
 
@@ -37,7 +37,7 @@ namespace SevenWonders
         {
             if (index != 1)
             {
-            slideShowImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\HelpSlides\\" + (--index) + ".png"));
+            slideShowImage.Source = new BitmapImage(new Uri(currentPath + @"\Resources\Images\HelpSlides\" + (--index) + ".png"));
             }
         }
 
@@ -45,7 +45,7 @@ namespace SevenWonders
         {
             if (index != 8)
             {
-                slideShowImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\HelpSlides\\" + (++index) + ".png"));
+                slideShowImage.Source = new BitmapImage(new Uri(currentPath + @"\Resources\Images\HelpSlides\" + (++index) + ".png"));
             }
         }
     }

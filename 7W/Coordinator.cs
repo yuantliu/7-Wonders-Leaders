@@ -242,7 +242,7 @@ namespace SevenWonders
             ImageBrush back = new ImageBrush();
             BitmapImage source = new BitmapImage();
             source.BeginInit();
-            source.UriSource = new Uri(currentPath + "\\Images\\background.jpg");
+            source.UriSource = new Uri(currentPath + @"\Resources\Images\background.jpg");
             source.EndInit();
             back.ImageSource = source;
 
@@ -336,7 +336,6 @@ namespace SevenWonders
             tableUI = new TableUI(this);
             tableUI.addAIButton.IsEnabled = false;
             tableUI.removeAIButton.IsEnabled = false;
-            tableUI.disbandButton.IsEnabled = false;
             tableUI.leaders_Checkbox.IsEnabled = false;
             tableUI.ShowDialog();
         }
@@ -376,14 +375,12 @@ namespace SevenWonders
             //create the TCP Client
             client = new Client(this, nickname);
 
-            client.InitializeConnection(myIPAddress());
-          
+            client.InitializeConnection(myIP);
             
             //display the TableUI
             tableUI = new TableUI(this);
             //join the game as a player
             //UC-01 R03
-            
 
             sendToHost("J" + nickname);
             tableUI.ShowDialog();

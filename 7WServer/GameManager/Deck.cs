@@ -26,7 +26,7 @@ namespace SevenWonders
             //open the given cardFile
             try
             {
-                System.IO.StreamReader file = new System.IO.StreamReader(currentPath + "\\cardText\\" + cardFile);
+                System.IO.StreamReader file = new System.IO.StreamReader(currentPath + @"\Resources\cardText\" + cardFile);
                 //check that it is a file containing 7 Wonders card information by checking if the first line says "7W"
                 //if it is not, then throw an IO Exception
                 if (file.ReadLine() != "Yes this is a 7W Card File!")

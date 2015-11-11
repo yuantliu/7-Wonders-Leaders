@@ -41,7 +41,7 @@ namespace SevenWonders
             //load the board image
             BitmapImage boardSource = new BitmapImage();
             boardSource.BeginInit();
-            boardSource.UriSource = new Uri(currentPath + "\\Images\\boards\\" + boardName + ".jpg");
+            boardSource.UriSource = new Uri(currentPath + @"\Resources\Images\boards\" + boardName + ".jpg");
             boardSource.EndInit();
             boardImage.Source = boardSource;
 
@@ -138,7 +138,7 @@ namespace SevenWonders
             ComboBoxItem caaa = ca.SelectedItem as ComboBoxItem;
 
             //have the card Image change
-            showCardImage(currentPath + "\\Images\\cards\\" + caaa.Tag + ".jpg");
+            showCardImage(currentPath + @"\Resources\Images\cards\" + caaa.Tag + ".jpg");
         }
 
         /// <summary>
