@@ -38,7 +38,7 @@ namespace SevenWonders
         public PlayerBarInformationIndividual[] playerInfo;
         public int numOfPlayers;
 
-        public PlayerBarInformation(Player[] player)
+        public PlayerBarInformation(IPlayer[] player)
         {
             numOfPlayers = player.Length;
 
@@ -47,23 +47,23 @@ namespace SevenWonders
             for (int i = 0; i < player.Length; i++)
             {
                 playerInfo[i] = new PlayerBarInformationIndividual();
-                playerInfo[i].nickname = player[i].nickname;
-                playerInfo[i].brick = player[i].brick;
-                playerInfo[i].ore = player[i].ore;
-                playerInfo[i].stone = player[i].stone;
-                playerInfo[i].wood = player[i].wood;
-                playerInfo[i].glass = player[i].glass;
-                playerInfo[i].loom = player[i].loom;
-                playerInfo[i].papyrus = player[i].papyrus;
-                playerInfo[i].bear = player[i].bearTrap;
-                playerInfo[i].sextant = player[i].sextant;
-                playerInfo[i].tablet = player[i].tablet;
-                playerInfo[i].victory = player[i].victoryPoint;
-                playerInfo[i].shield = player[i].shield;
-                playerInfo[i].coin = player[i].coin;
-                playerInfo[i].conflict = player[i].conflictTokenOne + (player[i].conflictTokenTwo * 3) + (player[i].conflictTokenThree * 5);
-                playerInfo[i].conflictTokensCount = player[i].conflictTokenOne + player[i].conflictTokenTwo + player[i].conflictTokenThree;
-                playerInfo[i].loss = player[i].lossToken;
+                playerInfo[i].nickname = player[i].GetNickName();
+                playerInfo[i].brick = player[i].GetBrick();
+                playerInfo[i].ore = player[i].GetOre();
+                playerInfo[i].stone = player[i].GetStone();
+                playerInfo[i].wood = player[i].GetWood();
+                playerInfo[i].glass = player[i].GetGlass();
+                playerInfo[i].loom = player[i].GetLoom();
+                playerInfo[i].papyrus = player[i].GetPapyrus();
+                playerInfo[i].bear = player[i].GetBearTrap();
+                playerInfo[i].sextant = player[i].GetSextant();
+                playerInfo[i].tablet = player[i].GetTablet();
+                playerInfo[i].victory = player[i].GetVictoryPoint();
+                playerInfo[i].shield = player[i].GetShield();
+                playerInfo[i].coin = player[i].GetCoin();
+                playerInfo[i].conflict = player[i].GetConflictTokenOne() + (player[i].GetConflictTokenTwo() * 3) + (player[i].GetConflictTokenThree() * 5);
+                playerInfo[i].conflictTokensCount = player[i].GetConflictTokenOne() + player[i].GetConflictTokenTwo() + player[i].GetConflictTokenThree();
+                playerInfo[i].loss = player[i].GetLossToken();
             }
         }
     }
@@ -90,16 +90,16 @@ namespace SevenWonders
         public int currentAge;
         public char stageBuildable;
 
-        public HandPanelInformation(Player p, int currentAge)
+        public HandPanelInformation(IPlayer p, int currentAge)
         {
             this.currentAge = currentAge;
-            informationSize = p.numOfHandCards;
+            informationSize = p.GetNumCardsInHand();
             id_buildable = new Tuple<int, char>[informationSize];
 
             //add the IDs and their buildability into array of pair-Tuples
             for (int i = 0; i < informationSize; i++)
             {
-                id_buildable[i] = new Tuple<int, char>(p.hand[i].id, p.isCardBuildable(p.hand[i]));
+                id_buildable[i] = new Tuple<int, char>(p.GetCard(i).id, p.isCardBuildable(i));
             }
 
             stageBuildable = p.isStageBuildable();
@@ -115,12 +115,12 @@ namespace SevenWonders
     {
         public int[] ids;
 
-        public RecruitmentPhaseInformation(Player p)
+        public RecruitmentPhaseInformation(IPlayer p)
         {
-            ids = new int[p.numOfHandCards];
+            ids = new int[p.GetNumCardsInHand()];
             for (int i = 0; i < ids.Length; i++)
             {
-                ids[i] = p.hand[i].id;
+                ids[i] = p.GetCard(i).id;
             }
         }
     }
@@ -139,11 +139,13 @@ namespace SevenWonders
         public string name;
         public int id;
 
-        public LastPlayedCardInformation(Player p)
+        public LastPlayedCardInformation(IPlayer p)
         {
-            colour = p.getLastPlayedCard().colour;
-            name = p.getLastPlayedCard().name;
-            id = p.getLastPlayedCard().id;
+            int lastPlayed = p.GetNumberOfPlayedCards() - 1;
+
+            colour = p.GetCardPlayed(lastPlayed).colour;
+            name = p.GetCardPlayed(lastPlayed).name;
+            id = p.GetCardPlayed(lastPlayed).id;
         }
     }
 
@@ -169,53 +171,53 @@ namespace SevenWonders
 
         public int numOfStagesBuilt;
 
-        public ViewDetailsInformation(Player p)
+        public ViewDetailsInformation(IPlayer p)
         {
-            numOfStagesBuilt = p.currentStageOfWonder;
+            numOfStagesBuilt = p.GetCurrentStageOfWonder();
 
             //set the board name
-            boardname = p.playerBoard.name;
+            boardname = p.GetBoardName();
 
-            for (int i = 0; i < p.numOfPlayedCards; i++)
+            for (int i = 0; i < p.GetNumberOfPlayedCards(); i++)
             {
-                if (p.playedStructure[i].colour == "Blue")
+                if (p.GetCardPlayed(i).colour == "Blue")
                 {
-                    blueCards.Add(new Tuple<string, int>(p.playedStructure[i].name, p.playedStructure[i].id));
+                    blueCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
                 }
 
-                else if (p.playedStructure[i].colour == "Brown")
+                else if (p.GetCardPlayed(i).colour == "Brown")
                 {
-                    brownCards.Add(new Tuple<string, int>(p.playedStructure[i].name, p.playedStructure[i].id));
+                    brownCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
                 }
 
-                else if (p.playedStructure[i].colour == "Green")
+                else if (p.GetCardPlayed(i).colour == "Green")
                 {
-                    greenCards.Add(new Tuple<string, int>(p.playedStructure[i].name, p.playedStructure[i].id));
+                    greenCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
                 }
 
-                else if (p.playedStructure[i].colour == "Grey")
+                else if (p.GetCardPlayed(i).colour == "Grey")
                 {
-                    greyCards.Add(new Tuple<string, int>(p.playedStructure[i].name, p.playedStructure[i].id));
+                    greyCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
                 }
 
-                else if (p.playedStructure[i].colour == "Purple")
+                else if (p.GetCardPlayed(i).colour == "Purple")
                 {
-                    purpleCards.Add(new Tuple<string, int>(p.playedStructure[i].name, p.playedStructure[i].id));
+                    purpleCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
                 }
 
-                else if (p.playedStructure[i].colour == "Red")
+                else if (p.GetCardPlayed(i).colour == "Red")
                 {
-                    redCards.Add(new Tuple<string, int>(p.playedStructure[i].name, p.playedStructure[i].id));
+                    redCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
                 }
 
-                else if (p.playedStructure[i].colour == "Yellow")
+                else if (p.GetCardPlayed(i).colour == "Yellow")
                 {
-                    yellowCards.Add(new Tuple<string, int>(p.playedStructure[i].name, p.playedStructure[i].id));
+                    yellowCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
                 }
 
-                else if (p.playedStructure[i].colour == "White")
+                else if (p.GetCardPlayed(i).colour == "White")
                 {
-                    whiteCards.Add(new Tuple<string, int>(p.playedStructure[i].name, p.playedStructure[i].id));
+                    whiteCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
                 }
             }
         }
@@ -233,7 +235,7 @@ namespace SevenWonders
         //string: name, int: id
         public Tuple<string, int>[] cards;
 
-        public PlayForFreeInformation(Player p, char mode)
+        public PlayForFreeInformation(IPlayer p, char mode)
         {
             this.mode = mode;
 
@@ -241,22 +243,22 @@ namespace SevenWonders
             //get hand information to play hand cards for free
             if (mode == 'O')
             {
-                cards = new Tuple<string, int>[p.numOfHandCards];
+                cards = new Tuple<string, int>[p.GetNumCardsInHand()];
 
-                for (int i = 0; i < p.numOfHandCards; i++)
+                for (int i = 0; i < p.GetNumCardsInHand(); i++)
                 {
-                    cards[i] = new Tuple<string, int>(p.hand[i].name, p.hand[i].id);
+                    cards[i] = new Tuple<string, int>(p.GetCard(i).name, p.GetCard(i).id);
                 }
             }
             //Rome information
             //get Leader pile information
             else if (mode == 'R')
             {
-                cards = new Tuple<string, int>[p.leadersPile.Count];
+                cards = new Tuple<string, int>[p.GetLeadersPile().Count];
 
-                for (int i = 0; i < p.leadersPile.Count; i++)
+                for (int i = 0; i < p.GetLeadersPile().Count; i++)
                 {
-                    cards[i] = new Tuple<string, int>(p.leadersPile[i].name, p.leadersPile[i].id);
+                    cards[i] = new Tuple<string, int>(p.GetLeadersPile()[i].name, p.GetLeadersPile()[i].id);
                 }
             }
             else
@@ -293,25 +295,25 @@ namespace SevenWonders
     {
         public List<Tuple<string, int>> card;
 
-        public CourtesanGuildInformation(Player p)
+        public CourtesanGuildInformation(IPlayer p)
         {
             card = new List<Tuple<string, int>>();
 
             //get the left neighbours Leaders cards
-            for (int i = 0; i < p.leftNeighbour.numOfPlayedCards; i++)
+            for (int i = 0; i < p.GetLeftNeighbour().GetNumberOfPlayedCards(); i++)
             {
-                if (p.leftNeighbour.playedStructure[i].colour == "White")
+                if (p.GetLeftNeighbour().GetCardPlayed(i).colour == "White")
                 {
-                    card.Add(new Tuple<string, int>(p.leftNeighbour.playedStructure[i].name, p.leftNeighbour.playedStructure[i].id));
+                    card.Add(new Tuple<string, int>(p.GetLeftNeighbour().GetCardPlayed(i).name, p.GetLeftNeighbour().GetCardPlayed(i).id));
                 }
             }
 
             //get the right neighbours Leader cards
-            for (int i = 0; i < p.rightNeighbour.numOfPlayedCards; i++)
+            for (int i = 0; i < p.GetRightNeighbour().GetNumberOfPlayedCards(); i++)
             {
-                if (p.rightNeighbour.playedStructure[i].colour == "White")
+                if (p.GetRightNeighbour().GetCardPlayed(i).colour == "White")
                 {
-                    card.Add(new Tuple<string, int>(p.rightNeighbour.playedStructure[i].name, p.rightNeighbour.playedStructure[i].id));
+                    card.Add(new Tuple<string, int>(p.GetRightNeighbour().GetCardPlayed(i).name, p.GetRightNeighbour().GetCardPlayed(i).id));
                 }
             }
         }
@@ -342,16 +344,16 @@ namespace SevenWonders
 
         public bool isStage = false;
 
-        public CommerceInformation(Player left, Player centre, Player right, bool discountApplies, int id, string cardCost, bool isStage)
+        public CommerceInformation(IPlayer left, IPlayer centre, IPlayer right, bool discountApplies, int id, string cardCost, bool isStage)
         {
             this.hasDiscount = discountApplies;
             this.cardCost = cardCost;
-            leftRawMarket = centre.leftRaw;
-            leftManuMarket = centre.leftManu;
-            rightRawMarket = centre.rightRaw;
-            rightManuMarket = centre.rightManu;
+            leftRawMarket = centre.GetLeftRaw();
+            leftManuMarket = centre.GetLeftManu();
+            rightRawMarket = centre.GetRightRaw();
+            rightManuMarket = centre.GetRightManu();
 
-            playerCoins = centre.coin;
+            playerCoins = centre.GetCoin();
             this.id = id;
             this.isStage = isStage;
 
@@ -372,10 +374,10 @@ namespace SevenWonders
         public string name;
         public DAG dag;
 
-        public PlayerCommerceInfo(Player player)
+        public PlayerCommerceInfo(IPlayer player)
         {
-            this.name = player.nickname;
-            dag = player.dag;
+            this.name = player.GetNickName();
+            dag = player.GetDAG();
         }
     }
 
