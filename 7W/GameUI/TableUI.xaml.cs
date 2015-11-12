@@ -60,12 +60,6 @@ namespace SevenWonders
                 coordinator.hasGame = false;
 
                 coordinator.client.CloseConnection();
-
-                //shut down the server if coordinator contains a gmCoordinator(and therefore must be a server)
-                if (coordinator.isServer() == true)
-                {
-                    coordinator.stopServer();
-                }
             }
         }
 

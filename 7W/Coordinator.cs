@@ -34,9 +34,6 @@ namespace SevenWonders
         HalicarnassusUI halicarnassusUI;
         BabylonUI babylonUI;
 
-        //If this application will be the server, then gmCoordinator and gameManager must be initialized
-        GMCoordinator gmCoordinator = null;
-
         //The client that the application will use to interact with the server.
         public Client client { get; set;  }
 
@@ -67,30 +64,6 @@ namespace SevenWonders
             timer.Interval = new TimeSpan(0, 0, 1);
         }
 
-        /// <summary>
-        /// Return whether this client is also the server
-        /// </summary>
-        /// <returns></returns>
-        public bool isServer()
-        {
-            if (gmCoordinator == null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        public void stopServer()
-        {
-            if (isServer() == true)
-            {
-                // gmCoordinator.host.stopListening();
-            }
-        }
-        
         //Update the 100 Second timer field
         public void timer_Tick(object sender, EventArgs e)
         {
@@ -192,13 +165,8 @@ namespace SevenWonders
         /// User quits the Client program
         /// </summary>
         public void quit()
-        {
-            //If the client is not a server, then send to the host the close connection signal.
-            if (gmCoordinator != null)
-            {
-                sendToHost("L");
-                client.CloseConnection();
-            }
+         {
+
             //If the client is a server, send the 
         }
 
