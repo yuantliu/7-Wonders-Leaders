@@ -59,7 +59,7 @@ namespace SevenWonders
                     for (int i = 0; i < p.numOfHandCards; i++)
                     {
                         //found one
-                        if (p.hand[i].id == favouredLeaderID && p.isCardBuildable(p.hand[i]) == 'T')
+                        if (p.hand[i].id == favouredLeaderID && p.isCardBuildable(i) == 'T')
                         {
                             gm.buildStructureFromHand(p.hand[i].id, p.nickname);
                             return;
@@ -78,7 +78,7 @@ namespace SevenWonders
                 //Search for and build Blue cards if able
                 for (int i = 0; i < p.numOfHandCards; i++)
                 {
-                    if (p.hand[i].colour == "Blue" && p.isCardBuildable(p.hand[i]) == 'T')
+                    if (p.hand[i].colour == "Blue" && p.isCardBuildable(i) == 'T')
                     {
                         gm.buildStructureFromHand(p.hand[i].id, p.nickname);
                         return;
@@ -89,7 +89,7 @@ namespace SevenWonders
                 //Look for brown/grey cards
                 for (int i = 0; i < p.numOfHandCards; i++)
                 {
-                    if ((p.hand[i].colour == "Brown" || p.hand[i].colour == "Grey") && p.isCardBuildable(p.hand[i]) == 'T')
+                    if ((p.hand[i].colour == "Brown" || p.hand[i].colour == "Grey") && p.isCardBuildable(i) == 'T')
                     {
                         gm.buildStructureFromHand(p.hand[i].id, p.nickname);
                         return;

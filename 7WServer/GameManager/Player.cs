@@ -6,40 +6,100 @@ using System.Net.Sockets;
 
 namespace SevenWonders
 {
-    public class Player
+    public class Player : IPlayer
     {
         public bool isAI {get; set;}
+
+        public bool GetIsAI() { return isAI; }
         
         public String nickname { get; set; }
 
+        public String GetNickName() { return nickname; }
+
         public Board playerBoard { get; set; }
+
+        public string GetBoardName() { return playerBoard.name; }
         //current Stage of wonder
         public int currentStageOfWonder { get; set; }
 
+        public int GetCurrentStageOfWonder() { return currentStageOfWonder; }
+
         //resources
         public int brick { get; set; }
+
+        public int GetBrick() { return brick; }
+
         public int ore { get; set; }
+
+        public int GetOre() { return ore; }
+
         public int stone { get; set; }
+
+        public int GetStone() { return stone; }
+
         public int wood { get; set; }
 
+        public int GetWood() { return wood; }
+
         public int glass { get; set; }
+
+        public int GetGlass() { return glass; }
+
         public int loom { get; set; }
+
+        public int GetLoom() { return loom; }
+
         public int papyrus { get; set; }
+
+        public int GetPapyrus() { return papyrus; }
 
         public int coin { get; set; }
 
+        public int GetCoin() { return coin; }
+
         //science
         public int bearTrap { get; set; }
+
+        public int GetBearTrap() { return bearTrap; }
+
         public int tablet { get; set; }
+
+        public int GetTablet() { return tablet; }
+
         public int sextant { get; set; }
+
+        public int GetSextant() { return sextant; }
 
         //Points and stuff
         public int victoryPoint { get; set; }
+
+        public int GetVictoryPoint() { return victoryPoint; }
+
         public int shield { get; set; }
+
+        public int GetShield() { return shield; }
+
         public int lossToken { get; set; }
+
+        public int GetLossToken() { return lossToken; }
+
         public int conflictTokenOne { get; set; }
+
+        public int GetConflictTokenOne() { return conflictTokenOne; }
+
         public int conflictTokenTwo { get; set; }
+
+        public int GetConflictTokenTwo() { return conflictTokenTwo; }
+
         public int conflictTokenThree { get; set; }
+
+        public int GetConflictTokenThree() { return conflictTokenThree; }
+
+        public int GetNumCardsInHand() { return numOfHandCards; }
+
+        public Card GetCard(int i) { return hand[i]; }
+
+        public Card GetCardPlayed(int i) { return playedStructure[i]; }
 
         //hand
         public Card[] hand;
@@ -48,6 +108,8 @@ namespace SevenWonders
         //played structure
         public Card[] playedStructure;
         public int numOfPlayedCards { get; set; }
+
+        public int GetNumberOfPlayedCards() { return numOfPlayedCards; }
 
         //can activate wonder power?
         public bool hasOlympia { get; set; }
@@ -75,7 +137,12 @@ namespace SevenWonders
 
         //Player's left and right neighbours
         public Player leftNeighbour { get; set; }
+
+        public IPlayer GetLeftNeighbour() { return leftNeighbour; }
+
         public Player rightNeighbour { get; set; }
+
+        public IPlayer GetRightNeighbour() { return rightNeighbour; }
 
         public Boolean changeNickName {get; set; }
         public String newNickName {get; set; }
@@ -83,8 +150,18 @@ namespace SevenWonders
         //market effect
         public bool leftRaw = false, rightRaw = false, leftManu = false, rightManu = false;
 
+        public bool GetLeftRaw() { return leftRaw; }
+
+        public bool GetLeftManu() { return leftManu; }
+
+        public bool GetRightRaw() { return rightRaw; }
+
+        public bool GetRightManu() { return rightManu; }
+
         //Leaders pile. The pile that holds the unplayed leaders cards
         public List<Card> leadersPile;
+
+        public List<Card> GetLeadersPile() { return leadersPile; }
 
         //interface for vanilla AI
         public AIMoveBehaviour AIBehaviour;
@@ -95,6 +172,8 @@ namespace SevenWonders
 
         //The Multiple Resource DAG
         public DAG dag { get; set; }
+
+        public DAG GetDAG() { return dag; }
 
         /// <summary>
         /// Constructor. Create a Player with a given nickname
@@ -739,8 +818,10 @@ namespace SevenWonders
         /// </summary>
         /// <param name="card"></param>
         /// <returns></returns>
-        public char isCardBuildable(Card card)
+        public char isCardBuildable(int j)
         {
+            Card card = hand[j];
+
             //retrieve the cost
             string cost = card.cost;
 

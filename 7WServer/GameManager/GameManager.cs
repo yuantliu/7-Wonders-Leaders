@@ -1134,7 +1134,7 @@ namespace SevenWonders
             //get the id
             information += "_" + lastCard.id + "_";
             //get if the card is playable from hand
-            information += p.isCardBuildable(lastCard);
+            information += p.isCardBuildable(0);
             //get if stage is buildable from hand
             information += p.isStageBuildable();
 

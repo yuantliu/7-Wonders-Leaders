@@ -18,7 +18,7 @@ namespace SevenWonders
             //look for buildable blue cards
             for (int i = 0; i < player.numOfHandCards; i++)
             {
-                if (player.hand[i].colour == "Blue" && player.isCardBuildable(player.hand[i]) == 'T')
+                if (player.hand[i].colour == "Blue" && player.isCardBuildable(i) == 'T')
                 {
                     gm.buildStructureFromHand(player.hand[i].id, player.nickname);
                     return;
@@ -28,7 +28,7 @@ namespace SevenWonders
             //look for buildable yellow cards that gives some resources
             for (int i = 0; i < player.numOfHandCards; i++)
             {
-                if (player.hand[i].colour == "Yellow" && player.isCardBuildable(player.hand[i]) == 'T')
+                if (player.hand[i].colour == "Yellow" && player.isCardBuildable(i) == 'T')
                 {
                     if (player.hand[i].effect[0] == '4')
                     {
@@ -41,7 +41,7 @@ namespace SevenWonders
             //look for buildable resource cards
             for (int i = 0; i < player.numOfHandCards; i++)
             {
-                if ((player.hand[i].colour == "Brown" || player.hand[i].colour == "Grey") && player.isCardBuildable(player.hand[i]) == 'T' && player.hand[i].effect[0] != '4')
+                if ((player.hand[i].colour == "Brown" || player.hand[i].colour == "Grey") && player.isCardBuildable(i) == 'T' && player.hand[i].effect[0] != '4')
                 {
                     char resource = player.hand[i].effect[2];
                     int numOfResource = int.Parse(player.hand[i].effect[1] + "");

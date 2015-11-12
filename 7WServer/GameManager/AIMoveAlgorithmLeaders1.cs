@@ -37,7 +37,7 @@ namespace SevenWonders
                 {
                     //found a playable card that is not blacklisted
                     //build it
-                    if((AI_LEADERS_BLACKLIST.Contains(p.hand[i].id) == false) && (p.isCardBuildable(p.hand[i]) == 'T'))
+                    if((AI_LEADERS_BLACKLIST.Contains(p.hand[i].id) == false) && (p.isCardBuildable(i) == 'T'))
                     {
                         gm.buildStructureFromHand(p.hand[i].id, p.nickname);
                         return;
