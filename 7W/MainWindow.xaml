@@ -1,11 +1,11 @@
 ﻿<Window x:Class="SevenWonders.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="7 Wonders" Height="789" Width="1055" WindowStartupLocation="CenterScreen" Closing="Window_Closing" Icon="Resources/Images/stage.png">
-    <Grid Height="776" Width="1031" Name="mainGrid" Visibility="Visible">
+        Title="7 Wonders" Height="1080" Width="1920" WindowStartupLocation="CenterScreen" Closing="Window_Closing" Icon="Resources/Images/stage.png">
+    <Grid Name="mainGrid" Visibility="Visible">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="792*" />
-            <ColumnDefinition Width="239*" />
+            <ColumnDefinition Width="0.77*" />
+            <ColumnDefinition Width="0.23*" />
         </Grid.ColumnDefinitions>
         <Menu Height="23" Name="menu1" VerticalAlignment="Top" Grid.ColumnSpan="2">
             <MenuItem Header="G_ame">
@@ -101,7 +101,7 @@
         </Button>
 
         <Grid.Background>
-            <ImageBrush ImageSource="Resources/Images/indexbg4x3.jpg" />
+            <ImageBrush ImageSource="Resources/Images/indexbg4x3.jpg" Stretch="UniformToFill" />
         </Grid.Background>
     </Grid>
 </Window>
