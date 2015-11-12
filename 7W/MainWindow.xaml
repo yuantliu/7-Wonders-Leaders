@@ -96,7 +96,7 @@
         </Canvas>
         <Button Height="30" HorizontalAlignment="Left" Margin="774,414,0,0" Name="helpButton" VerticalAlignment="Top" Width="29" Grid.ColumnSpan="2" Visibility="Hidden" Click="helpButton_Click">
             <Button.Background>
-                <ImageBrush ImageSource="/7W;component/Images/questionMark.png" />
+                <ImageBrush ImageSource="Resources/Images/Help.png" />
             </Button.Background>
         </Button>
 
