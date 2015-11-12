@@ -220,9 +220,12 @@ namespace SevenWonders
             gameUI.sendButton.Visibility = Visibility.Visible;
             gameUI.scroll.Visibility = Visibility.Visible;
             gameUI.timerTextBox.Visibility = Visibility.Visible;
-            gameUI.olympiaButton.Visibility = Visibility.Visible;
-            gameUI.estebanButton.Visibility = Visibility.Visible;
-            gameUI.bilkisButton.Visibility = Visibility.Visible;
+
+            // JDF removed these special buttons until the UI redesign is done.
+            //gameUI.olympiaButton.Visibility = Visibility.Visible;
+            //gameUI.estebanButton.Visibility = Visibility.Visible;
+            //gameUI.bilkisButton.Visibility = Visibility.Visible;
+
             gameUI.currentAgeLabel.Visibility = Visibility.Visible;
             gameUI.currentAge.Visibility = Visibility.Visible;
             gameUI.stackPanel1.Visibility = Visibility.Visible;
