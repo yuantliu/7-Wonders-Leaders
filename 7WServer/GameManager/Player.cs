@@ -358,19 +358,19 @@ namespace SevenWonders
                             break;
                         case 'O':
                             ore += num;
-                            dag.add("O");
+                            dag.add(num == 1 ? "O" : "OO");
                             break;
                         case 'B':
                             brick += num;
-                            dag.add("B");
+                            dag.add(num == 1 ? "B" : "BB");
                             break;
                         case 'T':
                             stone += num;
-                            dag.add("T");
+                            dag.add(num == 1 ? "T" : "TT");
                             break;
                         case 'W':
                             wood += num;
-                            dag.add("W");
+                            dag.add(num == 1 ? "W" : "WW");
                             break;
                         case '$':
                             coin += num;
