@@ -23,6 +23,7 @@
         <TextBox Height="23" Margin="24,704,0,0" Name="chatTextField" VerticalAlignment="Top" HorizontalAlignment="Left" Width="146" Visibility="Hidden" Grid.Column="1" PreviewKeyDown="chatTextField_PreviewKeyDown" />
         <Button Content="Send" Height="23" HorizontalAlignment="Right" Margin="0,704,15,0" Name="sendButton" VerticalAlignment="Top" Width="36" Click="sendButton_Click" Visibility="Hidden" Grid.Column="1" />
 
+      <!--
         <StackPanel Height="189" HorizontalAlignment="Left" Margin="188,250,0,0" Name="stackPanel1" VerticalAlignment="Top" Width="214" Visibility="Hidden">
             
             <Label Content="Played Cards" Height="25" Name="playedCardsLabel" Width="198" />
@@ -59,6 +60,7 @@
                 <ComboBox Height="20" Name="whitePlayedCards" SelectionChanged="playedCards_SelectionChanged" Width="177" />
             </StackPanel>
         </StackPanel>
+        -->
         <Image Height="199" HorizontalAlignment="Left" Margin="13,250,0,0" Name="cardImage" Stretch="Fill" VerticalAlignment="Top" Width="126" />
         <Image Height="162" HorizontalAlignment="Left" Margin="408,250,0,0" Name="boardImage" Stretch="Fill" VerticalAlignment="Top" Width="395" Grid.ColumnSpan="2" />
         <ScrollViewer Height="668" HorizontalAlignment="Left" Margin="18,29,0,0" Name="scroll" VerticalAlignment="Top" Width="206" Visibility="Hidden" Grid.Column="1">

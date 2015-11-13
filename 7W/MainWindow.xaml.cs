@@ -22,6 +22,8 @@ namespace SevenWonders
 
         //dimensions for the icons at the Player bars
         public const int ICON_WIDTH = 25;
+
+        // JDF: remove (they are part of the ChooseCard dialogbox)
         public const int CARD_WIDTH = 112;
         public const int CARD_HEIGHT = 206;
 
@@ -698,6 +700,7 @@ namespace SevenWonders
             combo.Tag = id;
             combo.Content = name;
 
+            /*
             if(colour == "Blue")
             {
                 bluePlayedCards.Items.Add(combo);
@@ -734,6 +737,7 @@ namespace SevenWonders
             {
                 throw new NotImplementedException();
             }
+            */
         }
 
         //handler for the ComboBoxItems in Played Cards panel

@@ -142,6 +142,9 @@
       <DependentUpon>changeNicknameUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="Coordinator.cs" />
+    <Compile Include="GameUI\ChooseCard.xaml.cs">
+      <DependentUpon>ChooseCard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameUI\CourtesanUI.xaml.cs">
       <DependentUpon>CourtesanUI.xaml</DependentUpon>
     </Compile>
@@ -180,6 +183,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GameUI\changeNicknameUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameUI\ChooseCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
