@@ -229,7 +229,7 @@ namespace SevenWonders
 
             gameUI.currentAgeLabel.Visibility = Visibility.Visible;
             gameUI.currentAge.Visibility = Visibility.Visible;
-            // gameUI.stackPanel1.Visibility = Visibility.Visible;
+            gameUI.stackPanel1.Visibility = Visibility.Visible;
             gameUI.canvas1.Visibility = Visibility.Hidden;
             gameUI.helpButton.Visibility = Visibility.Visible;
         }
@@ -483,13 +483,12 @@ namespace SevenWonders
             //update the Hand cards and Action panel
             else if (message[0] == 'U')
             {
-                /*
                 Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
                     //update the hand panel with the information
                     gameUI.showHandPanel(message.Substring(1));
                 }));
-                */
+                    /*
                 Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
                     HandPanelInformation handPanelInformation = (HandPanelInformation)Marshaller.StringToObject(message.Substring(1));
@@ -497,6 +496,7 @@ namespace SevenWonders
                     ChooseCard chooseCardDlg = new ChooseCard(this, handPanelInformation);
                     chooseCardDlg.ShowDialog();
                 }));
+                */
             }
             //update the Player Bar panel
             //also start up the timer

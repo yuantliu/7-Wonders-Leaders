@@ -112,6 +112,10 @@ namespace SevenWonders
         /// <param name="e"></param>
         private void addAIButton_Click(object sender, RoutedEventArgs e)
         {
+            // Add "difficult" AI
+            coordinator.sendToHost("aa4");
+            /*
+            JDF commented out in the interests of speeding up the game start.
             //Add a Leaders AI
             if (leaders_Checkbox.IsChecked == true)
             {
@@ -122,6 +126,7 @@ namespace SevenWonders
             {
                 coordinator.newAIUI('V');
             }
+            */
         }
 
         /// <summary>

@@ -23,44 +23,43 @@
         <TextBox Height="23" Margin="24,704,0,0" Name="chatTextField" VerticalAlignment="Top" HorizontalAlignment="Left" Width="146" Visibility="Hidden" Grid.Column="1" PreviewKeyDown="chatTextField_PreviewKeyDown" />
         <Button Content="Send" Height="23" HorizontalAlignment="Right" Margin="0,704,15,0" Name="sendButton" VerticalAlignment="Top" Width="36" Click="sendButton_Click" Visibility="Hidden" Grid.Column="1" />
 
-      <!--
         <StackPanel Height="189" HorizontalAlignment="Left" Margin="188,250,0,0" Name="stackPanel1" VerticalAlignment="Top" Width="214" Visibility="Hidden">
             
             <Label Content="Played Cards" Height="25" Name="playedCardsLabel" Width="198" />
             <StackPanel Height="20" Name="stackPanel2" Width="200" Orientation="Horizontal">
                 <Image Height="20" Name="image1" Stretch="Fill" Width="20" Source="Resources/Images/blue.png" />
-                <ComboBox Height="20" Name="bluePlayedCards" Width="179" SelectionChanged="playedCards_SelectionChanged" />
+                <ListBox Height="20" Name="bluePlayedCards" Width="179" SelectionChanged="playedCards_SelectionChanged" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel3" Orientation="Horizontal" Width="200">
                 <Image Height="20" Name="image2" Stretch="Fill" Width="20" Source="Resources/Images/brown.png" />
-                <ComboBox Height="20" Name="brownPlayedCards" Width="179" SelectionChanged="playedCards_SelectionChanged" />
+                <ListBox Height="20" Name="brownPlayedCards" Width="179" SelectionChanged="playedCards_SelectionChanged" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel4" Orientation="Horizontal" Width="200">
                 <Image Height="20" Name="image3" Stretch="Fill" Width="20" Source="Resources/Images/green.png" />
-                <ComboBox Height="20" Name="greenPlayedCards" Width="178" SelectionChanged="playedCards_SelectionChanged" />
+                <ListBox Height="20" Name="greenPlayedCards" Width="178" SelectionChanged="playedCards_SelectionChanged" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel5" Orientation="Horizontal" Width="200">
                 <Image Height="20" Name="image4" Stretch="Fill" Width="20" Source="Resources/Images/grey.png" />
-                <ComboBox Height="20" Name="greyPlayedCards" Width="178" SelectionChanged="playedCards_SelectionChanged" />
+                <ListBox Height="20" Name="greyPlayedCards" Width="178" SelectionChanged="playedCards_SelectionChanged" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel6" Orientation="Horizontal" Width="200">
                 <Image Height="20" Name="image5" Stretch="Fill" Width="20" Source="Resources/Images/purple.png" />
-                <ComboBox Height="20" Name="purplePlayedCards" Width="178" SelectionChanged="playedCards_SelectionChanged" />
+                <ListBox Height="20" Name="purplePlayedCards" Width="178" SelectionChanged="playedCards_SelectionChanged" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel7" Orientation="Horizontal" Width="200">
                 <Image Height="20" Name="image6" Stretch="Fill" Width="20" Source="Resources/Images/red.png" />
-                <ComboBox Height="20" Name="redPlayedCards" SelectionChanged="playedCards_SelectionChanged" Width="178" />
+                <ListBox Height="20" Name="redPlayedCards" SelectionChanged="playedCards_SelectionChanged" Width="178" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel8" Orientation="Horizontal" Width="200">
                 <Image Height="20" Name="image7" Stretch="Fill" Width="20" Source="Resources/Images/yellow.png" />
-                <ComboBox Height="20" Name="yellowPlayedCards" SelectionChanged="playedCards_SelectionChanged" Width="177" />
+                <ListBox Height="20" Name="yellowPlayedCards" SelectionChanged="playedCards_SelectionChanged" Width="177" />
             </StackPanel>
             <StackPanel Height="20" Name="stackPanel9" Orientation="Horizontal" Width="200">
                 <Image Height="20" Name="image9" Stretch="Fill" Width="20" Source="Resources/Images/leader.png" />
-                <ComboBox Height="20" Name="whitePlayedCards" SelectionChanged="playedCards_SelectionChanged" Width="177" />
+                <ListBox Height="20" Name="whitePlayedCards" SelectionChanged="playedCards_SelectionChanged" Width="177" />
             </StackPanel>
         </StackPanel>
-        -->
+
         <Image Height="199" HorizontalAlignment="Left" Margin="13,250,0,0" Name="cardImage" Stretch="Fill" VerticalAlignment="Top" Width="126" />
         <Image Height="162" HorizontalAlignment="Left" Margin="408,250,0,0" Name="boardImage" Stretch="Fill" VerticalAlignment="Top" Width="395" Grid.ColumnSpan="2" />
         <ScrollViewer Height="668" HorizontalAlignment="Left" Margin="18,29,0,0" Name="scroll" VerticalAlignment="Top" Width="206" Visibility="Hidden" Grid.Column="1">
@@ -102,8 +101,10 @@
             </Button.Background>
         </Button>
 
+        <!--
         <Grid.Background>
             <ImageBrush ImageSource="Resources/Images/indexbg4x3.jpg" Stretch="UniformToFill" />
         </Grid.Background>
+        -->
     </Grid>
 </Window>

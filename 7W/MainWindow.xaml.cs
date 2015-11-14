@@ -696,14 +696,27 @@ namespace SevenWonders
             int id = lastPlayedCard.id;
             
             //add a selection to the appropriate drop down menu
-            ComboBoxItem combo = new ComboBoxItem();
-            combo.Tag = id;
-            combo.Content = name;
+            // ListBoxItem combo = new ListBoxItem();
+            StackPanel combo = new StackPanel();
+            combo.Orientation = Orientation.Horizontal;
+            BitmapImage bmi = new BitmapImage();
+            bmi.BeginInit();
+            bmi.UriSource = new Uri(Environment.CurrentDirectory + @"\Resources\Images\" + "brick.png");
+            bmi.EndInit();
+            Image im1 = new Image();
+            im1.Source = bmi;
+            combo.Children.Add(im1);
+            TextBlock t1 = new TextBlock();
+            t1.Text = name;
+            combo.Children.Add(t1);
 
-            /*
+            //combo.Tag = id;
+            //combo.Content = name;
+
             if(colour == "Blue")
             {
                 bluePlayedCards.Items.Add(combo);
+                bluePlayedCards.Height = 40;
             }
             else if(colour == "Brown")
             {
@@ -737,7 +750,6 @@ namespace SevenWonders
             {
                 throw new NotImplementedException();
             }
-            */
         }
 
         //handler for the ComboBoxItems in Played Cards panel
