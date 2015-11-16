@@ -110,7 +110,7 @@ namespace SevenWonders
                     if (numOfPlayers + numOfAI < 3)
                     {
                         host.sendMessageToAll("#Not enough players at the table. Need at least " + (3 - numOfPlayers) + " more participants.");
-                        host.sendMessageToAll("S1");
+                        host.sendMessageToAll("S0");
                     }
                     else
                     {
@@ -141,10 +141,10 @@ namespace SevenWonders
                             }
                             else throw new NotImplementedException();
                             
-                            //S0: start the game
+                            //S[n], n = number of players in this game
                             for (int i = 0; i < gameManager.numOfAI + gameManager.numOfPlayers; i++)
                             {
-                                sendMessage(gameManager.player[i], "S0");
+                                sendMessage(gameManager.player[i], string.Format("S{0}", gameManager.numOfAI + gameManager.numOfPlayers));
                             }
                             
                             //set up the game, send information on boards to players, etc.
@@ -152,10 +152,14 @@ namespace SevenWonders
 
                             //set the number of countdowns finished
                             numOfCountdownsFinished = 0;
-
                             
                         }
                     }
+                }
+                else if (message[0] == 'U')
+                {
+                    // main UI on client-side is ready; send board information to each one and initial actions
+                    gameManager.sendBoardInformation();
                 }
                 //m: game mode options
                 //changed by TableUI

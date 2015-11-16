@@ -127,7 +127,7 @@ namespace SevenWonders
                     //o(id)
                     coordinator.sendToHost("o" + selectedCard);
                     //disable the Olympia button in gameUI
-                    coordinator.gameUI.olympiaButton.IsEnabled = false;
+                    // coordinator.gameUI.olympiaButton.IsEnabled = false;
                     //end the turn
                     coordinator.endTurn();
                 }

@@ -24,49 +24,119 @@ namespace SevenWonders
         public const int ICON_WIDTH = 25;
 
         // JDF: remove (they are part of the ChooseCard dialogbox)
-        public const int CARD_WIDTH = 112;
-        public const int CARD_HEIGHT = 206;
+        // public const int CARD_WIDTH = 50;
+        // public const int CARD_HEIGHT = 100;
 
         //Client's coordinator
         Coordinator coordinator;
 
         //Current directory
-        String currentPath = Environment.CurrentDirectory;
+        // String currentPath = Environment.CurrentDirectory;
 
         //Individual Player bar panel
-        StackPanel[] playerBarPanel;
+        // StackPanel[] playerBarPanel;
+        Canvas[] playerState;
 
         //Buttons
-        public Button[] buildStructureButton;
-        Button[] buildStageButton;
-        Button[] discardButton;
+        //public Button[] buildStructureButton;
+        // Button[] buildStageButton;
+        // Button[] discardButton;
 
         public bool playerPlayedHisTurn = false;
         //variable that represent the button that was pressed in the cardActionPanel
         Button playedButton = new Button();
 
+        // ListBoxItem[] handButton = new ListBoxItem[8];
+
+        Image[] boardImage;
 
         //constructor: create the UI. create the Coordinator object
-        public MainWindow()
+        public MainWindow(Coordinator c)
         {
-            //create the coordinator
-            coordinator = new Coordinator(this);
-
             InitializeComponent();
 
-            //make graphics better
-            RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.Fant);
+            this.coordinator = c;
+
+            playerState = new Canvas[c.numPlayers];
+            boardImage = new Image[c.numPlayers];
+
+            for (int i = 0; i < c.numPlayers; ++i)
+            {
+                playerState[i] = new Canvas();
+            }
+
+            playerState[0].Margin = new Thickness(837, 529, 725, 10);
+
+            switch (c.numPlayers)
+            {
+                case 3:
+                    playerState[1].Margin = new Thickness(481, 10, 1080, 529);
+                    playerState[2].Margin = new Thickness(1192, 10, 369, 529);
+                    break;
+
+                case 4:
+                    playerState[1].Margin = new Thickness(125, 269, 1436, 270);
+                    playerState[2].Margin = new Thickness(837, 10, 725, 529);
+                    playerState[3].Margin = new Thickness(1548, 269, 10, 270);
+                    break;
+
+                case 5:
+                    playerState[1].Margin = new Thickness(125, 269, 1436, 270);
+                    playerState[2].Margin = new Thickness(481, 10, 1080, 529);
+                    playerState[3].Margin = new Thickness(1192, 10, 369, 529);
+                    playerState[4].Margin = new Thickness(1548, 269, 10, 270);
+                    break;
+
+                case 6:
+                    playerState[1].Margin = new Thickness(481, 529, 1080, 10);
+                    playerState[2].Margin = new Thickness(481, 10, 1080, 529);
+                    playerState[3].Margin = new Thickness(837, 10, 725, 529);
+                    playerState[4].Margin = new Thickness(1192, 10, 369, 529);
+                    playerState[5].Margin = new Thickness(1192, 529, 369, 10);
+                    break;
+
+                case 7:
+                    playerState[1].Margin = new Thickness(481, 529, 1080, 10);
+                    playerState[2].Margin = new Thickness(125, 269, 1436, 270);
+                    playerState[3].Margin = new Thickness(481, 10, 1080, 529);
+                    playerState[4].Margin = new Thickness(1192, 10, 369, 529);
+                    playerState[5].Margin = new Thickness(1548, 269, 10, 270);
+                    playerState[6].Margin = new Thickness(1192, 529, 369, 10);
+                    break;
+
+                case 8:
+                    playerState[1].Margin = new Thickness(481, 529, 1080, 10);
+                    playerState[2].Margin = new Thickness(125, 269, 1436, 270);
+                    playerState[3].Margin = new Thickness(481, 10, 1080, 529);
+                    playerState[4].Margin = new Thickness(837, 10, 725, 529);
+                    playerState[5].Margin = new Thickness(1192, 10, 369, 529);
+                    playerState[6].Margin = new Thickness(1548, 269, 10, 270);
+                    playerState[7].Margin = new Thickness(1192, 529, 369, 10);
+                    break;
+            }
+
+            // create board images
+            for (int i = 0; i < c.numPlayers; ++i)
+            {
+                boardImage[i] = new Image();
+                boardImage[i].Margin = new Thickness(80, 390, 0, 0);
+                boardImage[i].Width = 200;
+                boardImage[i].Height = 100;
+
+                playerState[i].Children.Add(boardImage[i]);
+                mainGrid.Children.Add(playerState[i]);
+            }
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Menu UI event handlers
 
+#if FALSE
         //Event handlers for clicking the Create Table button
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
             //tell the coordinator that create game Button is pressed
             //UC-01 R01
-            coordinator.createGame();
         }
 
         //Event handler for clicking the Join Table button
@@ -87,20 +157,21 @@ namespace SevenWonders
 
             this.Close();
         }
+#endif
 
-     
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // UI Updates
         // Receives Strings from Coordinator
         // to update various UI information
 
+#if FALSE
         /// <summary>
         /// Display the Player Bar Panel information, given the String from Coordinator
         /// </summary>
         /// <param name="playerBarPanelInformation"></param>
         public void showPlayerBarPanel(String playerBarPanelInformation)
-        {          
+        {
 
             //clear the PlayerPanel of its current contents
             playerPanel.Children.Clear();
@@ -452,6 +523,7 @@ namespace SevenWonders
                 playerBarPanel[i].Children.Add(lossLabel[i]);
             }
         }
+#endif
 
         /// <summary>
         /// Action handler for the view details buttons
@@ -496,38 +568,38 @@ namespace SevenWonders
             //since this method is only used in Age 1, 2, and 3, therefore, just show the age number
             //Age 0 is handled in showHandLeadersPhase(String information)
 
-            currentAge.Content = handPanelInformation.currentAge;
+            // currentAge.Content = handPanelInformation.currentAge;
 
             //update Images
 
-
-            //get the number of cards
             int numberOfCards = handPanelInformation.id_buildable.Length;
 
-            //create the appropriate image source files
-            BitmapImage[] cardImageSource = new BitmapImage[numberOfCards];
-            for (int i = 0; i < numberOfCards; i++)
+
+            for (int i = 0; i < 8; ++i)
             {
-                cardImageSource[i] = new BitmapImage();
-                cardImageSource[i].BeginInit();
-                //Item1 of the id_buildable array of Tuples represents the id image
-                cardImageSource[i].UriSource = new Uri(currentPath + @"\Resources\Images\cards\" + handPanelInformation.id_buildable[i].Item1 + ".jpg");
-                cardImageSource[i].EndInit();
+                if (i < numberOfCards)
+                {
+                    BitmapImage bmpImg = new BitmapImage();
+                    bmpImg.BeginInit();
+                    //Item1 of the id_buildable array of Tuples represents the id image
+                    bmpImg.UriSource = new Uri(Environment.CurrentDirectory + @"\Resources\Images\cards\" + handPanelInformation.id_buildable[i].Item1 + ".jpg");
+                    bmpImg.EndInit();
+
+                    Image img = new Image();
+                    img.Source = bmpImg;
+
+                    ((ListBoxItem)handPanel.Items[i]).Content = img;
+                    ((ListBoxItem)handPanel.Items[i]).Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ((ListBoxItem)handPanel.Items[i]).Visibility = Visibility.Hidden;
+                }
             }
 
-            //Card Images
-            //create the appropriate amount of Images
-            //add them to the Card panel
-            handPanel.Children.Clear();
-            Image[] card = new Image[numberOfCards];
-            for (int i = 0; i < numberOfCards; i++)
-            {
-                card[i] = new Image();
-                card[i].Source = cardImageSource[i];
-                card[i].Width = CARD_WIDTH;
-                card[i].Height = CARD_HEIGHT;
-                handPanel.Children.Add(card[i]);
-            }
+
+                                    /*
+
 
             //set the Stage of Wonder buildability
             String name = "Stage", content = "Build Stage";
@@ -553,17 +625,18 @@ namespace SevenWonders
                     contents[i] = "Commerce";
                 }
             }
+            */
 
             //add the appropriate buttons
-            actionBuildPanel.Children.Clear();
-            actionStagePanel.Children.Clear();
-            actionDiscardPanel.Children.Clear();
+            //actionBuildPanel.Children.Clear();
+            //actionStagePanel.Children.Clear();
+            //actionDiscardPanel.Children.Clear();
 
-            buildStructureButton = new Button[numberOfCards];
-            buildStageButton = new Button[numberOfCards];
-            discardButton = new Button[numberOfCards];
+            // buildStructureButton = new Button[numberOfCards];
+            // buildStageButton = new Button[numberOfCards];
+            // discardButton = new Button[numberOfCards];
 
-
+            /*
             //display the action Buttons
             for (int i = 0; i < numberOfCards; i++)
             {
@@ -574,7 +647,7 @@ namespace SevenWonders
                 buildStructureButton[i].Name = names[i] + "_" + handPanelInformation.id_buildable[i].Item1;
                 buildStructureButton[i].IsEnabled = (handPanelInformation.id_buildable[i].Item2 == 'T' || handPanelInformation.id_buildable[i].Item2 == 'C');
                 buildStructureButton[i].Click += cardActionButtonPressed;
-                actionBuildPanel.Children.Add(buildStructureButton[i]);
+                //actionBuildPanel.Children.Add(buildStructureButton[i]);
 
                 buildStageButton[i] = new Button();
                 buildStageButton[i].Content = content;
@@ -583,7 +656,7 @@ namespace SevenWonders
                 buildStageButton[i].Name = name + "_" + handPanelInformation.id_buildable[i].Item1;
                 buildStageButton[i].IsEnabled = buildableStage;
                 buildStageButton[i].Click += cardActionButtonPressed;
-                actionStagePanel.Children.Add(buildStageButton[i]);
+               // actionStagePanel.Children.Add(buildStageButton[i]);
 
                 discardButton[i] = new Button();
                 discardButton[i].Content = "Discard Card";
@@ -592,12 +665,13 @@ namespace SevenWonders
                 discardButton[i].Name = "Discard_" + handPanelInformation.id_buildable[i].Item1;
                 discardButton[i].IsEnabled = true;
                 discardButton[i].Click += cardActionButtonPressed;
-                actionDiscardPanel.Children.Add(discardButton[i]);
+                //actionDiscardPanel.Children.Add(discardButton[i]);
             }
+                */
         }
 
 
-        
+
         /// <summary>
         /// Event handler for the Card Action Buttons created in showActionPanel
         /// </summary>
@@ -616,7 +690,7 @@ namespace SevenWonders
                 {
                     playedButton.IsEnabled = false;
                     playerPlayedHisTurn = true;
-                    bilkisButton.IsEnabled = false;
+                    // bilkisButton.IsEnabled = false;
                     coordinator.sendToHost("B" + s.Substring(6));
                     coordinator.endTurn();
                 }
@@ -624,7 +698,7 @@ namespace SevenWonders
                 {
                     playedButton.IsEnabled = false;
                     playerPlayedHisTurn = true;
-                    bilkisButton.IsEnabled = false;
+                    // bilkisButton.IsEnabled = false;
                     coordinator.sendToHost("S" + s.Substring(6));
                     coordinator.endTurn();
                 }
@@ -632,7 +706,7 @@ namespace SevenWonders
                 {
                     playedButton.IsEnabled = false;
                     playerPlayedHisTurn = true;
-                    bilkisButton.IsEnabled = false;
+                    // bilkisButton.IsEnabled = false;
                     coordinator.sendToHost("D" + s.Substring(8));
                     coordinator.endTurn();
                 }
@@ -651,7 +725,7 @@ namespace SevenWonders
                 {
                     playedButton.IsEnabled = false;
                     playerPlayedHisTurn = true;
-                    bilkisButton.IsEnabled = false;
+                    // bilkisButton.IsEnabled = false;
                     coordinator.sendToHost("l" + s.Substring(8));
                     coordinator.endTurn();
                 }
@@ -668,15 +742,15 @@ namespace SevenWonders
         /// display the Board, given the String from Coordinator
         /// </summary>
         /// <param name="information"></param>
-        public void showBoardImage(String information)
+        public void showBoardImage(int player, String information)
         {
             //information holds the board image file name
             BitmapImage boardImageSource = new BitmapImage();
             boardImageSource.BeginInit();
-            boardImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\boards\" + information + ".jpg");
+            boardImageSource.UriSource = new Uri(Environment.CurrentDirectory + @"\Resources\Images\boards\" + information + ".jpg");
             boardImageSource.EndInit();
 
-            boardImage.Source = boardImageSource;
+            boardImage[player].Source = boardImageSource;
         }
 
         /// <summary>
@@ -688,7 +762,7 @@ namespace SevenWonders
             //extract the colour
             //the name
             //the id number
-
+            /*
             LastPlayedCardInformation lastPlayedCard = (LastPlayedCardInformation)Marshaller.StringToObject(information);
 
             string colour = lastPlayedCard.colour;
@@ -709,10 +783,12 @@ namespace SevenWonders
             TextBlock t1 = new TextBlock();
             t1.Text = name;
             combo.Children.Add(t1);
+            */
 
             //combo.Tag = id;
             //combo.Content = name;
 
+            /*
             if(colour == "Blue")
             {
                 bluePlayedCards.Items.Add(combo);
@@ -750,8 +826,10 @@ namespace SevenWonders
             {
                 throw new NotImplementedException();
             }
+            */
         }
 
+#if FALSE
         //handler for the ComboBoxItems in Played Cards panel
         private void playedCards_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -775,6 +853,7 @@ namespace SevenWonders
             cardImageSource.EndInit();
             cardImage.Source = cardImageSource;
         }
+#endif
 
         /// <summary>
         /// Send a chat message to the Coordinator
@@ -796,6 +875,7 @@ namespace SevenWonders
             coordinator.olympiaButtonClicked();
         }
 
+#if FALSE
         public void discardCommerce()
         {
             playerPlayedHisTurn = false;
@@ -806,12 +886,14 @@ namespace SevenWonders
         {
             coordinator.createGame();
         }
+#endif
 
         private void chatTextField_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return) coordinator.sendChat(); 
         }
 
+#if FALSE
         private void joinGameIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             coordinator.displayJoinGameUI();
@@ -826,7 +908,7 @@ namespace SevenWonders
         {
             Help helpUI = new Help();
         }
-
+#endif
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //If there is an ongoing game, then coordinator must quit the game first
@@ -838,6 +920,7 @@ namespace SevenWonders
 
         public void showHandPanelLeadersPhase(string information)
         {
+            /*
             //the player is in a new turn now because his UI are still updating.
             //Therefore set playerPlayedHisturn to false
             playerPlayedHisTurn = false;
@@ -849,7 +932,7 @@ namespace SevenWonders
             //since this method is only used in Age 0, it shall say Leaders phase
             //Age 0 is handled in showHandLeadersPhase(String information)
 
-            currentAge.Content = "Leaders Phase";
+            // currentAge.Content = "Leaders Phase";
 
 
             //get the number of cards
@@ -891,14 +974,15 @@ namespace SevenWonders
                 names[i] = "Recruit";
                 contents[i] = "Recruit";
             }
-
+            */
             //add the appropriate buttons
-            actionBuildPanel.Children.Clear();
-            actionStagePanel.Children.Clear();
-            actionDiscardPanel.Children.Clear();
+            //actionBuildPanel.Children.Clear();
+            //actionStagePanel.Children.Clear();
+            //actionDiscardPanel.Children.Clear();
 
             //Build structure button will say "Recruit" instead for this phase
             //other ones will not say anything
+            /*
             buildStructureButton = new Button[numberOfCards];
 
             //display the action Buttons
@@ -911,8 +995,9 @@ namespace SevenWonders
                 buildStructureButton[i].Name = names[i] + "_" + handPanelInformation.ids[i];
                 buildStructureButton[i].IsEnabled = true;
                 buildStructureButton[i].Click += cardActionButtonPressed;
-                actionBuildPanel.Children.Add(buildStructureButton[i]);
+               // actionBuildPanel.Children.Add(buildStructureButton[i]);
             }
+            */
         }
 
         /// <summary>
@@ -929,7 +1014,7 @@ namespace SevenWonders
             coordinator.sendToHost("#" + coordinator.nickname + " uses Esteban to freeze the next turn!");
 
             //disable Esteban button now
-            estebanButton.IsEnabled = false;
+            // estebanButton.IsEnabled = false;
         }
 
         /// <summary>

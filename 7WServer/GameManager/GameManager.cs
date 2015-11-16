@@ -159,9 +159,24 @@ namespace SevenWonders
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        
 
 
+        public virtual void sendBoardInformation()
+        {
+            string strBoardInfoMsg = "SetBoard";
+
+            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            {
+                strBoardInfoMsg += string.Format("&Player{0}={1}", i, player[i].playerBoard.name);
+            }
+
+            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            {
+                gmCoordinator.sendMessage(player[i], strBoardInfoMsg);
+
+                player[i].executeAction(this);
+            }
+        }
 
         /// <summary>
         /// Beginning of Session Actions for Vanilla game
@@ -177,10 +192,10 @@ namespace SevenWonders
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
                 player[i].playerBoard = popRandomBoard();
-                gmCoordinator.sendMessage(player[i], "b" + player[i].playerBoard.name);
+                // gmCoordinator.sendMessage(player[i], "b" + player[i].playerBoard.name);
                 player[i].storeAction("13$");
                 player[i].storeAction("11" + player[i].playerBoard.freeResource);
-                player[i].executeAction(this);
+                // player[i].executeAction(this);
             }
 
             //initialize, load, and remove unused cards
@@ -941,10 +956,11 @@ namespace SevenWonders
         {
             //Update the Player Bar Panel
             //send the playerBarPanel information
-            gmCoordinator.sendMessage(p, "B" + Marshaller.ObjectToString(new PlayerBarInformation(player)));
+            // gmCoordinator.sendMessage(p, "B" + Marshaller.ObjectToString(new PlayerBarInformation(player)));
             //send the current stage of wonder information and tell it to start up the timer
-            gmCoordinator.sendMessage(p, "s" + p.currentStageOfWonder);
+            // gmCoordinator.sendMessage(p, "s" + p.currentStageOfWonder);
 
+            /*
             //if player has Olympia power, send the message to enable the Olympia button
             if(p.olympiaPowerEnabled)
             {
@@ -960,6 +976,7 @@ namespace SevenWonders
 
             //send current turn information
             gmCoordinator.sendMessage(p, "T" + currentTurn);
+            */
 
             //send the hand panel (action information) for regular ages (not the Recruitment phase i.e. Age 0)
             if (currentAge > 0)

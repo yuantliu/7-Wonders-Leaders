@@ -50,7 +50,7 @@ namespace SevenWonders
             }
 
             //tell the coordinator to join the game
-            coordinator.joinGame(textUser.Text, IPAddress.Parse(ipAddressText.Text));
+            // coordinator.joinGame(textUser.Text, IPAddress.Parse(ipAddressText.Text));
 
             //close the Join Button window
             Close();

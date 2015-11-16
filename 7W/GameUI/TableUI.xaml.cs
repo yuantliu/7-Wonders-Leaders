@@ -26,7 +26,7 @@ namespace SevenWonders
     public partial class TableUI : Window
     {
 
-        Coordinator coordinator { get; set; }
+        Coordinator coordinator;
 
         /// <summary>
         /// Initialise the Table UI

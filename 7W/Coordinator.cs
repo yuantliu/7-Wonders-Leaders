@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -18,6 +19,7 @@ using System.Threading;
 using System.IO;
 using System.Data;
 using System.Timers;
+using System.Web;
 
 namespace SevenWonders
 {
@@ -29,22 +31,23 @@ namespace SevenWonders
         //The various UI that Coordinator keeps track of
         public MainWindow gameUI;
         TableUI tableUI;
-        JoinTableUI joinTableUI;
+        // JoinTableUI joinTableUI;
         OlympiaUI olympiaUI;
         HalicarnassusUI halicarnassusUI;
         BabylonUI babylonUI;
-        // ChooseCard chooseCardDlg;
 
         //The client that the application will use to interact with the server.
-        public Client client { get; set;  }
+        public Client client { get; private set;  }
 
         //User's nickname
         public string nickname;
 
+        public int numPlayers { get; private set; }
+
         //Timer
-        int timeElapsed;
-        private const int MAX_TIME = 120;
-        private System.Windows.Threading.DispatcherTimer timer;
+        // int timeElapsed;
+        // private const int MAX_TIME = 120;
+        // private System.Windows.Threading.DispatcherTimer timer;
 
         //current turn
         int currentTurn;
@@ -52,19 +55,26 @@ namespace SevenWonders
         //Leaders
         BilkisUI bilkisUI;
 
-        public Coordinator(MainWindow gameUI)
+        public Coordinator()
         {
-            this.gameUI = gameUI;
             nickname = "";
 
             hasGame = false;
 
+            /*
             //prepare the timer
             timer = new System.Windows.Threading.DispatcherTimer();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = new TimeSpan(0, 0, 1);
+            */
         }
 
+        public void SetMainWindow(MainWindow mw)
+        {
+            gameUI = mw;
+        }
+
+        /*
         //Update the 100 Second timer field
         public void timer_Tick(object sender, EventArgs e)
         {
@@ -84,6 +94,9 @@ namespace SevenWonders
                 }
             }));
         }
+        */
+
+#if FALSE
 
         /// <summary>
         /// Discard card in first hand position
@@ -102,10 +115,11 @@ namespace SevenWonders
 
             endTurn();
         }
-
+#endif
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if FALSE
         /// <summary>
         /// Update the current stage of wonder label
         /// Start up the timer at this point
@@ -132,11 +146,14 @@ namespace SevenWonders
             timeElapsed = 0;
             timer.Start();
         }
+#endif
 
+#if FALSE
         public void updateCardImage(string s)
         {
             gameUI.showCardImage(s);
         }
+#endif
 
         public void updatePlayedCardsPanel(string s)
         {
@@ -153,13 +170,12 @@ namespace SevenWonders
 
             Application.Current.Dispatcher.Invoke(new Action(delegate
             {
-                gameUI.chatTextBox.Text += s;
+                // gameUI.chatTextBox.Text += s;
                 tableUI.chatTextBox.Text += s;
 
-                gameUI.scroll.ScrollToEnd();
+                // gameUI.scroll.ScrollToEnd();
                 tableUI.scroll.ScrollToEnd();
             }));
-
         }
 
         /// <summary>
@@ -173,7 +189,7 @@ namespace SevenWonders
 
         public void endTurn()
         {
-            timer.Stop();
+            // timer.Stop();
             sendToHost("t");
         }
 
@@ -191,17 +207,16 @@ namespace SevenWonders
         /// <param name="gameMode"></param>
         public void iAmReady()
         {
-            //Grey out the Ready button
+            // Disable the ready button now that we've indicated we are ready to start.
             Application.Current.Dispatcher.Invoke(new Action(delegate
             {
                 tableUI.readyButton.IsEnabled = false;
             }));
 
-            initGameUI();
-            
             sendToHost("R");
         }
 
+        /*
         /// <summary>
         /// All players are ready. Initialise the game UI elements.
         /// </summary>
@@ -217,22 +232,23 @@ namespace SevenWonders
 
             gameUI.mainGrid.Background = null;
             gameUI.mainGrid.Background = back;
-            gameUI.chatTextField.Visibility = Visibility.Visible;
-            gameUI.sendButton.Visibility = Visibility.Visible;
-            gameUI.scroll.Visibility = Visibility.Visible;
-            gameUI.timerTextBox.Visibility = Visibility.Visible;
+            // gameUI.chatTextField.Visibility = Visibility.Visible;
+            // gameUI.sendButton.Visibility = Visibility.Visible;
+            // gameUI.scroll.Visibility = Visibility.Visible;
+            // gameUI.timerTextBox.Visibility = Visibility.Visible;
 
             // JDF removed these special buttons until the UI redesign is done.
             //gameUI.olympiaButton.Visibility = Visibility.Visible;
             //gameUI.estebanButton.Visibility = Visibility.Visible;
             //gameUI.bilkisButton.Visibility = Visibility.Visible;
 
-            gameUI.currentAgeLabel.Visibility = Visibility.Visible;
-            gameUI.currentAge.Visibility = Visibility.Visible;
-            gameUI.stackPanel1.Visibility = Visibility.Visible;
-            gameUI.canvas1.Visibility = Visibility.Hidden;
-            gameUI.helpButton.Visibility = Visibility.Visible;
+            //gameUI.currentAgeLabel.Visibility = Visibility.Visible;
+            //gameUI.currentAge.Visibility = Visibility.Visible;
+            // gameUI.stackPanel1.Visibility = Visibility.Visible;
+            // gameUI.canvas1.Visibility = Visibility.Hidden;
+            // gameUI.helpButton.Visibility = Visibility.Visible;
         }
+        */
 
         public void sendChat()
         {
@@ -240,11 +256,11 @@ namespace SevenWonders
 
             //determine the textfield that is non-empty and send that
             //this should not be necessary later on, when the UI is better
-            if (gameUI.chatTextField.Text.Length != 0)
-            {
-                message = gameUI.chatTextField.Text;
-            }
-            else
+            // if (gameUI.chatTextField.Text.Length != 0)
+            // {
+            //     message = gameUI.chatTextField.Text;
+            // }
+            // else
             {
                 message = tableUI.chatTextField.Text;
             }
@@ -257,7 +273,7 @@ namespace SevenWonders
             }
 
             //reset the textfields
-            gameUI.chatTextField.Text = "";
+            // gameUI.chatTextField.Text = "";
             tableUI.chatTextField.Text = "";
         }
 
@@ -286,6 +302,7 @@ namespace SevenWonders
             }));
         }
 
+#if FALSE
         /*
          * Send the Join Game request to the Server.
          */
@@ -321,7 +338,7 @@ namespace SevenWonders
             joinTableUI = new JoinTableUI(this);
             joinTableUI.ShowDialog();
         }
-
+#endif
 
         /**
          * Function called by MainWindow for creating a new game
@@ -356,6 +373,10 @@ namespace SevenWonders
 
             sendToHost("J" + nickname);
             tableUI.ShowDialog();
+
+            // after the tableUI has closed, the number of players is known.
+            // now the number of players is known
+            // initGameUI();
         }
 
         /// <summary>
@@ -448,6 +469,37 @@ namespace SevenWonders
             //J --------------- a player has joined the table. Add a player to the Game Manager
             //S --------------- the all ready signal. 5 second count down, then the join table window closes.
 
+            if (message.Length >= 8)
+            {
+                bool messageHandled = false;
+
+                switch (message.Substring(0, 8))
+                {
+                    case "SetBoard":
+                        // Parse the query string variables into a NameValueCollection.
+                        NameValueCollection qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+
+                        for (int i = 0; i < qscoll.Count; ++i)
+                        {
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                gameUI.showBoardImage(i, qscoll[i]);
+                            }));
+                        }
+
+                        // Tell game server this client is ready to receive its first hand data
+                        // Used to be sent in response to the "S[0|1]" message, indicating the game client
+                        // is ready to accept the hand data.
+                        sendToHost("r");
+
+                        messageHandled = true;
+                        break;
+                }
+
+                if (messageHandled)
+                    return;
+            }
+
             //chat
             if (message[0] == '#')
             {
@@ -459,7 +511,7 @@ namespace SevenWonders
             else if (message[0] == 'S')
             {
                 //Handle when game cannot start
-                if (message[1] == '1')
+                if (message[1] == '0')
                 {
                     //re-enable the ready button
                     Application.Current.Dispatcher.Invoke(new Action(delegate
@@ -468,10 +520,15 @@ namespace SevenWonders
                     }));
                 }
                 //game is starting
-                else if (message[1] == '0')
+                else
                 {
                     //tell the server UI initialisation is done
-                    sendToHost("r");
+                    // sendToHost("r"); // JDF - moved to another location until after the gameUI is created.
+
+                    // find out the number of players.
+                    string strNumPlayers = message.Substring(1);
+
+                    numPlayers = int.Parse(strNumPlayers);
 
                     //close the TableUI
                     Application.Current.Dispatcher.Invoke(new Action(delegate
@@ -488,38 +545,34 @@ namespace SevenWonders
                     //update the hand panel with the information
                     gameUI.showHandPanel(message.Substring(1));
                 }));
-                    /*
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    HandPanelInformation handPanelInformation = (HandPanelInformation)Marshaller.StringToObject(message.Substring(1));
-
-                    ChooseCard chooseCardDlg = new ChooseCard(this, handPanelInformation);
-                    chooseCardDlg.ShowDialog();
-                }));
-                */
             }
             //update the Player Bar panel
             //also start up the timer
             else if (message[0] == 'B')
             {
+                /*
                 Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
                     gameUI.showPlayerBarPanel(message.Substring(1));
                 }));
+                */
             }
             //update the current stage of wonder information
             else if (message[0] == 's')
             {
-                updateCurrentStageLabelAndStartTimer(message);
+                // updateCurrentStageLabelAndStartTimer(message);
             }
             //update the board panel
             else if (message[0] == 'b')
             {
+                // Now handled by the first "if" statement, above
                 //"b_(name)"
+                /*
                 Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
                     gameUI.showBoardImage(message.Substring(1));
                 }));
+                */
             }
             //update the played cards panel
             else if (message[0] == 'P')
@@ -532,7 +585,7 @@ namespace SevenWonders
             //indicate to client to start timer
             else if (message[0] == 't')
             {
-                startTimer();
+                // startTimer();
             }
             //create the commerce if necessary 
             else if (message[0] == 'C')
@@ -542,10 +595,12 @@ namespace SevenWonders
             //enable the Olympia button
             else if (message == "EO")
             {
+                /*
                 Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
                     gameUI.olympiaButton.IsEnabled = true;
                 }));
+                */
             }
             //enable Olympia power OR Rome power
             //activate the Olympia UI
@@ -588,11 +643,13 @@ namespace SevenWonders
             //receive the information on view details for player
             else if (message[0] == 'V')
             {
+                /*
                 Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
                     //pass this information to handleViewDetails in GameUI
                     gameUI.handleViewDetails(message);
                 }));
+                */
             }
             //received an unable to join message from the server
             //UC-02 R07
@@ -602,7 +659,7 @@ namespace SevenWonders
 
                 tableUI.Close();
 
-                displayJoinGameUI();
+                // displayJoinGameUI();
             }
 
             //leaders: received Recruitment phase turn display (Age 0 turn)
@@ -613,6 +670,7 @@ namespace SevenWonders
                     gameUI.showHandPanelLeadersPhase(message.Substring(1));
                 }));
             }
+            /*
             //enable the Esteban button
             else if (message == "EE")
             {
@@ -638,10 +696,11 @@ namespace SevenWonders
                     courtUI.ShowDialog();
                 }));
             }
+            */
             //receive the end of game signal
             else if (message[0] == 'e')
             {
-                timer.Stop();
+                // timer.Stop();
             }
         }
 
