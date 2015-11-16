@@ -16,6 +16,10 @@ using System.Threading;
 // Describes how to go from a simple non-reusable button to something more reusable
 // http://blogs.msdn.com/b/knom/archive/2007/10/31/wpf-control-development-3-ways-to-build-an-imagebutton.aspx
 
+// Resource embedding & referencing.  Much better than having to include a bunch of files along with the exe for this
+// program.
+// http://stackoverflow.com/questions/347614/wpf-image-resources
+
 namespace SevenWonders
 {
     /// <summary>

@@ -582,7 +582,7 @@ namespace SevenWonders
                     BitmapImage bmpImg = new BitmapImage();
                     bmpImg.BeginInit();
                     //Item1 of the id_buildable array of Tuples represents the id image
-                    bmpImg.UriSource = new Uri(Environment.CurrentDirectory + @"\Resources\Images\cards\" + handPanelInformation.id_buildable[i].Item1 + ".jpg");
+                    bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/cards/" + handPanelInformation.id_buildable[i].Item1 + ".jpg");
                     bmpImg.EndInit();
 
                     Image img = new Image();
@@ -747,7 +747,7 @@ namespace SevenWonders
             //information holds the board image file name
             BitmapImage boardImageSource = new BitmapImage();
             boardImageSource.BeginInit();
-            boardImageSource.UriSource = new Uri(Environment.CurrentDirectory + @"\Resources\Images\boards\" + information + ".jpg");
+            boardImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/boards/" + information + ".jpg");
             boardImageSource.EndInit();
 
             boardImage[player].Source = boardImageSource;
