@@ -17,14 +17,14 @@
         <Canvas Margin="1548,269,10,270" Background="Gray" />
         -->
         <ListBox Margin="10,10,1800,10" Name="handPanel">
-            <ListBoxItem Height="120"></ListBoxItem>
-            <ListBoxItem Height="120"></ListBoxItem>
-            <ListBoxItem Height="120"></ListBoxItem>
-            <ListBoxItem Height="120"></ListBoxItem>
-            <ListBoxItem Height="120"></ListBoxItem>
-            <ListBoxItem Height="120"></ListBoxItem>
-            <ListBoxItem Height="120"></ListBoxItem>
-            <ListBoxItem Height="120"></ListBoxItem>
+            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
+            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
+            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
+            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
+            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
+            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
+            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
+            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
         </ListBox>
         <Button Margin="157,816,1553,194" Name="btnBuildStructure" Content="Build this structure">
         </Button>

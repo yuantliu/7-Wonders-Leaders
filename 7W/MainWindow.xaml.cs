@@ -588,6 +588,21 @@ namespace SevenWonders
                     Image img = new Image();
                     img.Source = bmpImg;
 
+                    switch (handPanelInformation.id_buildable[i].Item2)
+                    {
+                        case 'T':   // buildable without using commerce (either because the city produces all the required resources or because of chaining from a card built in the previous age)
+                            ((ListBoxItem)handPanel.Items[i]).BorderBrush = new SolidColorBrush(Colors.Green);
+                            break;
+
+                        case 'C':   // buildable using resources from neighboring cities
+                            ((ListBoxItem)handPanel.Items[i]).BorderBrush = new SolidColorBrush(Colors.Yellow);
+                            break;
+
+                        case 'F':   // not buildable
+                            ((ListBoxItem)handPanel.Items[i]).BorderBrush = new SolidColorBrush(Colors.Gray);
+                            break;
+                    }
+                   
                     ((ListBoxItem)handPanel.Items[i]).Content = img;
                     ((ListBoxItem)handPanel.Items[i]).Visibility = Visibility.Visible;
                 }
