@@ -5,6 +5,7 @@ using System.Text;
 
 namespace SevenWonders
 {
+    [Serializable]
     public class Card
     {
 

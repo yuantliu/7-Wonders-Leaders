@@ -14,6 +14,16 @@ using System.Windows.Shapes;
 
 namespace SevenWonders
 {
+    public class PlayerState
+    {
+        public Canvas canvas;
+
+        public PlayerState()
+        {
+            canvas = new Canvas();
+        }
+    };
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -35,7 +45,7 @@ namespace SevenWonders
 
         //Individual Player bar panel
         // StackPanel[] playerBarPanel;
-        Canvas[] playerState;
+        PlayerState[] playerState;
 
         //Buttons
         //public Button[] buildStructureButton;
@@ -58,61 +68,61 @@ namespace SevenWonders
 
             this.coordinator = c;
 
-            playerState = new Canvas[c.numPlayers];
+            playerState = new PlayerState[c.numPlayers];
             boardImage = new Image[c.numPlayers];
 
             for (int i = 0; i < c.numPlayers; ++i)
             {
-                playerState[i] = new Canvas();
+                playerState[i] = new PlayerState();
             }
 
-            playerState[0].Margin = new Thickness(837, 529, 725, 10);
+            playerState[0].canvas.Margin = new Thickness(837, 529, 725, 10);
 
             switch (c.numPlayers)
             {
                 case 3:
-                    playerState[1].Margin = new Thickness(481, 10, 1080, 529);
-                    playerState[2].Margin = new Thickness(1192, 10, 369, 529);
+                    playerState[1].canvas.Margin = new Thickness(481, 10, 1080, 529);
+                    playerState[2].canvas.Margin = new Thickness(1192, 10, 369, 529);
                     break;
 
                 case 4:
-                    playerState[1].Margin = new Thickness(125, 269, 1436, 270);
-                    playerState[2].Margin = new Thickness(837, 10, 725, 529);
-                    playerState[3].Margin = new Thickness(1548, 269, 10, 270);
+                    playerState[1].canvas.Margin = new Thickness(125, 269, 1436, 270);
+                    playerState[2].canvas.Margin = new Thickness(837, 10, 725, 529);
+                    playerState[3].canvas.Margin = new Thickness(1548, 269, 10, 270);
                     break;
 
                 case 5:
-                    playerState[1].Margin = new Thickness(125, 269, 1436, 270);
-                    playerState[2].Margin = new Thickness(481, 10, 1080, 529);
-                    playerState[3].Margin = new Thickness(1192, 10, 369, 529);
-                    playerState[4].Margin = new Thickness(1548, 269, 10, 270);
+                    playerState[1].canvas.Margin = new Thickness(125, 269, 1436, 270);
+                    playerState[2].canvas.Margin = new Thickness(481, 10, 1080, 529);
+                    playerState[3].canvas.Margin = new Thickness(1192, 10, 369, 529);
+                    playerState[4].canvas.Margin = new Thickness(1548, 269, 10, 270);
                     break;
 
                 case 6:
-                    playerState[1].Margin = new Thickness(481, 529, 1080, 10);
-                    playerState[2].Margin = new Thickness(481, 10, 1080, 529);
-                    playerState[3].Margin = new Thickness(837, 10, 725, 529);
-                    playerState[4].Margin = new Thickness(1192, 10, 369, 529);
-                    playerState[5].Margin = new Thickness(1192, 529, 369, 10);
+                    playerState[1].canvas.Margin = new Thickness(481, 529, 1080, 10);
+                    playerState[2].canvas.Margin = new Thickness(481, 10, 1080, 529);
+                    playerState[3].canvas.Margin = new Thickness(837, 10, 725, 529);
+                    playerState[4].canvas.Margin = new Thickness(1192, 10, 369, 529);
+                    playerState[5].canvas.Margin = new Thickness(1192, 529, 369, 10);
                     break;
 
                 case 7:
-                    playerState[1].Margin = new Thickness(481, 529, 1080, 10);
-                    playerState[2].Margin = new Thickness(125, 269, 1436, 270);
-                    playerState[3].Margin = new Thickness(481, 10, 1080, 529);
-                    playerState[4].Margin = new Thickness(1192, 10, 369, 529);
-                    playerState[5].Margin = new Thickness(1548, 269, 10, 270);
-                    playerState[6].Margin = new Thickness(1192, 529, 369, 10);
+                    playerState[1].canvas.Margin = new Thickness(481, 529, 1080, 10);
+                    playerState[2].canvas.Margin = new Thickness(125, 269, 1436, 270);
+                    playerState[3].canvas.Margin = new Thickness(481, 10, 1080, 529);
+                    playerState[4].canvas.Margin = new Thickness(1192, 10, 369, 529);
+                    playerState[5].canvas.Margin = new Thickness(1548, 269, 10, 270);
+                    playerState[6].canvas.Margin = new Thickness(1192, 529, 369, 10);
                     break;
 
                 case 8:
-                    playerState[1].Margin = new Thickness(481, 529, 1080, 10);
-                    playerState[2].Margin = new Thickness(125, 269, 1436, 270);
-                    playerState[3].Margin = new Thickness(481, 10, 1080, 529);
-                    playerState[4].Margin = new Thickness(837, 10, 725, 529);
-                    playerState[5].Margin = new Thickness(1192, 10, 369, 529);
-                    playerState[6].Margin = new Thickness(1548, 269, 10, 270);
-                    playerState[7].Margin = new Thickness(1192, 529, 369, 10);
+                    playerState[1].canvas.Margin = new Thickness(481, 529, 1080, 10);
+                    playerState[2].canvas.Margin = new Thickness(125, 269, 1436, 270);
+                    playerState[3].canvas.Margin = new Thickness(481, 10, 1080, 529);
+                    playerState[4].canvas.Margin = new Thickness(837, 10, 725, 529);
+                    playerState[5].canvas.Margin = new Thickness(1192, 10, 369, 529);
+                    playerState[6].canvas.Margin = new Thickness(1548, 269, 10, 270);
+                    playerState[7].canvas.Margin = new Thickness(1192, 529, 369, 10);
                     break;
             }
 
@@ -124,8 +134,8 @@ namespace SevenWonders
                 boardImage[i].Width = 200;
                 boardImage[i].Height = 100;
 
-                playerState[i].Children.Add(boardImage[i]);
-                mainGrid.Children.Add(playerState[i]);
+                playerState[i].canvas.Children.Add(boardImage[i]);
+                mainGrid.Children.Add(playerState[i].canvas);
             }
         }
 
@@ -166,14 +176,13 @@ namespace SevenWonders
         // Receives Strings from Coordinator
         // to update various UI information
 
-#if FALSE
         /// <summary>
         /// Display the Player Bar Panel information, given the String from Coordinator
         /// </summary>
         /// <param name="playerBarPanelInformation"></param>
         public void showPlayerBarPanel(String playerBarPanelInformation)
         {
-
+            /*
             //clear the PlayerPanel of its current contents
             playerPanel.Children.Clear();
 
@@ -523,8 +532,8 @@ namespace SevenWonders
                 lossLabel[i].Content = playerBarInformation.playerInfo[i].loss;
                 playerBarPanel[i].Children.Add(lossLabel[i]);
             }
+            */
         }
-#endif
 
         /// <summary>
         /// Action handler for the view details buttons
@@ -787,13 +796,20 @@ namespace SevenWonders
             //extract the colour
             //the name
             //the id number
-            /*
-            LastPlayedCardInformation lastPlayedCard = (LastPlayedCardInformation)Marshaller.StringToObject(information);
+            Card lastPlayedCard = (Card)Marshaller.StringToObject(information);
 
             string colour = lastPlayedCard.colour;
             string name = lastPlayedCard.name;
             int id = lastPlayedCard.id;
-            
+
+            Label cardLabel = new Label();
+
+            cardLabel.Content = name;
+            cardLabel.Margin = new Thickness(20, 200, 0, 0);
+
+            playerState[0].canvas.Children.Add(cardLabel);
+
+            /*
             //add a selection to the appropriate drop down menu
             // ListBoxItem combo = new ListBoxItem();
             StackPanel combo = new StackPanel();

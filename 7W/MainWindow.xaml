@@ -5,6 +5,9 @@
     <Grid Name="mainGrid" Visibility="Visible">
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
+        <!--
+        <Canvas Margin="837, 529, 725, 10"></Canvas>
+        -->
         <ListBox Margin="10,10,1800,10" Name="handPanel" SelectionChanged="handPanel_SelectionChanged">
             <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
             <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>

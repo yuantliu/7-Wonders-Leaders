@@ -1100,6 +1100,7 @@ namespace SevenWonders
             return totalCost;
         }
 
+        /*
         /// <summary>
         /// Return the last played card
         /// </summary>
@@ -1109,6 +1110,7 @@ namespace SevenWonders
         {
             return playedStructure[numOfPlayedCards - 1];
         }
+        */
 
 
         /// <summary>

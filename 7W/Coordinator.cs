@@ -153,12 +153,12 @@ namespace SevenWonders
         {
             gameUI.showCardImage(s);
         }
-#endif
 
         public void updatePlayedCardsPanel(string s)
         {
             gameUI.showPlayedCardsPanel(s);
         }
+#endif
 
         /// <summary>
         /// Update the Chat logs
@@ -550,12 +550,10 @@ namespace SevenWonders
             //also start up the timer
             else if (message[0] == 'B')
             {
-                /*
                 Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
                     gameUI.showPlayerBarPanel(message.Substring(1));
                 }));
-                */
             }
             //update the current stage of wonder information
             else if (message[0] == 's')

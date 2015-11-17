@@ -126,29 +126,6 @@ namespace SevenWonders
     }
 
     /*
-     * Object that encapsulate information about last played card, which is used to add to the Played Card Panel
-     * Whenever a card becomes "Played", UpdatePlayedCardPanel should be called
-     * Created by GameManager.UpdatePlayedCardPanel
-     * Read by 
-     */
-
-    [Serializable]
-    public class LastPlayedCardInformation
-    {
-        public string colour;
-        public string name;
-        public int id;
-
-        public LastPlayedCardInformation(IPlayer p)
-        {
-            int lastPlayed = p.GetNumberOfPlayedCards() - 1;
-
-            colour = p.GetCardPlayed(lastPlayed).colour;
-            name = p.GetCardPlayed(lastPlayed).name;
-            id = p.GetCardPlayed(lastPlayed).id;
-        }
-    }
-
     /// <summary>
     /// Information to be sent when player wishes to view the details of a particular player
     /// </summary>
@@ -222,7 +199,7 @@ namespace SevenWonders
             }
         }
     }
-
+    */
     /// <summary>
     /// Information for dialogues that involve playing cards for free
     /// For example, Olympia (for current hand cards) and Rome (for Leader cards)

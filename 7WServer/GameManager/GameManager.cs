@@ -21,12 +21,15 @@ namespace SevenWonders
         //Current turn
         public int currentTurn;
 
+        // JDF I think player should be a dictionary rather than an array.
+        // public Dictionary<string, Player> player;
+
         public Player[] player;
+
         //All possible decks
         private IList<Board> board;
 
         public Deck[] deck;
-        public Deck currentDeck { get; set; }
 
         public Card[] discardPile;
         int numDiscardPile;
@@ -1019,8 +1022,7 @@ namespace SevenWonders
             //get the player
             Player p = playerFromNickname(nickname);
 
-            //create LastPlayedCardInformation from given Player
-            String lastPlayedCardInformationString = "P" + Marshaller.ObjectToString(new LastPlayedCardInformation(p));
+            String lastPlayedCardInformationString = "P" + Marshaller.ObjectToString(p.GetCardPlayed(p.GetNumberOfPlayedCards() - 1));
 
             gmCoordinator.sendMessage(p, lastPlayedCardInformationString);
         }
@@ -1225,6 +1227,7 @@ namespace SevenWonders
             gmCoordinator.sendMessage(p, commercePackageInformation);
         }
 
+        /*
         //return the view detail UI information, given a player name
         public void sendViewDetailInformation(String requesterName, String requestedName)
         {
@@ -1237,6 +1240,7 @@ namespace SevenWonders
 
             gmCoordinator.sendMessage(requester, information);
         }
+        */
 
         protected int numOfPlayersThatHaveTakenTheirTurn = 0;
 

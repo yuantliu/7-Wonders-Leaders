@@ -299,12 +299,15 @@ namespace SevenWonders
                 {
                     gameManager.turnTaken(nickname);
                 }
+                /*
+                // JDF commented-out as the main window now has all the view data and this is therefore no longer needed.
                 //V(player nickname)
                 //return the view detail UI information of a given player's nickname
                 else if (message[0] == 'V')
                 {
                     gameManager.sendViewDetailInformation(nickname, message.Substring(1));
                 }
+                */
 
                 //"L" for leave a game
                 else if (message[0] == 'L')
