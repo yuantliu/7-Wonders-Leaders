@@ -5,18 +5,7 @@
     <Grid Name="mainGrid" Visibility="Visible">
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
-        <!--
-        <Canvas Margin="837,529,725,10" Background="Black" />
-        <Canvas Margin="481,10,1080,529" Background="Orange" />
-        <Canvas Margin="837,10,725,529" Background="Magenta" />
-        <Canvas Margin="1192,10,369,529" Background="Green"/>
-        <Canvas Margin="1192,529,369,10" Background="Blue"/>
-
-        <Canvas Margin="481,529,1080,10" Background="Yellow" />
-        <Canvas Margin="125,269,1436,270" Background="Red" />
-        <Canvas Margin="1548,269,10,270" Background="Gray" />
-        -->
-        <ListBox Margin="10,10,1800,10" Name="handPanel">
+        <ListBox Margin="10,10,1800,10" Name="handPanel" SelectionChanged="handPanel_SelectionChanged">
             <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
             <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
             <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
@@ -26,27 +15,22 @@
             <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
             <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
         </ListBox>
-        <Button Margin="157,816,1553,194" Name="btnBuildStructure" Content="Build this structure">
-        </Button>
-        <Button Name="btnDiscardStructure" Margin="157,878,1553,132" Content="Discard this structure">
-        </Button>
+        <Button Name="btnBuildStructure" Margin="157,816,1531,194" Content="Build this structure" Click="cardActionButtonPressed"></Button>
+        <Button Name="btnBuildWonderStage" Margin="157,861,1531,149" Content="Build a wonder stage with this card" Click="cardActionButtonPressed"></Button>
+        <Button Name="btnDiscardStructure" Margin="157,906,1531,104" Content="Discard this structure" Click="cardActionButtonPressed"></Button>
+
         <!--
         <Label Content="Current Age:" Height="28" HorizontalAlignment="Left" Margin="12,29,0,0" Name="currentAgeLabel" VerticalAlignment="Top" Width="300" Visibility="Hidden" />
         <Label Content="X" Height="25" HorizontalAlignment="Left" Margin="95,29,0,0" Name="currentAge" VerticalAlignment="Top" Width="37" Visibility="Hidden" />
-        -->
-        <!--
+
         <StackPanel Height="181" HorizontalAlignment="Left" Margin="12,63,0,0" Name="playerPanel" VerticalAlignment="Top" Width="780"></StackPanel>
-        -->
-        <!--
+
         <StackPanel Height="734" Margin="0,10,0,0" Name="handPanel" VerticalAlignment="Top" HorizontalAlignment="Left" Width="257" Orientation="Horizontal"></StackPanel>
         <StackPanel Name="" Height="300" Width="300"></StackPanel>
-        -->
-        <!--
+
         <TextBox Height="23" Margin="24,704,0,0" Name="chatTextField" VerticalAlignment="Top" HorizontalAlignment="Left" Width="146" Grid.Column="1" PreviewKeyDown="chatTextField_PreviewKeyDown" />
         <Button Content="Send" Height="23" HorizontalAlignment="Right" Margin="0,704,15,0" Name="sendButton" VerticalAlignment="Top" Width="36" Click="sendButton_Click" />
-        -->
 
-        <!--
         <StackPanel Height="189" HorizontalAlignment="Left" Margin="188,250,0,0" Name="stackPanel1" VerticalAlignment="Top" Width="214" Visibility="Visible">
             
             <Label Content="Played Cards" Height="25" Name="playedCardsLabel" Width="198" />
@@ -83,31 +67,14 @@
                 <ListBox Height="20" Name="whitePlayedCards" SelectionChanged="playedCards_SelectionChanged" Width="177" />
             </StackPanel>
         </StackPanel>
-        -->
-        <!--
-        <Image Height="199" HorizontalAlignment="Left" Margin="13,250,0,0" Name="cardImage" Stretch="Fill" VerticalAlignment="Top" Width="126" />
-        -->
-        <!--
-        <Image Height="160" HorizontalAlignment="Left" Margin="1076,847,0,0" Name="boardImage" Stretch="Fill" VerticalAlignment="Top" Width="315" >
-        </Image>
-        -->
-        <!--
+
         <ScrollViewer Height="668" HorizontalAlignment="Left" Margin="1696,0,0,0" Name="scroll" VerticalAlignment="Top" Width="206">
             <TextBlock Name="chatTextBox" HorizontalAlignment="Left" Margin="6,6,0,0" Text="" VerticalAlignment="Top" Height="Auto" Width="Auto" DataContext="{Binding}" TextWrapping="Wrap"/>
         </ScrollViewer>
-        -->
 
-        <!--
-        <StackPanel Height="25" HorizontalAlignment="Left" Margin="12,657,0,0" Name="actionBuildPanel" VerticalAlignment="Top" Width="791" Orientation="Horizontal"></StackPanel>
-        <StackPanel Height="25" HorizontalAlignment="Left" Margin="12,688,0,0" Name="actionStagePanel" VerticalAlignment="Top" Width="791" Orientation="Horizontal"></StackPanel>
-        <StackPanel Height="25" HorizontalAlignment="Left" Margin="12,719,0,0" Name="actionDiscardPanel" VerticalAlignment="Top" Width="791" Orientation="Horizontal"></StackPanel>
-        -->
-        <!--
         <TextBox Height="25" HorizontalAlignment="Left" Margin="742,219,0,0" Name="timerTextBox" VerticalAlignment="Top" Width="62" />
         <Label Height="27" HorizontalAlignment="Left" Margin="408,414,0,0" Name="currentStageLabel" VerticalAlignment="Top" Width="125" />
-        -->
 
-        <!--
         <Button Height="23" HorizontalAlignment="Left" Margin="539,414,0,0" Name="olympiaButton" VerticalAlignment="Top" Width="23" Click="olympiaButton_Click" Visibility="Hidden" IsEnabled="False">
             <Button.Background>
                 <ImageBrush ImageSource="Resources/Images/olympiapowerbutton.png" />

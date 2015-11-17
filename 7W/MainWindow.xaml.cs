@@ -49,6 +49,7 @@ namespace SevenWonders
         // ListBoxItem[] handButton = new ListBoxItem[8];
 
         Image[] boardImage;
+        HandPanelInformation handPanelInformation;
 
         //constructor: create the UI. create the Coordinator object
         public MainWindow(Coordinator c)
@@ -562,7 +563,7 @@ namespace SevenWonders
             playerPlayedHisTurn = false;
 
             //convert the String to an HandPanelInformation object
-            HandPanelInformation handPanelInformation = (HandPanelInformation)Marshaller.StringToObject(information);
+            handPanelInformation = (HandPanelInformation)Marshaller.StringToObject(information);
 
             //Update the Age label
             //since this method is only used in Age 1, 2, and 3, therefore, just show the age number
@@ -573,7 +574,6 @@ namespace SevenWonders
             //update Images
 
             int numberOfCards = handPanelInformation.id_buildable.Length;
-
 
             for (int i = 0; i < 8; ++i)
             {
@@ -612,80 +612,50 @@ namespace SevenWonders
                 }
             }
 
+            // The player must choose a card before 
+            btnBuildStructure.IsEnabled = false;
+            btnDiscardStructure.IsEnabled = false;
 
-                                    /*
-
-
-            //set the Stage of Wonder buildability
-            String name = "Stage", content = "Build Stage";
-            bool buildableStage = false;
-            if (handPanelInformation.stageBuildable == 'T') { buildableStage = true; }
-            else if (handPanelInformation.stageBuildable == 'C') { buildableStage = true; name = "StageCommerce"; content = "Commerce"; }
-
-            //Names of the buttons
-            //Contents (the word that will be shown in the UI) of the buttons
-            String[] names = new String[numberOfCards];
-            String[] contents = new String[numberOfCards];
-
-            for (int i = 0; i < numberOfCards; i++)
+            if (handPanelInformation.stageBuildable == 'T')
             {
-                contents[i] = "Build Structure";
-                if (handPanelInformation.id_buildable[i].Item2 == 'T' || handPanelInformation.id_buildable[i].Item2 == 'F')
-                {
-                    names[i] = "Build";
-                }
-                else if (handPanelInformation.id_buildable[i].Item2 == 'C')
-                {
-                    names[i] = "BuildCommerce";
-                    contents[i] = "Commerce";
-                }
+                btnBuildWonderStage.Content = "Build a wonder stage with this card";
+                btnBuildWonderStage.IsEnabled = true;
             }
-            */
-
-            //add the appropriate buttons
-            //actionBuildPanel.Children.Clear();
-            //actionStagePanel.Children.Clear();
-            //actionDiscardPanel.Children.Clear();
-
-            // buildStructureButton = new Button[numberOfCards];
-            // buildStageButton = new Button[numberOfCards];
-            // discardButton = new Button[numberOfCards];
-
-            /*
-            //display the action Buttons
-            for (int i = 0; i < numberOfCards; i++)
+            else if (handPanelInformation.stageBuildable == 'C')
             {
-                buildStructureButton[i] = new Button();
-                buildStructureButton[i].Content = contents[i];
-                buildStructureButton[i].Width = CARD_WIDTH;
-                buildStructureButton[i].Height = ICON_WIDTH;
-                buildStructureButton[i].Name = names[i] + "_" + handPanelInformation.id_buildable[i].Item1;
-                buildStructureButton[i].IsEnabled = (handPanelInformation.id_buildable[i].Item2 == 'T' || handPanelInformation.id_buildable[i].Item2 == 'C');
-                buildStructureButton[i].Click += cardActionButtonPressed;
-                //actionBuildPanel.Children.Add(buildStructureButton[i]);
-
-                buildStageButton[i] = new Button();
-                buildStageButton[i].Content = content;
-                buildStageButton[i].Width = CARD_WIDTH;
-                buildStageButton[i].Height = ICON_WIDTH;
-                buildStageButton[i].Name = name + "_" + handPanelInformation.id_buildable[i].Item1;
-                buildStageButton[i].IsEnabled = buildableStage;
-                buildStageButton[i].Click += cardActionButtonPressed;
-               // actionStagePanel.Children.Add(buildStageButton[i]);
-
-                discardButton[i] = new Button();
-                discardButton[i].Content = "Discard Card";
-                discardButton[i].Width = CARD_WIDTH;
-                discardButton[i].Height = ICON_WIDTH;
-                discardButton[i].Name = "Discard_" + handPanelInformation.id_buildable[i].Item1;
-                discardButton[i].IsEnabled = true;
-                discardButton[i].Click += cardActionButtonPressed;
-                //actionDiscardPanel.Children.Add(discardButton[i]);
+                btnBuildWonderStage.Content = "Build a wonder stage with this card (commerce required)";
+                btnBuildWonderStage.IsEnabled = true;
             }
-                */
+            else
+            {
+                btnBuildWonderStage.Content = "Wonder stage not buildable";
+                btnBuildWonderStage.IsEnabled = false;
+            }
         }
 
+        private void handPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Update the status of the build buttons when a card is selected.
+            switch (handPanelInformation.id_buildable[handPanel.SelectedIndex].Item2)
+            {
+                case 'T':
+                    btnBuildStructure.Content = "Build this structure";
+                    btnBuildStructure.IsEnabled = true;
+                    break;
 
+                case 'C':
+                    btnBuildStructure.Content = "Build this structure (commerce required)";
+                    btnBuildStructure.IsEnabled = true;
+                    break;
+
+                case 'F':
+                    btnBuildStructure.Content = "Resource requirements not met for building this card";
+                    btnBuildStructure.IsEnabled = false;
+                    break;
+            }
+
+            btnDiscardStructure.IsEnabled = true;
+        }
 
         /// <summary>
         /// Event handler for the Card Action Buttons created in showActionPanel
@@ -694,13 +664,52 @@ namespace SevenWonders
         /// <param name="e"></param>
         private void cardActionButtonPressed(object sender, RoutedEventArgs e)
         {
-
             if (!playerPlayedHisTurn)
             {
                 playedButton = sender as Button;
                 String s = playedButton.Name;
 
                 //send to the server the Action selected
+                switch (playedButton.Name)
+                {
+                    case "btnBuildStructure":
+                        if (handPanelInformation.id_buildable[handPanel.SelectedIndex].Item2 == 'T')
+                        {
+                            playedButton.IsEnabled = false;
+                            playerPlayedHisTurn = true;
+                            // bilkisButton.IsEnabled = false;
+                            coordinator.sendToHost("B" + handPanelInformation.id_buildable[handPanel.SelectedIndex].Item1);
+                            coordinator.endTurn();
+                        }
+                        else
+                        {
+                            coordinator.sendToHost("Cb" + handPanelInformation.id_buildable[handPanel.SelectedIndex].Item1);
+                        }
+                        break;
+                    case "btnBuildWonderStage":
+                        if (handPanelInformation.stageBuildable == 'T')
+                        {
+                            playedButton.IsEnabled = false;
+                            playerPlayedHisTurn = true;
+                            // bilkisButton.IsEnabled = false;
+                            coordinator.sendToHost("S" + handPanelInformation.id_buildable[handPanel.SelectedIndex].Item1);
+                            coordinator.endTurn();
+                        }
+                        else
+                        {
+                            coordinator.sendToHost("Cs" + handPanelInformation.id_buildable[handPanel.SelectedIndex].Item1);
+                        }
+                        break;
+                    case "btnDiscardStructure":
+                        playedButton.IsEnabled = false;
+                        playerPlayedHisTurn = true;
+                        // bilkisButton.IsEnabled = false;
+                        coordinator.sendToHost("D" + handPanelInformation.id_buildable[handPanel.SelectedIndex].Item1);
+                        coordinator.endTurn();
+                        break;
+                }
+
+                /*
                 if (s.StartsWith("Build_"))
                 {
                     playedButton.IsEnabled = false;
@@ -748,6 +757,7 @@ namespace SevenWonders
                 {
                     throw new Exception();
                 }
+                */
             }
         }
 
