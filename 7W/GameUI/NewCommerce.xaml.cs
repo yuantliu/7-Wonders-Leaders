@@ -92,7 +92,6 @@ namespace SevenWonders
             //construct the UI
 
             //initialise images
-            string currentPath = Environment.CurrentDirectory;
             for (int i = 0; i < 7; i++)
             {
                 resourceIcons[i] = new BitmapImage();
@@ -124,7 +123,7 @@ namespace SevenWonders
                         break;
                 }
 
-                resourceIcons[i].UriSource = new Uri(currentPath + @"\Resources\Images\" + filename + ".png");
+                resourceIcons[i].UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/" + filename + ".png");
                 resourceIcons[i].EndInit();
             }
 
@@ -138,21 +137,21 @@ namespace SevenWonders
 
             //set the market images
             if(leftRawMarket == true)
-                leftRawImage.Source = new BitmapImage(new Uri(currentPath + @"\Resources\Images\Commerce\1r.png"));
+                leftRawImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/1r.png"));
             else
-                leftRawImage.Source = new BitmapImage(new Uri(currentPath + @"\Resources\Images\Commerce\2r.png"));
+                leftRawImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/2r.png"));
             if(leftManuMarket == true)
-                leftManuImage.Source = new BitmapImage(new Uri(currentPath + @"\Resources\Images\Commerce\1m.png"));
+                leftManuImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/1m.png"));
             else
-                leftManuImage.Source = new BitmapImage(new Uri(currentPath + @"\Resources\Images\Commerce\2m.png"));
+                leftManuImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/2m.png"));
             if (rightRawMarket == true)
-                rightRawImage.Source = new BitmapImage(new Uri(currentPath + @"\Resources\Images\Commerce\1r.png"));
+                rightRawImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/1r.png"));
             else
-                rightRawImage.Source = new BitmapImage(new Uri(currentPath + @"\Resources\Images\Commerce\2r.png"));
+                rightRawImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/2r.png"));
             if (rightManuMarket == true)
-                rightManuImage.Source = new BitmapImage(new Uri(currentPath + @"\Resources\Images\Commerce\1m.png"));
+                rightManuImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/1m.png"));
             else
-                rightManuImage.Source = new BitmapImage(new Uri(currentPath + @"\Resources\Images\Commerce\2m.png"));
+                rightManuImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/2m.png"));
 
             //set the discount label
             if (hasDiscount == true)

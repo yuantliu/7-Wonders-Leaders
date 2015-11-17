@@ -161,9 +161,6 @@
     <Compile Include="GameUI\OlympiaUI.xaml.cs">
       <DependentUpon>OlympiaUI.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GameUI\ViewDetails.xaml.cs">
-      <DependentUpon>ViewDetails.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Client.cs" />
     <Compile Include="GameUI\TableUI.xaml.cs">
       <DependentUpon>TableUI.xaml</DependentUpon>
@@ -208,10 +205,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GameUI\OlympiaUI.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GameUI\ViewDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -288,12 +281,6 @@
     <Resource Include="Resources\Images\glass.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\loom.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\brick1.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\loom.png" />
   </ItemGroup>
   <ItemGroup>
@@ -306,43 +293,13 @@
     <Resource Include="Resources\Images\sextant.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\tablet.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\victory.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\shield.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\coin.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\blue.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\brown.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\grey.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\green.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\purple.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\red.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\yellow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\indexbg4x3.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Untitled-1.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\quit.png" />
@@ -364,9 +321,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\stage.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\white.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\leader.png" />
@@ -634,6 +588,18 @@
     <Resource Include="Resources\Images\cards\97.jpg" />
     <Resource Include="Resources\Images\cards\98.jpg" />
     <Resource Include="Resources\Images\cards\99.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Commerce\1m.png" />
+    <Resource Include="Resources\Images\Commerce\1r.png" />
+    <Resource Include="Resources\Images\Commerce\2m.png" />
+    <Resource Include="Resources\Images\Commerce\2r.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\shield.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\tablet.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
