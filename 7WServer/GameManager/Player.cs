@@ -1039,6 +1039,8 @@ namespace SevenWonders
             int costB = 0, costO = 0, costT = 0, costW = 0, costG = 0, costP = 0, costL = 0;
             int leftMultiRaw = 2, leftMultiManu = 2, rightMultiRaw = 2, rightMultiManu = 2;
 
+            // left & right manu aren't necessary.  The only card that affects the cost of manufactured
+            // goods is the Marketplace, and its effect applies to both neighbors.
             if (leftRaw) leftMultiRaw--;
             if (leftManu) leftMultiManu--;
             if (rightRaw) rightMultiRaw--;
@@ -1099,19 +1101,6 @@ namespace SevenWonders
 
             return totalCost;
         }
-
-        /*
-        /// <summary>
-        /// Return the last played card
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public Card getLastPlayedCard()
-        {
-            return playedStructure[numOfPlayedCards - 1];
-        }
-        */
-
 
         /// <summary>
         /// AI Player makes a move

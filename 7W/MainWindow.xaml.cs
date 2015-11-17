@@ -16,10 +16,12 @@ namespace SevenWonders
 {
     public class PlayerState
     {
+        public int coins;
         public Canvas canvas;
 
         public PlayerState()
         {
+            coins = 3;
             canvas = new Canvas();
         }
     };
@@ -135,6 +137,13 @@ namespace SevenWonders
                 boardImage[i].Height = 100;
 
                 playerState[i].canvas.Children.Add(boardImage[i]);
+
+                Label coinText = new Label();
+                coinText.Margin = new Thickness(10, 489, 50, 50);
+                coinText.Content = string.Format("Coins: {0}", playerState[i].coins);
+
+                playerState[i].canvas.Children.Add(coinText);
+
                 mainGrid.Children.Add(playerState[i].canvas);
             }
         }
@@ -535,6 +544,7 @@ namespace SevenWonders
             */
         }
 
+        /*
         /// <summary>
         /// Action handler for the view details buttons
         /// Send a request for information to the server
@@ -560,7 +570,7 @@ namespace SevenWonders
         {
             ViewDetails detailUI = new ViewDetails(information.Substring(1));
         }
-
+        */
         /// <summary>
         /// display the Cards in Player's hands and the available actions
         /// </summary>
@@ -787,6 +797,71 @@ namespace SevenWonders
             boardImage[player].Source = boardImageSource;
         }
 
+        private Uri GetIcon(string effect)
+        {
+            // effect parsing.  Refer to player.cs, executeAction
+            // first character is the category, $, 1 to 8.
+            // 1: one of a kind, non-science
+            // 2: one science symbol (followed by T/B/S)
+            // 3: market effect
+            // 4: gives a choice between different things
+            // 5: give money and/or points depending on some conditions (e.g. Lighthouse)
+            // 6: guild card
+            // 7: hard-coded board powers
+            // 8: Esteban or Bilkis
+            string icon = "";
+
+            switch (effect[0])
+            {
+                case '1':
+                    // 2nd value is number
+                    int number = int.Parse(effect.Substring(1, 1));
+
+                    switch (effect[2])
+                    {
+                        case 'S': icon = "shield"; break;
+                        case 'V': icon = "victory"; break;
+                        case 'O': icon = "ore"; break;
+                        case 'B': icon = "brick"; break;
+                        case 'T': icon = "stone"; break;
+                        case 'W': icon = "wood"; break;
+                        case '$': icon = "coin"; break;
+                        case 'L': icon = "loom"; break;
+                        case 'P': icon = "papyrus"; break;
+                        case 'G': icon = "glass"; break;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                    break;
+
+                case '2':
+                    switch (effect[1])
+                    {
+                        case 'T': icon = "tablet"; break;
+                        case 'B': icon = "bearTrap"; break;
+                        case 'S': icon = "sextant"; break;
+                    }
+                    break;
+
+                case '3':
+                    switch( effect.Substring(1) )
+                    {
+                        case "BM": break;   // need to create icon files for these.
+                        case "LR": break;
+                        case "RR": break;
+                    }
+                    break;
+
+                    // choice between different resources (e.g. Mine, Timber Yard, Clay Pit, Forum, Caravansery)
+                case '4': break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+
+            return new Uri("pack://application:,,,/7W;component/Resources/Images/" + icon + ".png");
+        }
+        
         /// <summary>
         /// display the Played Cards combo boxes, given the String from Coordinator
         /// </summary>
@@ -799,15 +874,29 @@ namespace SevenWonders
             Card lastPlayedCard = (Card)Marshaller.StringToObject(information);
 
             string colour = lastPlayedCard.colour;
-            string name = lastPlayedCard.name;
-            int id = lastPlayedCard.id;
+            // string name = lastPlayedCard.name;
+            // int id = lastPlayedCard.id;
 
             Label cardLabel = new Label();
+            cardLabel.Content = lastPlayedCard.name;
 
-            cardLabel.Content = name;
-            cardLabel.Margin = new Thickness(20, 200, 0, 0);
+            BitmapImage bmi = new BitmapImage();
+            bmi.BeginInit();
+            bmi.UriSource = GetIcon(lastPlayedCard.effect);
+            bmi.EndInit();
+            Image iconImage = new Image();
+            iconImage.Source = bmi;
+            iconImage.Width = 25;
+            iconImage.Height = 25;
 
-            playerState[0].canvas.Children.Add(cardLabel);
+
+            StackPanel cardData = new StackPanel();
+            cardData.Orientation = Orientation.Horizontal;
+
+            cardData.Children.Add(cardLabel);
+            cardData.Children.Add(iconImage);
+
+            playerState[0].canvas.Children.Add(cardData);
 
             /*
             //add a selection to the appropriate drop down menu
