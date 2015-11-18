@@ -299,9 +299,6 @@
     <Resource Include="Resources\Images\coin.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\red.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\quit.png" />
   </ItemGroup>
   <ItemGroup>
@@ -600,6 +597,43 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\tablet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\2VP.png" />
+    <Resource Include="Resources\Images\Icons\3vp.png" />
+    <Resource Include="Resources\Images\Icons\4vp.png" />
+    <Resource Include="Resources\Images\Icons\5VP.png" />
+    <Resource Include="Resources\Images\Icons\6VP.png" />
+    <Resource Include="Resources\Images\Icons\7VP.png" />
+    <Resource Include="Resources\Images\Icons\8VP.png" />
+    <Resource Include="Resources\Images\Icons\caravansery.png" />
+    <Resource Include="Resources\Images\Icons\clay_1.png" />
+    <Resource Include="Resources\Images\Icons\clay_2.png" />
+    <Resource Include="Resources\Images\Icons\clay_ore.png" />
+    <Resource Include="Resources\Images\Icons\cloth.png" />
+    <Resource Include="Resources\Images\Icons\compass.png" />
+    <Resource Include="Resources\Images\Icons\east_trading_post.png" />
+    <Resource Include="Resources\Images\Icons\forum.png" />
+    <Resource Include="Resources\Images\Icons\gear.png" />
+    <Resource Include="Resources\Images\Icons\glass.png" />
+    <Resource Include="Resources\Images\Icons\marketplace.png" />
+    <Resource Include="Resources\Images\Icons\ore_1.png" />
+    <Resource Include="Resources\Images\Icons\ore_2.png" />
+    <Resource Include="Resources\Images\Icons\papyrus.png" />
+    <Resource Include="Resources\Images\Icons\shield_1.png" />
+    <Resource Include="Resources\Images\Icons\shield_2.png" />
+    <Resource Include="Resources\Images\Icons\shield_3.png" />
+    <Resource Include="Resources\Images\Icons\stone_1.png" />
+    <Resource Include="Resources\Images\Icons\stone_2.png" />
+    <Resource Include="Resources\Images\Icons\stone_clay.png" />
+    <Resource Include="Resources\Images\Icons\stone_ore.png" />
+    <Resource Include="Resources\Images\Icons\stone_wood.png" />
+    <Resource Include="Resources\Images\Icons\tablet.png" />
+    <Resource Include="Resources\Images\Icons\west_trading_post.png" />
+    <Resource Include="Resources\Images\Icons\wood_1.png" />
+    <Resource Include="Resources\Images\Icons\wood_2.png" />
+    <Resource Include="Resources\Images\Icons\wood_clay.png" />
+    <Resource Include="Resources\Images\Icons\wood_ore.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

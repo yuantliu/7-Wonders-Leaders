@@ -1,0 +1,79 @@
+Name,Age,Type,Description,Icon,3 players,4 players,5 players,6 players,7 players,Cost (coins),Cost (wood),Cost (stone),Cost (clay),Cost (ore),Cost (cloth),Cost (glass),Cost (papyrus),Chains to (1),Chains to (2),Effect Category,Category 1 multiplier,Category 1 effect,Catgory 2 symbol,Category 3 effect,Category 4 effect,"Category 5: Multiplier (P = player, N = neighbours, B = both player & neighbours)",Category 5: Card/token type,Category 5: coins given when card enters play multiplier,Category 5: End of game VP granted
+Lumber Yard,1,RawMaterial,Provides 1 wood resource,wood_1,1,2,2,2,2,,,,,,,,,,,1,1,W,,,,,,,
+Stone Pit,1,RawMaterial,Provides 1 stone resource,stone_1,1,1,2,2,2,,,,,,,,,,,1,1,S,,,,,,,
+Clay Pool,1,RawMaterial,Provides 1 clay resource,clay_1,1,1,2,2,2,,,,,,,,,,,1,1,B,,,,,,,
+Ore Vein,1,RawMaterial,Provides 1 ore resource,ore_1,1,2,2,2,2,,,,,,,,,,,1,1,O,,,,,,,
+Tree Farm,1,RawMaterial,Provides 1 wood OR 1 clay resource,wood_clay,0,0,0,1,1,1,,,,,,,,,,4,,,,,WB,,,,
+Excavation,1,RawMaterial,Provides 1 stone OR 1 clay resource,stone_clay,0,1,1,1,1,1,,,,,,,,,,4,,,,,SB,,,,
+Clay Pit,1,RawMaterial,Provides 1 clay OR 1 ore resource,clay_core,1,1,1,1,1,1,,,,,,,,,,4,,,,,BO,,,,
+Timber Yard,1,RawMaterial,Provides 1 stone OR 1 wood resource,stone_wood,1,1,1,1,1,1,,,,,,,,,,4,,,,,SW,,,,
+Forest Cave,1,RawMaterial,Provides 1 wood OR 1 ore resource,wood_ore,0,0,1,1,1,1,,,,,,,,,,4,,,,,WO,,,,
+Mine,1,RawMaterial,Provides 1 ore OR 1 stone resource,ore_stone,0,0,0,1,1,1,,,,,,,,,,4,,,,,OS,,,,
+Loom,1,Goods,Provides 1 cloth,cloth,1,1,1,2,2,,,,,,,,,,,1,1,C,,,,,,,
+Glassworks,1,Goods,Provides 1 glass,glass,1,1,1,2,2,,,,,,,,,,,1,1,G,,,,,,,
+Press,1,Goods,Provides 1 papyrus,papyrus,1,1,1,2,2,,,,,,,,,,,1,1,P,,,,,,,
+Pawnshop,1,Civilian,,3VP,0,1,1,1,2,,,,,,,,,,,1,3,V,,,,,,,
+Baths,1,Civilian,,3VP,1,1,1,1,2,,,1,,,,,,Aqueduct,,1,3,V,,,,,,,
+Altar,1,Civilian,,2VP,1,1,2,2,2,,,,,,,,,Temple,,1,2,V,,,,,,,
+Theatre,1,Civilian,,2VP,1,1,1,2,2,,,,,,,,,Statue,,1,2,V,,,,,,,
+Tavern,1,Commerce,Player takes 5 coins from the bank when the card is played,,0,1,2,2,3,,,,,,,,,,,1,1,$,,,,,,,
+East Trading Post,1,Commerce,Purchase Raw Materials from player on left for 1 coin instead of 2,east_trading_post,1,1,1,1,2,,,,,,,,,Forum,,3,,,,RR,,,,,
+West Trading Post,1,Commerce,Purchase Raw Materials from player on right for 1 coin instead of 2,west_trading_post,1,1,1,1,2,,,,,,,,,Forum,,3,,,,LR,,,,,
+Marketplace,1,Commerce,Purcahase Manufactured Goods from either neighbor for 1 coin,marketplace,1,1,1,2,2,,,,,,,,,Caravansery,,3,,,,BG,,,,,
+Stockade,1,Military,,shield_1,1,1,1,1,2,,1,,,,,,,,,1,1,M,,,,,,,
+Barracks,1,Military,,shield_1,1,1,2,2,2,,,,,1,,,,,,1,1,M,,,,,,,
+Guard Tower,1,Military,,shield_1,1,2,2,2,2,,,,1,,,,,,,1,1,M,,,,,,,
+Apothecary,1,Science,,compass,1,1,2,2,2,,,,,,1,,,Stables,Dispensary,2,,,C,,,,,,
+Workshop,1,Science,,gear,1,1,1,1,2,,,,,,,1,,Archery Range,Laboratory,2,,,G,,,,,,
+Scriptorium,1,Science,,tablet,1,2,2,2,2,,,,,,,,1,Courthouse,Library,2,,,T,,,,,,
+Sawmill,2,RawMaterial,Provides 2 wood resources,wood_2,1,2,2,2,2,1,,,,,,,,,,1,2,W,,,,,,,
+Quarry,2,RawMaterial,Provides 2 stone resources,stone_2,1,2,2,2,2,1,,,,,,,,,,1,2,S,,,,,,,
+Brickyard,2,RawMaterial,Provides 2 clay resources,clay_2,1,2,2,2,2,1,,,,,,,,,,1,2,B,,,,,,,
+Foundry,2,RawMaterial,Provides 2 ore resources,ore_2,1,2,2,2,2,1,,,,,,,,,,1,2,O,,,,,,,
+Loom,2,Goods,Provides 1 cloth,cloth,1,1,2,2,2,,,,,,,,,,,1,1,C,,,,,,,
+Glassworks,2,Goods,Provides 1 glass,glass,1,1,2,2,2,,,,,,,,,,,1,1,G,,,,,,,
+Press,2,Goods,Provides 1 papyrus,papyrus,1,1,2,2,2,,,,,,,,,,,1,1,P,,,,,,,
+Aqueduct,2,Civilian,,5VP,1,1,1,1,2,,,3,,,,,,,,1,5,V,,,,,,,
+Temple,2,Civilian,,3VP,1,1,1,2,2,,1,,1,,,1,,Pantheon,,1,3,V,,,,,,,
+Statue,2,Civilian,,4VP,1,1,1,1,2,,1,,,2,,,,Gardens,,1,4,V,,,,,,,
+Courthouse,2,Civilian,,4VP,1,1,2,2,2,,,,2,,1,,,,,1,4,V,,,,,,,
+Forum,2,Commerce,Provides 1 cloth OR 1 glass OR 1 papyrus.  May not be used by neighbors.,forum,1,1,1,2,2,,,,2,,,,,Haven,,4,,,,,CGP,,,,
+Caravansery,2,Commerce,Provides 1 wood OR 1 stone OR 1 clay OR 1 ore resource.  May not be used by neighbors.,caravansery,1,1,2,3,3,,1,,,,,,,Lighthouse,,4,,,,,WSBO,,,,
+Vineyard,2,Commerce,1 coin for each brown card in your city plus neighboring cities,,1,1,1,2,3,,,,,,,,,,,5,,,,,,B,RawMaterial,1,0
+Bazar,2,Commerce,2 coins for each grey card in your city plus neighboring cities,,0,1,1,1,2,,,,,,,,,,,5,,,,,,B,Goods,2,0
+Walls,2,Military,,shield_2,1,1,1,1,2,,,3,,,,,,Fortifications,,1,2,M,,,,,,,
+Training Ground,2,Military,,shield_2,0,1,1,2,3,,1,,,2,,,,Circus,,1,2,M,,,,,,,
+Stables,2,Military,,shield_2,1,1,2,2,2,,1,,1,1,,,,,,1,2,M,,,,,,,
+Archery Range,2,Military,,shield_2,1,1,1,2,2,,2,,,1,,,,,,1,2,M,,,,,,,
+Dispensary,2,Science,,compass,1,2,2,2,2,,,,,2,,1,,Arena,Lodge,2,,,C,,,,,,
+Laboratory,2,Science,,gear,1,1,2,2,2,,,,2,,,,1,Seige Workshop,Observatory,2,,,G,,,,,,
+Library,2,Science,,tablet,1,1,1,2,2,,,2,,,1,,,Senate,University,2,,,T,,,,,,
+School,2,Science,,tablet,1,1,1,1,2,,1,,,,,,1,Academy,Study,2,,,T,,,,,,
+Pantheon,3,Civilian,,7VP,1,1,1,2,2,,,,2,1,1,1,1,,,1,7,V,,,,,,,
+Gardens,3,Civilian,,5VP,1,2,2,2,2,,1,,2,,,,,,,1,5,V,,,,,,,
+Town Hall,3,Civilian,,6VP,1,1,2,3,3,,,2,,1,,1,,,,1,6,V,,,,,,,
+Palace,3,Civilian,,8VP,1,1,1,1,2,,1,1,1,1,1,1,1,,,1,8,V,,,,,,,
+Senate,3,Civilian,,6VP,1,1,2,2,2,,2,1,,1,,,,,,1,6,V,,,,,,,
+Haven,3,Commerce,1 VP + 1 coin for each brown card in your city,,1,2,2,2,2,,1,,,1,1,,,,,5,,,,,,P,RawMaterial,1,1
+Lighthouse,3,Commerce,1 VP + 1 coin for each yellow card in your city,,1,1,1,2,2,,,1,,,,1,,,,5,,,,,,P,Commerce,1,1
+Chamber of Commerce,3,Commerce,2 VP + 2 coins for each grey card in your city,,0,1,1,2,2,,,,2,,,,1,,,5,,,,,,P,Goods,2,2
+Arena,3,Commerce,1 VP + 3 coins for each level of wonder in your city,,1,1,2,2,3,,,2,,1,,,,,,5,,,,,,P,WonderStage,3,1
+Fortifications,3,Military,,shield_3,1,1,1,1,2,,,1,,3,,,,,,1,3,M,,,,,,,
+Circus,3,Military,,shield_3,0,1,2,3,3,,,3,,1,,,,,,1,3,M,,,,,,,
+Arsenal,3,Military,,shield_3,1,2,2,2,3,,2,,,1,1,,,,,1,3,M,,,,,,,
+Seige Workshop,3,Military,,shield_3,1,1,2,2,2,,1,,3,,,,,,,1,3,M,,,,,,,
+Lodge,3,Science,,compass,1,1,1,2,2,,,,2,,1,,1,,,2,,,C,,,,,,
+Observatory,3,Science,,gear,1,1,1,1,2,,,,,2,1,1,,,,2,,,G,,,,,,
+University,3,Science,,tablet,1,2,2,2,2,,2,,,,,1,1,,,2,,,T,,,,,,
+Academy,3,Science,,compass,1,1,1,1,2,,,3,,,,1,,,,2,,,C,,,,,,
+Study,3,Science,,gear,1,1,2,2,2,,1,,,,1,,1,,,2,,,G,,,,,,
+Workers Guild,3,Guild,1 victory point for each brown card present in the neighboring cities,,1,1,1,1,1,,1,1,1,2,,,,,,5,,,,,,N,RawMaterial,0,1
+Craftmens Guild,3,Guild,2 victory points for each grey card present in the neighboring cities,,1,1,1,1,1,,,,2,2,,,,,,5,,,,,,N,Goods,0,2
+Traders Guild,3,Guild,1 victory point for each yellow card present in the neighboring cities,,1,1,1,1,1,,,,,,1,1,1,,,5,,,,,,N,Commerce,0,1
+Philosophers Guild,3,Guild,1 victory point for each green card present in the neighboring cities,,1,1,1,1,1,,,,3,,1,,1,,,5,,,,,,N,Science,0,1
+Spy Guild,3,Guild,1 victory point for each red card present in the neighboring cities,,1,1,1,1,1,,,,3,,,1,,,,5,,,,,,N,MilitaryVictories,0,1
+Strategy Guild,3,Guild,1 victory point for each defeat token present in the neighboring cities.,,1,1,1,1,1,,,1,,2,1,,,,,5,,,,,,N,MilitaryLosses,0,1
+Shipowners Guild,3,Guild,1 victory point for each RawMaterial AND Goods AND Guild structure in your city.,,1,1,1,1,1,,3,,,,,1,1,,,6,,,,,,,,,
+Scientists Guild,3,Guild,Provides a science symbol of your choice at the end of the game.,,1,1,1,1,1,,2,,,2,,,1,,,6,,,,,,,,,
+Magistrates Guild,3,Guild,1 victory point for each blue card present in the neighboring cities.,,1,1,1,1,1,,3,1,,,,,1,,,5,,,,,,N,Civilian,0,1
+Builders Guild,3,Guild,1 victory point for each Wonder stage built in the neighboring cities AND in your city.,,1,1,1,1,1,,,2,2,,,1,,,,5,,,,,,B,WonderStage,0,1

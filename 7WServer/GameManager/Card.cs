@@ -8,7 +8,6 @@ namespace SevenWonders
     [Serializable]
     public class Card
     {
-
         //ID: 1-X
         public int id { get; set; }
         public string name { get; set; }
@@ -66,6 +65,205 @@ namespace SevenWonders
         public Card copy()
         {
             return new Card(id, name, age, numberOfPlayers, cost, freePreq, colour, effect);
+        }
+    }
+
+    struct Cost
+    {
+        public int coin;
+        public int wood;
+        public int stone;
+        public int clay;
+        public int ore;
+        public int cloth;
+        public int glass;
+        public int papyrus;
+    };
+
+    struct Effect
+    {
+        public int type;   // 1 to 8, possibly more after Cities are added.
+
+        public struct Simple
+        {
+            public int multiplier;
+            public char type;
+        };
+
+        public enum Science
+        {
+            Compass,
+            Gear,
+            Tablet,
+        };
+
+        public struct CommercialDiscount
+        {
+            public enum AppliesTo
+            {
+                LeftNeighbor,
+                RightNeighbor,
+                BothNeighbors,
+            };
+
+            public enum Affects
+            {
+                RawMaterial,
+                Goods,
+            };
+
+            public AppliesTo appliesTo;
+            public Affects affects;
+        };
+
+        public struct CoinsAndPoints
+        {
+            public enum CardsConsidered
+            {
+                Player,
+                Neighbors,
+                PlayerAndNeighbors,
+            };
+
+            public enum ClassConsidered
+            {
+                RawMaterial,
+                Goods,
+                Civilian,
+                Commerce,
+                MilitaryVictories,
+                MilitaryLosses,
+                Science,
+                WonderStage,
+            }
+
+            public CardsConsidered cardsConsidered;
+            public ClassConsidered classConsidered;
+            public int coinsGrantedAtTimeOfPlayMultiplier;
+            public int victoryPointsAtEndOfGameMultiplier;
+        }
+
+        public Simple simpleInfo;                      // category 1
+        public Science scienceSymbol;                  // category 2
+        public CommercialDiscount commercialDiscount;  // category 3
+        public string resourceChoiceData;              // category 4
+        public CoinsAndPoints coinsAndPoints;          // category 5
+    };
+
+    [Serializable]
+    public class Card2
+    {
+        enum Classification
+        {
+            RawMaterial,
+            Goods,
+            Civilian,
+            Commerce,
+            Military,
+            Science,
+            Guild,
+            Leader,
+            City,
+        };
+
+        // Name Age Type Description Icon	3 players	4 players	5 players	6 players	7 players Cost(coins)    Cost(wood) Cost(stone)    Cost(clay) Cost(ore)  Cost(cloth)    Cost(glass)    Cost(papyrus)  Chains to(1)   Chains to(2)   Effect Category Category 1 multiplier Category 1 effect Catgory 2 symbol Category 3 effect Category 4 effect Category 5: Multiplier(P = player, N = neighbours, B = both player & neighbours)   Category 5: Card/token type Category 5: coins given when card enters play multiplier Category 5: End of game VP granted
+        string name;
+        int age;
+        Classification type;
+        string description;
+        string iconName;
+        int[] numAvailableByNumPlayers = new int[5];
+        Cost cost;
+        string[] chain = new string[2];
+        Effect effect;
+
+        public Card2(string[] createParams)
+        {
+            name = createParams[0];
+            age = int.Parse(createParams[1]);
+            type = (Classification)Enum.Parse(typeof(Classification), createParams[2]);
+            description = createParams[3];
+            iconName = createParams[4];
+            for (int i = 0, j = 5; i < numAvailableByNumPlayers.Length;  ++i, ++j)
+                numAvailableByNumPlayers[i] = int.Parse(createParams[j]);
+
+            // Structure cost
+            int.TryParse(createParams[10], out cost.coin);
+            int.TryParse(createParams[11], out cost.wood);
+            int.TryParse(createParams[12], out cost.stone);
+            int.TryParse(createParams[13], out cost.clay);
+            int.TryParse(createParams[14], out cost.ore);
+            int.TryParse(createParams[15], out cost.cloth);
+            int.TryParse(createParams[16], out cost.glass);
+            int.TryParse(createParams[17], out cost.papyrus);
+
+            // build chains (Cards that can be built for free in the following age)
+            chain[0] = createParams[18];
+            chain[1] = createParams[19];
+
+            effect.type = int.Parse(createParams[20]);
+
+            switch (effect.type)
+            {
+                case 1:
+                    effect.simpleInfo.multiplier = int.Parse(createParams[21]);
+                    effect.simpleInfo.type = createParams[22][0];
+                    break;
+
+                case 2:
+                    switch (createParams[23])
+                    {
+                        case "C": effect.scienceSymbol = Effect.Science.Compass; break;
+                        case "G": effect.scienceSymbol = Effect.Science.Gear; break;
+                        case "T": effect.scienceSymbol = Effect.Science.Tablet; break;
+                    }
+                    break;
+
+                case 3:
+                    switch (createParams[24][0])
+                    {
+                        case 'L':
+                            effect.commercialDiscount.appliesTo = Effect.CommercialDiscount.AppliesTo.LeftNeighbor;
+                            break;
+
+                        case 'R':
+                            effect.commercialDiscount.appliesTo = Effect.CommercialDiscount.AppliesTo.RightNeighbor;
+                            break;
+
+                        case 'B':
+                            effect.commercialDiscount.appliesTo = Effect.CommercialDiscount.AppliesTo.BothNeighbors;
+                            break;
+                    }
+
+                    switch (createParams[24][1])
+                    {
+                        case 'R': effect.commercialDiscount.affects = Effect.CommercialDiscount.Affects.RawMaterial;
+                            break;
+                        case 'G': effect.commercialDiscount.affects = Effect.CommercialDiscount.Affects.Goods;
+                            break;
+                    }
+                    break;
+
+                case 4:
+                    effect.resourceChoiceData = createParams[25];       // player can choose one of the RawMaterials or Goods provided
+                    break;
+
+                case 5:
+                    switch(createParams[26])
+                    {
+                        case "P": effect.coinsAndPoints.cardsConsidered = Effect.CoinsAndPoints.CardsConsidered.Player; break;
+                        case "N": effect.coinsAndPoints.cardsConsidered = Effect.CoinsAndPoints.CardsConsidered.Neighbors; break;
+                        case "B": effect.coinsAndPoints.cardsConsidered = Effect.CoinsAndPoints.CardsConsidered.PlayerAndNeighbors; break;
+                    }
+                    effect.coinsAndPoints.classConsidered = (Effect.CoinsAndPoints.ClassConsidered)Enum.Parse(typeof(Effect.CoinsAndPoints.ClassConsidered), createParams[27]);
+                    effect.coinsAndPoints.coinsGrantedAtTimeOfPlayMultiplier = int.Parse(createParams[28]);
+                    effect.coinsAndPoints.victoryPointsAtEndOfGameMultiplier = int.Parse(createParams[29]);
+                    break;
+
+                case 6:
+                    // handled with card-specific code; nothing further we need to do here.
+                    break;
+            }
         }
     }
 }

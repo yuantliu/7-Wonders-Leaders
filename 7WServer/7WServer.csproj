@@ -71,6 +71,7 @@
     <Compile Include="StatusChangedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="7 Wonders Card list.csv" />
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
@@ -78,6 +79,9 @@
       <Project>{dd6daba7-a750-4a85-bf4c-e28a7a059d4a}</Project>
       <Name>GameManager</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="boards.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

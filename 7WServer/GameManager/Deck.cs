@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Reflection;
 
 namespace SevenWonders
 {
@@ -9,6 +11,10 @@ namespace SevenWonders
     {
         //array of cards, which will represent the cards in the deck
         private List<Card> card { get; set; }
+
+        // I'd prefer to use a dictionary, but because there may be 2 (or even 3) of the same card,
+        // I'll stay with a List container.
+        public List<Card2> card2 { get; private set; }
 
         private int numPlayers;
 
@@ -19,29 +25,25 @@ namespace SevenWonders
         /// <param name="cardFile"></param>
         public Deck(String cardFile, int numOfPlayers)
         {
-            String currentPath = Environment.CurrentDirectory;
-
             numPlayers = numOfPlayers;
+            //initialise the final card List
+            card = new List<Card>();
 
-            //open the given cardFile
-            try
+            card2 = new List<Card2>();
+
+            using (System.IO.StreamReader file = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("_7WServer.7 Wonders Card list.csv")))
             {
-                System.IO.StreamReader file = new System.IO.StreamReader(currentPath + @"\Resources\cardText\" + cardFile);
-                //check that it is a file containing 7 Wonders card information by checking if the first line says "7W"
-                //if it is not, then throw an IO Exception
-                if (file.ReadLine() != "Yes this is a 7W Card File!")
-                {
-                    throw new System.IO.IOException();
-                }
-
-                //initialise the final card List
-                card = new List<Card>();
+                // skip the header line
+                file.ReadLine();
 
                 String line = file.ReadLine();
                 //Read the file, create cards, until we have reached the END
 
-                while(true)
+                while (line != null && line != String.Empty)
                 {
+                    card2.Add(new Card2(line.Split(',')));
+                    /*
+
                     int id = int.Parse(file.ReadLine());
 
                     String name = file.ReadLine();
@@ -58,34 +60,16 @@ namespace SevenWonders
 
                     String effect = file.ReadLine();
 
-                    //ignore the path
-                    //we actually don't need it
-                    file.ReadLine();
+                    card.Add(new Card(id, name, age, numberOfPlayers, cost, freePreq, colour, effect));
+                    */
 
-                    //create the card with the extracted parameters
-
-                    if(numberOfPlayers <= numPlayers)
-                        card.Add(new Card(id, name, age, numberOfPlayers, cost, freePreq, colour, effect));
-                    
 
                     //now I should either have a - or an END
                     //extract the next line and recheck the loop condition
                     line = file.ReadLine();
-
-                    if (String.Equals(line, "END"))
-                    {
-                        //END reached. Close the file.
-                        file.Close();
-                        break;
-                    }
                 }
             }
-            catch( System.IO.IOException )
-            {
-                Console.WriteLine("There was an error reading " + cardFile + ". Does it exist and is it in the right format?");
-            }
         }
-
 
         //find and remove all unused cards Guild cards
         public void removeUnusedCards()
