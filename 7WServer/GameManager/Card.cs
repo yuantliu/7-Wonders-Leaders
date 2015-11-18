@@ -68,7 +68,7 @@ namespace SevenWonders
         }
     }
 
-    struct Cost
+    public struct Cost
     {
         public int coin;
         public int wood;
@@ -80,7 +80,7 @@ namespace SevenWonders
         public int papyrus;
     };
 
-    struct Effect
+    public struct Effect
     {
         public int type;   // 1 to 8, possibly more after Cities are added.
 
@@ -153,7 +153,7 @@ namespace SevenWonders
     [Serializable]
     public class Card2
     {
-        enum Classification
+        public enum Classification
         {
             RawMaterial,
             Goods,
@@ -167,15 +167,15 @@ namespace SevenWonders
         };
 
         // Name Age Type Description Icon	3 players	4 players	5 players	6 players	7 players Cost(coins)    Cost(wood) Cost(stone)    Cost(clay) Cost(ore)  Cost(cloth)    Cost(glass)    Cost(papyrus)  Chains to(1)   Chains to(2)   Effect Category Category 1 multiplier Category 1 effect Catgory 2 symbol Category 3 effect Category 4 effect Category 5: Multiplier(P = player, N = neighbours, B = both player & neighbours)   Category 5: Card/token type Category 5: coins given when card enters play multiplier Category 5: End of game VP granted
-        string name;
-        int age;
-        Classification type;
-        string description;
-        string iconName;
+        public string name;
+        public int age;
+        public Classification type;
+        public string description;
+        public string iconName;
         int[] numAvailableByNumPlayers = new int[5];
-        Cost cost;
-        string[] chain = new string[2];
-        Effect effect;
+        public Cost cost;
+        public string[] chain = new string[2];
+        public Effect effect;
 
         public Card2(string[] createParams)
         {
@@ -264,6 +264,11 @@ namespace SevenWonders
                     // handled with card-specific code; nothing further we need to do here.
                     break;
             }
+        }
+
+        public int GetNumCardsAvailble(int numPlayers)
+        {
+            return numAvailableByNumPlayers[numPlayers - 3];
         }
     }
 }

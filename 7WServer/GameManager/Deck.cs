@@ -37,11 +37,20 @@ namespace SevenWonders
                 file.ReadLine();
 
                 String line = file.ReadLine();
-                //Read the file, create cards, until we have reached the END
 
                 while (line != null && line != String.Empty)
                 {
-                    card2.Add(new Card2(line.Split(',')));
+                    string[] splitStr = line.Split(',');
+
+                    Card2 c = new Card2(splitStr);
+
+                    int nToAdd = c.GetNumCardsAvailble(numPlayers);
+
+                    for (int i = 0; i < c.GetNumCardsAvailble(numPlayers); ++i)
+                    {
+                        card2.Add(c);
+                    }
+
                     /*
 
                     int id = int.Parse(file.ReadLine());
