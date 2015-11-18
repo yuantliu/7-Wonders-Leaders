@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.IO;
-using System.Reflection;
+//using System.IO;
+//using System.Reflection;
 
 namespace SevenWonders
 {
@@ -12,95 +12,55 @@ namespace SevenWonders
         //array of cards, which will represent the cards in the deck
         private List<Card> card { get; set; }
 
-        // I'd prefer to use a dictionary, but because there may be 2 (or even 3) of the same card,
-        // I'll stay with a List container.
-        public List<Card2> card2 { get; private set; }
-
-        private int numPlayers;
+        List<Card2> card2 = new List<Card2>();
 
         /// <summary>
         /// Load the cards by reading the File.
         /// Add Card objects to the card array
         /// </summary>
         /// <param name="cardFile"></param>
-        public Deck(String cardFile, int numOfPlayers)
+        public Deck(List<Card2> cardList, int age, int numOfPlayers)
         {
-            numPlayers = numOfPlayers;
-            //initialise the final card List
-            card = new List<Card>();
-
-            card2 = new List<Card2>();
-
-            using (System.IO.StreamReader file = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("_7WServer.7 Wonders Card list.csv")))
+            // Create the card list for this age & number of players
+            foreach (Card2 c in cardList)
             {
-                // skip the header line
-                file.ReadLine();
+                int nToAdd = c.GetNumCardsAvailble(age, numOfPlayers);
 
-                String line = file.ReadLine();
-
-                while (line != null && line != String.Empty)
+                for (int i = 0; i < nToAdd; ++i)
                 {
-                    string[] splitStr = line.Split(',');
-
-                    Card2 c = new Card2(splitStr);
-
-                    int nToAdd = c.GetNumCardsAvailble(numPlayers);
-
-                    for (int i = 0; i < c.GetNumCardsAvailble(numPlayers); ++i)
-                    {
-                        card2.Add(c);
-                    }
-
-                    /*
-
-                    int id = int.Parse(file.ReadLine());
-
-                    String name = file.ReadLine();
-
-                    int age = int.Parse(file.ReadLine());
-
-                    int numberOfPlayers = int.Parse(file.ReadLine());
-
-                    String cost = file.ReadLine();
-
-                    String freePreq = file.ReadLine();
-
-                    String colour = file.ReadLine();
-
-                    String effect = file.ReadLine();
-
-                    card.Add(new Card(id, name, age, numberOfPlayers, cost, freePreq, colour, effect));
-                    */
-
-
-                    //now I should either have a - or an END
-                    //extract the next line and recheck the loop condition
-                    line = file.ReadLine();
+                    card2.Add(c);
                 }
             }
         }
 
         //find and remove all unused cards Guild cards
-        public void removeUnusedCards()
+        public void removeAge3Guilds(int nPlayers)
         {
-            //if the current deck is not Age 3, then it is necessary to perform this operation
-            if (card[0].age != 3)
-                return;
-
-            //shuffle first
+            //shuffle first to randomize the locations of the guild cards in the deck
             shuffle();
 
             //find and remove the appropriate amount of guild cards, based on how many players there are
-            int numOfPurpleCardsToRemove = 7 - numPlayers;
-            int numRemoved = 0;
+            // int numOfPurpleCardsToRemove = 7 - numPlayers;
+            int nGuildsToRemove = 8 - nPlayers;      // should be *8* - numPlayers, no?  Old code wasn't removing enough Guild structures.
 
-            if (numOfPurpleCardsToRemove == 0) return;
-
-            for(int i = 0; i < card.Count; i++)
+            for (int i = card2.Count - 1; i >= 0 && nGuildsToRemove > 0; --i)
             {
-                if (card[i].colour == "Purple")
+                if (card2[i].structureType == Card2.StructureType.Guild)
                 {
-                    card.RemoveAt(i);
+                    card2.RemoveAt(i);
+                    --nGuildsToRemove;
+                }
+            }
+
+            /*
+            // card2.RemoveAll(item => item.structureType == Card2.StructureType.Guild);
+
+            // a forward-iterator doesn't work
+            foreach (Card2 c in card2)
+            {
+                if (c.structureType == Card2.StructureType.Guild)
+                {
+                    card2.Remove(c);
                     numRemoved++;
                     if (numRemoved == numOfPurpleCardsToRemove)
                     {
@@ -108,6 +68,20 @@ namespace SevenWonders
                     }
                 }
             }
+
+            for (int i = 0; i < card2.Count; i++)
+            {
+                if (card2[i].structureType == Card2.StructureType.Guild)
+                {
+                    card2.RemoveAt(i);
+                    numRemoved++;
+                    if (numRemoved == numOfPurpleCardsToRemove)
+                    {
+                        return;
+                    }
+                }
+            }
+            */
         }
 
         public int numOfCards()
@@ -118,6 +92,19 @@ namespace SevenWonders
         //shuffle the cards in the deck
         public void shuffle()
         {
+            var c = Enumerable.Range(0, card2.Count);
+            var shuffledcards = c.OrderBy(a => Guid.NewGuid()).ToArray();
+
+            List<Card2> d = new List<Card2>(card2.Count);
+
+            for (int i = 0; i < card2.Count; ++i)
+            {
+                d.Add(card2[shuffledcards[i]]);
+            }
+
+            card2 = d;
+            /*
+            JDF - old code
             Random random = new Random();
 
             //swap the position of 2 random cards 300 times
@@ -129,13 +116,15 @@ namespace SevenWonders
                 card[random1] = card[random2];
                 card[random2] = temp;
             }
+            */
         }
 
+        /*
         /// <summary>
         /// pop a Random card from the Card array
         /// </summary>
         /// <returns></returns>
-        public Card popRandomCard()
+        public Card2 popRandomCard()
         {
             Random random = new Random();
 
@@ -151,6 +140,19 @@ namespace SevenWonders
             //return the random card
             return randomCard;
         }
+        */
+
+        public Card2 GetTopCard()
+        {
+            Card2 topCard = card2.First();
+
+            //remove the random card
+            card2.RemoveAt(0);
+
+            //return the random card
+            return topCard;
+        }
+
 
         /// <summary>
         /// Return Deck that have all cards in Player's  removed from unusedDeck
@@ -176,5 +178,5 @@ namespace SevenWonders
 
             return newDeck;
         }
+        }
     }
-}

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Reflection;
 
 namespace SevenWonders
 {
@@ -28,6 +30,10 @@ namespace SevenWonders
 
         //All possible decks
         private IList<Board> board;
+
+        // I'd prefer to use a dictionary, but because there may be 2 (or even 3) of the same card,
+        // I'll stay with a List container.
+        List<Card2> fullCardList = new List<Card2>();
 
         public Deck[] deck;
 
@@ -112,6 +118,21 @@ namespace SevenWonders
             for (int i = 0; i < numOfPlayers; i++)
             {
                 player[i] = new Player(playerNicks[i], false, this);
+            }
+
+            // load the card deck
+            using (StreamReader file = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("_7WServer.7 Wonders Card list.csv")))
+            {
+                // skip the header line
+                file.ReadLine();
+
+                String line = file.ReadLine();
+
+                while (line != null && line != String.Empty)
+                {
+                    fullCardList.Add(new Card2(line.Split(',')));
+                    line = file.ReadLine();
+                }
             }
 
             //vanilla has 14 boards
@@ -208,9 +229,11 @@ namespace SevenWonders
             for (int i = 1; i < deck.Length; i++)
             {
                 //deck[1] is age 1. deck[2] is age 2 ....
-                deck[i] = new Deck("age" + i + "cards.txt", numOfAI + numOfPlayers);
-                deck[i].removeUnusedCards();
+                deck[i] = new Deck(fullCardList, i, numOfAI + numOfPlayers);
             }
+
+            deck[3].removeAge3Guilds(numOfAI + numOfPlayers);
+
 
             //deal the cards for the first age to the players
             //currentAge not incremented?
@@ -409,21 +432,14 @@ namespace SevenWonders
             //if the current deck is 0, then that means we are dealing with the leaders deck
             int numCardsToDeal;
 
-            if (currentAge == 0)
-            {
-                numCardsToDeal = 4;
-            }
-            else
-            {
-                numCardsToDeal = 7;
-            }
+            numCardsToDeal = currentAge == 0 ? 4 : 7;
 
             //deal cards to each Player from Deck d
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
                 for (int j = 0; j < numCardsToDeal; j++)
                 {
-                    Card c = deck[currentAge].popRandomCard();
+                    Card2 c = deck[currentAge].GetTopCard();
                     player[i].addHand(c);
                 }
             }

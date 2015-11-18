@@ -89,6 +89,7 @@ namespace SevenWonders
             //Read the textfile information and initialize the decks according to the information
             
             //load Leaders deck. No need to remove unused cards. Pop random card will work fine.
+            /*
             deck[0] = new Deck("leaders.txt", numOfAI + numOfPlayers);
             
             //load the regular age 1 and 2 decks
@@ -101,6 +102,7 @@ namespace SevenWonders
             //load the age 3 decks, which have the new guild cards
             deck[3] = new Deck("age3cardsleaders.txt", numOfAI + numOfPlayers);
             deck[3].removeUnusedCards();
+            */
 
            
 
@@ -482,7 +484,7 @@ namespace SevenWonders
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    p.leadersPile.Add(deck[0].popRandomCard());
+                    // p.leadersPile.Add(deck[0].popRandomCard());
                 }
             }
             //Only applicable to Stage 2 and 3 of Rome B

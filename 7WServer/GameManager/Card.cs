@@ -153,7 +153,7 @@ namespace SevenWonders
     [Serializable]
     public class Card2
     {
-        public enum Classification
+        public enum StructureType
         {
             RawMaterial,
             Goods,
@@ -167,11 +167,11 @@ namespace SevenWonders
         };
 
         // Name Age Type Description Icon	3 players	4 players	5 players	6 players	7 players Cost(coins)    Cost(wood) Cost(stone)    Cost(clay) Cost(ore)  Cost(cloth)    Cost(glass)    Cost(papyrus)  Chains to(1)   Chains to(2)   Effect Category Category 1 multiplier Category 1 effect Catgory 2 symbol Category 3 effect Category 4 effect Category 5: Multiplier(P = player, N = neighbours, B = both player & neighbours)   Category 5: Card/token type Category 5: coins given when card enters play multiplier Category 5: End of game VP granted
-        public string name;
-        public int age;
-        public Classification type;
-        public string description;
-        public string iconName;
+        public string name { get; private set; }
+        public int age { get; private set; }
+        public StructureType structureType { get;  private set; }
+        public string description { get; private set; }
+        public string iconName { get; private set; }
         int[] numAvailableByNumPlayers = new int[5];
         public Cost cost;
         public string[] chain = new string[2];
@@ -181,7 +181,7 @@ namespace SevenWonders
         {
             name = createParams[0];
             age = int.Parse(createParams[1]);
-            type = (Classification)Enum.Parse(typeof(Classification), createParams[2]);
+            structureType = (StructureType)Enum.Parse(typeof(StructureType), createParams[2]);
             description = createParams[3];
             iconName = createParams[4];
             for (int i = 0, j = 5; i < numAvailableByNumPlayers.Length;  ++i, ++j)
@@ -266,8 +266,11 @@ namespace SevenWonders
             }
         }
 
-        public int GetNumCardsAvailble(int numPlayers)
+        public int GetNumCardsAvailble(int age, int numPlayers)
         {
+            if (age != this.age)
+                return 0;
+
             return numAvailableByNumPlayers[numPlayers - 3];
         }
     }
