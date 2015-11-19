@@ -65,12 +65,16 @@ namespace SevenWonders
         /// Generate and return a List of all possible sequences from the DAG
         /// </summary>
         /// <returns>List of strings</returns>
-        public List<string> generateStrings()
+        public List<Cost> generateStrings()
         {
-            List<string> generated = new List<string>();
+            // Not quite sure what this was doing.
+            List<Cost> generated = new List<Cost>();
 
-            generated.Add(" ");
+            throw new NotImplementedException();
 
+            // generated.Add(" ");
+
+            /*
             for (int i = 0; i < graph.Count; i++)
             {
                 //Create new temp ArrayList at each depth level
@@ -90,6 +94,7 @@ namespace SevenWonders
                 //replace old arrayList with new one
                 generated = temp;
             }
+            */
 
             return generated;
         }
@@ -106,8 +111,22 @@ namespace SevenWonders
 	     * @param A = COST
 	     * @param B = RESOURCES
 	     */
-        public static string eliminate(string A, string B)
+        public static Cost eliminate(Cost structureCost, Cost resourcesAvailable)
         {
+            Cost c;
+
+            c.coin = Math.Max(structureCost.coin - resourcesAvailable.coin, 0);
+            c.wood = Math.Max(structureCost.wood - resourcesAvailable.wood, 0);
+            c.stone = Math.Max(structureCost.stone - resourcesAvailable.stone, 0);
+            c.clay = Math.Max(structureCost.clay - resourcesAvailable.clay, 0);
+            c.ore = Math.Max(structureCost.ore - resourcesAvailable.ore, 0);
+            c.cloth = Math.Max(structureCost.cloth - resourcesAvailable.cloth, 0);
+            c.glass = Math.Max(structureCost.glass - resourcesAvailable.glass, 0);
+            c.papyrus = Math.Max(structureCost.papyrus - resourcesAvailable.papyrus, 0);
+
+            return c;
+
+            /*
             for (int i = 0; i < B.Length; i++)
             {
                 for (int j = 0; j < A.Length; j++)
@@ -121,14 +140,16 @@ namespace SevenWonders
             }
 
             return A;
+            */
+
         }
 
         /**
          * Given a resource DAG graph, determine if a cost is affordable
          * @return
          */
-        public static bool canAfford(DAG graph, string cost){
-		    List<string> generated = graph.generateStrings();
+        public static bool canAfford(DAG graph, Cost cost){
+		    List<Cost> generated = graph.generateStrings();
 		
 		    for(int i = 0; i < generated.Count; i++){
 			    if(eliminate(cost, generated[i]).Equals("")){
@@ -145,13 +166,13 @@ namespace SevenWonders
         /// <param name="graph">Player's DAG</param>
         /// <param name="cost">Card cost</param>
         /// <returns>Whether the DAG can afford the given card cost</returns>
-        public static bool canAffordOffByOne(DAG graph, string cost)
+        public static bool canAffordOffByOne(DAG graph, Cost cost)
         {
-            List<string> generated = graph.generateStrings();
+            List<Cost> generated = graph.generateStrings();
 
             for (int i = 0; i < generated.Count; i++)
             {
-                if (eliminate(cost, generated[i]).Length <= 1)
+                // if (eliminate(cost, generated[i]).Length <= 1)
                 {
                     return true;
                 }

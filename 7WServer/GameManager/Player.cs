@@ -124,13 +124,13 @@ namespace SevenWonders
         public bool hasBilkis;
 
         //stored actions for the turn
-        private string[] actions;
+        private Effect[] actions;       // shouldn't this be a list or queue?
         private int numOfActions;
         //up to 10 stored actions allowed
         private const int MAX_ALLOWED_ACTIONS = 10;
 
         //stored actions for the end of the game
-        private string[] endOfGameActions;
+        private Effect[] endOfGameActions;      // shouldn't this be a list or queue?
         private int numOfEndOfGameActions;
         //up to 20 stored actions allowed
         private const int MAX_ALLOWED_END_OF_GAME_ACTIONS = 20;
@@ -166,7 +166,7 @@ namespace SevenWonders
         //interface for vanilla AI
         public AIMoveBehaviour AIBehaviour;
         //interface for Leaders AI
-        public LeadersAIMoveBehaviour LeadersAIBehaviour;
+        // public LeadersAIMoveBehaviour LeadersAIBehaviour;
 
         private GameManager gm;
 
@@ -186,8 +186,8 @@ namespace SevenWonders
             //set whether or not this is an AI
             this.isAI = isAI;
             //assume there can only be up to 10 stored actions
-            actions = new string[MAX_ALLOWED_ACTIONS];
-            endOfGameActions = new string[MAX_ALLOWED_END_OF_GAME_ACTIONS];
+            actions = new Effect[MAX_ALLOWED_ACTIONS];
+            endOfGameActions = new Effect[MAX_ALLOWED_END_OF_GAME_ACTIONS];
             hand = new Card[7];
             numOfHandCards = 0;
             playedStructure = new Card[25];
@@ -224,7 +224,7 @@ namespace SevenWonders
         /// Stored actions to be executed at the end of each turn
         /// </summary>
         /// <param name="s"></param>
-        public void storeAction(String s)
+        public void storeAction(Effect s)
         {
             actions[numOfActions++] = s;
         }
@@ -237,6 +237,7 @@ namespace SevenWonders
         /// <returns></returns>
         public bool hasSalomon()
         {
+            /*
             for (int i = 0; i < numOfActions; i++)
             {
                 //found Salomon
@@ -253,6 +254,7 @@ namespace SevenWonders
                     return true;
                 }
             }
+            */
 
             return false;
         }
@@ -265,6 +267,7 @@ namespace SevenWonders
         /// <returns></returns>
         public bool hasStevie()
         {
+            /*
             for (int i = 0; i < numOfActions; i++)
             {
                 //found Stevie
@@ -281,6 +284,7 @@ namespace SevenWonders
                     return true;
                 }
             }
+            */
 
             return false;
         }
@@ -291,6 +295,7 @@ namespace SevenWonders
         /// <returns></returns>
         public bool hasCourtesan()
         {
+            /*
             for (int i = 0; i < numOfActions; i++)
             {
                 //found Courtesan's guild
@@ -307,6 +312,7 @@ namespace SevenWonders
                     return true;
                 }
             }
+            */
 
             return false;
         }
@@ -315,7 +321,7 @@ namespace SevenWonders
         /// Stored actions to be executed at the end of the game
         /// </summary>
         /// <param name="s"></param>
-        public void storeEndOfGameAction(String s)
+        public void storeEndOfGameAction(Effect s)
         {
             endOfGameActions[numOfEndOfGameActions++] = s;
         }
@@ -324,31 +330,36 @@ namespace SevenWonders
         //change the Player score information based on the actions
         public void executeAction(GameManager gm)
         {
+            /*
             //Esteban and Bilkis can be implemented much easier if it has access to GameManager (LeadersGameManager to be exact)
             //Regular GameManager is not useful. Must have LeadersGameManager because nothing in the regular game requires reg GM
             if (gm is LeadersGameManager)
             {
                 gm = (LeadersGameManager)gm;
             }
+            */
 
             //go through each action and execute the actions stored
             for (int i = 0; i < numOfActions; i++)
             {
                 //this will be the string that represents the action for category 1
-                String act = actions[i].Substring(1);
+                Effect act = actions[i];
 
                 //category $: deduct a given amount of coins
-                if (actions[i][0] == '$')
+                // if (actactions[i][0] == '$')
+                if (act is MoneyEffect)
                 {
-                    coin -= int.Parse(actions[i].Substring(1));
+                    coin -= ((MoneyEffect)act).coins;// int.Parse(actions[i].Substring(1));
                 }
                 //category 1: give one kind of non-science thing
-                else if (actions[i][0] == '1')
+                // else if (actions[i][0] == '1')
+                else if (act is SimpleEffect)
                 {
                     //increase the appropriate field by num
-                    int num = int.Parse(act[0] + "");
+                    // int num = int.Parse(act[0] + "");
+                    int num = ((SimpleEffect)act).multiplier;
 
-                    switch (act[1])
+                    switch (((SimpleEffect)act).type)
                     {
                         case 'S':
                             shield += num;
@@ -395,77 +406,136 @@ namespace SevenWonders
                     }
                 }
                 //category 2: add one science
-                else if (actions[i][0] == '2')
+                // else if (actions[i][0] == '2')
+                else if (act is ScienceEffect)
                 {
-                    switch (act[0])
+                    switch (((ScienceEffect)act).symbol)
                     {
-                        case 'T':
-                            tablet++;
+                        case ScienceEffect.Symbol.Compass:
+                            sextant++;
                             break;
-                        case 'B':
+                        case ScienceEffect.Symbol.Gear:
                             bearTrap++;
                             break;
-                        case 'S':
-                            sextant++;
+                        case ScienceEffect.Symbol.Tablet:
+                            tablet++;
                             break;
                         default:
                             throw new Exception();
                     }
                 }
                 //category 3: market effect
-                else if (actions[i][0] == '3')
+                // else if (actions[i][0] == '3')
+                else if (act is CommercialDiscountEffect)
                 {
                     //set the market effects
-                    if(act == "LR"){
-                        leftRaw = true;
-                    }
-                    else if (act == "RR")
+                    CommercialDiscountEffect e = (CommercialDiscountEffect)act;
+                    if (e.affects == CommercialDiscountEffect.Affects.RawMaterial)
                     {
-                        rightRaw = true;
+                        switch(e.appliesTo)
+                        {
+                            case CommercialDiscountEffect.AppliesTo.LeftNeighbor:
+                                leftRaw = true;
+                                break;
+
+                            case CommercialDiscountEffect.AppliesTo.RightNeighbor:
+                                rightRaw = true;
+                                break;
+
+                            case CommercialDiscountEffect.AppliesTo.BothNeighbors:
+                                leftRaw = true; rightRaw = true;
+                                break;
+                        }
                     }
-                    else if (act == "BR")
+                    else if (e.affects == CommercialDiscountEffect.Affects.Goods)
                     {
-                        leftRaw = true; rightRaw = true;
-                    }
-                    if(act == "LM"){
-                        leftManu = true;
-                    }
-                    else if (act == "RM")
-                    {
-                        rightManu = true;
-                    }
-                    else if (act == "BM")
-                    {
-                        leftManu = true; rightManu = true;
+                        switch (e.appliesTo)
+                        {
+                            case CommercialDiscountEffect.AppliesTo.LeftNeighbor:
+                                leftManu = true;
+                                break;
+
+                            case CommercialDiscountEffect.AppliesTo.RightNeighbor:
+                                rightManu = true;
+                                break;
+
+                            case CommercialDiscountEffect.AppliesTo.BothNeighbors:
+                                leftManu = true; rightManu = true;
+                                break;
+                        }
                     }
                 }
                 //category 4: gives a choice between different things
                 //Add to the DAG
-                else if (actions[i][0] == '4')
+                // else if (actions[i][0] == '4')
+                else if (act is ResourceChoiceEffect)
                 {
-                    dag.add(actions[i].Substring(1));
+                    // dag.add(actions[i].Substring(1));
+                    // TODO: there's a bug here: RawMaterial structures can be purchased by neighboring cities
+                    // but Commercial structures (Forum & Caravansery) cannot.  DAG must account for this difference
+                    dag.add(((ResourceChoiceEffect)act).strChoiceData);
                 }
                 //category 5: gives some $ and and/or some victory depending on some conditions
                 //these cards are usually yellow
-                else if (actions[i][0] == '5')
+                // else if (actions[i][0] == '5')
+                else if (act is CoinsAndPointsEffect)
                 {
+                    CoinsAndPointsEffect e = act as CoinsAndPointsEffect;
+
                     //add gold only if there are gold to add
-                    if (act[4] != '0')
+                    // if (act[4] != '0')
+                    if (e.coinsGrantedAtTimeOfPlayMultiplier != 0)
                     {
                         //colours that are being looked for: G = grey, B = brown, b = blue, N = green, Y = yellow, S = stage
-                        char colour = act[3];
-                    
+                        // char colour = act[3];
+
                         //add the gold to the effects immediately
                         //look at the left
-                        if (act[0] == 'L')
+                        // if (act[0] == 'L')
+                        if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors || 
+                            e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Neighbors)
                         {
+                            /*
+                            if (leftNeighbour.playedStructure[j].colour == "Grey" && colour == 'G') coin += int.Parse(act[4] + "");
+                            else if (leftNeighbour.playedStructure[j].colour == "Brown" && colour == 'B') coin += int.Parse(act[4] + "");
+                            else if (leftNeighbour.playedStructure[j].colour == "Yellow" && colour == 'Y') coin += int.Parse(act[4] + "");
+                            */
+
                             for (int j = 0; j < leftNeighbour.numOfPlayedCards; j++)
                             {
-                                if (leftNeighbour.playedStructure[j].colour == "Grey" && colour == 'G') coin += int.Parse(act[4] + "");
-                                else if (leftNeighbour.playedStructure[j].colour == "Brown" && colour == 'B') coin += int.Parse(act[4] + "");
-                                else if (leftNeighbour.playedStructure[j].colour == "Yellow" && colour == 'Y') coin += int.Parse(act[4] + "");
+                                if (e.classConsidered == leftNeighbour.playedStructure[j].structureType)
+                                    coin += e.coinsGrantedAtTimeOfPlayMultiplier;
+                            }
+
+                            for (int j = 0; j < rightNeighbour.numOfPlayedCards; j++)
+                            {
+                                if (e.classConsidered == rightNeighbour.playedStructure[j].structureType)
+                                    coin += e.coinsGrantedAtTimeOfPlayMultiplier;
+                            }
+
+                            if (e.classConsidered == StructureType.WonderStage)
+                            {
+                                coin += leftNeighbour.currentStageOfWonder * e.coinsGrantedAtTimeOfPlayMultiplier;
+                                coin += rightNeighbour.currentStageOfWonder * e.coinsGrantedAtTimeOfPlayMultiplier;
                             }
                         }
+
+                        if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors ||
+                            e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
+                        {
+                            for (int j = 0; j < numOfPlayedCards; j++)
+                            {
+                                if (e.classConsidered == playedStructure[j].structureType)
+                                    coin += e.coinsGrantedAtTimeOfPlayMultiplier;
+                            }
+
+                            if (e.classConsidered == StructureType.WonderStage)
+                            {
+                                coin += currentStageOfWonder * e.coinsGrantedAtTimeOfPlayMultiplier;
+                            }
+                        }
+
+                        /*
                         //look at centre
                         if (act[1] == 'C')
                         {
@@ -492,21 +562,26 @@ namespace SevenWonders
                         if (colour == 'S') coin += ((leftNeighbour.currentStageOfWonder) * (int.Parse(act[4] + "")));
                         if (colour == 'S') coin += (currentStageOfWonder * (int.Parse(act[4] + "")));
                         if (colour == 'S') coin += ((rightNeighbour.currentStageOfWonder) * (int.Parse(act[4] + "")));
+                                                */
                     }
 
+                    if (e.victoryPointsAtEndOfGameMultiplier != 0)      // JDF: I added this line.  No point in adding Vineyard & Bazar to end of game actions.
                     //for victory points, just copy the effect to endOfGameActions and have executeEndOfGameActions do it later
-                    endOfGameActions[numOfEndOfGameActions++] = actions[i];
+                        endOfGameActions[numOfEndOfGameActions++] = actions[i];
 
                 }
                 //category 6: special guild cards
                 //put these directly into executeEndOfGameActions array
-                else if (actions[i][0] == '6')
+                else if (act is SpecialGuildEffect)
                 {
                     endOfGameActions[numOfEndOfGameActions++] = actions[i];
                 }
                 //category 7: hard coded board powers
-                else if (actions[i][0] == '7')
+                // else if (actions[i][0] == '7')
+                else if (act is SpecialBoardEffect)
                 {
+                    /*
+                    TODO: Fill this in after the board data is updated like the card one.
                     //format: 7(board name)
 
                     //BB: enable babylon power
@@ -561,10 +636,14 @@ namespace SevenWonders
                             victoryPoint += 3;
                         }
                     }
+                    */
+
                 }
                 //Esteban and Bilkis
-                else if(actions[i][0] == '8')
+                // else if(actions[i][0] == '8')
+                else if(act is SpecialLeaderEffect)
                 {
+                    /*
                     if (act.Substring(0) == "Esteban")
                     {
                         //enable the Esteban button by sending the Esteban message to the client
@@ -574,6 +653,7 @@ namespace SevenWonders
                     {
                         hasBilkis = true;
                     }
+                    */
                 }
                 else
                 {
@@ -594,20 +674,84 @@ namespace SevenWonders
             //2 types of effects: category 5 (yellow cards that add victory points) or category 6 (guild cards)
             for (int i = 0; i < numOfEndOfGameActions; i++)
             {
-                String act = endOfGameActions[i].Substring(1);
+                // String act = endOfGameActions[i].Substring(1);
+                Effect act = endOfGameActions[i];
 
                 int points = 0;
 
                 //category 5
-                if (endOfGameActions[i][0] == '5')
+                // if (endOfGameActions[i][0] == '5')
+                if (act is CoinsAndPointsEffect)
                 {
                     //add victory points
                     //colours that are being looked for: G = grey, B = brown, b = blue, N = green, Y = yellow, S = stage, L = loss, R=red, P=purple, W=White, c = conflict token
-                    char colour = act[3];
+                    // char colour = act[3];
 
-                    //add the victory points
-                    //look at the left
-                    if (act[0] == 'L')
+                    CoinsAndPointsEffect e = act as CoinsAndPointsEffect;
+
+                    if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors ||
+                        e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Neighbors)
+                    {
+                        for (int j = 0; j < leftNeighbour.numOfPlayedCards; j++)
+                        {
+                            if (e.classConsidered == leftNeighbour.playedStructure[j].structureType)
+                                points += e.victoryPointsAtEndOfGameMultiplier;
+                        }
+
+                        for (int j = 0; j < leftNeighbour.numOfPlayedCards; j++)
+                        {
+                            if (e.classConsidered == rightNeighbour.playedStructure[j].structureType)
+                                points += e.victoryPointsAtEndOfGameMultiplier;
+                        }
+
+                        if (e.classConsidered == StructureType.MilitaryLosses)
+                        {
+                            points += leftNeighbour.lossToken * e.victoryPointsAtEndOfGameMultiplier;
+                            points += rightNeighbour.lossToken * e.victoryPointsAtEndOfGameMultiplier;
+                        }
+
+                        if (e.classConsidered == StructureType.MilitaryVictories)
+                        {
+                            points += (leftNeighbour.conflictTokenOne + leftNeighbour.conflictTokenTwo + leftNeighbour.conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
+                            points += (rightNeighbour.conflictTokenOne + rightNeighbour.conflictTokenTwo + rightNeighbour.conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
+                        }
+
+                        if (e.classConsidered == StructureType.WonderStage)
+                        {
+                            points += leftNeighbour.currentStageOfWonder* e.victoryPointsAtEndOfGameMultiplier;
+                            points += rightNeighbour.currentStageOfWonder * e.victoryPointsAtEndOfGameMultiplier;
+                        }
+                    }
+
+                    if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors ||
+                        e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
+                    {
+                        for (int j = 0; j < numOfPlayedCards; j++)
+                        {
+                            if (e.classConsidered == playedStructure[j].structureType)
+                                points += e.victoryPointsAtEndOfGameMultiplier;
+                        }
+
+                        if (e.classConsidered == StructureType.MilitaryLosses)
+                        {
+                            points += lossToken * e.victoryPointsAtEndOfGameMultiplier;
+                        }
+
+                        if (e.classConsidered == StructureType.MilitaryVictories)
+                        {
+                            points += (conflictTokenOne + conflictTokenTwo + conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
+                        }
+
+                        if (e.classConsidered == StructureType.WonderStage)
+                        {
+                            points += currentStageOfWonder * e.victoryPointsAtEndOfGameMultiplier;
+                        }
+                    }
+
+                    /*
+                        //add the victory points
+                        //look at the left
+                        if (act[0] == 'L')
                     {
                         for (int j = 0; j < leftNeighbour.numOfPlayedCards; j++)
                         {
@@ -650,22 +794,23 @@ namespace SevenWonders
                             else if (rightNeighbour.playedStructure[j].colour == "Yellow" && colour == 'Y') points += int.Parse(act[5] + "");
                             else if (rightNeighbour.playedStructure[j].colour == "White" && colour == 'W') points += int.Parse(act[5] + "");
                             else if (rightNeighbour.playedStructure[j].colour == "Purple" && colour == 'P') points += int.Parse(act[5] + "");
-      
+
                         }
                     }
-
                     //look into stages and losses
-                    if (colour == 'L') points += ((leftNeighbour.lossToken) * (int.Parse(act[5] + "")));
-                    if (colour == 'S') points += ((leftNeighbour.currentStageOfWonder) * (int.Parse(act[5] + "")));
-                    if (colour == 'L') points += ((lossToken) * (int.Parse(act[5] + "")));
-                    if (colour == 'S') points += ((currentStageOfWonder) * (int.Parse(act[5] + "")));
-                    if (colour == 'L') points += ((rightNeighbour.lossToken) * (int.Parse(act[5] + "")));
-                    if (colour == 'S') points += ((rightNeighbour.currentStageOfWonder) * (int.Parse(act[5] + "")));
+                if (colour == 'L') points += ((leftNeighbour.lossToken) * (int.Parse(act[5] + "")));
+                if (colour == 'S') points += ((leftNeighbour.currentStageOfWonder) * (int.Parse(act[5] + "")));
+                if (colour == 'L') points += ((lossToken) * (int.Parse(act[5] + "")));
+                if (colour == 'S') points += ((currentStageOfWonder) * (int.Parse(act[5] + "")));
+                if (colour == 'L') points += ((rightNeighbour.lossToken) * (int.Parse(act[5] + "")));
+                if (colour == 'S') points += ((rightNeighbour.currentStageOfWonder) * (int.Parse(act[5] + "")));
+                                        */
                 }
                 //category 6: special guild cards and leader cards
                 //6_132 or 6_135
-                else if (endOfGameActions[i][0] == '6')
+                else if (act is SpecialGuildEffect)
                 {
+                    /*
                     //card number 132: Scientist guild
                     //award a science that gives the most points
                     if (act.Substring(1) == "132")
@@ -778,15 +923,20 @@ namespace SevenWonders
                     {
                         points += (7 - (conflictTokenOne + conflictTokenTwo + conflictTokenThree));
                     }
+                    */
                 }
                 //category 7: end of game board powers
-                else if (endOfGameActions[i][0] == '7')
+                else if (act is SpecialBoardEffect)
                 {
+                    /*
                     //copy best neighbouring purple card
                     if (endOfGameActions[i] == "7OB")
                     {
                         throw new NotImplementedException();
                     }
+                    */
+
+                    throw new NotImplementedException();
                 }
 
                 victoryPoint += points;
@@ -823,7 +973,7 @@ namespace SevenWonders
             Card card = hand[j];
 
             //retrieve the cost
-            string cost = card.cost;
+            Cost cost = card.cost;
 
             
             //if the player already owns a copy of the card, Return F immediatley
@@ -836,12 +986,17 @@ namespace SevenWonders
             }
             
             //if the cost is !, that means its free. Return T immediately
-            if (cost == "!") return 'T';
-            
+            if (cost.coin == 0 && cost.wood == 0 && cost.stone == 0 && cost.clay == 0 &&
+                cost.ore == 0 &&  cost.cloth == 0 && cost.glass == 0 && cost.papyrus == 0)
+            {
+                return 'T';
+            }
+
             //if the player owns the prerequiste, Return T immediately
             for (int i = 0; i < numOfPlayedCards; i++)
             {
-                if (playedStructure[i].name == card.freePreq)
+                if (playedStructure[i].chain[0] == card.name ||
+                    playedStructure[i].chain[1] == card.name)
                 {
                     return 'T';
                 }
@@ -850,33 +1005,34 @@ namespace SevenWonders
             //if the owner has built card 217: free leader cards
             //if the owner has Rome A board, then same
             //return T if the card is white
-            if ((playerBoard.freeResource == 'D' || hasIDPlayed(217)) && card.colour == "White")
+            if ((playerBoard.freeResource == 'D' || hasIDPlayed(/*217*/"Maecenas")) && card.structureType == StructureType.Leader)
             {
                 return 'T';
             }
 
             //if the owner has Rome B board, then get 2 coin discount
             //return F otherwise (since you cannot get more coins from initiating commerce; you can only get resources)
-            if (playerBoard.freeResource == 'd' && card.colour == "White")
+            if (playerBoard.freeResource == 'd' && card.structureType == StructureType.Leader)
             {
-                if ((card.cost.Length - 2) <= coin) return 'T';
+                if ((card.cost.coin - 2) <= coin) return 'T';
                 else return 'F';
             }
 
             //if a neighbour own Rome B board, then get a 1 coin discount
-            else if ((leftNeighbour.playerBoard.freeResource == 'd' || rightNeighbour.playerBoard.freeResource == 'd') && card.colour == "White")
+            else if ((leftNeighbour.playerBoard.freeResource == 'd' || rightNeighbour.playerBoard.freeResource == 'd') && card.structureType == StructureType.Leader)
             {
-                if ((card.cost.Length - 1) <= coin) return 'T';
+                if ((card.cost.coin - 1) <= coin) return 'T';
                 else return 'F';
             }
 
             //if the owner has built card 228: free guild cards
             //return T if the card is purple
-            if (card.colour == "Purple" && hasIDPlayed(228))
+            if (card.structureType == StructureType.Guild && hasIDPlayed(/*228*/"Ramses"))
             {
                 return 'T';
             }
 
+            /*
             //202, 207, 216: Discount on green, blue and red respectively
             //If a discount applies, determine if it is possible to play the card
             if ((hasIDPlayed(202) && card.colour == "Green") || 
@@ -887,6 +1043,7 @@ namespace SevenWonders
 
                 if (newCostResult == true) return 'T';
             }
+            */
 
             //can player afford cost with DAG resources?
             char? costAffordableWithDAGResult = isCostAffordableWithDAG(cost);
@@ -908,8 +1065,9 @@ namespace SevenWonders
         /// <param name="card"></param>
         /// <param name="cost"></param>
         /// <returns></returns>
-        private char? isCostAffordableWithDAG(string cost)
+        private char? isCostAffordableWithDAG(Cost cost)
         {
+            /*
             //count how many coins are needed
             int coinsf = 0;
             for (int i = 0; i < cost.Length; i++)
@@ -929,6 +1087,10 @@ namespace SevenWonders
             //can I afford the cost with resources in my DAG?
             if (DAG.canAfford(dag, cost)) return 'T';
             else return null;
+            */
+
+            throw new NotImplementedException();
+            return null;
         }
 
         /// <summary>
@@ -936,7 +1098,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="card"></param>
         /// <returns></returns>
-        private char? isCostAffordableWithNeighbours(string cost)
+        private char? isCostAffordableWithNeighbours(Cost cost)
         {
             //combine the left, centre, and right DAG
             DAG combinedDAG = DAG.addThreeDAGs(leftNeighbour.dag, dag, rightNeighbour.dag);
@@ -959,8 +1121,11 @@ namespace SevenWonders
                 return 'F';
 
             //retrieve the cost
-            string cost = playerBoard.cost[currentStageOfWonder];
+            throw new NotImplementedException();
+
+            Cost cost;// = playerBoard.cost[currentStageOfWonder];
             
+            /*
             //check for the stage discount card (Imhotep)
             if (hasIDPlayed(212) == true)
             {
@@ -968,6 +1133,7 @@ namespace SevenWonders
 
                 if (newCostResult == true) return 'T';
             }
+            */
 
             //can player afford cost with DAG resources
             if (isCostAffordableWithDAG(cost) == 'T') return 'T';
@@ -1112,10 +1278,12 @@ namespace SevenWonders
             {
                 AIBehaviour.makeMove(this, gm);
             }
+            /*
             else if (LeadersAIBehaviour != null)
             {
                 LeadersAIBehaviour.makeMove(this, (LeadersGameManager)gm);
             }
+            */
         }
 
         /// <summary>
@@ -1123,11 +1291,11 @@ namespace SevenWonders
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public bool hasIDPlayed(int id)
+        public bool hasIDPlayed(string cardName)
         {
             for (int i = 0; i < numOfPlayedCards; i++)
             {
-                if (playedStructure[i].id == id)
+                if (playedStructure[i].name == cardName)
                 {
                     return true;
                 }

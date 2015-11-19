@@ -116,7 +116,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="player"></param>
         /// <param name="id"></param>
-        public override void recruitLeader(String nickname, int id)
+        public /* override */void recruitLeader(String nickname, string cardName)
         {
             Player p = playerFromNickname(nickname);
 
@@ -126,7 +126,7 @@ namespace SevenWonders
             for (int i = 0; i < p.numOfHandCards; i++)
             {
                 //found the right card
-                if (p.hand[i].id == id)
+                if (p.hand[i].name == cardName)
                 {
                     c = p.hand[i];
 
@@ -322,6 +322,7 @@ namespace SevenWonders
         /// </summary>
         public void startOfRecruitmentTurn()
         {
+            /*
             //UC-22 R1
             //get the cards from the Leaders pile, get the avaliable actions, then display it
 
@@ -365,6 +366,7 @@ namespace SevenWonders
                     p.addHand(c);
                 }
             }
+            */
 
             //UC-22 R2
             //calculate available actions
@@ -453,10 +455,10 @@ namespace SevenWonders
         /// </summary>
         /// <param name="id"></param>
         /// <param name="nickname"></param>
-        public override void buildStageOfWonder(int id, string nickname)
+        public override void buildStageOfWonder(string structureName, string nickname)
         {
 
-            base.buildStageOfWonder(id, nickname);
+            base.buildStageOfWonder(structureName, nickname);
 
             //Rome Side B (LB)
             //Send to client the Window asking which Leader should be played for free
@@ -593,6 +595,7 @@ namespace SevenWonders
         /// <param name="message"></param>
         public override void playCourtesansGuild(string nickname, string message)
         {
+            /*
             Player p = playerFromNickname(nickname);
 
             int id = int.Parse(message);
@@ -633,6 +636,7 @@ namespace SevenWonders
 
             //play this card
             buildStructureFromHand(c.id, nickname);
+            */
         }
 
         /// <summary>
@@ -645,6 +649,7 @@ namespace SevenWonders
         protected override Player createAI(String name, char strategy)
         {
             Player thisAI = new Player(name, true, this);
+            /*
             switch (strategy)
             {
                 case '0':
@@ -660,6 +665,7 @@ namespace SevenWonders
                     thisAI.LeadersAIBehaviour = new AIMoveAlgorithmLeaders3();
                     break;
             }
+            */
 
             return thisAI;
         }

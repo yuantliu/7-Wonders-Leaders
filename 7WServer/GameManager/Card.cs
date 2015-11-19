@@ -5,69 +5,90 @@ using System.Text;
 
 namespace SevenWonders
 {
-    [Serializable]
-    public class Card
+    public enum StrctureName
     {
-        //ID: 1-X
-        public int id { get; set; }
-        public string name { get; set; }
-        //Age: 1-3
-        public int age { get; set; }
-        public int numberOfPlayers { get; set; }
-        //Cost: SSS means 3 stones. ! means free, # means number of gold, e.g. 2WS = 2 coins 1 wood 1 stone
-        public String cost { get; set; }
-        //Free Prerequiste: ! means none
-        public String freePreq { get; set; }
-        //Colour: valid colours are ...
-        public String colour { get; set; }
-        /*
-         * Kinds of effects
-         * - gives one type of resource a certain amount:
-         *      #L. 
-         *      e.g. 2V (2 victory), 3O (3 Ores), 5$ (5 coins)
-         *      
-         * - gives one science: 
-         *      e.g. B (bear trap)
-         *           S (sextant)
-         *           T (tablet)
-         *           
-         * - gives a choice of one or more type of resource: 
-         *      e.g. WS (wood or stone)
-         * 
-         * - gives market effect:
-         *      L = left, R = right, B = both, 
-         *      M = manufactured, R = Raw, 
-         *      e.g. LR = Left raw, BR = both manufactured
-         * 
-         * - gives some $ and/or Victory, depending on neighbour's cards or wonders:
-         *      direction: L = left, C = centre, R = right
-         *      card: Y = Yellow, N = green, G = grey, R = red, B = brown, S = stage
-         *      gold: #
-         *      Victory: #
-         *      e.g. LCRG20 means This card will give 2 gold immediately and 2 victory points at the end of the game for each Green card for LCR
-         *           _C_G22 means This card will give 2 gold and 2 victory points at the end of the game for each Green card for Centre
-         */
-        public String effect { get; set; }
+        Lumber_Yard,
+        Stone_Pit,
+        Clay_Pool,
+        Ore_Vein,
+        Tree_Farm,
+        Excavation,
+        Clay_Pit,
+        Timber_Yard,
+        Forest_Cave,
+        Mine,
+        Loom,
+        Glassworks_1,
+        Press_1,
+        Pawnshop_2,
+        Baths,
+        Altar,
+        Theatre,
+        Tavern,
+        East_Trading_Post,
+        West_Trading_Post,
+        Marketplace,
+        Stockade,
+        Barracks,
+        Guard_Tower,
+        Apothecary,
+        Workshop,
+        Scriptorium,
+        Sawmill,
+        Quarry,
+        Brickyard,
+        Foundry,
+        Loom_2,
+        Glassworks_2,
+        Press_2,
+        Aqueduct,
+        Temple,
+        Statue,
+        Courthouse,
+        Forum,
+        Caravansery,
+        Vineyard,
+        Bazar,
+        Walls,
+        Training_Ground,
+        Stables,
+        Archery_Range,
+        Dispensary,
+        Laboratory,
+        Library,
+        School,
+        Pantheon,
+        Gardens,
+        Town_Hall,
+        Palace,
+        Senate,
+        Haven,
+        Lighthouse,
+        Chamber_of_Commerce,
+        Arena,
+        Fortifications,
+        Circus,
+        Arsenal,
+        Seige_Workshop,
+        Lodge,
+        Observatory,
+        University,
+        Academy,
+        Study,
+        Workers_Guild,
+        Craftmens_Guild,
+        Traders_Guild,
+        Philosophers_Guild,
+        Spy_Guild,
+        Strategy_Guild,
+        Shipowners_Guild,
+        Scientists_Guild,
+        Magistrates_Guild,
+        Builders_Guild,
+    };
 
-        public Card(int id, String name, int age, int numberOfPlayers, String cost, String freePreq, String colour, String effect)
-        {
-            this.id = id;
-            this.name = name;
-            this.age = age;
-            this.numberOfPlayers = numberOfPlayers;
-            this.cost = cost;
-            this.freePreq = freePreq;
-            this.colour = colour;
-            this.effect = effect;
-        }
 
-        //return a reference to an exact copy of this card
-        public Card copy()
-        {
-            return new Card(id, name, age, numberOfPlayers, cost, freePreq, colour, effect);
-        }
-    }
-
+    // will be used for Wonder stages as well as card structures
     public struct Cost
     {
         public int coin;
@@ -80,94 +101,176 @@ namespace SevenWonders
         public int papyrus;
     };
 
-    public struct Effect
+    public enum StructureType
     {
-        public int type;   // 1 to 8, possibly more after Cities are added.
+        // Basic cards
+        RawMaterial,
+        Goods,
+        Civilian,
+        Commerce,
+        Military,
+        Science,
+        Guild,
 
-        public struct Simple
+        // These cards are not played, but they are used in some effects to determine coins and/or points
+        MilitaryLosses,
+        MilitaryVictories,
+        WonderStage,
+
+        // Expansions
+        Leader,
+        City,
+    };
+
+    public abstract class Effect
+    {
+        public enum Type
         {
-            public int multiplier;
-            public char type;
+            Money,              // Gain or lose coins
+            Simple,             // One of a kind, non-science
+            Science,            // science
+            Commerce,           // Marketplace, Trading Posts
+            ResourceChoice,     // Age 1 either-other resource, Forum, Caravansery
+            CoinsPoints,        // Most guilds, All age 3 commerce, Vineyard, Bazar
+            SpecializedGuild,   // Science guild, Shipowner's guild
+            SpecializedBoard,   // Special board effects
+            SpecializedLeader   // Special leader effects (Esteban, Bilkis)
         };
 
-        public enum Science
+        protected Type effectType;   // $, 1 to 8, possibly more after Cities are added.  // TODO: get rid of this.  Use classes derived from Effect instead.
+    };
+
+    // formerly category 0 or '$'
+    // Used when losing money
+    public class MoneyEffect : Effect
+    {
+        public int coins;
+
+        public MoneyEffect(int coins)
+        {
+            this.effectType = Effect.Type.Money;
+            this.coins = coins;
+        }
+    }
+
+    // formerly category 1
+    public class SimpleEffect : Effect
+    {
+        public int multiplier;
+        public char type;                                                   // Make this an enum! Coins/Wood/Stone/Clay/Ore/Cloth/Glass/Papyrus
+
+        public SimpleEffect(int multiplier, char type)
+        {
+            this.effectType = Effect.Type.Simple;
+            this.multiplier = multiplier;
+            this.type = type;
+        }
+    };
+
+    // formerly category 2
+    public class ScienceEffect : Effect
+    {
+        public enum Symbol
         {
             Compass,
             Gear,
             Tablet,
         };
 
-        public struct CommercialDiscount
+        public Symbol symbol;
+
+        public ScienceEffect(Symbol s)
         {
-            public enum AppliesTo
-            {
-                LeftNeighbor,
-                RightNeighbor,
-                BothNeighbors,
-            };
-
-            public enum Affects
-            {
-                RawMaterial,
-                Goods,
-            };
-
-            public AppliesTo appliesTo;
-            public Affects affects;
-        };
-
-        public struct CoinsAndPoints
-        {
-            public enum CardsConsidered
-            {
-                Player,
-                Neighbors,
-                PlayerAndNeighbors,
-            };
-
-            public enum ClassConsidered
-            {
-                RawMaterial,
-                Goods,
-                Civilian,
-                Commerce,
-                MilitaryVictories,
-                MilitaryLosses,
-                Science,
-                WonderStage,
-            }
-
-            public CardsConsidered cardsConsidered;
-            public ClassConsidered classConsidered;
-            public int coinsGrantedAtTimeOfPlayMultiplier;
-            public int victoryPointsAtEndOfGameMultiplier;
+            this.effectType = Effect.Type.Science;
+            this.symbol = s;
         }
-
-        public Simple simpleInfo;                      // category 1
-        public Science scienceSymbol;                  // category 2
-        public CommercialDiscount commercialDiscount;  // category 3
-        public string resourceChoiceData;              // category 4
-        public CoinsAndPoints coinsAndPoints;          // category 5
     };
 
-    [Serializable]
-    public class Card2
+    // formerly category 3
+    public class CommercialDiscountEffect : Effect
     {
-        public enum StructureType
+        public enum AppliesTo
+        {
+            LeftNeighbor,
+            RightNeighbor,
+            BothNeighbors,
+        };
+
+        public enum Affects
         {
             RawMaterial,
             Goods,
-            Civilian,
-            Commerce,
-            Military,
-            Science,
-            Guild,
-            Leader,
-            City,
         };
 
-        // Name Age Type Description Icon	3 players	4 players	5 players	6 players	7 players Cost(coins)    Cost(wood) Cost(stone)    Cost(clay) Cost(ore)  Cost(cloth)    Cost(glass)    Cost(papyrus)  Chains to(1)   Chains to(2)   Effect Category Category 1 multiplier Category 1 effect Catgory 2 symbol Category 3 effect Category 4 effect Category 5: Multiplier(P = player, N = neighbours, B = both player & neighbours)   Category 5: Card/token type Category 5: coins given when card enters play multiplier Category 5: End of game VP granted
-        public string name { get; private set; }
+        public AppliesTo appliesTo;
+        public Affects affects;
+
+        public CommercialDiscountEffect(AppliesTo who, Affects productionType)
+        {
+            this.effectType = Effect.Type.Commerce;
+            this.appliesTo = who;
+            this.affects = productionType;
+        }
+    };
+
+    // formerly category 4
+    public class ResourceChoiceEffect : Effect
+    {
+        public string strChoiceData;
+
+        public ResourceChoiceEffect(string s)
+        {
+            this.effectType = Effect.Type.ResourceChoice;
+            this.strChoiceData = s;
+        }
+    };
+
+    // formerly category 5
+    public class CoinsAndPointsEffect : Effect
+    {
+        public enum CardsConsidered
+        {
+            Player,
+            Neighbors,
+            PlayerAndNeighbors,
+        };
+
+        public CardsConsidered cardsConsidered;
+        public StructureType classConsidered;
+        public int coinsGrantedAtTimeOfPlayMultiplier;
+        public int victoryPointsAtEndOfGameMultiplier;
+
+        public CoinsAndPointsEffect(CardsConsidered cardsConsidered, StructureType classConsidered, int coinsGrantedAtTimeOfPlayMultiplier, int victoryPointsAtEndOfGameMultiplier)
+        {
+            this.effectType = Effect.Type.CoinsPoints;
+            this.cardsConsidered = cardsConsidered;
+            this.classConsidered = classConsidered;
+            this.coinsGrantedAtTimeOfPlayMultiplier = coinsGrantedAtTimeOfPlayMultiplier;
+            this.victoryPointsAtEndOfGameMultiplier = victoryPointsAtEndOfGameMultiplier;
+        }
+    };
+
+    // formerly category 6
+    public class SpecialGuildEffect : Effect
+    {
+    }
+
+    // formerly category 7
+    public class SpecialBoardEffect : Effect
+    {
+    }
+
+    // formerly category 8
+    public class SpecialLeaderEffect : Effect
+    {
+    }
+
+    [Serializable]
+    public class Card
+    {
+         // Name Age Type Description Icon	3 players	4 players	5 players	6 players	7 players Cost(coins)    Cost(wood) Cost(stone)    Cost(clay) Cost(ore)  Cost(cloth)    Cost(glass)    Cost(papyrus)  Chains to(1)   Chains to(2)   Effect Category Category 1 multiplier Category 1 effect Catgory 2 symbol Category 3 effect Category 4 effect Category 5: Multiplier(P = player, N = neighbours, B = both player & neighbours)   Category 5: Card/token type Category 5: coins given when card enters play multiplier Category 5: End of game VP granted
+        public string name { get; private set; }    // TODO: make this an enum
+
         public int age { get; private set; }
         public StructureType structureType { get;  private set; }
         public string description { get; private set; }
@@ -177,7 +280,7 @@ namespace SevenWonders
         public string[] chain = new string[2];
         public Effect effect;
 
-        public Card2(string[] createParams)
+        public Card(string[] createParams)
         {
             name = createParams[0];
             age = int.Parse(createParams[1]);
@@ -201,68 +304,91 @@ namespace SevenWonders
             chain[0] = createParams[18];
             chain[1] = createParams[19];
 
-            effect.type = int.Parse(createParams[20]);
+            var effectType = (Effect.Type)Enum.Parse(typeof(Effect.Type), createParams[20]);
 
-            switch (effect.type)
+            switch (effectType)
             {
-                case 1:
-                    effect.simpleInfo.multiplier = int.Parse(createParams[21]);
-                    effect.simpleInfo.type = createParams[22][0];
+                case Effect.Type.Simple:
+                    effect = new SimpleEffect(int. Parse(createParams[21]), createParams[22][0]);
                     break;
 
-                case 2:
+                case Effect.Type.Science:
                     switch (createParams[23])
                     {
-                        case "C": effect.scienceSymbol = Effect.Science.Compass; break;
-                        case "G": effect.scienceSymbol = Effect.Science.Gear; break;
-                        case "T": effect.scienceSymbol = Effect.Science.Tablet; break;
+                        case "C": effect = new ScienceEffect(ScienceEffect.Symbol.Compass); break;
+                        case "G": effect = new ScienceEffect(ScienceEffect.Symbol.Gear); break;
+                        case "T": effect = new ScienceEffect(ScienceEffect.Symbol.Tablet); break;
                     }
                     break;
 
-                case 3:
+                case Effect.Type.Commerce:
+                    CommercialDiscountEffect.AppliesTo appliesTo = CommercialDiscountEffect.AppliesTo.BothNeighbors;
+                    CommercialDiscountEffect.Affects affects = CommercialDiscountEffect.Affects.RawMaterial;
+
                     switch (createParams[24][0])
                     {
                         case 'L':
-                            effect.commercialDiscount.appliesTo = Effect.CommercialDiscount.AppliesTo.LeftNeighbor;
+                            appliesTo = CommercialDiscountEffect.AppliesTo.LeftNeighbor;
                             break;
 
                         case 'R':
-                            effect.commercialDiscount.appliesTo = Effect.CommercialDiscount.AppliesTo.RightNeighbor;
+                            appliesTo = CommercialDiscountEffect.AppliesTo.RightNeighbor;
                             break;
 
                         case 'B':
-                            effect.commercialDiscount.appliesTo = Effect.CommercialDiscount.AppliesTo.BothNeighbors;
+                            // appliesTo = CommercialDiscountEffect.AppliesTo.BothNeighbors;
                             break;
+
+                        default:
+                            throw new Exception();
                     }
 
                     switch (createParams[24][1])
                     {
-                        case 'R': effect.commercialDiscount.affects = Effect.CommercialDiscount.Affects.RawMaterial;
+                        case 'R':
+                            // affects = CommercialDiscountEffect.Affects.RawMaterial;
                             break;
-                        case 'G': effect.commercialDiscount.affects = Effect.CommercialDiscount.Affects.Goods;
+
+                        case 'G':
+                            affects = CommercialDiscountEffect.Affects.Goods;
                             break;
+
+                        default:
+                            throw new Exception();
                     }
+
+                    effect = new CommercialDiscountEffect(appliesTo, affects);
                     break;
 
-                case 4:
-                    effect.resourceChoiceData = createParams[25];       // player can choose one of the RawMaterials or Goods provided
+                case Effect.Type.ResourceChoice:
+                    // player can choose one of the RawMaterials or Goods provided
+                    effect = new ResourceChoiceEffect(createParams[25]);
                     break;
 
-                case 5:
-                    switch(createParams[26])
+                case Effect.Type.CoinsPoints:
+                    CoinsAndPointsEffect.CardsConsidered cardsConsidered = CoinsAndPointsEffect.CardsConsidered.Player;
+                    switch (createParams[26])
                     {
-                        case "P": effect.coinsAndPoints.cardsConsidered = Effect.CoinsAndPoints.CardsConsidered.Player; break;
-                        case "N": effect.coinsAndPoints.cardsConsidered = Effect.CoinsAndPoints.CardsConsidered.Neighbors; break;
-                        case "B": effect.coinsAndPoints.cardsConsidered = Effect.CoinsAndPoints.CardsConsidered.PlayerAndNeighbors; break;
+                        case "P": /*cardsConsidered = CoinsAndPointsEffect.CardsConsidered.Player; */ break;
+                        case "N": cardsConsidered = CoinsAndPointsEffect.CardsConsidered.Neighbors; break;
+                        case "B": cardsConsidered = CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors; break;
+                        default: throw new Exception();
                     }
-                    effect.coinsAndPoints.classConsidered = (Effect.CoinsAndPoints.ClassConsidered)Enum.Parse(typeof(Effect.CoinsAndPoints.ClassConsidered), createParams[27]);
-                    effect.coinsAndPoints.coinsGrantedAtTimeOfPlayMultiplier = int.Parse(createParams[28]);
-                    effect.coinsAndPoints.victoryPointsAtEndOfGameMultiplier = int.Parse(createParams[29]);
+                    StructureType classConsidered =
+                        (StructureType)Enum.Parse(typeof(StructureType), createParams[27]);
+
+                    effect = new CoinsAndPointsEffect(cardsConsidered, classConsidered,
+                        int.Parse(createParams[28]), int.Parse(createParams[29]));
                     break;
 
-                case 6:
-                    // handled with card-specific code; nothing further we need to do here.
+                case Effect.Type.SpecializedGuild:
+                    // No other information is provided in the card list.
                     break;
+
+                case Effect.Type.Money:
+                case Effect.Type.SpecializedBoard:
+                case Effect.Type.SpecializedLeader:
+                    throw new Exception("Unexpected value in cards file");
             }
         }
 

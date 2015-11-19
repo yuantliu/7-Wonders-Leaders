@@ -33,7 +33,7 @@ namespace SevenWonders
 
         // I'd prefer to use a dictionary, but because there may be 2 (or even 3) of the same card,
         // I'll stay with a List container.
-        List<Card2> fullCardList = new List<Card2>();
+        List<Card> fullCardList = new List<Card>();
 
         public Deck[] deck;
 
@@ -68,10 +68,10 @@ namespace SevenWonders
             //Vanilla only Initialisation tasks
             //check if the current class is LeadersGameManager or not
             //if not, then load the other vanilla only initilisation tasks
-            if (this is LeadersGameManager == false)
-            {
+            // if (this is LeadersGameManager == false)
+            // {
                 vanillaGameManagerInitialisation(playerNicks, AIStrats);
-            }
+            // }
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace SevenWonders
 
                 while (line != null && line != String.Empty)
                 {
-                    fullCardList.Add(new Card2(line.Split(',')));
+                    fullCardList.Add(new Card(line.Split(',')));
                     line = file.ReadLine();
                 }
             }
@@ -161,6 +161,7 @@ namespace SevenWonders
             Player thisAI = new Player(name, true, this);
             switch (strategy)
             {
+                /*
                 case '0':
                     thisAI.AIBehaviour = new AIMoveAlgorithm0();
                     break;
@@ -173,6 +174,7 @@ namespace SevenWonders
                 case '3':
                     thisAI.AIBehaviour = new AIMoveAlgorithm3();
                     break;
+                    */
                 case '4':
                     thisAI.AIBehaviour = new AIMoveAlgorithm4();
                     break;
@@ -217,8 +219,12 @@ namespace SevenWonders
             {
                 player[i].playerBoard = popRandomBoard();
                 // gmCoordinator.sendMessage(player[i], "b" + player[i].playerBoard.name);
-                player[i].storeAction("13$");
-                player[i].storeAction("11" + player[i].playerBoard.freeResource);
+                // player[i].storeAction("13$");
+                player[i].storeAction(new SimpleEffect(3, '$'));
+                // player[i].storeAction("11" + player[i].playerBoard.freeResource);
+                player[i].storeAction(new SimpleEffect(1, player[i].playerBoard.freeResource));
+
+                // deferred until the client is ready to accept UI information
                 // player[i].executeAction(this);
             }
 
@@ -318,7 +324,7 @@ namespace SevenWonders
 
                     //check if player has played card 220: gain 2 coins for every victory point gained
                     //give 2 coins if so
-                    if (player[i].hasIDPlayed(220))
+                    if (player[i].hasIDPlayed(/*220*/"Nero"))
                     {
                         player[i].coin += 2;
                     }
@@ -326,7 +332,7 @@ namespace SevenWonders
                     //check if right neighbour has played card 232: return conflict loss token received
                     //if no, receive lossToken
                     //if yes, do not get lossToken, instead, give lossToken to winner
-                    if (player[i].rightNeighbour.hasIDPlayed(232) == false)
+                    if (player[i].rightNeighbour.hasIDPlayed(/*232*/"Tomyris") == false)
                     {
                         player[i].rightNeighbour.lossToken++;
                     }
@@ -354,7 +360,7 @@ namespace SevenWonders
 
                     //check if player has played card 220: gain 2 coins for every victory point gained
                     //give 2 coins if so
-                    if (player[i].rightNeighbour.hasIDPlayed(220))
+                    if (player[i].rightNeighbour.hasIDPlayed(/*220*/"Nero"))
                     {
                         player[i].rightNeighbour.coin += 2;
                     }
@@ -362,7 +368,7 @@ namespace SevenWonders
                     //check if I have played card 232: return conflict loss token received
                     //if no, receive lossToken
                     //if yes, do not get lossToken, instead, give lossToken to rightNeighbour
-                    if (player[i].hasIDPlayed(232) == false)
+                    if (player[i].hasIDPlayed(/*232*/"Tomyris") == false)
                     {
                         player[i].lossToken++;
                     }
@@ -439,7 +445,7 @@ namespace SevenWonders
             {
                 for (int j = 0; j < numCardsToDeal; j++)
                 {
-                    Card2 c = deck[currentAge].GetTopCard();
+                    Card c = deck[currentAge].GetTopCard();
                     player[i].addHand(c);
                 }
             }
@@ -523,7 +529,7 @@ namespace SevenWonders
         /// <summary>
         /// build a structure from hand, given the Card id number and the Player
         /// </summary>
-        public void buildStructureFromHand(int id, string playerNickname)
+        public void buildStructureFromHand(string name, string playerNickname)
         {
             //Find the Player object given the playerNickname
             Player p = playerFromNickname(playerNickname);
@@ -533,7 +539,7 @@ namespace SevenWonders
             for (int i = 0; i < p.numOfHandCards; i++)
             {
                 //found the right card
-                if (p.hand[i].id == id)
+                if (p.hand[i].name == name)
                 {
                     c = p.hand[i];
 
@@ -556,46 +562,55 @@ namespace SevenWonders
 
             //if the structure played costs money, deduct it
             //check if the Card costs money
-            int costInCoins = 0;
+            int costInCoins = c.cost.coin;
+            /*
             for (int i = 0; i < c.cost.Length; i++)
             {
                 if (c.cost[i] == '$') costInCoins++;
             }
+            */
 
             //if player has card 217: free leaders, then leaders are free. add the appropriate amount of coins first to offset the deduction
             //OR
             //if player has Rome A, then leaders are free. (board has D resource (big discount))
-            if ((p.hasIDPlayed(217) == true || p.playerBoard.freeResource == 'D') && c.colour == "White")
+            if ((p.hasIDPlayed(/*217*/"Maecenas") == true || p.playerBoard.freeResource == 'D') && c.structureType == StructureType.Leader)
             {
-                p.storeAction("1" + costInCoins + "$");
+                // p.storeAction("1" + costInCoins + "$");
+                p.storeAction(new SimpleEffect(costInCoins, '$'));
             }
 
             //if player has Rome B, then playing leaders will refund a 2 coin discount
-            if (p.playerBoard.freeResource == 'd' && c.colour == "White")
+            if (p.playerBoard.freeResource == 'd' && c.structureType == StructureType.Leader)
             {
                 //give 2 coins back if the card cost more than 2
                 //else give less than 2 coins back
-                if (c.cost.Length >= 2)
+                int coins = c.cost.coin;
+                if (c.cost.coin >= 2)
                 {
-                    p.storeAction("12$");
+                    coins = 2;
+                    // p.storeAction("12$");
                 }
                 else
                 {
-                    p.storeAction("1" + c.cost.Length + "$");
+                    // JDF.  Not sure this is correct.  Will need to test it.
+                    // p.storeAction("1" + c.cost.Length + "$");
                 }
+                p.storeAction(new SimpleEffect(coins, '$'));
             }
 
             //if player's neighbour has Rome B, then refund a 1 coin discount instead
-            else if ((p.leftNeighbour.playerBoard.freeResource == 'd' || p.rightNeighbour.playerBoard.freeResource == 'd') && c.colour == "White")
+            else if ((p.leftNeighbour.playerBoard.freeResource == 'd' || p.rightNeighbour.playerBoard.freeResource == 'd') && c.structureType == StructureType.Leader)
             {
-                if (c.cost.Length >= 1)
+                if (c.cost.coin >= 1)
                 {
-                    p.storeAction("11$");
+                    p.storeAction(new SimpleEffect(1, '$'));
+                    // p.storeAction("11$");
                 }
             }
 
             //store the deduction
-            p.storeAction("$" + costInCoins);
+            // Was ths correct before?
+            // p.storeAction("$" + costInCoins);
 
             //determine if the player should get 2 coins for having those leaders (get 2 coins for playing a yellow and playing a pre-req
             giveCoinFromLeadersOnBuild(p, c);
@@ -606,6 +621,7 @@ namespace SevenWonders
         /// </summary>
         private void giveCoinFromLeadersOnBuild(Player p, Card c)
         {
+            /*
             for (int i = 0; i < p.numOfPlayedCards; i++)
             {
                 //235 - 2 coin for yellow card played
@@ -634,6 +650,7 @@ namespace SevenWonders
                     }
                 }
             }
+            */
         }
 
         /// <summary>
@@ -647,7 +664,7 @@ namespace SevenWonders
 
             CommerceClientToServerResponse response = (CommerceClientToServerResponse)Marshaller.StringToObject(commerceInformation);
 
-            int id = response.id;
+            string structureName = response.structureName;
             int leftcoins = response.leftCoins;
             int rightcoins = response.rightCoins;
 
@@ -656,7 +673,7 @@ namespace SevenWonders
             for (int i = 0; i < p.numOfHandCards; i++)
             {
                 //found the right card
-                if (p.hand[i].id == id)
+                if (p.hand[i].name == structureName)
                 {
                     c = p.hand[i];
 
@@ -680,19 +697,23 @@ namespace SevenWonders
             //charge the player the appropriate amount of coins
             int commerceCost = leftcoins + rightcoins;
 
-
             //store the deduction
-            p.storeAction("$" + commerceCost);
+            // p.storeAction("$" + commerceCost);
+            p.storeAction(new SimpleEffect(commerceCost, '$'));
 
             //give the coins that neigbours earned from commerce
-            p.leftNeighbour.storeAction("1" + leftcoins + "$");
-            p.rightNeighbour.storeAction("1" + rightcoins + "$");
+            // p.leftNeighbour.storeAction("1" + leftcoins + "$");
+            // p.rightNeighbour.storeAction("1" + rightcoins + "$");
+            p.leftNeighbour.storeAction(new SimpleEffect(leftcoins, '$'));
+            p.rightNeighbour.storeAction(new SimpleEffect(rightcoins, '$'));
+
 
             //determine if the player should get 2 coins for having those leaders (get 2 coins for playing a yellow and playing a pre-req
             giveCoinFromLeadersOnBuild(p, c);
 
             //Leaders: if Player has card 209 (gain 1 coin for using commerce per neighbouring player)
             //then gain 1 coin
+            /*
             if (this is LeadersGameManager)
             {
                 if (p.hasIDPlayed(209))
@@ -701,6 +722,7 @@ namespace SevenWonders
                     if (rightcoins != 0) p.storeAction("11$");
                 }
             }
+            */
         }
 
         /// <summary>
@@ -716,23 +738,27 @@ namespace SevenWonders
 
             int leftcoins = response.leftCoins;
             int rightcoins = response.rightCoins;
-            int id = response.id;
+            string structureName = response.structureName;
 
             //build the stage of wonder
-            buildStageOfWonder(id, nickname);
+            buildStageOfWonder(structureName, nickname);
 
             //charge the player the appropriate amount of coins
             int commerceCost = leftcoins + rightcoins;
 
             //store the deduction
-            p.storeAction("$" + commerceCost);
+            // p.storeAction("$" + commerceCost);
+            p.storeAction(new MoneyEffect(commerceCost));
 
             //give the coins that neigbours earned from commerce
-            p.leftNeighbour.storeAction("1" + leftcoins + "$");
-            p.rightNeighbour.storeAction("1" + rightcoins + "$");
+            // p.leftNeighbour.storeAction("1" + leftcoins + "$");
+            // p.rightNeighbour.storeAction("1" + rightcoins + "$");
+            p.leftNeighbour.storeAction(new SimpleEffect(leftcoins, '$'));
+            p.rightNeighbour.storeAction(new SimpleEffect(rightcoins, '$'));
 
             //Leaders: if Player has card 209 (gain 1 coin for using commerce per neighbouring player)
             //then gain 1 coin
+            /*
             if (this is LeadersGameManager)
             {
                 if (p.hasIDPlayed(209))
@@ -741,6 +767,7 @@ namespace SevenWonders
                     if (rightcoins != 0) p.storeAction("11$");
                 }
             }
+            */
         }
 
         /// <summary>
@@ -748,7 +775,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="id"></param>
         /// <param name="p"></param>
-        public void buildStructureFromDiscardPile(int id, string playerNickname)
+        public void buildStructureFromDiscardPile(string name, string playerNickname)
         {
             //Find the Player object given the playerNickname
             Player p = playerFromNickname(playerNickname);
@@ -760,8 +787,15 @@ namespace SevenWonders
             for (int i = 0; i < numDiscardPile; i++)
             {
                 //found the card
-                if (discardPile[i].id == id)
+                if (discardPile[i].name == name)
                 {
+                    // I think the loop below shoudl be replaced with:
+                    costInCoins = discardPile[i].cost.coin;
+
+                    // TODO: figure this out.  Not really sure what they were doing before.
+                    throw new Exception();
+
+                    /*
                     //count how many $ signs in the cost. Each $ means 1 coin cost
                     for (int j = 0; j < discardPile[i].cost.Length; j++)
                     {
@@ -770,13 +804,14 @@ namespace SevenWonders
                             costInCoins++;
                         }
                     }
+                    */
 
                     break;
                 }
             }
 
             //store the reimbursement
-            p.storeAction("1" + costInCoins + "$");
+            p.storeAction(new SimpleEffect(costInCoins, '$'));
 
             //Find the card with the id number
             Card c = null;
@@ -784,7 +819,7 @@ namespace SevenWonders
             for (int i = 0; i < numDiscardPile; i++)
             {
                 //found the right card
-                if (discardPile[i].id == id)
+                if (discardPile[i].name == name)
                 {
                     c = discardPile[i];
                     //remove it from the discard pile
@@ -812,7 +847,7 @@ namespace SevenWonders
         /// build a stage of wonder, given the Player nickname and the id of the card to be "sacrificed"
         /// </summary>
         /// <param name="p"></param>
-        public virtual void buildStageOfWonder(int id, string nickname)
+        public virtual void buildStageOfWonder(string structureName, string nickname)
         {
             Player p = playerFromNickname(nickname);
 
@@ -824,7 +859,7 @@ namespace SevenWonders
                 for (int i = 0; i < p.numOfHandCards; i++)
                 {
                     //found the right card
-                    if (p.hand[i].id == id)
+                    if (p.hand[i].name == structureName)
                     {
                         c = p.hand[i];
 
@@ -840,7 +875,9 @@ namespace SevenWonders
                     }
                 }
 
-                p.storeAction(p.playerBoard.effect[p.currentStageOfWonder++]);
+                // undo this after the boardData is converted to the same effect object as the card data
+                throw new Exception();
+                // p.storeAction(p.playerBoard.effect[p.currentStageOfWonder++]);
 
             }
             else
@@ -856,18 +893,18 @@ namespace SevenWonders
         /// </summary>
         /// <param name="id"></param>
         /// <param name="p"></param>
-        public void discardCardForThreeCoins(int id, String nickname)
+        public void discardCardForThreeCoins(string name, String nickname)
         {
             Player p = playerFromNickname(nickname);
 
-            p.storeAction("13$");
+            p.storeAction(new SimpleEffect(3, '$'));
 
             //Find the card with the id number and find its effects
             Card c = null;
             for (int i = 0; i < p.numOfHandCards; i++)
             {
                 //found the right card
-                if (p.hand[i].id == id)
+                if (p.hand[i].name == name)
                 {
                     c = p.hand[i];
 
@@ -1066,7 +1103,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="nickname"></param>
         /// <param name="id"></param>
-        public void playCardForFreeWithOlympia(String nickname, int id)
+        public void playCardForFreeWithOlympia(String nickname, string structureName)
         {
             Player p = playerFromNickname(nickname);
 
@@ -1077,8 +1114,10 @@ namespace SevenWonders
             for (int i = 0; i < p.numOfHandCards; i++)
             {
                 //found the card
-                if (p.hand[i].id == id)
+                if (p.hand[i].name == structureName)
                 {
+                    costInCoins = p.hand[i].cost.coin;
+                    /*
                     //count how many $ signs in the cost. Each $ means 1 coin cost
                     for (int j = 0; j < p.hand[i].cost.Length; j++)
                     {
@@ -1087,16 +1126,18 @@ namespace SevenWonders
                             costInCoins++;
                         }
                     }
+                    */
 
                     break;
                 }
             }
 
             //store the reimbursement
-            p.storeAction("1" + costInCoins + "$");
+            // p.storeAction("1" + costInCoins + "$");
+            p.storeAction(new SimpleEffect(costInCoins, '$'));
 
             //build the structure
-            buildStructureFromHand(id, nickname);
+            buildStructureFromHand(structureName, nickname);
 
             //disable Olympia
             p.olympiaPowerEnabled = false;
@@ -1129,7 +1170,7 @@ namespace SevenWonders
 
             for (int i = 0; i < numDiscardPile; i++)
             {
-                information += "_" + discardPile[i].id + "&" + discardPile[i].name;
+                information += "_" + discardPile[i].name + "&" + discardPile[i].name;
             }
 
             information += "|";
@@ -1143,11 +1184,11 @@ namespace SevenWonders
         /// </summary>
         /// <param name="nickname"></param>
         /// <param name="id"></param>
-        public void playCardForFreeWithHalicarnassus(string nickname, int id)
+        public void playCardForFreeWithHalicarnassus(string nickname, string structureName)
         {
             Player p = playerFromNickname(nickname);
             //build from the discard pile
-            buildStructureFromDiscardPile(id, nickname);
+            buildStructureFromDiscardPile(structureName, nickname);
         }
 
         /// <summary>
@@ -1167,7 +1208,7 @@ namespace SevenWonders
             //get the last card
             Card lastCard = p.hand[0];
             //get the id
-            information += "_" + lastCard.id + "_";
+            information += "_" + lastCard.name + "_";
             //get if the card is playable from hand
             information += p.isCardBuildable(0);
             //get if stage is buildable from hand
@@ -1182,7 +1223,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="id"></param>
         /// <param name="nickname"></param>
-        public void updateCommercePanel(int id, string nickname, bool isStage)
+        public void updateCommercePanel(string structureName, string nickname, bool isStage)
         {
             Player p = playerFromNickname(nickname);
 
@@ -1190,12 +1231,12 @@ namespace SevenWonders
 
             //Find the card with the id number
             Card c = null;
-            if (id != 0)
+            if (structureName != null)
             {
                 for (int i = 0; i < p.numOfHandCards; i++)
                 {
                     //found the right card
-                    if (p.hand[i].id == id)
+                    if (p.hand[i].name == structureName)
                     {
                         c = p.hand[i];
                         break;
@@ -1205,7 +1246,7 @@ namespace SevenWonders
 
             if (isStage == true)
             {
-                if (p.hasIDPlayed(212) == true)
+                if (p.hasIDPlayed(/*212*/"Imhotep") == true)
                 {
                     hasDiscount = true;
                 }
@@ -1215,9 +1256,9 @@ namespace SevenWonders
                 }
             }
             else if (
-                (c.colour == "Green" && p.hasIDPlayed(202)) ||
-               (c.colour == "Blue" && p.hasIDPlayed(207)) ||
-               (c.colour == "Red" && p.hasIDPlayed(216)))
+                (c.structureType == StructureType.Science && p.hasIDPlayed(/*202*/"Archimedes")) ||
+               (c.structureType == StructureType.Civilian && p.hasIDPlayed(/*207*/"Hammurabi")) ||
+               (c.structureType == StructureType.Military && p.hasIDPlayed(/*216*/"Leonidas")))
             {
                 hasDiscount = true;
             }
@@ -1226,17 +1267,14 @@ namespace SevenWonders
                 hasDiscount = false;
             }
 
-            string cost;
+            Cost cost = c.cost;
             if (isStage == true)
             {
-                cost = p.playerBoard.cost[p.currentStageOfWonder];
-            }
-            else
-            {
-                cost = c.cost;
+                throw new Exception();
+                // cost = p.playerBoard.cost[p.currentStageOfWonder];
             }
 
-            CommerceInformation commerceInfo = new CommerceInformation(p.leftNeighbour, p, p.rightNeighbour, hasDiscount, id, cost, isStage);
+            CommerceInformation commerceInfo = new CommerceInformation(p.leftNeighbour, p, p.rightNeighbour, hasDiscount, structureName, cost, isStage);
 
             string commercePackageInformation = "C" + Marshaller.ObjectToString(commerceInfo);
 

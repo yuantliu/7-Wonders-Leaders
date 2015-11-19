@@ -48,21 +48,11 @@
   <ItemGroup>
     <Compile Include="Connection.cs" />
     <Compile Include="GameManager\AI-LEADERS-BLACKLIST.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithm0.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithm1.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithm2.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithm3.cs" />
     <Compile Include="GameManager\AIMoveAlgorithm4.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithmLeaders0.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithmLeaders1.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithmLeaders2.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithmsLeaders3.cs" />
     <Compile Include="GameManager\AIMoveBehaviour.cs" />
     <Compile Include="GameManager\Board.cs" />
     <Compile Include="GameManager\Deck.cs" />
     <Compile Include="GameManager\GameManager.cs" />
-    <Compile Include="GameManager\LeadersAIMoveBehaviour.cs" />
-    <Compile Include="GameManager\LeadersGameManager.cs" />
     <Compile Include="GameManager\Player.cs" />
     <Compile Include="GMCoordinator.cs" />
     <Compile Include="Program.cs" />

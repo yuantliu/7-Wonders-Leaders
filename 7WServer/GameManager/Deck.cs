@@ -10,25 +10,23 @@ namespace SevenWonders
     public class Deck
     {
         //array of cards, which will represent the cards in the deck
-        private List<Card> card { get; set; }
-
-        List<Card2> card2 = new List<Card2>();
+        List<Card> card = new List<Card>();
 
         /// <summary>
         /// Load the cards by reading the File.
         /// Add Card objects to the card array
         /// </summary>
         /// <param name="cardFile"></param>
-        public Deck(List<Card2> cardList, int age, int numOfPlayers)
+        public Deck(List<Card> cardList, int age, int numOfPlayers)
         {
             // Create the card list for this age & number of players
-            foreach (Card2 c in cardList)
+            foreach (Card c in cardList)
             {
                 int nToAdd = c.GetNumCardsAvailble(age, numOfPlayers);
 
                 for (int i = 0; i < nToAdd; ++i)
                 {
-                    card2.Add(c);
+                    card.Add(c);
                 }
             }
         }
@@ -43,24 +41,24 @@ namespace SevenWonders
             // int numOfPurpleCardsToRemove = 7 - numPlayers;
             int nGuildsToRemove = 8 - nPlayers;      // should be *8* - numPlayers, no?  Old code wasn't removing enough Guild structures.
 
-            for (int i = card2.Count - 1; i >= 0 && nGuildsToRemove > 0; --i)
+            for (int i = card.Count - 1; i >= 0 && nGuildsToRemove > 0; --i)
             {
-                if (card2[i].structureType == Card2.StructureType.Guild)
+                if (card[i].structureType == StructureType.Guild)
                 {
-                    card2.RemoveAt(i);
+                    card.RemoveAt(i);
                     --nGuildsToRemove;
                 }
             }
 
             /*
-            // card2.RemoveAll(item => item.structureType == Card2.StructureType.Guild);
+            // card.RemoveAll(item => item.structureType == Card.StructureType.Guild);
 
             // a forward-iterator doesn't work
-            foreach (Card2 c in card2)
+            foreach (Card c in card)
             {
-                if (c.structureType == Card2.StructureType.Guild)
+                if (c.structureType == Card.StructureType.Guild)
                 {
-                    card2.Remove(c);
+                    card.Remove(c);
                     numRemoved++;
                     if (numRemoved == numOfPurpleCardsToRemove)
                     {
@@ -69,11 +67,11 @@ namespace SevenWonders
                 }
             }
 
-            for (int i = 0; i < card2.Count; i++)
+            for (int i = 0; i < card.Count; i++)
             {
-                if (card2[i].structureType == Card2.StructureType.Guild)
+                if (card[i].structureType == Card.StructureType.Guild)
                 {
-                    card2.RemoveAt(i);
+                    card.RemoveAt(i);
                     numRemoved++;
                     if (numRemoved == numOfPurpleCardsToRemove)
                     {
@@ -92,17 +90,17 @@ namespace SevenWonders
         //shuffle the cards in the deck
         public void shuffle()
         {
-            var c = Enumerable.Range(0, card2.Count);
+            var c = Enumerable.Range(0, card.Count);
             var shuffledcards = c.OrderBy(a => Guid.NewGuid()).ToArray();
 
-            List<Card2> d = new List<Card2>(card2.Count);
+            List<Card> d = new List<Card>(card.Count);
 
-            for (int i = 0; i < card2.Count; ++i)
+            for (int i = 0; i < card.Count; ++i)
             {
-                d.Add(card2[shuffledcards[i]]);
+                d.Add(card[shuffledcards[i]]);
             }
 
-            card2 = d;
+            card = d;
             /*
             JDF - old code
             Random random = new Random();
@@ -124,7 +122,7 @@ namespace SevenWonders
         /// pop a Random card from the Card array
         /// </summary>
         /// <returns></returns>
-        public Card2 popRandomCard()
+        public Card popRandomCard()
         {
             Random random = new Random();
 
@@ -142,18 +140,18 @@ namespace SevenWonders
         }
         */
 
-        public Card2 GetTopCard()
+        public Card GetTopCard()
         {
-            Card2 topCard = card2.First();
+            Card topCard = card.First();
 
             //remove the random card
-            card2.RemoveAt(0);
+            card.RemoveAt(0);
 
             //return the random card
             return topCard;
         }
 
-
+        /*
         /// <summary>
         /// Return Deck that have all cards in Player's  removed from unusedDeck
         /// Used by Rome B stage 1
@@ -178,5 +176,6 @@ namespace SevenWonders
 
             return newDeck;
         }
+        */
         }
     }

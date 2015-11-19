@@ -130,10 +130,13 @@ namespace SevenWonders
 
                             if (currentMode == GameMode.Leaders)
                             {
+                                throw new NotImplementedException();
+                                /*
                                 //tell the GameManager to start on the beginning of session operations
                                 gameManager = new LeadersGameManager(this, numOfPlayers, playerNicks, numOfAI, AIStrats);
                                 //have to upcast to LeadersGameManager because polymorphism doesn't work in C#
                                 gameManager = (LeadersGameManager)gameManager;
+                                */
                             }
                             else if (currentMode == GameMode.Vanilla)
                             {
@@ -199,10 +202,11 @@ namespace SevenWonders
                 else if (message[0] == 'B')
                 {
                     //get the id of the card
-                    int id = int.Parse(message.Substring(1));
+                    // int id = int.Parse(message.Substring(1));
 
                     //Tell the GameManager that Player has decided to build structure with the Card
-                    gameManager.buildStructureFromHand(id, nickname);
+                    // gameManager.buildStructureFromHand(id, nickname);
+                    gameManager.buildStructureFromHand(message.Substring(1), nickname);
 
                     //Update the Played card panel
                     gameManager.updatePlayedCardPanel(nickname);
@@ -211,19 +215,21 @@ namespace SevenWonders
                 else if (message[0] == 'S')
                 {
                     //get the id of the card
-                    int id = int.Parse(message.Substring(1));
+                    // int id = int.Parse(message.Substring(1));
 
                     //Tell the GameManager that Player has decided to build stage of wonder with card
-                    gameManager.buildStageOfWonder(id, nickname);
+                    // gameManager.buildStageOfWonder(id, nickname);
+                    gameManager.buildStageOfWonder(message.Substring(1), nickname);
                 }
                 //D: player decides to discard card for three coins
                 else if (message[0] == 'D')
                 {
                     //get the id of the card
-                    int id = int.Parse(message.Substring(1));
+                    // int id = int.Parse(message.Substring(1));
 
                     //Tell the GM that player has decided to discard the card for 3 coins
-                    gameManager.discardCardForThreeCoins(id, nickname);
+                    // gameManager.discardCardForThreeCoins(id, nickname);
+                    gameManager.discardCardForThreeCoins(message.Substring(1), nickname);
                 }
                 //O: player hits the Olympia power button
                 else if (message[0] == 'O')
@@ -237,7 +243,7 @@ namespace SevenWonders
                 {
                     //o(id)
                     //play the card for free from hand
-                    gameManager.playCardForFreeWithOlympia(nickname, int.Parse(message.Substring(1)));
+                    gameManager.playCardForFreeWithOlympia(nickname, message.Substring(1));
                     //Update the Played card panel
                     gameManager.updatePlayedCardPanel(nickname);
                 }
@@ -252,7 +258,7 @@ namespace SevenWonders
                 {
                     //H(id)
                     //play the card for free from discard pile
-                    gameManager.playCardForFreeWithHalicarnassus(nickname, int.Parse(message.Substring(1)));
+                    gameManager.playCardForFreeWithHalicarnassus(nickname, message.Substring(1));
                     //Update the Played card panel
                     gameManager.updatePlayedCardPanel(nickname);
                 }
@@ -268,15 +274,17 @@ namespace SevenWonders
                     if (message[1] == 'b')
                     {
                         //get the id of the card
-                        int id = int.Parse(message.Substring(2));
-                        gameManager.updateCommercePanel(id, nickname, false);
+                        // int id = int.Parse(message.Substring(2));
+                        // gameManager.updateCommercePanel(id, nickname, false);
+                        gameManager.updateCommercePanel(message.Substring(2), nickname, false);
                     }
 
                     //s for build Stage Of Wonder Commerce
                     else if (message[1] == 's')
                     {
-                        int id = int.Parse(message.Substring(2));
-                        gameManager.updateCommercePanel(id, nickname, true);
+                        // int id = int.Parse(message.Substring(2));
+                        // gameManager.updateCommercePanel(id, nickname, true);
+                        gameManager.updateCommercePanel(message.Substring(2), nickname, true);
                     }
 
                     //player built the card from commerce window

@@ -85,7 +85,7 @@ namespace SevenWonders
         //use tuples to represent the ID-buildable pair
         //the char can be T, F, or C (for buildable with commerce)
         //Tuples would make sure that and id would always be correctly paired with its corresponding buildability status
-        public Tuple<int, char> []id_buildable;
+        public Tuple<string, char> []id_buildable;
         public int informationSize;
         public int currentAge;
         public char stageBuildable;
@@ -94,12 +94,12 @@ namespace SevenWonders
         {
             this.currentAge = currentAge;
             informationSize = p.GetNumCardsInHand();
-            id_buildable = new Tuple<int, char>[informationSize];
+            id_buildable = new Tuple<string, char>[informationSize];
 
             //add the IDs and their buildability into array of pair-Tuples
             for (int i = 0; i < informationSize; i++)
             {
-                id_buildable[i] = new Tuple<int, char>(p.GetCard(i).id, p.isCardBuildable(i));
+                id_buildable[i] = new Tuple<string, char>(p.GetCard(i).name, p.isCardBuildable(i));
             }
 
             stageBuildable = p.isStageBuildable();
@@ -113,14 +113,14 @@ namespace SevenWonders
     [Serializable]
     public class RecruitmentPhaseInformation
     {
-        public int[] ids;
+        public string[] ids;
 
         public RecruitmentPhaseInformation(IPlayer p)
         {
-            ids = new int[p.GetNumCardsInHand()];
+            ids = new string[p.GetNumCardsInHand()];
             for (int i = 0; i < ids.Length; i++)
             {
-                ids[i] = p.GetCard(i).id;
+                ids[i] = p.GetCard(i).name;
             }
         }
     }
@@ -210,7 +210,8 @@ namespace SevenWonders
     {
         public char mode;
         //string: name, int: id
-        public Tuple<string, int>[] cards;
+        // public Tuple<string, int>[] cards;
+        public Tuple<string, string>[] cards;       // TODO: get rid of this mapping.  It's not needed any more
 
         public PlayForFreeInformation(IPlayer p, char mode)
         {
@@ -220,13 +221,15 @@ namespace SevenWonders
             //get hand information to play hand cards for free
             if (mode == 'O')
             {
-                cards = new Tuple<string, int>[p.GetNumCardsInHand()];
+                // cards = new Tuple<string, int>[p.GetNumCardsInHand()];
+                cards = new Tuple<string, string>[p.GetNumCardsInHand()];
 
                 for (int i = 0; i < p.GetNumCardsInHand(); i++)
                 {
-                    cards[i] = new Tuple<string, int>(p.GetCard(i).name, p.GetCard(i).id);
+                    cards[i] = new Tuple<string, string>(p.GetCard(i).name, p.GetCard(i).name);
                 }
             }
+            /*
             //Rome information
             //get Leader pile information
             else if (mode == 'R')
@@ -238,6 +241,7 @@ namespace SevenWonders
                     cards[i] = new Tuple<string, int>(p.GetLeadersPile()[i].name, p.GetLeadersPile()[i].id);
                 }
             }
+            */
             else
             {
                 throw new NotImplementedException();
@@ -270,27 +274,28 @@ namespace SevenWonders
     [Serializable]
     public class CourtesanGuildInformation
     {
-        public List<Tuple<string, int>> card;
+        // TODO: remove this mapping (no longer needed)
+        public List<Tuple<string, string>> card;
 
         public CourtesanGuildInformation(IPlayer p)
         {
-            card = new List<Tuple<string, int>>();
+            card = new List<Tuple<string, string>>();
 
             //get the left neighbours Leaders cards
             for (int i = 0; i < p.GetLeftNeighbour().GetNumberOfPlayedCards(); i++)
             {
-                if (p.GetLeftNeighbour().GetCardPlayed(i).colour == "White")
+                if (p.GetLeftNeighbour().GetCardPlayed(i).structureType == StructureType.Leader)
                 {
-                    card.Add(new Tuple<string, int>(p.GetLeftNeighbour().GetCardPlayed(i).name, p.GetLeftNeighbour().GetCardPlayed(i).id));
+                    card.Add(new Tuple<string, string>(p.GetLeftNeighbour().GetCardPlayed(i).name, p.GetLeftNeighbour().GetCardPlayed(i).name));
                 }
             }
 
             //get the right neighbours Leader cards
             for (int i = 0; i < p.GetRightNeighbour().GetNumberOfPlayedCards(); i++)
             {
-                if (p.GetRightNeighbour().GetCardPlayed(i).colour == "White")
+                if (p.GetRightNeighbour().GetCardPlayed(i).structureType == StructureType.Leader)
                 {
-                    card.Add(new Tuple<string, int>(p.GetRightNeighbour().GetCardPlayed(i).name, p.GetRightNeighbour().GetCardPlayed(i).id));
+                    card.Add(new Tuple<string, string>(p.GetRightNeighbour().GetCardPlayed(i).name, p.GetRightNeighbour().GetCardPlayed(i).name));
                 }
             }
         }
@@ -308,7 +313,8 @@ namespace SevenWonders
         public bool leftRawMarket, leftManuMarket, rightRawMarket, rightManuMarket;
 
         //cost of card
-        public string cardCost = "";
+        public Cost cardCost;
+
         //[0] represents left player
         //[1] represents mid player (the user)
         //[2] represents right player
@@ -316,12 +322,13 @@ namespace SevenWonders
 
         //how many coins does the (middle) player have?
         public int playerCoins;
+
         //what card is being played/used
-        public int id;
+        public string structureName;
 
         public bool isStage = false;
 
-        public CommerceInformation(IPlayer left, IPlayer centre, IPlayer right, bool discountApplies, int id, string cardCost, bool isStage)
+        public CommerceInformation(IPlayer left, IPlayer centre, IPlayer right, bool discountApplies, string structureName, Cost cardCost, bool isStage)
         {
             this.hasDiscount = discountApplies;
             this.cardCost = cardCost;
@@ -331,7 +338,7 @@ namespace SevenWonders
             rightManuMarket = centre.GetRightManu();
 
             playerCoins = centre.GetCoin();
-            this.id = id;
+            this.structureName = structureName;
             this.isStage = isStage;
 
             //fill the PlayercommerceInfo for all 3 relevant players
@@ -365,6 +372,9 @@ namespace SevenWonders
     [Serializable]
     public class CommerceClientToServerResponse
     {
-        public int leftCoins, rightCoins, id;
+        public string structureName;
+
+        // public int leftCoins, rightCoins, id;
+        public int leftCoins, rightCoins;
     }
 }
