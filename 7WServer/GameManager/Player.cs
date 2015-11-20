@@ -1067,30 +1067,20 @@ namespace SevenWonders
         /// <returns></returns>
         private char? isCostAffordableWithDAG(Cost cost)
         {
-            /*
-            //count how many coins are needed
-            int coinsf = 0;
-            for (int i = 0; i < cost.Length; i++)
+            if (this.coin < cost.coin)
             {
-                if (cost[i] == '$') coinsf++;
-            }
-            //if theres not enough coins, then return false
-            if (coin < coinsf)
-            {
+                //if theres not enough coins, then return false
                 return 'F';
             }
 
             //get rid of the coins from the cost, and see if DAG can afford the cost (already checked for coins at previous step)
             //this is relevant for the Black cards in the Cities expansion
-            cost = cost.Replace("$", "");
+            // cost = cost.Replace("$", "");
+            cost.coin = 0;
 
             //can I afford the cost with resources in my DAG?
             if (DAG.canAfford(dag, cost)) return 'T';
             else return null;
-            */
-
-            throw new NotImplementedException();
-            return null;
         }
 
         /// <summary>
@@ -1121,19 +1111,15 @@ namespace SevenWonders
                 return 'F';
 
             //retrieve the cost
-            throw new NotImplementedException();
-
-            Cost cost;// = playerBoard.cost[currentStageOfWonder];
+            Cost cost = playerBoard.cost[currentStageOfWonder];
             
-            /*
             //check for the stage discount card (Imhotep)
-            if (hasIDPlayed(212) == true)
+            if (hasIDPlayed(/*212*/"Imhotep") == true)
             {
                 bool newCostResult = DAG.canAffordOffByOne(dag, cost);
 
                 if (newCostResult == true) return 'T';
             }
-            */
 
             //can player afford cost with DAG resources
             if (isCostAffordableWithDAG(cost) == 'T') return 'T';

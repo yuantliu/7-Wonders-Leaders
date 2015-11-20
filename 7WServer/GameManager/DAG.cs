@@ -65,16 +65,13 @@ namespace SevenWonders
         /// Generate and return a List of all possible sequences from the DAG
         /// </summary>
         /// <returns>List of strings</returns>
-        public List<Cost> generateStrings()
+        public List<string> generateStrings()
         {
             // Not quite sure what this was doing.
-            List<Cost> generated = new List<Cost>();
+            List<string> generated = new List<string>();
 
-            throw new NotImplementedException();
+            generated.Add(" ");
 
-            // generated.Add(" ");
-
-            /*
             for (int i = 0; i < graph.Count; i++)
             {
                 //Create new temp ArrayList at each depth level
@@ -94,7 +91,6 @@ namespace SevenWonders
                 //replace old arrayList with new one
                 generated = temp;
             }
-            */
 
             return generated;
         }
@@ -111,10 +107,24 @@ namespace SevenWonders
 	     * @param A = COST
 	     * @param B = RESOURCES
 	     */
-        public static Cost eliminate(Cost structureCost, Cost resourcesAvailable)
+        public static Cost eliminate(Cost structureCost, string B)
         {
-            Cost c;
+            // interesting.  structs do not need to be instantiated.  Classes do.  But structs
+            // can only be PoD types, they cannot contain functions.
 
+            Cost c = new Cost();
+
+            c.coin = Math.Max(structureCost.coin - B.Count(x => x == '$'), 0);
+            c.wood = Math.Max(structureCost.wood - B.Count(x => x == 'W'), 0);
+            c.stone = Math.Max(structureCost.stone - B.Count(x => x == 'T'), 0);
+            c.clay = Math.Max(structureCost.clay - B.Count(x => x == 'B'), 0);
+            c.ore = Math.Max(structureCost.ore - B.Count(x => x == 'O'), 0);
+            c.cloth = Math.Max(structureCost.cloth - B.Count(x => x == 'L'), 0);
+            c.glass = Math.Max(structureCost.glass - B.Count(x => x == 'G'), 0);
+            c.papyrus = Math.Max(structureCost.papyrus - B.Count(x => x == 'P'), 0);
+
+
+            /*
             c.coin = Math.Max(structureCost.coin - resourcesAvailable.coin, 0);
             c.wood = Math.Max(structureCost.wood - resourcesAvailable.wood, 0);
             c.stone = Math.Max(structureCost.stone - resourcesAvailable.stone, 0);
@@ -123,6 +133,7 @@ namespace SevenWonders
             c.cloth = Math.Max(structureCost.cloth - resourcesAvailable.cloth, 0);
             c.glass = Math.Max(structureCost.glass - resourcesAvailable.glass, 0);
             c.papyrus = Math.Max(structureCost.papyrus - resourcesAvailable.papyrus, 0);
+            */
 
             return c;
 
@@ -148,11 +159,14 @@ namespace SevenWonders
          * Given a resource DAG graph, determine if a cost is affordable
          * @return
          */
-        public static bool canAfford(DAG graph, Cost cost){
-		    List<Cost> generated = graph.generateStrings();
-		
-		    for(int i = 0; i < generated.Count; i++){
-			    if(eliminate(cost, generated[i]).Equals("")){
+        public static bool canAfford(DAG graph, Cost cost)
+        {
+		    List<string> generated = graph.generateStrings();
+	
+		    for(int i = 0; i < generated.Count; i++)
+            {
+			    if(eliminate(cost, generated[i]).IsZero())
+                {
 				    return true;
 			    }
 		    }
@@ -168,15 +182,19 @@ namespace SevenWonders
         /// <returns>Whether the DAG can afford the given card cost</returns>
         public static bool canAffordOffByOne(DAG graph, Cost cost)
         {
-            List<Cost> generated = graph.generateStrings();
+            throw new NotImplementedException();
+
+            /*
+            List<string> generated = graph.generateStrings();
 
             for (int i = 0; i < generated.Count; i++)
             {
-                // if (eliminate(cost, generated[i]).Length <= 1)
+                if (eliminate(cost, generated[i]).Length <= 1)
                 {
                     return true;
                 }
             }
+            */
 
             return false;
         }

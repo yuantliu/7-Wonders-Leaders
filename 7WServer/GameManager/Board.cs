@@ -16,10 +16,11 @@ namespace SevenWonders
         //number of stages
         public int numOfStages { get; set; }
         //stage effects
-        public string[] effect;
-        //stage costs
-        public string[] cost;
 
+        public Effect[] effect;
+
+        //stage costs
+        public Cost[] cost;
 
         //the free resource that the board provides
         //e.g. W, O, P, T, etc.
@@ -32,7 +33,7 @@ namespace SevenWonders
         /// <param name="name"></param>
         /// <param name="effect"></param>
         /// <param name="path"></param>
-        public Board(string name, int numOfStages, char freeResource, string [] cost, string [] effect)
+        public Board(string name, int numOfStages, char freeResource, Cost [] cost, Effect [] effect)
         {
             this.name = name;
             this.numOfStages = numOfStages;

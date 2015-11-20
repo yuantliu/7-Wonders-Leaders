@@ -793,7 +793,7 @@ namespace SevenWonders
                     costInCoins = discardPile[i].cost.coin;
 
                     // TODO: figure this out.  Not really sure what they were doing before.
-                    throw new Exception();
+                    throw new NotImplementedException();
 
                     /*
                     //count how many $ signs in the cost. Each $ means 1 coin cost

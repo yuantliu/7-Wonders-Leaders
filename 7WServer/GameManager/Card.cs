@@ -89,7 +89,7 @@ namespace SevenWonders
 
 
     // will be used for Wonder stages as well as card structures
-    public struct Cost
+    public class Cost
     {
         public int coin;
         public int wood;
@@ -99,6 +99,16 @@ namespace SevenWonders
         public int cloth;
         public int glass;
         public int papyrus;
+
+        public Cost()
+        {
+            coin = wood = stone = clay = ore = cloth = glass = papyrus = 0;
+        }
+
+        public bool IsZero()
+        {
+            return coin == 0 && wood == 0 && stone == 0 && clay == 0 && ore == 0 && cloth == 0 && glass == 0 && papyrus == 0;
+        }
     };
 
     public enum StructureType
@@ -137,7 +147,7 @@ namespace SevenWonders
             SpecializedLeader   // Special leader effects (Esteban, Bilkis)
         };
 
-        protected Type effectType;   // $, 1 to 8, possibly more after Cities are added.  // TODO: get rid of this.  Use classes derived from Effect instead.
+        // protected Type effectType;   // $, 1 to 8, possibly more after Cities are added.  // TODO: get rid of this.  Use classes derived from Effect instead.
     };
 
     // formerly category 0 or '$'
@@ -148,7 +158,6 @@ namespace SevenWonders
 
         public MoneyEffect(int coins)
         {
-            this.effectType = Effect.Type.Money;
             this.coins = coins;
         }
     }
@@ -161,7 +170,6 @@ namespace SevenWonders
 
         public SimpleEffect(int multiplier, char type)
         {
-            this.effectType = Effect.Type.Simple;
             this.multiplier = multiplier;
             this.type = type;
         }
@@ -181,7 +189,6 @@ namespace SevenWonders
 
         public ScienceEffect(Symbol s)
         {
-            this.effectType = Effect.Type.Science;
             this.symbol = s;
         }
     };
@@ -207,7 +214,6 @@ namespace SevenWonders
 
         public CommercialDiscountEffect(AppliesTo who, Affects productionType)
         {
-            this.effectType = Effect.Type.Commerce;
             this.appliesTo = who;
             this.affects = productionType;
         }
@@ -220,7 +226,6 @@ namespace SevenWonders
 
         public ResourceChoiceEffect(string s)
         {
-            this.effectType = Effect.Type.ResourceChoice;
             this.strChoiceData = s;
         }
     };
@@ -242,7 +247,6 @@ namespace SevenWonders
 
         public CoinsAndPointsEffect(CardsConsidered cardsConsidered, StructureType classConsidered, int coinsGrantedAtTimeOfPlayMultiplier, int victoryPointsAtEndOfGameMultiplier)
         {
-            this.effectType = Effect.Type.CoinsPoints;
             this.cardsConsidered = cardsConsidered;
             this.classConsidered = classConsidered;
             this.coinsGrantedAtTimeOfPlayMultiplier = coinsGrantedAtTimeOfPlayMultiplier;
@@ -276,7 +280,7 @@ namespace SevenWonders
         public string description { get; private set; }
         public string iconName { get; private set; }
         int[] numAvailableByNumPlayers = new int[5];
-        public Cost cost;
+        public Cost cost = new Cost();
         public string[] chain = new string[2];
         public Effect effect;
 
