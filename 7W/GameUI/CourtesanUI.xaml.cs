@@ -18,9 +18,9 @@ namespace SevenWonders
     /// </summary>
     public partial class CourtesanUI : Window
     {
-        ComboBoxItem[] leaderComboBoxItems;
+        // ComboBoxItem[] leaderComboBoxItems;
 
-        string currentPath;
+        // string currentPath;
 
         int selectedCard;
 
@@ -28,6 +28,8 @@ namespace SevenWonders
 
         public CourtesanUI(Coordinator c, string information)
         {
+            throw new NotImplementedException();
+            /*
             CourtesanGuildInformation info = (CourtesanGuildInformation)(Marshaller.StringToObject(information));
 
             this.c = c;
@@ -58,6 +60,7 @@ namespace SevenWonders
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.HighQuality);
 
             currentPath = Environment.CurrentDirectory;
+            */
 
             
         }
@@ -69,6 +72,8 @@ namespace SevenWonders
         /// <param name="e"></param>
         private void leaderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            throw new NotImplementedException();
+            /*
             ComboBox ca = e.Source as ComboBox;
 
             ComboBoxItem caaa = ca.SelectedItem as ComboBoxItem;
@@ -81,6 +86,7 @@ namespace SevenWonders
 
             //enable the confirm button
             copyButton.IsEnabled = true;
+            */
         }
 
         private void showCardImage(string path)

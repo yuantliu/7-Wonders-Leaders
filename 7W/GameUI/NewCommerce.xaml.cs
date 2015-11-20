@@ -30,14 +30,15 @@ namespace SevenWonders
         Coordinator c;
 
         //immutable original string cost
-        string cardCost;
+        // string cardCost;
+        Cost cardCost;
 
         //immutable core card/player information
         bool hasDiscount;
         bool leftRawMarket, leftManuMarket, rightRawMarket, rightManuMarket;
         string leftName, middleName, rightName;
         string structureName;
-        int ID;
+        // int ID;
         bool isStage;
 
         //current accumulated resources
@@ -169,86 +170,110 @@ namespace SevenWonders
             reset();
         }
 
+        BitmapImage GetButtonIcon(char resource)
+        {
+            int resourceIconIndex = -1;
+            switch(resource)
+            {
+                case 'B': resourceIconIndex = 0; break;
+                case 'O': resourceIconIndex = 1; break;
+                case 'T': resourceIconIndex = 2; break;
+                case 'W': resourceIconIndex = 3; break;
+                case 'G': resourceIconIndex = 4; break;
+                case 'L': resourceIconIndex = 5; break;
+                case 'P': resourceIconIndex = 6; break;
+            }
+
+            return resourceIcons[resourceIconIndex];
+        }
+
+        
         /// <summary>
         /// Use the 3 DAGs in the object to generate the necessary Buttons in the UI and add EventHandlers for these newly added Buttons
         /// </summary>
-        private void generateDAGs()
+        private void generateOneDAG(StackPanel p, Button[,] b, DAG dag, bool isDagOwnedByPlayer)
         {
             //reset all DAG panels
-            leftDagPanel.Children.Clear();
+            p.Children.Clear();
 
-            //generate left DAG
+            //generate a DAG for self or a neighbor
             //generate the needed amount of stackPanels, each representing a level
-            StackPanel[] leftLevelPanels = new StackPanel[leftDag.getSimpleStructures().Count + leftDag.getChoiceStructures(false).Count];
+            StackPanel[] levelPanels = new StackPanel[dag.getSimpleStructures().Count + dag.getChoiceStructures(isDagOwnedByPlayer).Count];
             //generate the needed amount of buttons
-            leftDagButton = new Button[leftDag.getSimpleStructures().Count + leftDag.getChoiceStructures(false).Count, 7];
+            b = new Button[dag.getSimpleStructures().Count + dag.getChoiceStructures(isDagOwnedByPlayer).Count, 7];
+
+            List<SimpleEffect> dagGraphSimple = dag.getSimpleStructures();
+            int panelLevel = 0;
+
+            for (int i = 0; i < dagGraphSimple.Count; ++i)
+            {
+                levelPanels[panelLevel] = new StackPanel();
+                levelPanels[panelLevel].Orientation = Orientation.Horizontal;
+                levelPanels[panelLevel].HorizontalAlignment = HorizontalAlignment.Center;
+
+                b[i, 0] = new Button();
+                b[i, 0].Content = dagGraphSimple[i].type.ToString();
+                b[i, 0].FontSize = 1;
+                b[i, 0].Background = new ImageBrush(GetButtonIcon(dagGraphSimple[i].type));
+                b[i, 0].Width = DAG_BUTTON_WIDTH;
+                b[i, 0].Height = DAG_BUTTON_WIDTH;
+
+                //set the name of the Button for eventHandler purposes
+                //Format: L_(level number)
+                b[i, 0].Name = "L_" + i;
+
+                b[i, 0].IsEnabled = true;
+
+                //set action listener and add the button to the appropriate panel
+                b[i, 0].Click += dagResourceButtonPressed;
+                levelPanels[panelLevel].Children.Add(b[i, 0]);
+                panelLevel++;
+            }
 
             //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
-            List<SimpleEffect> leftDagGraph = leftDag.getSimpleStructures();
+            List<ResourceChoiceEffect> dagGraphChoice = dag.getChoiceStructures(false);
 
             //look at each level of the DAG
-            for (int i = 0; i < leftDagGraph.Count; i++)
+            for (int i = 0; i < dagGraphChoice.Count; i++)
             {
                 //initialise a StackPanels for the current level
-                leftLevelPanels[i] = new StackPanel();
-                leftLevelPanels[i].Orientation = Orientation.Horizontal;
-                leftLevelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
+                levelPanels[panelLevel] = new StackPanel();
+                levelPanels[panelLevel].Orientation = Orientation.Horizontal;
+                levelPanels[panelLevel].HorizontalAlignment = HorizontalAlignment.Center;
 
                 //add to the StackPanels the appropriate buttons
-                for (int j = 0; j < leftDagGraph[i].Length; j++)
+                for (int j = 0; j < dagGraphChoice[i].strChoiceData.Length; j++)
                 {
-                    leftDagButton[i, j] = new Button();
-                    leftDagButton[i, j].Content = leftDagGraph[i][j] + "";
-                    leftDagButton[i, j].FontSize = 1;
+                    b[i, j] = new Button();
+                    b[i, j].Content = dagGraphChoice[i].strChoiceData[j].ToString();
+                    b[i, j].FontSize = 1;
 
                     //set the Button's image to correspond with the resource
-                    switch (leftDagGraph[i][j])
-                    {
-                        case 'B':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[0]);
-                            break;
-                        case 'O':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[1]);
-                            break;
-                        case 'T':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[2]);
-                            break;
-                        case 'W':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[3]);
-                            break;
-                        case 'G':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[4]);
-                            break;
-                        case 'L':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[5]);
-                            break;
-                        case 'P':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[6]);
-                            break;
-                    }
+                    b[i, j].Background = new ImageBrush(GetButtonIcon(dagGraphChoice[i].strChoiceData[j]));
 
-                    leftDagButton[i, j].Width = DAG_BUTTON_WIDTH;
-                    leftDagButton[i, j].Height = DAG_BUTTON_WIDTH;
+                    b[i, j].Width = DAG_BUTTON_WIDTH;
+                    b[i, j].Height = DAG_BUTTON_WIDTH;
 
                     //set the name of the Button for eventHandler purposes
                     //Format: L_(level number)
-                    leftDagButton[i, j].Name = "L_" + i;
+                    b[i, j].Name = "L_" + i;
 
-                    leftDagButton[i, j].IsEnabled = true;
+                    b[i, j].IsEnabled = true;
 
                     //set action listener and add the button to the appropriate panel
-                    leftDagButton[i, j].Click += dagResourceButtonPressed;
-                    leftLevelPanels[i].Children.Add(leftDagButton[i, j]);
+                    b[i, j].Click += dagResourceButtonPressed;
+                    levelPanels[i].Children.Add(b[i, j]);
 
-                    //leftLevelPanels[i] has leftDagButton[i,j] added
-                } //leftLevelPanels[i] has added all the buttons appropriate for that level and its event handlers
+                    // levelPanels[i] has b[i,j] added
+                } // levelPanels[i] has added all the buttons appropriate for that level and its event handlers
 
-                //add leftLevelPanels[i]
-                leftDagPanel.Children.Add(leftLevelPanels[i]);
+                //add the stack to the parent panel.
+                p.Children.Add(levelPanels[i]);
             }
 
             ////////////////////////////////////////////////////////////////////////////////
 
+            /*
             //Same for middle DAG
 
             //reset all DAG panels
@@ -258,7 +283,7 @@ namespace SevenWonders
             //generate the needed amount of stackPanels, each representing a level
             StackPanel[] middleLevelPanels = new StackPanel[middleDag.getSimpleStructures().Count + middleDag.getChoiceStructures(true).Count];
             //generate the needed amount of buttons
-            middleDagButton = new Button[middleDag.getSimpleStructures().Count + middleDag.getChoiceStructures(true), 7];
+            middleDagButton = new Button[middleDag.getSimpleStructures().Count + middleDag.getChoiceStructures(true).Count, 7];
 
             //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
             List<SimpleEffect> middleDagGraph = middleDag.getSimpleStructures();
@@ -400,6 +425,14 @@ namespace SevenWonders
                 //add rightLevelPanels[i]
                 rightDagPanel.Children.Add(rightLevelPanels[i]);
             }
+            */
+        }
+
+        private void generateDAGs()
+        {
+            generateOneDAG(leftDagPanel, leftDagButton, leftDag, false);
+            generateOneDAG(middleDagPanel, middleDagButton, middleDag, true);
+            generateOneDAG(rightDagPanel, rightDagButton, rightDag, false);
         }
 
         /// <summary>
@@ -437,11 +470,13 @@ namespace SevenWonders
                 MessageBox.Show("You have for all necessary resources already");
                 return;
             }
+            /*
             else if (DAG.eliminate(cardCost, newResource).Length == previous)
             {
                 MessageBox.Show("This resource will not help you pay for your cost");
                 return;
             }
+            */
 
             //add the appropriate amount of coins to the appropriate recepient
             //as well as doing appropriate checks
@@ -556,7 +591,16 @@ namespace SevenWonders
             //disable (make hidden) all buttons on the same level
             if (location == 'L')
             {
-                for (int i = 0; i < leftDag.getSimpleStructures()[level].Length; i++)
+                // hmm, simple structures need to consider the multiplier.
+                int c = leftDag.getSimpleStructures().Count;
+
+                if (level < c)
+                {
+                    //hide the buttons
+                    leftDagButton[level, 0].Visibility = Visibility.Hidden;
+                }
+
+                for (int i = 0; i < leftDag.getChoiceStructures(false)[level - c].strChoiceData.Length; i++)
                 {
                     //hide the buttons
                     leftDagButton[level, i].Visibility = Visibility.Hidden;
@@ -564,7 +608,14 @@ namespace SevenWonders
             }
             else if (location == 'M')
             {
-                for (int i = 0; i < middleDag.getSimpleStructures()[level].Length; i++)
+                int c = middleDag.getSimpleStructures().Count;
+
+                if (level < c)
+                {
+                    middleDagButton[level, 0].Visibility = Visibility.Hidden;
+                }
+
+                for (int i = 0; i < middleDag.getChoiceStructures(true)[level - c].strChoiceData.Length; i++)
                 {
                     //hide the buttons
                     middleDagButton[level, i].Visibility = Visibility.Hidden;
@@ -572,7 +623,14 @@ namespace SevenWonders
             }
             else if (location == 'R')
             {
-                for (int i = 0; i < rightDag.getSimpleStructures()[level].Length; i++)
+                int c = rightDag.getSimpleStructures().Count;
+
+                if (level < c)
+                {
+                    rightDagButton[level, 0].Visibility = Visibility.Hidden;
+                }
+
+                for (int i = 0; i < rightDag.getChoiceStructures(false)[level].strChoiceData.Length; i++)
                 {
                     //hide the buttons
                     rightDagButton[level, i].Visibility = Visibility.Hidden;
@@ -588,7 +646,9 @@ namespace SevenWonders
         /// </summary>
         private void generateCostPanel()
         {
-            generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost, currentResource));
+            throw new NotImplementedException();
+
+            // generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost, currentResource));
         }
 
         /// <summary>
@@ -658,7 +718,9 @@ namespace SevenWonders
 
             generateCostPanel();
             generateDAGs();
-            resourcesNeeded = cardCost.Length;
+//            resourcesNeeded = cardCost.Length;
+            resourcesNeeded = cardCost.wood + cardCost.stone + cardCost.clay + cardCost.ore +
+                cardCost.cloth + cardCost.glass + cardCost.papyrus;
         }
 
         /// <summary>
@@ -674,7 +736,8 @@ namespace SevenWonders
                 CommerceClientToServerResponse response = new CommerceClientToServerResponse();
                 response.leftCoins = leftcoin;
                 response.rightCoins = rightcoin;
-                response.structureName = ID;
+                // response.structureName = ID;
+                response.structureName = structureName;
 
                 string serializedResponse = Marshaller.ObjectToString(response);
 

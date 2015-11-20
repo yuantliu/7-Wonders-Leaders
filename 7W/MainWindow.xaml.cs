@@ -609,15 +609,15 @@ namespace SevenWonders
 
                     switch (handPanelInformation.id_buildable[i].Item2)
                     {
-                        case 'T':   // buildable without using commerce (either because the city produces all the required resources or because of chaining from a card built in the previous age)
+                        case Buildable.True:
                             ((ListBoxItem)handPanel.Items[i]).BorderBrush = new SolidColorBrush(Colors.Green);
                             break;
 
-                        case 'C':   // buildable using resources from neighboring cities
+                        case Buildable.CommerceRequired:
                             ((ListBoxItem)handPanel.Items[i]).BorderBrush = new SolidColorBrush(Colors.Yellow);
                             break;
 
-                        case 'F':   // not buildable
+                        case Buildable.False:
                             ((ListBoxItem)handPanel.Items[i]).BorderBrush = new SolidColorBrush(Colors.Gray);
                             break;
                     }
@@ -635,12 +635,12 @@ namespace SevenWonders
             btnBuildStructure.IsEnabled = false;
             btnDiscardStructure.IsEnabled = false;
 
-            if (handPanelInformation.stageBuildable == 'T')
+            if (handPanelInformation.stageBuildable == Buildable.True)
             {
                 btnBuildWonderStage.Content = "Build a wonder stage with this card";
                 btnBuildWonderStage.IsEnabled = true;
             }
-            else if (handPanelInformation.stageBuildable == 'C')
+            else if (handPanelInformation.stageBuildable == Buildable.CommerceRequired)
             {
                 btnBuildWonderStage.Content = "Build a wonder stage with this card (commerce required)";
                 btnBuildWonderStage.IsEnabled = true;
@@ -657,17 +657,17 @@ namespace SevenWonders
             // Update the status of the build buttons when a card is selected.
             switch (handPanelInformation.id_buildable[handPanel.SelectedIndex].Item2)
             {
-                case 'T':
+                case Buildable.True:
                     btnBuildStructure.Content = "Build this structure";
                     btnBuildStructure.IsEnabled = true;
                     break;
 
-                case 'C':
+                case Buildable.CommerceRequired:
                     btnBuildStructure.Content = "Build this structure (commerce required)";
                     btnBuildStructure.IsEnabled = true;
                     break;
 
-                case 'F':
+                case Buildable.False:
                     btnBuildStructure.Content = "Resource requirements not met for building this card";
                     btnBuildStructure.IsEnabled = false;
                     break;
@@ -692,7 +692,7 @@ namespace SevenWonders
                 switch (playedButton.Name)
                 {
                     case "btnBuildStructure":
-                        if (handPanelInformation.id_buildable[handPanel.SelectedIndex].Item2 == 'T')
+                        if (handPanelInformation.id_buildable[handPanel.SelectedIndex].Item2 == Buildable.True)
                         {
                             playedButton.IsEnabled = false;
                             playerPlayedHisTurn = true;
@@ -706,7 +706,7 @@ namespace SevenWonders
                         }
                         break;
                     case "btnBuildWonderStage":
-                        if (handPanelInformation.stageBuildable == 'T')
+                        if (handPanelInformation.stageBuildable == Buildable.True)
                         {
                             playedButton.IsEnabled = false;
                             playerPlayedHisTurn = true;
@@ -788,6 +788,7 @@ namespace SevenWonders
         /// <param name="information"></param>
         public void showBoardImage(int player, String information)
         {
+            information = "Alexandria (A)";
             //information holds the board image file name
             BitmapImage boardImageSource = new BitmapImage();
             boardImageSource.BeginInit();
@@ -882,7 +883,7 @@ namespace SevenWonders
 
             BitmapImage bmi = new BitmapImage();
             bmi.BeginInit();
-            bmi.UriSource = GetIcon(lastPlayedCard.effect);
+            bmi.UriSource = GetIcon(lastPlayedCard.iconName);
             bmi.EndInit();
             Image iconImage = new Image();
             iconImage.Source = bmi;

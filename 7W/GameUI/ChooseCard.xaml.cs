@@ -71,8 +71,8 @@ namespace SevenWonders
             //set the Stage of Wonder buildability
             String name = "Stage", content = "Build Stage";
             bool buildableStage = false;
-            if (handPanelData.stageBuildable == 'T') { buildableStage = true; }
-            else if (handPanelData.stageBuildable == 'C') { buildableStage = true; name = "StageCommerce"; content = "Commerce"; }
+            if (handPanelData.stageBuildable == Buildable.True) { buildableStage = true; }
+            else if (handPanelData.stageBuildable == Buildable.CommerceRequired) { buildableStage = true; name = "StageCommerce"; content = "Commerce"; }
 
             //Names of the buttons
             //Contents (the word that will be shown in the UI) of the buttons
@@ -82,11 +82,11 @@ namespace SevenWonders
             for (int i = 0; i < numberOfCards; i++)
             {
                 contents[i] = "Build Structure";
-                if (handPanelData.id_buildable[i].Item2 == 'T' || handPanelData.id_buildable[i].Item2 == 'F')
+                if (handPanelData.id_buildable[i].Item2 == Buildable.True || handPanelData.id_buildable[i].Item2 == Buildable.False)
                 {
                     names[i] = "Build";
                 }
-                else if (handPanelData.id_buildable[i].Item2 == 'C')
+                else if (handPanelData.id_buildable[i].Item2 == Buildable.CommerceRequired)
                 {
                     names[i] = "BuildCommerce";
                     contents[i] = "Commerce";
@@ -111,7 +111,7 @@ namespace SevenWonders
                 buildStructureButton[i].Width = CARD_WIDTH;
                 buildStructureButton[i].Height = ICON_WIDTH;
                 buildStructureButton[i].Name = names[i] + "_" + handPanelData.id_buildable[i].Item1;
-                buildStructureButton[i].IsEnabled = (handPanelData.id_buildable[i].Item2 == 'T' || handPanelData.id_buildable[i].Item2 == 'C');
+                buildStructureButton[i].IsEnabled = (handPanelData.id_buildable[i].Item2 == Buildable.True || handPanelData.id_buildable[i].Item2 == Buildable.CommerceRequired);
                 buildStructureButton[i].Click += cardActionButtonPressed;
                 actionBuildPanel.Children.Add(buildStructureButton[i]);
 
