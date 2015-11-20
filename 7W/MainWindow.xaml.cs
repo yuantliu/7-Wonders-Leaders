@@ -873,7 +873,7 @@ namespace SevenWonders
             //the id number
             Card lastPlayedCard = (Card)Marshaller.StringToObject(information);
 
-            string colour = lastPlayedCard.colour;
+            StructureType colour = lastPlayedCard.structureType;
             // string name = lastPlayedCard.name;
             // int id = lastPlayedCard.id;
 

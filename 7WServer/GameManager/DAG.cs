@@ -127,13 +127,11 @@ namespace SevenWonders
             return simpleResources;
         }
 
-        public List<ResourceChoiceEffect> getChoiceStructures()
+        public List<ResourceChoiceEffect> getChoiceStructures(bool isSelf)
         {
-            // TODO: fix this hack.  We're returning structures that are a choice of two, which
-            // will eliminate the Forum or Caravansery, which offer a choice of 3 or 4 resouces.
-            // The better way to do this will be to add a parameter to the choice effect to say
-            // whether it can be purchased by neighbors.
-            return effectChoices.Where(x => x.canBeUsedByNeighbors).ToList();
+            // if isSelf is true, all the resource structures are included in the returned list.
+            // If it is false, only the RawMaterial or Goods structures are returned.
+            return isSelf ? effectChoices : effectChoices.Where(x => x.canBeUsedByNeighbors).ToList();
         }
 
         public void setSimpleStructureList(List<SimpleEffect> graph) { this.simpleResources = graph; }
@@ -309,7 +307,7 @@ namespace SevenWonders
         {
             DAG megaDAG = new DAG();
             megaDAG.setSimpleStructureList(A.getSimpleStructures().Concat(B.getSimpleStructures().Concat(C.getSimpleStructures())).ToList());
-            megaDAG.setChoiceStructureList(A.getChoiceStructures().Concat(B.getChoiceStructures().Concat(C.getChoiceStructures())).ToList());
+            megaDAG.setChoiceStructureList(A.getChoiceStructures(false).Concat(B.getChoiceStructures(true).Concat(C.getChoiceStructures(false))).ToList());
             // megaDAG.setGraph(A.getGraph().Concat(B.getGraph()).Concat(C.getGraph()).ToList());
             return megaDAG;
         }

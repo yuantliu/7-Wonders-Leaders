@@ -36,6 +36,7 @@ namespace SevenWonders
         bool hasDiscount;
         bool leftRawMarket, leftManuMarket, rightRawMarket, rightManuMarket;
         string leftName, middleName, rightName;
+        string structureName;
         int ID;
         bool isStage;
 
@@ -81,7 +82,8 @@ namespace SevenWonders
 
             this.PLAYER_COIN = commerceData.playerCoins;
 
-            this.ID = commerceData.id;
+            // this.ID = commerceData.id;
+            this.structureName = commerceData.structureName;
             this.isStage = commerceData.isStage;
 
             leftDag = commerceData.playerCommerceInfo[0].dag;
@@ -177,12 +179,12 @@ namespace SevenWonders
 
             //generate left DAG
             //generate the needed amount of stackPanels, each representing a level
-            StackPanel[] leftLevelPanels = new StackPanel[leftDag.getGraph().Count];
+            StackPanel[] leftLevelPanels = new StackPanel[leftDag.getSimpleStructures().Count + leftDag.getChoiceStructures(false).Count];
             //generate the needed amount of buttons
-            leftDagButton = new Button[leftDag.getGraph().Count, 7];
+            leftDagButton = new Button[leftDag.getSimpleStructures().Count + leftDag.getChoiceStructures(false).Count, 7];
 
             //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
-            List<char[]> leftDagGraph = leftDag.getGraph();
+            List<SimpleEffect> leftDagGraph = leftDag.getSimpleStructures();
 
             //look at each level of the DAG
             for (int i = 0; i < leftDagGraph.Count; i++)
@@ -254,15 +256,15 @@ namespace SevenWonders
 
             //generate middle DAG
             //generate the needed amount of stackPanels, each representing a level
-            StackPanel[] middleLevelPanels = new StackPanel[middleDag.getGraph().Count];
+            StackPanel[] middleLevelPanels = new StackPanel[middleDag.getSimpleStructures().Count + middleDag.getChoiceStructures(true).Count];
             //generate the needed amount of buttons
-            middleDagButton = new Button[middleDag.getGraph().Count, 7];
+            middleDagButton = new Button[middleDag.getSimpleStructures().Count + middleDag.getChoiceStructures(true), 7];
 
             //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
-            List<char[]> middleDagGraph = middleDag.getGraph();
+            List<SimpleEffect> middleDagGraph = middleDag.getSimpleStructures();
 
             //look at each level of the DAG
-            for (int i = 0; i < middleDag.getGraph().Count; i++)
+            for (int i = 0; i < middleDag.getSimpleStructures().Count; i++)
             {
                 //initialise a StackPanels for the current level
                 middleLevelPanels[i] = new StackPanel();
@@ -331,15 +333,15 @@ namespace SevenWonders
 
             //generate right DAG
             //generate the needed amount of stackPanels, each representing a level
-            StackPanel[] rightLevelPanels = new StackPanel[rightDag.getGraph().Count];
+            StackPanel[] rightLevelPanels = new StackPanel[rightDag.getSimpleStructures().Count + rightDag.getChoiceStructures(false).Count];
             //generate the needed amount of buttons
-            rightDagButton = new Button[rightDag.getGraph().Count, 7];
+            rightDagButton = new Button[rightDag.getSimpleStructures().Count + rightDag.getChoiceStructures(false).Count, 7];
 
             //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
-            List<char[]> rightDagGraph = rightDag.getGraph();
+            List<SimpleEffect> rightDagGraph = rightDag.getSimpleStructures();
 
             //look at each level of the DAG
-            for (int i = 0; i < rightDag.getGraph().Count; i++)
+            for (int i = 0; i < rightDag.getSimpleStructures().Count; i++)
             {
                 //initialise a StackPanels for the current level
                 rightLevelPanels[i] = new StackPanel();
@@ -554,7 +556,7 @@ namespace SevenWonders
             //disable (make hidden) all buttons on the same level
             if (location == 'L')
             {
-                for (int i = 0; i < leftDag.getGraph()[level].Length; i++)
+                for (int i = 0; i < leftDag.getSimpleStructures()[level].Length; i++)
                 {
                     //hide the buttons
                     leftDagButton[level, i].Visibility = Visibility.Hidden;
@@ -562,7 +564,7 @@ namespace SevenWonders
             }
             else if (location == 'M')
             {
-                for (int i = 0; i < middleDag.getGraph()[level].Length; i++)
+                for (int i = 0; i < middleDag.getSimpleStructures()[level].Length; i++)
                 {
                     //hide the buttons
                     middleDagButton[level, i].Visibility = Visibility.Hidden;
@@ -570,7 +572,7 @@ namespace SevenWonders
             }
             else if (location == 'R')
             {
-                for (int i = 0; i < rightDag.getGraph()[level].Length; i++)
+                for (int i = 0; i < rightDag.getSimpleStructures()[level].Length; i++)
                 {
                     //hide the buttons
                     rightDagButton[level, i].Visibility = Visibility.Hidden;
@@ -672,7 +674,7 @@ namespace SevenWonders
                 CommerceClientToServerResponse response = new CommerceClientToServerResponse();
                 response.leftCoins = leftcoin;
                 response.rightCoins = rightcoin;
-                response.id = ID;
+                response.structureName = ID;
 
                 string serializedResponse = Marshaller.ObjectToString(response);
 
