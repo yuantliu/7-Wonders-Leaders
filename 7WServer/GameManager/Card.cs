@@ -109,6 +109,29 @@ namespace SevenWonders
         {
             return coin == 0 && wood == 0 && stone == 0 && clay == 0 && ore == 0 && cloth == 0 && glass == 0 && papyrus == 0;
         }
+
+        public Cost Copy()
+        {
+            Cost c = new Cost();
+
+            c.coin = this.coin;
+            c.wood = this.wood;
+            c.stone = this.stone;
+            c.clay = this.clay;
+            c.ore = this.ore;
+            c.cloth = this.cloth;
+            c.glass = this.glass;
+            c.papyrus = this.papyrus;
+
+            return c;
+        }
+    };
+
+    public enum Buildable
+    {
+        True,
+        False,
+        CommerceRequired,
     };
 
     public enum StructureType
@@ -223,8 +246,11 @@ namespace SevenWonders
     {
         public string strChoiceData;
 
-        public ResourceChoiceEffect(string s)
+        public bool canBeUsedByNeighbors;
+
+        public ResourceChoiceEffect(bool canBeUsedByNeighbors, string s)
         {
+            this.canBeUsedByNeighbors = canBeUsedByNeighbors;
             this.strChoiceData = s;
         }
     };
@@ -234,6 +260,7 @@ namespace SevenWonders
     {
         public enum CardsConsidered
         {
+            None,
             Player,
             Neighbors,
             PlayerAndNeighbors,
@@ -257,7 +284,7 @@ namespace SevenWonders
     // formerly category 6
     public class SpecialAbilityEffect : Effect
     {
-        public enum Type
+        public enum SpecialType
         {
             ShipOwnerGuild,
             ScienceWild,
@@ -271,11 +298,11 @@ namespace SevenWonders
             Rhodos_B_1M4VP4C,
         };
 
-        Type type;
+        SpecialType type;
 
         public SpecialAbilityEffect(string initStr)
         {
-            type = (Type)Enum.Parse(typeof(Type), initStr);
+            type = (SpecialType)Enum.Parse(typeof(SpecialType), initStr);
         }
     }
 
@@ -405,18 +432,13 @@ namespace SevenWonders
 
                 case Effect.Type.ResourceChoice:
                     // player can choose one of the RawMaterials or Goods provided
-                    effect = new ResourceChoiceEffect(createParams[25]);
+                    effect = new ResourceChoiceEffect(structureType == StructureType.RawMaterial || structureType == StructureType.Goods, createParams[25]);
                     break;
 
                 case Effect.Type.CoinsPoints:
-                    CoinsAndPointsEffect.CardsConsidered cardsConsidered = CoinsAndPointsEffect.CardsConsidered.Player;
-                    switch (createParams[26])
-                    {
-                        case "P": /*cardsConsidered = CoinsAndPointsEffect.CardsConsidered.Player; */ break;
-                        case "N": cardsConsidered = CoinsAndPointsEffect.CardsConsidered.Neighbors; break;
-                        case "B": cardsConsidered = CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors; break;
-                        default: throw new Exception();
-                    }
+                    CoinsAndPointsEffect.CardsConsidered cardsConsidered = (CoinsAndPointsEffect.CardsConsidered)
+                        Enum.Parse(typeof(CoinsAndPointsEffect.CardsConsidered), createParams[26]);
+
                     StructureType classConsidered =
                         (StructureType)Enum.Parse(typeof(StructureType), createParams[27]);
 

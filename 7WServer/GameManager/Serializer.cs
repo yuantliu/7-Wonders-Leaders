@@ -85,21 +85,21 @@ namespace SevenWonders
         //use tuples to represent the ID-buildable pair
         //the char can be T, F, or C (for buildable with commerce)
         //Tuples would make sure that and id would always be correctly paired with its corresponding buildability status
-        public Tuple<string, char> []id_buildable;
+        public Tuple<string, Buildable> []id_buildable;
         public int informationSize;
         public int currentAge;
-        public char stageBuildable;
+        public Buildable stageBuildable;
 
         public HandPanelInformation(IPlayer p, int currentAge)
         {
             this.currentAge = currentAge;
             informationSize = p.GetNumCardsInHand();
-            id_buildable = new Tuple<string, char>[informationSize];
+            id_buildable = new Tuple<string, Buildable>[informationSize];
 
             //add the IDs and their buildability into array of pair-Tuples
             for (int i = 0; i < informationSize; i++)
             {
-                id_buildable[i] = new Tuple<string, char>(p.GetCard(i).name, p.isCardBuildable(i));
+                id_buildable[i] = new Tuple<string, Buildable>(p.GetCard(i).name, p.isCardBuildable(i));
             }
 
             stageBuildable = p.isStageBuildable();

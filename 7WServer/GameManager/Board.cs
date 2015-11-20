@@ -31,12 +31,14 @@ namespace SevenWonders
             Roma_B,
         };
 
+        public Wonder otherSide;
+
         public string name { get; private set; }
 
         //number of stages
         public int numOfStages { get; private set; }
 
-        public Effect boardEffect { get; private set; }
+        public Effect freeResource { get; private set; }
 
         //stage costs
         public Cost[] cost;
@@ -53,10 +55,11 @@ namespace SevenWonders
         /// <param name="name"></param>
         /// <param name="effect"></param>
         /// <param name="path"></param>
-        public Board(string name, Effect boardEffect, int nStages)
+        public Board(Wonder otherside, string name, Effect boardEffect, int nStages)
         {
+            this.otherSide = otherside;
             this.name = name;
-            this.boardEffect = boardEffect;
+            this.freeResource = boardEffect;
             this.numOfStages = nStages;
         }
     }

@@ -8,10 +8,25 @@ namespace SevenWonders
     [Serializable]
     public class DAG
     {
-        private List<char[]> graph = new List<char[]>();
+        // private List<char[]> graph = new List<char[]>();
+
+        // this list needs to be sorted in a particular order.  Simplest types at the top so those cards are used up first
+        // when calculating whether a structure is affordable.  Those are RawMaterials which do not offer a choice
+        // Goods and single-choice Resources come first.  Next come double RawMaterial cards.  They don't offer a
+        // choice but are better than single Raw materials.  Next would come first-age resource cards that have a choice of
+        // two.  There's a beter chance that by the time those cards are considered, one of the needed resources has
+        // already been taken care of by a single-resource card.  Last are the cards that offer a choice of all 3 goods
+        // or all 4 raw materials (Forum/Caravansery/Alexandria stages as they are the most flexible).  After those are
+        // considered, we look at Bilkis and other leaders who provide a -1 discount on certain structure classes.
+        // Also the Secret Warehouse and Black Market are in there somewhere.
+        List<SimpleEffect> simpleResources = new List<SimpleEffect>();
+
+        // choice cards.  Used after simpleResources are exhausted.
+        List<ResourceChoiceEffect> effectChoices = new List<ResourceChoiceEffect>();
 
         public bool hasTemp = false;
 
+        /*
         //Bilkis: add a temporary resource
         //This temporary resource will be wiped after every turn
         //Whenever add() is called, we know we have reached another turn
@@ -45,10 +60,12 @@ namespace SevenWonders
                 graph.RemoveAt(graph.Count - 1);
             }
         }
+        */
 
         //Add an OR resource
-        public void add(string s)
+        public void add(Effect s)
         {
+            /*
             char[] newInput = s.ToCharArray();
             //when there is a temp resource, insert into a non-last position so that the removal of temp resource works later
             if (hasTemp == true)
@@ -56,11 +73,20 @@ namespace SevenWonders
                 graph.Insert(0, newInput);
             }
             else
+            */
             {
-                graph.Add(newInput);
+                if (s is SimpleEffect)
+                {
+                    simpleResources.Add((SimpleEffect)s);
+                }
+                else if (s is ResourceChoiceEffect)
+                {
+                    effectChoices.Add((ResourceChoiceEffect)s);
+                }
             }
         }
 
+        /*
         /// <summary>
         /// Generate and return a List of all possible sequences from the DAG
         /// </summary>
@@ -94,9 +120,25 @@ namespace SevenWonders
 
             return generated;
         }
+        */
 
-        public List<char[]> getGraph() { return graph; }
-        public void setGraph(List<char[]> graph) { this.graph = graph; }
+        public List<SimpleEffect> getSimpleStructures()
+        {
+            return simpleResources;
+        }
+
+        public List<ResourceChoiceEffect> getChoiceStructures()
+        {
+            // TODO: fix this hack.  We're returning structures that are a choice of two, which
+            // will eliminate the Forum or Caravansery, which offer a choice of 3 or 4 resouces.
+            // The better way to do this will be to add a parameter to the choice effect to say
+            // whether it can be purchased by neighbors.
+            return effectChoices.Where(x => x.canBeUsedByNeighbors).ToList();
+        }
+
+        public void setSimpleStructureList(List<SimpleEffect> graph) { this.simpleResources = graph; }
+
+        public void setChoiceStructureList(List<ResourceChoiceEffect> graph) { this.effectChoices = graph; }
 
         /**
 	     * Remove all letters that appear in B FROM A, then return the newly trimmed A
@@ -107,33 +149,77 @@ namespace SevenWonders
 	     * @param A = COST
 	     * @param B = RESOURCES
 	     */
-        public static Cost eliminate(Cost structureCost, string B)
+        public static Cost eliminate(Cost structureCost, int multiplier, string resourceString)
         {
             // interesting.  structs do not need to be instantiated.  Classes do.  But structs
             // can only be PoD types, they cannot contain functions.
 
-            Cost c = new Cost();
+            Cost c = structureCost;
 
-            c.coin = Math.Max(structureCost.coin - B.Count(x => x == '$'), 0);
-            c.wood = Math.Max(structureCost.wood - B.Count(x => x == 'W'), 0);
-            c.stone = Math.Max(structureCost.stone - B.Count(x => x == 'T'), 0);
-            c.clay = Math.Max(structureCost.clay - B.Count(x => x == 'B'), 0);
-            c.ore = Math.Max(structureCost.ore - B.Count(x => x == 'O'), 0);
-            c.cloth = Math.Max(structureCost.cloth - B.Count(x => x == 'L'), 0);
-            c.glass = Math.Max(structureCost.glass - B.Count(x => x == 'G'), 0);
-            c.papyrus = Math.Max(structureCost.papyrus - B.Count(x => x == 'P'), 0);
+            foreach (char ch in resourceString)
+            {
+                switch (ch)
+                {
+                    case 'W':
+                        if (c.wood != 0)
+                        {
+                            c.wood = Math.Max(c.wood - multiplier, 0);
+                            return c;
+                        }
+                        break;
 
+                    case 'S':
+                        if (c.stone != 0)
+                        {
+                            c.stone = Math.Max(c.stone - multiplier, 0);
+                            return c;
+                        }
+                        break;
 
-            /*
-            c.coin = Math.Max(structureCost.coin - resourcesAvailable.coin, 0);
-            c.wood = Math.Max(structureCost.wood - resourcesAvailable.wood, 0);
-            c.stone = Math.Max(structureCost.stone - resourcesAvailable.stone, 0);
-            c.clay = Math.Max(structureCost.clay - resourcesAvailable.clay, 0);
-            c.ore = Math.Max(structureCost.ore - resourcesAvailable.ore, 0);
-            c.cloth = Math.Max(structureCost.cloth - resourcesAvailable.cloth, 0);
-            c.glass = Math.Max(structureCost.glass - resourcesAvailable.glass, 0);
-            c.papyrus = Math.Max(structureCost.papyrus - resourcesAvailable.papyrus, 0);
-            */
+                    case 'B':
+                        if (c.clay != 0)
+                        {
+                            c.clay = Math.Max(c.clay - multiplier, 0);
+                            return c;
+                        }
+                        break;
+
+                    case 'O':
+                        if (c.ore != 0)
+                        {
+                            c.ore = Math.Max(c.ore - multiplier, 0);
+                            return c;
+                        }
+                        break;
+
+                    case 'C':
+                        if (c.cloth != 0)
+                        {
+                            c.cloth = Math.Max(c.cloth - multiplier, 0);
+                            return c;
+                        }
+                        break;
+
+                    case 'G':
+                        if (c.glass != 0)
+                        {
+                            c.glass = Math.Max(c.glass - multiplier, 0);
+                            return c;
+                        }
+                        break;
+
+                    case 'P':
+                        if (c.papyrus != 0)
+                        {
+                            c.papyrus = Math.Max(c.papyrus - multiplier, 0);
+                            return c;
+                        }
+                        break;
+
+                    default:
+                        throw new Exception();
+                }
+            }
 
             return c;
 
@@ -161,18 +247,31 @@ namespace SevenWonders
          */
         public static bool canAfford(DAG graph, Cost cost)
         {
-		    List<string> generated = graph.generateStrings();
-	
-		    for(int i = 0; i < generated.Count; i++)
+            foreach (SimpleEffect e in graph.simpleResources)
             {
-			    if(eliminate(cost, generated[i]).IsZero())
+                if (eliminate(cost, e.multiplier, e.type.ToString()).IsZero())
+                    return true;
+            }
+
+            foreach (ResourceChoiceEffect e in graph.effectChoices)
+            {
+                if (eliminate(cost, 1, e.strChoiceData).IsZero())
+                    return true;
+            }
+            /*
+            List<string> generated = graph.generateStrings();
+
+            for(int i = 0; i < generated.Count; i++)
+            {
+                if(eliminate(cost, generated[i]).IsZero())
                 {
-				    return true;
-			    }
-		    }
-		
-		    return false;
-	    }
+                    return true;
+                }
+            }
+            */
+
+            return false;
+        }
 
         /// <summary>
         /// Given a DAG and a cost (without $ in it), determine if the DAG can afford the cost
@@ -209,7 +308,9 @@ namespace SevenWonders
         public static DAG addThreeDAGs(DAG A, DAG B, DAG C)
         {
             DAG megaDAG = new DAG();
-            megaDAG.setGraph(A.getGraph().Concat(B.getGraph()).Concat(C.getGraph()).ToList());
+            megaDAG.setSimpleStructureList(A.getSimpleStructures().Concat(B.getSimpleStructures().Concat(C.getSimpleStructures())).ToList());
+            megaDAG.setChoiceStructureList(A.getChoiceStructures().Concat(B.getChoiceStructures().Concat(C.getChoiceStructures())).ToList());
+            // megaDAG.setGraph(A.getGraph().Concat(B.getGraph()).Concat(C.getGraph()).ToList());
             return megaDAG;
         }
     }

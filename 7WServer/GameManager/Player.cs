@@ -355,52 +355,57 @@ namespace SevenWonders
                 // else if (actions[i][0] == '1')
                 else if (act is SimpleEffect)
                 {
+                    SimpleEffect e = act as SimpleEffect;
                     //increase the appropriate field by num
                     // int num = int.Parse(act[0] + "");
-                    int num = ((SimpleEffect)act).multiplier;
+                   //  int num = e.multiplier;
 
-                    switch (((SimpleEffect)act).type)
+                    switch (e.type)
                     {
-                        case 'S':
-                            shield += num;
+                        case 'M':
+                            shield += e.multiplier;
                             break;
                         case 'V':
-                            victoryPoint += num;
+                            victoryPoint += e.multiplier;
                             break;
                         case 'O':
-                            ore += num;
-                            dag.add(num == 1 ? "O" : "OO");
+                            ore += e.multiplier;
+                            dag.add(e);
                             break;
                         case 'B':
-                            brick += num;
-                            dag.add(num == 1 ? "B" : "BB");
+                            brick += e.multiplier;
+                            dag.add(e);
                             break;
-                        case 'T':
-                            stone += num;
-                            dag.add(num == 1 ? "T" : "TT");
+                        case 'S':
+                            stone += e.multiplier;
+                            dag.add(e);
                             break;
                         case 'W':
-                            wood += num;
-                            dag.add(num == 1 ? "W" : "WW");
+                            wood += e.multiplier;
+                            dag.add(e);
                             break;
+                            /*
                         case '$':
-                            coin += num;
+                            coin += e.multiplier;
                             break;
-                        case 'L':
-                            loom += num;
-                            dag.add("L");
+                            */
+                        case 'C':
+                            loom += e.multiplier;
+                            dag.add(e);
                             break;
                         case 'P':
-                            papyrus += num;
-                            dag.add("P");
+                            papyrus += e.multiplier;
+                            dag.add(e);
                             break;
                         case 'G':
-                            glass += num;
-                            dag.add("G");
+                            glass += e.multiplier;
+                            dag.add(e);
                             break;
+                            /*
                         case 'd':
                         case 'D':
                             break;
+                            */
                         default:
                             throw new Exception();
                     }
@@ -429,7 +434,7 @@ namespace SevenWonders
                 else if (act is CommercialDiscountEffect)
                 {
                     //set the market effects
-                    CommercialDiscountEffect e = (CommercialDiscountEffect)act;
+                    CommercialDiscountEffect e = act as CommercialDiscountEffect;
                     if (e.affects == CommercialDiscountEffect.Affects.RawMaterial)
                     {
                         switch(e.appliesTo)
@@ -473,7 +478,7 @@ namespace SevenWonders
                     // dag.add(actions[i].Substring(1));
                     // TODO: there's a bug here: RawMaterial structures can be purchased by neighboring cities
                     // but Commercial structures (Forum & Caravansery) cannot.  DAG must account for this difference
-                    dag.add(((ResourceChoiceEffect)act).strChoiceData);
+                    dag.add(act);
                 }
                 //category 5: gives some $ and and/or some victory depending on some conditions
                 //these cards are usually yellow
@@ -486,6 +491,11 @@ namespace SevenWonders
                     // if (act[4] != '0')
                     if (e.coinsGrantedAtTimeOfPlayMultiplier != 0)
                     {
+                        if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.None)
+                        {
+                            coin += e.coinsGrantedAtTimeOfPlayMultiplier;
+                        }
+
                         //colours that are being looked for: G = grey, B = brown, b = blue, N = green, Y = yellow, S = stage
                         // char colour = act[3];
 
@@ -965,7 +975,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="card"></param>
         /// <returns></returns>
-        public char isCardBuildable(int j)
+        public Buildable isCardBuildable(int j)
         {
             Card card = hand[j];
 
@@ -978,7 +988,7 @@ namespace SevenWonders
             {
                 if (playedStructure[i].name == card.name)
                 {
-                    return 'F';
+                    return Buildable.False;
                 }
             }
             
@@ -986,7 +996,7 @@ namespace SevenWonders
             if (cost.coin == 0 && cost.wood == 0 && cost.stone == 0 && cost.clay == 0 &&
                 cost.ore == 0 &&  cost.cloth == 0 && cost.glass == 0 && cost.papyrus == 0)
             {
-                return 'T';
+                return Buildable.True;
             }
 
             //if the player owns the prerequiste, Return T immediately
@@ -995,7 +1005,7 @@ namespace SevenWonders
                 if (playedStructure[i].chain[0] == card.name ||
                     playedStructure[i].chain[1] == card.name)
                 {
-                    return 'T';
+                    return Buildable.True;
                 }
             }
 
@@ -1028,7 +1038,7 @@ namespace SevenWonders
             //return T if the card is purple
             if (card.structureType == StructureType.Guild && hasIDPlayed(/*228*/"Ramses"))
             {
-                return 'T';
+                return Buildable.True;
             }
 
             /*
@@ -1044,17 +1054,24 @@ namespace SevenWonders
             }
             */
 
+            if (coin < cost.coin)
+            {
+                // if the card has a coin cost and we don't have enough money, bail out and
+                // return not buildable.
+                return Buildable.False;
+            }
+
             //can player afford cost with DAG resources?
-            char? costAffordableWithDAGResult = isCostAffordableWithDAG(cost);
-            if (costAffordableWithDAGResult != null) return (char)costAffordableWithDAGResult;
+            if (isCostAffordableWithDAG(cost.Copy()) == Buildable.True)
+                return Buildable.True;
 
             //can player afford cost by conducting commerce?
-            char? costAffordableWithNeighbours = isCostAffordableWithNeighbours(cost);
-            if (costAffordableWithNeighbours != null) return (char)costAffordableWithNeighbours;
+            if (isCostAffordableWithNeighbours(cost.Copy()) == Buildable.CommerceRequired)
+                return Buildable.CommerceRequired;
 
             //absolutely all options have been exhausted
             //finally return 'F'
-            return 'F';
+            return Buildable.False;
         }
 
         /// <summary>
@@ -1064,22 +1081,17 @@ namespace SevenWonders
         /// <param name="card"></param>
         /// <param name="cost"></param>
         /// <returns></returns>
-        private char? isCostAffordableWithDAG(Cost cost)
+        private Buildable isCostAffordableWithDAG(Cost cost)
         {
-            if (this.coin < cost.coin)
-            {
-                //if theres not enough coins, then return false
-                return 'F';
-            }
-
             //get rid of the coins from the cost, and see if DAG can afford the cost (already checked for coins at previous step)
             //this is relevant for the Black cards in the Cities expansion
             // cost = cost.Replace("$", "");
             cost.coin = 0;
 
             //can I afford the cost with resources in my DAG?
-            if (DAG.canAfford(dag, cost)) return 'T';
-            else return null;
+            if (DAG.canAfford(dag, cost)) return Buildable.True;
+
+            return Buildable.False;
         }
 
         /// <summary>
@@ -1087,15 +1099,17 @@ namespace SevenWonders
         /// </summary>
         /// <param name="card"></param>
         /// <returns></returns>
-        private char? isCostAffordableWithNeighbours(Cost cost)
+        private Buildable isCostAffordableWithNeighbours(Cost cost)
         {
+            cost.coin = 0;
+
             //combine the left, centre, and right DAG
             DAG combinedDAG = DAG.addThreeDAGs(leftNeighbour.dag, dag, rightNeighbour.dag);
 
             //determine if the combined DAG can afford the cost
-            if (DAG.canAfford(combinedDAG, cost)) return 'C';
+            if (DAG.canAfford(combinedDAG, cost)) return Buildable.CommerceRequired;
 
-            return null;
+            return Buildable.False;
         }
 
         /// <summary>
@@ -1103,11 +1117,11 @@ namespace SevenWonders
         /// Returns "T" if it is, returns "F" if it is not
         /// </summary>
         /// <returns></returns>
-        public char isStageBuildable()
+        public Buildable isStageBuildable()
         {
             //check if the current Stage is already the maximum stage
             if (currentStageOfWonder >= playerBoard.numOfStages)
-                return 'F';
+                return Buildable.False;
 
             //retrieve the cost
             Cost cost = playerBoard.cost[currentStageOfWonder];
@@ -1117,19 +1131,19 @@ namespace SevenWonders
             {
                 bool newCostResult = DAG.canAffordOffByOne(dag, cost);
 
-                if (newCostResult == true) return 'T';
+                if (newCostResult == true) return Buildable.True;
             }
 
             //can player afford cost with DAG resources
-            if (isCostAffordableWithDAG(cost) == 'T') return 'T';
+            if (isCostAffordableWithDAG(cost) == Buildable.True) return Buildable.True;
 
             //can player afford cost by conducting commerce?
             //can player afford cost by conducting commerce?
-            char? costAffordableWithNeighbours = isCostAffordableWithNeighbours(cost);
-            if (costAffordableWithNeighbours != null) return (char)costAffordableWithNeighbours;
+            if (isCostAffordableWithNeighbours(cost) == Buildable.CommerceRequired)
+                return Buildable.CommerceRequired;
 
             //absolutely all options exhausted. return F
-            return 'F';
+            return Buildable.False;
         }
 
         /// <summary>

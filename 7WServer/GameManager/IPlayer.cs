@@ -57,9 +57,9 @@ namespace SevenWonders
         Card GetCard(int i);
 
         // TODO: make these return values into an enum
-        char isCardBuildable(int i);
+        Buildable isCardBuildable(int i);
 
-        char isStageBuildable();
+        Buildable isStageBuildable();
 
         Card GetCardPlayed(int index);
 

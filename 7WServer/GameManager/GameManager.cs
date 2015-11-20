@@ -219,9 +219,9 @@ namespace SevenWonders
                 player[i].playerBoard = popRandomBoard();
                 // gmCoordinator.sendMessage(player[i], "b" + player[i].playerBoard.name);
                 // player[i].storeAction("13$");
-                player[i].storeAction(new SimpleEffect(3, '$'));
+                player[i].storeAction(new CoinsAndPointsEffect(CoinsAndPointsEffect.CardsConsidered.None, StructureType.Constant, 3, 0));
                 // player[i].storeAction("11" + player[i].playerBoard.freeResource);
-                //player[i].storeAction(new SimpleEffect(1, player[i].playerBoard.freeResource));
+                player[i].storeAction(player[i].playerBoard.freeResource);
 
                 // deferred until the client is ready to accept UI information
                 // player[i].executeAction(this);
@@ -460,20 +460,20 @@ namespace SevenWonders
         {
             board = new Dictionary<Board.Wonder, Board>(16)
             {
-                { Board.Wonder.Alexandria_A, new Board("Alexandria (A)", new SimpleEffect(1, 'G'), 3) },
-                { Board.Wonder.Alexandria_B, new Board("Alexandria (B)", new SimpleEffect(1, 'G'), 3) },
-                { Board.Wonder.Babylon_A, new Board("Babylon (A)", new SimpleEffect(1, 'C'), 3) },
-                { Board.Wonder.Babylon_B, new Board("Babylon (B)", new SimpleEffect(1, 'C'), 3) },
-                { Board.Wonder.Ephesos_A, new Board("Ephesos (A)", new SimpleEffect(1, 'P'), 3) },
-                { Board.Wonder.Ephesos_B, new Board("Ephesos (B)", new SimpleEffect(1, 'P'), 3) },
-                { Board.Wonder.Giza_A, new Board("Giza (A)", new SimpleEffect(1, 'S'), 3) },
-                { Board.Wonder.Giza_B, new Board("Giza (B)", new SimpleEffect(1, 'S'), 4) },
-                { Board.Wonder.Halikarnassos_A, new Board("Halikarnassos (A)", new SimpleEffect(1, 'C'), 3) },
-                { Board.Wonder.Halikarnassos_B, new Board("Halikarnassos (B)", new SimpleEffect(1, 'C'), 3) },
-                { Board.Wonder.Olympia_A, new Board("Olympia (A)", new SimpleEffect(1, 'W'), 3) },
-                { Board.Wonder.Olympia_B, new Board("Olympia (B)", new SimpleEffect(1, 'W'), 3) },
-                { Board.Wonder.Rhodos_A, new Board("Rhodos (A)", new SimpleEffect(1, 'O'), 3) },
-                { Board.Wonder.Rhodos_B, new Board("Rhodos (B)", new SimpleEffect(1, 'O'), 2) },
+                { Board.Wonder.Alexandria_A, new Board(Board.Wonder.Alexandria_B, "Alexandria (A)", new SimpleEffect(1, 'G'), 3) },
+                { Board.Wonder.Alexandria_B, new Board(Board.Wonder.Alexandria_A, "Alexandria (B)", new SimpleEffect(1, 'G'), 3) },
+                { Board.Wonder.Babylon_A, new Board(Board.Wonder.Babylon_B, "Babylon (A)", new SimpleEffect(1, 'C'), 3) },
+                { Board.Wonder.Babylon_B, new Board(Board.Wonder.Babylon_A, "Babylon (B)", new SimpleEffect(1, 'C'), 3) },
+                { Board.Wonder.Ephesos_A, new Board(Board.Wonder.Ephesos_B, "Ephesos (A)", new SimpleEffect(1, 'P'), 3) },
+                { Board.Wonder.Ephesos_B, new Board(Board.Wonder.Ephesos_A, "Ephesos (B)", new SimpleEffect(1, 'P'), 3) },
+                { Board.Wonder.Giza_A, new Board(Board.Wonder.Giza_B, "Giza (A)", new SimpleEffect(1, 'S'), 3) },
+                { Board.Wonder.Giza_B, new Board(Board.Wonder.Giza_A, "Giza (B)", new SimpleEffect(1, 'S'), 4) },
+                { Board.Wonder.Halikarnassos_A, new Board(Board.Wonder.Halikarnassos_B, "Halikarnassos (A)", new SimpleEffect(1, 'C'), 3) },
+                { Board.Wonder.Halikarnassos_B, new Board(Board.Wonder.Halikarnassos_A, "Halikarnassos (B)", new SimpleEffect(1, 'C'), 3) },
+                { Board.Wonder.Olympia_A, new Board(Board.Wonder.Olympia_B, "Olympia (A)", new SimpleEffect(1, 'W'), 3) },
+                { Board.Wonder.Olympia_B, new Board(Board.Wonder.Olympia_A, "Olympia (B)", new SimpleEffect(1, 'W'), 3) },
+                { Board.Wonder.Rhodos_A, new Board(Board.Wonder.Rhodos_B, "Rhodos (A)", new SimpleEffect(1, 'O'), 3) },
+                { Board.Wonder.Rhodos_B, new Board(Board.Wonder.Rhodos_A, "Rhodos (B)", new SimpleEffect(1, 'O'), 2) },
                 /*
                 { Board.Wonder.Roma_A, new Board("Roma (A)", null, 3) },
                 { Board.Wonder.Roma_B, new Board("Roma (B)", null, 3) },
@@ -505,26 +505,16 @@ namespace SevenWonders
         /// <returns></returns>
         protected Board popRandomBoard()
         {
-            throw new NotImplementedException();
-
-            /*
             int index = (new Random()).Next(0, board.Count);
 
-            Board randomBoard = board[index];
-
-            board.RemoveAt(index);
+            KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
             // Remove the other side (i.e. if we returned the Babylon A, remove Babylon B from
             // the board list)
-            if ((index & 1) != 0)
-                board.RemoveAt(index - 1);      // returning B side, remove A side
-            else
-                board.RemoveAt(index);          // returning A size, remove B side
+            board.Remove(randomBoard.Key);
+            board.Remove(randomBoard.Value.otherSide);
 
-            return randomBoard;
-            */
-
-            return null;
+            return randomBoard.Value;
         }
 
         
