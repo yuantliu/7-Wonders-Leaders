@@ -572,15 +572,15 @@ namespace SevenWonders
                 }
                 //category 6: special guild cards
                 //put these directly into executeEndOfGameActions array
-                else if (act is SpecialGuildEffect)
+                else if (act is SpecialAbilityEffect)
                 {
                     endOfGameActions[numOfEndOfGameActions++] = actions[i];
                 }
+                /*
                 //category 7: hard coded board powers
                 // else if (actions[i][0] == '7')
                 else if (act is SpecialBoardEffect)
                 {
-                    /*
                     TODO: Fill this in after the board data is updated like the card one.
                     //format: 7(board name)
 
@@ -636,14 +636,11 @@ namespace SevenWonders
                             victoryPoint += 3;
                         }
                     }
-                    */
-
                 }
                 //Esteban and Bilkis
                 // else if(actions[i][0] == '8')
                 else if(act is SpecialLeaderEffect)
                 {
-                    /*
                     if (act.Substring(0) == "Esteban")
                     {
                         //enable the Esteban button by sending the Esteban message to the client
@@ -653,12 +650,12 @@ namespace SevenWonders
                     {
                         hasBilkis = true;
                     }
-                    */
                 }
+                */
                 else
                 {
                     //do nothing for now
-                    //throw new NotImplementedException();
+                    throw new NotImplementedException();
                 }
             }
 
@@ -808,7 +805,7 @@ namespace SevenWonders
                 }
                 //category 6: special guild cards and leader cards
                 //6_132 or 6_135
-                else if (act is SpecialGuildEffect)
+                else if (act is SpecialAbilityEffect)
                 {
                     /*
                     //card number 132: Scientist guild
@@ -926,7 +923,7 @@ namespace SevenWonders
                     */
                 }
                 //category 7: end of game board powers
-                else if (act is SpecialBoardEffect)
+                else if (act is SpecialAbilityEffect)
                 {
                     /*
                     //copy best neighbouring purple card
@@ -1005,6 +1002,7 @@ namespace SevenWonders
             //if the owner has built card 217: free leader cards
             //if the owner has Rome A board, then same
             //return T if the card is white
+#if FALSE
             if ((playerBoard.freeResource == 'D' || hasIDPlayed(/*217*/"Maecenas")) && card.structureType == StructureType.Leader)
             {
                 return 'T';
@@ -1024,6 +1022,7 @@ namespace SevenWonders
                 if ((card.cost.coin - 1) <= coin) return 'T';
                 else return 'F';
             }
+#endif
 
             //if the owner has built card 228: free guild cards
             //return T if the card is purple

@@ -122,6 +122,9 @@ namespace SevenWonders
         Science,
         Guild,
 
+        // Tavern, Ephesos (A) stage 2, Ephesos (B), all 3 stages.  The number of coins and points is NOT dependent on external factors.
+        Constant,
+
         // These cards are not played, but they are used in some effects to determine coins and/or points
         MilitaryLosses,
         MilitaryVictories,
@@ -136,18 +139,14 @@ namespace SevenWonders
     {
         public enum Type
         {
-            Money,              // Gain or lose coins
+            //Money,              // Gain or lose coins
             Simple,             // One of a kind, non-science
             Science,            // science
             Commerce,           // Marketplace, Trading Posts
             ResourceChoice,     // Age 1 either-other resource, Forum, Caravansery
             CoinsPoints,        // Most guilds, All age 3 commerce, Vineyard, Bazar
-            SpecializedGuild,   // Science guild, Shipowner's guild
-            SpecializedBoard,   // Special board effects
-            SpecializedLeader   // Special leader effects (Esteban, Bilkis)
+            SpecialAbility,     // Science guild, Shipowner's guild, some Wonder board stages with unique effects
         };
-
-        // protected Type effectType;   // $, 1 to 8, possibly more after Cities are added.  // TODO: get rid of this.  Use classes derived from Effect instead.
     };
 
     // formerly category 0 or '$'
@@ -254,11 +253,33 @@ namespace SevenWonders
         }
     };
 
+
     // formerly category 6
-    public class SpecialGuildEffect : Effect
+    public class SpecialAbilityEffect : Effect
     {
+        public enum Type
+        {
+            ShipOwnerGuild,
+            ScienceWild,
+            PlayLastCardInAge,
+            PlayDiscardedCardForFree,
+            PlayDiscardedCardForFree_2VP,
+            PlayDiscardedCardForFree_1VP,
+            PlayACardForFreeOncePerAge,
+            CopyGuildFromNeighbor,
+            Rhodos_B_1M3VP3C,
+            Rhodos_B_1M4VP4C,
+        };
+
+        Type type;
+
+        public SpecialAbilityEffect(string initStr)
+        {
+            type = (Type)Enum.Parse(typeof(Type), initStr);
+        }
     }
 
+    /*
     // formerly category 7
     public class SpecialBoardEffect : Effect
     {
@@ -268,6 +289,7 @@ namespace SevenWonders
     public class SpecialLeaderEffect : Effect
     {
     }
+    */
 
     [Serializable]
     public class Card
@@ -275,7 +297,10 @@ namespace SevenWonders
          // Name Age Type Description Icon	3 players	4 players	5 players	6 players	7 players Cost(coins)    Cost(wood) Cost(stone)    Cost(clay) Cost(ore)  Cost(cloth)    Cost(glass)    Cost(papyrus)  Chains to(1)   Chains to(2)   Effect Category Category 1 multiplier Category 1 effect Catgory 2 symbol Category 3 effect Category 4 effect Category 5: Multiplier(P = player, N = neighbours, B = both player & neighbours)   Category 5: Card/token type Category 5: coins given when card enters play multiplier Category 5: End of game VP granted
         public string name { get; private set; }    // TODO: make this an enum
 
-        public int age { get; private set; }
+        public int age;
+
+        public int wonderStage;
+
         public StructureType structureType { get;  private set; }
         public string description { get; private set; }
         public string iconName { get; private set; }
@@ -287,12 +312,26 @@ namespace SevenWonders
         public Card(string[] createParams)
         {
             name = createParams[0];
-            age = int.Parse(createParams[1]);
+            if (createParams[1] != string.Empty)
+            {
+                age = int.Parse(createParams[1]);
+                wonderStage = 0;
+            }
+            else
+            {
+                age = 0;
+                wonderStage = int.Parse(createParams[31]);
+            }
+
             structureType = (StructureType)Enum.Parse(typeof(StructureType), createParams[2]);
             description = createParams[3];
             iconName = createParams[4];
-            for (int i = 0, j = 5; i < numAvailableByNumPlayers.Length;  ++i, ++j)
-                numAvailableByNumPlayers[i] = int.Parse(createParams[j]);
+
+            if (structureType != StructureType.WonderStage)
+            {
+                for (int i = 0, j = 5; i < numAvailableByNumPlayers.Length;  ++i, ++j)
+                    numAvailableByNumPlayers[i] = int.Parse(createParams[j]);
+            }
 
             // Structure cost
             int.TryParse(createParams[10], out cost.coin);
@@ -385,14 +424,9 @@ namespace SevenWonders
                         int.Parse(createParams[28]), int.Parse(createParams[29]));
                     break;
 
-                case Effect.Type.SpecializedGuild:
-                    // No other information is provided in the card list.
+                case Effect.Type.SpecialAbility:
+                    effect = new SpecialAbilityEffect(createParams[30]);
                     break;
-
-                case Effect.Type.Money:
-                case Effect.Type.SpecializedBoard:
-                case Effect.Type.SpecializedLeader:
-                    throw new Exception("Unexpected value in cards file");
             }
         }
 

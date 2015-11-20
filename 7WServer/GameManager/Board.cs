@@ -11,21 +11,41 @@ namespace SevenWonders
     /// </summary>
     public class Board
     {
-        public string name { get; set; }
+        public enum Wonder
+        {
+            Alexandria_A,
+            Alexandria_B,
+            Babylon_A,
+            Babylon_B,
+            Ephesos_A,
+            Ephesos_B,
+            Giza_A,
+            Giza_B,
+            Halikarnassos_A,
+            Halikarnassos_B,
+            Olympia_A,
+            Olympia_B,
+            Rhodos_A,
+            Rhodos_B,
+            Roma_A,
+            Roma_B,
+        };
+
+        public string name { get; private set; }
 
         //number of stages
-        public int numOfStages { get; set; }
-        //stage effects
+        public int numOfStages { get; private set; }
 
-        public Effect[] effect;
+        public Effect boardEffect { get; private set; }
 
         //stage costs
         public Cost[] cost;
 
+        //stage effects
+        public Effect[] effect;
+
         //the free resource that the board provides
         //e.g. W, O, P, T, etc.
-        public char freeResource { get; set; }
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -33,16 +53,11 @@ namespace SevenWonders
         /// <param name="name"></param>
         /// <param name="effect"></param>
         /// <param name="path"></param>
-        public Board(string name, int numOfStages, char freeResource, Cost [] cost, Effect [] effect)
+        public Board(string name, Effect boardEffect, int nStages)
         {
             this.name = name;
-            this.numOfStages = numOfStages;
-            this.freeResource = freeResource;
-
-            this.cost = cost;
-            this.effect = effect;
+            this.boardEffect = boardEffect;
+            this.numOfStages = nStages;
         }
-
-
     }
 }

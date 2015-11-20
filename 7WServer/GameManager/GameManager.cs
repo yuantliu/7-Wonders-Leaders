@@ -17,7 +17,6 @@ namespace SevenWonders
 
         public GMCoordinator gmCoordinator;
 
-
         //Current age
         public int currentAge;
         //Current turn
@@ -29,7 +28,7 @@ namespace SevenWonders
         public Player[] player;
 
         //All possible decks
-        private IList<Board> board;
+        private Dictionary<Board.Wonder, Board> board;
 
         // I'd prefer to use a dictionary, but because there may be 2 (or even 3) of the same card,
         // I'll stay with a List container.
@@ -140,7 +139,7 @@ namespace SevenWonders
 
             //initialize the vanilla boards objects
             //does not assign the boards to players yet
-            createBoards("boards.txt");
+            createBoards();
 
             //creating the vanilla AIs
             for (int i = numOfPlayers; i < numOfAI + numOfPlayers; i++)
@@ -222,7 +221,7 @@ namespace SevenWonders
                 // player[i].storeAction("13$");
                 player[i].storeAction(new SimpleEffect(3, '$'));
                 // player[i].storeAction("11" + player[i].playerBoard.freeResource);
-                player[i].storeAction(new SimpleEffect(1, player[i].playerBoard.freeResource));
+                //player[i].storeAction(new SimpleEffect(1, player[i].playerBoard.freeResource));
 
                 // deferred until the client is ready to accept UI information
                 // player[i].executeAction(this);
@@ -457,48 +456,46 @@ namespace SevenWonders
         /// Vanilla: boards.txt
         /// Leaders: leadersboards.txt
         /// </summary>
-        protected void createBoards(string filename)
+        protected void createBoards()
         {
-            board = new List<Board>();
-
-            //read from the file
-            String currentPath = Environment.CurrentDirectory;
-
-            //open the board text file
-            try
+            board = new Dictionary<Board.Wonder, Board>(16)
             {
-                System.IO.StreamReader file = new System.IO.StreamReader(currentPath + @"\Resources\boardText\" + filename);
+                { Board.Wonder.Alexandria_A, new Board("Alexandria (A)", new SimpleEffect(1, 'G'), 3) },
+                { Board.Wonder.Alexandria_B, new Board("Alexandria (B)", new SimpleEffect(1, 'G'), 3) },
+                { Board.Wonder.Babylon_A, new Board("Babylon (A)", new SimpleEffect(1, 'C'), 3) },
+                { Board.Wonder.Babylon_B, new Board("Babylon (B)", new SimpleEffect(1, 'C'), 3) },
+                { Board.Wonder.Ephesos_A, new Board("Ephesos (A)", new SimpleEffect(1, 'P'), 3) },
+                { Board.Wonder.Ephesos_B, new Board("Ephesos (B)", new SimpleEffect(1, 'P'), 3) },
+                { Board.Wonder.Giza_A, new Board("Giza (A)", new SimpleEffect(1, 'S'), 3) },
+                { Board.Wonder.Giza_B, new Board("Giza (B)", new SimpleEffect(1, 'S'), 4) },
+                { Board.Wonder.Halikarnassos_A, new Board("Halikarnassos (A)", new SimpleEffect(1, 'C'), 3) },
+                { Board.Wonder.Halikarnassos_B, new Board("Halikarnassos (B)", new SimpleEffect(1, 'C'), 3) },
+                { Board.Wonder.Olympia_A, new Board("Olympia (A)", new SimpleEffect(1, 'W'), 3) },
+                { Board.Wonder.Olympia_B, new Board("Olympia (B)", new SimpleEffect(1, 'W'), 3) },
+                { Board.Wonder.Rhodos_A, new Board("Rhodos (A)", new SimpleEffect(1, 'O'), 3) },
+                { Board.Wonder.Rhodos_B, new Board("Rhodos (B)", new SimpleEffect(1, 'O'), 2) },
+                /*
+                { Board.Wonder.Roma_A, new Board("Roma (A)", null, 3) },
+                { Board.Wonder.Roma_B, new Board("Roma (B)", null, 3) },
+                */
+            };
 
-                if (file.ReadLine() != "This is The Board Script file!")
-                {
-                    throw new System.IO.IOException();
-                }
+            // Take the board effects from the card list.
 
-                //start to parse the file
-                for (int i = 0; i < board_amount; i++)
-                {
-                    string name = file.ReadLine();
-                    int numOfStages = int.Parse(file.ReadLine());
-                    char freeresource = file.ReadLine()[0];
-                    string[] cost = new string[numOfStages];
-                    string[] effect = new string[numOfStages];
-
-                    for (int j = 0; j < numOfStages; j++)
-                    {
-                        cost[j] = file.ReadLine();
-                        effect[j] = file.ReadLine();
-                    }
-
-                    board.Add(new Board(name, numOfStages, freeresource, cost, effect));
-
-                    file.ReadLine();
-                }
-
-                file.Close();
-            }
-            catch (System.IO.IOException)
+            foreach (Board b in board.Values)
             {
-                Console.WriteLine("Cannot load board text file.");
+                b.cost = new Cost[b.numOfStages];
+                b.effect = new Effect[b.numOfStages];
+
+                for (int i = 0; i < b.numOfStages; ++i)
+                {
+                    Card card = fullCardList.Find(c => c.structureType == StructureType.WonderStage && c.name == b.name && c.wonderStage == i+1);
+
+                    b.cost[i] = card.cost;
+                    b.effect[i] = card.effect;
+
+                    fullCardList.Remove(card);
+                }
             }
         }
 
@@ -508,6 +505,9 @@ namespace SevenWonders
         /// <returns></returns>
         protected Board popRandomBoard()
         {
+            throw new NotImplementedException();
+
+            /*
             int index = (new Random()).Next(0, board.Count);
 
             Board randomBoard = board[index];
@@ -522,6 +522,9 @@ namespace SevenWonders
                 board.RemoveAt(index);          // returning A size, remove B side
 
             return randomBoard;
+            */
+
+            return null;
         }
 
         
@@ -573,14 +576,14 @@ namespace SevenWonders
             //if player has card 217: free leaders, then leaders are free. add the appropriate amount of coins first to offset the deduction
             //OR
             //if player has Rome A, then leaders are free. (board has D resource (big discount))
-            if ((p.hasIDPlayed(/*217*/"Maecenas") == true || p.playerBoard.freeResource == 'D') && c.structureType == StructureType.Leader)
+            if ((p.hasIDPlayed(/*217*/"Maecenas") == true /* || p.playerBoard.freeResource == 'D'*/) && c.structureType == StructureType.Leader)
             {
                 // p.storeAction("1" + costInCoins + "$");
                 p.storeAction(new SimpleEffect(costInCoins, '$'));
             }
 
             //if player has Rome B, then playing leaders will refund a 2 coin discount
-            if (p.playerBoard.freeResource == 'd' && c.structureType == StructureType.Leader)
+            if (/*p.playerBoard.freeResource == 'd' && */c.structureType == StructureType.Leader)
             {
                 //give 2 coins back if the card cost more than 2
                 //else give less than 2 coins back
@@ -598,6 +601,7 @@ namespace SevenWonders
                 p.storeAction(new SimpleEffect(coins, '$'));
             }
 
+            /*
             //if player's neighbour has Rome B, then refund a 1 coin discount instead
             else if ((p.leftNeighbour.playerBoard.freeResource == 'd' || p.rightNeighbour.playerBoard.freeResource == 'd') && c.structureType == StructureType.Leader)
             {
@@ -607,6 +611,7 @@ namespace SevenWonders
                     // p.storeAction("11$");
                 }
             }
+            */
 
             //store the deduction
             // Was ths correct before?
