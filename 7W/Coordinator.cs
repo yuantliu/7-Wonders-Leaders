@@ -472,12 +472,13 @@ namespace SevenWonders
             if (message.Length >= 8)
             {
                 bool messageHandled = false;
+                NameValueCollection qscoll;
 
                 switch (message.Substring(0, 8))
                 {
                     case "SetBoard":
                         // Parse the query string variables into a NameValueCollection.
-                        NameValueCollection qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        qscoll = HttpUtility.ParseQueryString(message.Substring(9));
 
                         for (int i = 0; i < qscoll.Count; ++i)
                         {
@@ -493,6 +494,32 @@ namespace SevenWonders
                         sendToHost("r");
 
                         messageHandled = true;
+                        break;
+
+                    case "CardPlay":
+                        qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+
+                        for (int i = 0; i < qscoll.Count; ++i)
+                        {
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                gameUI.showPlayedCardsPanel(i, qscoll[i]);
+                            }));
+                        }
+                        messageHandled = true;
+                        break;
+
+                    case "SetCoins":
+                        qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        for (int i = 0; i < qscoll.Count; ++i)
+                        {
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                gameUI.showPlayerBarPanel(i, qscoll[i]);
+                            }));
+                        }
+                        messageHandled = true;
+
                         break;
                 }
 
@@ -550,10 +577,15 @@ namespace SevenWonders
             //also start up the timer
             else if (message[0] == 'B')
             {
+                // should not get here any more.
+
+                throw new Exception();
+                /*
                 Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
                     gameUI.showPlayerBarPanel(message.Substring(1));
                 }));
+                */
             }
             //update the current stage of wonder information
             else if (message[0] == 's')

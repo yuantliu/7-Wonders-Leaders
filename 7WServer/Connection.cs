@@ -138,7 +138,8 @@ namespace SevenWonders
                     {
                         host.receiveMessageFromConnection(currentUser, strResponse);
 
-                        Console.WriteLine("Received message from user {0}: {1}", currentUser, strResponse);
+                        // TODO: I think this line was in the original source.
+                        // Console.WriteLine("Received message from user {0}: {1}", currentUser, strResponse);
                     }
                 }
             }

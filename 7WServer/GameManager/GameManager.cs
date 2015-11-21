@@ -510,8 +510,6 @@ namespace SevenWonders
             return randomBoard.Value;
         }
 
-        
-
         /// <summary>
         /// build a structure from hand, given the Card id number and the Player
         /// </summary>
@@ -993,53 +991,95 @@ namespace SevenWonders
         /// Send the main display information for all players
         /// This is called at the beginning of the game and after each turn
         /// </summary>
-        public virtual void updateGameUI(Player p)
+        public virtual void updateAllGameUI()
         {
-            //Update the Player Bar Panel
-            //send the playerBarPanel information
-            gmCoordinator.sendMessage(p, "B" + Marshaller.ObjectToString(new PlayerBarInformation(player)));
-            //send the current stage of wonder information and tell it to start up the timer
-            // gmCoordinator.sendMessage(p, "s" + p.currentStageOfWonder);
+            string strCardsPlayed = "CardPlay";
+            string strUpdateCoinsMessage = "SetCoins";
 
-            /*
-            //if player has Olympia power, send the message to enable the Olympia button
-            if(p.olympiaPowerEnabled)
+            bool sendCardPlayMessage = false;
+
+            for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
-                //EO = "Enable Olympia"
-                gmCoordinator.sendMessage(p, "EO");
-            }
-            //if player has Bilkis AND has at least 1 coin, then send the message to enable Bilkis button
-            if (p.hasBilkis && p.coin > 0)
-            {
-                //EB = Enable Bilkis
-                gmCoordinator.sendMessage(p, "EB");
-            }
+                Player p = player[i];
 
-            //send current turn information
-            gmCoordinator.sendMessage(p, "T" + currentTurn);
-            */
+                if (p.GetNumberOfPlayedCards() > 0)
+                {
+                    Card card = p.GetCardPlayed(p.GetNumberOfPlayedCards() - 1);
 
-            //send the hand panel (action information) for regular ages (not the Recruitment phase i.e. Age 0)
-            if (currentAge > 0)
-            {
-                //prepare to send the HandPanel information
-                String handPanelInformationString = "U" + Marshaller.ObjectToString(new HandPanelInformation(p, currentAge));
+                    strCardsPlayed += string.Format("&Player{0}={1}", i, card.name);
 
-                //send the Card Panel information to that player
-                gmCoordinator.sendMessage(p, handPanelInformationString);
+                    sendCardPlayMessage = true;
+                }
+                /*
+                else
+                {
+                    strCardsPlayed += string.Format("&Player{0}={1}", i, "Discarded");
+                }
+                */
+
+                strUpdateCoinsMessage += string.Format("&Player{0}={1}", i, player[i].coin);
             }
 
-            //send the timer signal if the current Age is less than 4 (i.e. game is still going)
-            if (gameConcluded == false)
+            for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
-                gmCoordinator.sendMessage(p, "t");
-            }
-            else
-            {
-                gmCoordinator.sendMessage(p, "e");
+                Player p = player[i];
+
+                if (sendCardPlayMessage)
+                {
+                    gmCoordinator.sendMessage(p, strCardsPlayed);
+                }
+
+                gmCoordinator.sendMessage(p, strUpdateCoinsMessage);
+
+                //Update the Player Bar Panel
+                //send the playerBarPanel information
+                // Replaced with "SetCoins" message
+                // gmCoordinator.sendMessage(p, "B" + Marshaller.ObjectToString(new PlayerBarInformation(player)));
+                //send the current stage of wonder information and tell it to start up the timer
+                // gmCoordinator.sendMessage(p, "s" + p.currentStageOfWonder);
+
+                /*
+                //if player has Olympia power, send the message to enable the Olympia button
+                if(p.olympiaPowerEnabled)
+                {
+                    //EO = "Enable Olympia"
+                    gmCoordinator.sendMessage(p, "EO");
+                }
+                //if player has Bilkis AND has at least 1 coin, then send the message to enable Bilkis button
+                if (p.hasBilkis && p.coin > 0)
+                {
+                    //EB = Enable Bilkis
+                    gmCoordinator.sendMessage(p, "EB");
+                }
+
+                //send current turn information
+                gmCoordinator.sendMessage(p, "T" + currentTurn);
+                */
+
+                //send the hand panel (action information) for regular ages (not the Recruitment phase i.e. Age 0)
+                if (currentAge > 0)
+                {
+                    // Replaced with sending the name of the last card played for each player. ("CardPlay");
+                    //prepare to send the HandPanel information
+                    String handPanelInformationString = "U" + Marshaller.ObjectToString(new HandPanelInformation(p, currentAge));
+
+                    //send the Card Panel information to that player
+                    gmCoordinator.sendMessage(p, handPanelInformationString);
+                }
+
+                //send the timer signal if the current Age is less than 4 (i.e. game is still going)
+                if (gameConcluded == false)
+                {
+                    gmCoordinator.sendMessage(p, "t");
+                }
+                else
+                {
+                    gmCoordinator.sendMessage(p, "e");
+                }
             }
         }
 
+        /*
         /// <summary>
         /// Function to call for updating all player's UIs
         /// </summary>
@@ -1050,6 +1090,7 @@ namespace SevenWonders
                 updateGameUI(player[i]);
             }
         }
+        */
 
         /// <summary>
         /// Whenever a card becomes "Played", UpdatePlayedCardPanel should be called
@@ -1057,6 +1098,7 @@ namespace SevenWonders
         /// </summary>
         public void updatePlayedCardPanel(String nickname)
         {
+#if FALSE
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
                 Player p = player[i];
@@ -1068,13 +1110,14 @@ namespace SevenWonders
                     gmCoordinator.sendMessage(p, lastPlayedCardInformationString);
                 }
             }
+#endif
         }
 
-        /// <summary>
-        /// Player hits the Olympia power button
-        /// give the UI information.
-        /// </summary>
-        /// <param name="p"></param>
+            /// <summary>
+            /// Player hits the Olympia power button
+            /// give the UI information.
+            /// </summary>
+            /// <param name="p"></param>
         public void sendOlympiaInformation(String nickname)
         {
             Player p = playerFromNickname(nickname);

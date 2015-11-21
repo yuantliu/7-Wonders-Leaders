@@ -83,7 +83,7 @@ namespace SevenWonders
                 //This is the string received from Server
                 String message = e.message;
 
-                Console.WriteLine("In receiveMessage.  Nickname: {0}, Message={1}", nickname, message);
+                Console.WriteLine("Message received.  From: {0}; Message={1}", nickname, message);
 
                 //#: Chat string.
                 if (message[0] == '#')

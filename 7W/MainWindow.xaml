@@ -36,7 +36,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" Name="StatusPanelA">
-                    <Label Name="CoinsA">Coins:</Label>
+                    <Label Name="CoinsA"></Label>
                 </StackPanel>
                 <Image Grid.Column="1" Name="PlayerBoardA">
                 </Image>
@@ -56,8 +56,8 @@
                     <ColumnDefinition Width="71"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" Name="StatusPanelC">
-                    <Label Name="CoinsC">Coins:</Label>
+                <StackPanel Orientation="Horizontal" Name="StatusPanel">
+                    <Label Name="CoinsC"></Label>
                 </StackPanel>
                 <Image Grid.Column="1" Name="PlayerBoardC">
                 </Image>
@@ -77,7 +77,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" Name="StatusPanelD">
-                    <Label Name="CoinsD">Coins:</Label>
+                    <Label Name="CoinsD"></Label>
                 </StackPanel>
                 <Image Grid.Column="1" Name="PlayerBoardD">
                 </Image>
@@ -97,7 +97,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" Name="StatusPanelE">
-                    <Label Name="CoinsE">Coins:</Label>
+                    <Label Name="CoinsE"></Label>
                 </StackPanel>
                 <Image Grid.Column="1" Name="PlayerBoardE">
                 </Image>
@@ -117,7 +117,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" Name="StatusPanelF">
-                    <Label Name="CoinsF">Coins:</Label>
+                    <Label Name="CoinsF"></Label>
                 </StackPanel>
                 <Image Grid.Column="1" Name="PlayerBoardF">
                 </Image>
@@ -137,7 +137,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" Name="StatusPanelG">
-                    <Label Name="CoinsG">Coins:</Label>
+                    <Label Name="CoinsG"></Label>
                 </StackPanel>
                 <Image Grid.Column="1" Name="PlayerBoardG">
                 </Image>

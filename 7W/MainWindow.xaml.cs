@@ -151,27 +151,6 @@ namespace SevenWonders
                     line = file.ReadLine();
                 }
             }
-
-            /*
-            // create board images
-            for (int i = 0; i < c.numPlayers; ++i)
-            {
-                boardImage[i] = new Image();
-                boardImage[i].Margin = new Thickness(80, 390, 0, 0);
-                boardImage[i].Width = 200;
-                boardImage[i].Height = 100;
-
-                //playerState[i].canvas.Children.Add(boardImage[i]);
-
-                Label coinText = new Label();
-                coinText.Margin = new Thickness(10, 489, 50, 50);
-                coinText.Content = string.Format("Coins: {0}", playerState[i].coins);
-
-                playerState[i].canvas.Children.Add(coinText);
-
-                mainGrid.Children.Add(playerState[i].canvas);
-            }
-            */
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -215,22 +194,27 @@ namespace SevenWonders
         /// Display the Player Bar Panel information, given the String from Coordinator
         /// </summary>
         /// <param name="playerBarPanelInformation"></param>
-        public void showPlayerBarPanel(String playerBarPanelInformation)
+        public void showPlayerBarPanel(int player, string playerBarPanelInformation)
         {
             //clear the PlayerPanel of its current contents
             // playerPanel.Children.Clear();
 
-            PlayerBarInformation playerBarInformation = (PlayerBarInformation)Marshaller.StringToObject(playerBarPanelInformation);
+            // PlayerBarInformation playerBarInformation = (PlayerBarInformation)Marshaller.StringToObject(playerBarPanelInformation);
 
             //if Player has no money, then disable Bilkis
 
             //get the number of players
+            /*
             int numberOfPlayers = playerBarInformation.numOfPlayers;
 
             for (int i = 0; i < playerBarInformation.numOfPlayers; ++i)
             {
                 playerState[i].coins = playerBarInformation.playerInfo[i].coin;
             }
+            */
+
+            playerState[player].coins = int.Parse(playerBarPanelInformation);
+            playerState[player].coinsLabel.Content = string.Format("Coins: {0}", playerState[player].coins);
 
             /*
             //initialize the icons
@@ -832,16 +816,15 @@ namespace SevenWonders
         /// display the Played Cards combo boxes, given the String from Coordinator
         /// </summary>
         /// <param name="information"></param>
-        public void showPlayedCardsPanel(int player, String information)
+        public void showPlayedCardsPanel(int player, string cardName)
         {
             //extract the colour
             //the name
             //the id number
-            Card lastPlayedCard = (Card)Marshaller.StringToObject(information);
+
+            Card lastPlayedCard = fullCardList.Find(x => x.name == cardName);
 
             StructureType colour = lastPlayedCard.structureType;
-            // string name = lastPlayedCard.name;
-            // int id = lastPlayedCard.id;
 
             Label cardLabel = new Label();
             cardLabel.Content = lastPlayedCard.name;
@@ -862,68 +845,7 @@ namespace SevenWonders
                 cardData.Children.Add(iconImage);
             }
 
-            playerState[player].coinsLabel.Content = string.Format("Coins: {0}", playerState[player].coins);
             playerState[player].strcturesBuilt.Children.Add(cardData);
-
-            /*
-            //add a selection to the appropriate drop down menu
-            // ListBoxItem combo = new ListBoxItem();
-            StackPanel combo = new StackPanel();
-            combo.Orientation = Orientation.Horizontal;
-            BitmapImage bmi = new BitmapImage();
-            bmi.BeginInit();
-            bmi.UriSource = new Uri(Environment.CurrentDirectory + @"\Resources\Images\" + "brick.png");
-            bmi.EndInit();
-            Image im1 = new Image();
-            im1.Source = bmi;
-            combo.Children.Add(im1);
-            TextBlock t1 = new TextBlock();
-            t1.Text = name;
-            combo.Children.Add(t1);
-            */
-
-            //combo.Tag = id;
-            //combo.Content = name;
-
-            /*
-            if(colour == "Blue")
-            {
-                bluePlayedCards.Items.Add(combo);
-                bluePlayedCards.Height = 40;
-            }
-            else if(colour == "Brown")
-            {
-                brownPlayedCards.Items.Add(combo);
-            }
-            else if (colour == "Green")
-            {
-                greenPlayedCards.Items.Add(combo);
-            }
-            else if (colour == "Grey")
-            {
-                greyPlayedCards.Items.Add(combo);
-            }
-            else if (colour == "Purple")
-            {
-                purplePlayedCards.Items.Add(combo);
-            }
-            else if (colour == "Red")
-            {
-                redPlayedCards.Items.Add(combo);
-            }
-            else if (colour == "Yellow")
-            {
-                yellowPlayedCards.Items.Add(combo);
-            }
-            else if (colour == "White")
-            {
-                whitePlayedCards.Items.Add(combo);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-            */
         }
 
 #if FALSE
