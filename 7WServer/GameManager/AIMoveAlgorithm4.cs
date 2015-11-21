@@ -64,14 +64,12 @@ namespace SevenWonders
                 if ((player.hand[i].structureType == StructureType.RawMaterial && player.isCardBuildable(i) == Buildable.True) && player.hand[i].effect is ResourceChoiceEffect)
                 {
                     // char resource = player.hand[i].effect.simpleInfo.type;
-                    char resource = ((SimpleEffect)player.hand[i].effect).type; // runtime error?
+                    string resource = ((ResourceChoiceEffect)player.hand[i].effect).strChoiceData;
 
-                    if (resource == 'B' && player.brick < maxOBW) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
-                    else if (resource == 'O' && player.ore < maxOBW) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
-                    else if (resource == 'T' && player.stone < maxStone) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
-                    else if (resource == 'W' && player.wood < maxOBW) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
-
-                    throw new Exception();
+                    if (player.brick < maxOBW && (resource[0] == 'B' || resource[1] == 'B') ) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (player.ore < maxOBW && (resource[0] == 'O' || resource[1] == 'O') ) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (player.stone < maxStone && (resource[0] == 'S' || resource[1] == 'S') ) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (player.wood < maxOBW && (resource[0] == 'W' || resource[1] == 'W') ) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
                 }
             }
 

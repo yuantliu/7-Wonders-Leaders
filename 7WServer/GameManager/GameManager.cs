@@ -1265,8 +1265,7 @@ namespace SevenWonders
             Cost cost = c.cost;
             if (isStage == true)
             {
-                throw new Exception();
-                // cost = p.playerBoard.cost[p.currentStageOfWonder];
+                cost = p.playerBoard.cost[p.currentStageOfWonder];
             }
 
             CommerceInformation commerceInfo = new CommerceInformation(p.leftNeighbour, p, p.rightNeighbour, hasDiscount, structureName, cost, isStage);

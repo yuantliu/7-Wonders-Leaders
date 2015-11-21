@@ -87,7 +87,7 @@ namespace SevenWonders
         Builders_Guild,
     };
 
-
+    [Serializable]
     // will be used for Wonder stages as well as card structures
     public class Cost
     {
@@ -104,6 +104,29 @@ namespace SevenWonders
         {
             coin = wood = stone = clay = ore = cloth = glass = papyrus = 0;
         }
+
+        /*
+        public Cost(string initStr)
+        {
+            coin = wood = stone = clay = ore = cloth = glass = papyrus = 0;
+
+            foreach (char c in initStr)
+            {
+                switch (c)
+                {
+                    case 'W': ++wood; break;
+                    case 'S': ++stone; break;
+                    case 'B': ++clay; break;
+                    case 'O': ++ore; break;
+                    case 'C': ++cloth; break;
+                    case 'G': ++glass; break;
+                    case 'P': ++papyrus; break;
+                    default:
+                        throw new Exception();
+                }
+            }
+        }
+        */
 
         public bool IsZero()
         {
@@ -125,6 +148,57 @@ namespace SevenWonders
 
             return c;
         }
+
+        public int Total()
+        {
+            return coin + wood + stone + clay + ore + cloth + glass + papyrus;
+        }
+
+        /*
+        public static bool operator == (Cost a, Cost b)
+        {
+            return a.coin == b.coin && a.wood == b.wood && a.stone == b.stone && a.clay == b.clay &&
+                a.ore == b.ore && a.cloth == b.cloth && a.glass == b.glass && a.papyrus == b.papyrus;
+        }
+
+        public static bool operator != (Cost a, Cost b)
+        {
+            return !(a == b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            Cost c = obj as Cost;
+            if (c != null)
+            {
+                return c == this;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return GetHashCode();
+        }
+
+        public static Cost operator -(Cost input, Cost subtractionAmount)
+        {
+            Cost result = new Cost();
+
+            result.coin =    Math.Max(input.coin -    subtractionAmount.coin, 0);
+            result.wood =    Math.Max(input.wood -    subtractionAmount.wood, 0);
+            result.stone =   Math.Max(input.stone -   subtractionAmount.stone, 0);
+            result.clay =    Math.Max(input.clay -    subtractionAmount.clay, 0);
+            result.ore =     Math.Max(input.ore -     subtractionAmount.ore, 0);
+            result.cloth =   Math.Max(input.cloth -   subtractionAmount.cloth, 0);
+            result.glass =   Math.Max(input.wood -    subtractionAmount.glass, 0);
+            result.papyrus = Math.Max(input.papyrus - subtractionAmount.papyrus, 0);
+
+            return result;
+        }
+
+                    */
+
     };
 
     public enum Buildable
@@ -158,6 +232,7 @@ namespace SevenWonders
         City,
     };
 
+    [Serializable]
     public abstract class Effect
     {
         public enum Type
@@ -184,6 +259,7 @@ namespace SevenWonders
         }
     }
 
+    [Serializable]
     // formerly category 1
     public class SimpleEffect : Effect
     {
@@ -197,6 +273,7 @@ namespace SevenWonders
         }
     };
 
+    [Serializable]
     // formerly category 2
     public class ScienceEffect : Effect
     {
@@ -215,6 +292,7 @@ namespace SevenWonders
         }
     };
 
+    [Serializable]
     // formerly category 3
     public class CommercialDiscountEffect : Effect
     {
@@ -241,6 +319,7 @@ namespace SevenWonders
         }
     };
 
+    [Serializable]
     // formerly category 4
     public class ResourceChoiceEffect : Effect
     {
@@ -306,18 +385,6 @@ namespace SevenWonders
         }
     }
 
-    /*
-    // formerly category 7
-    public class SpecialBoardEffect : Effect
-    {
-    }
-
-    // formerly category 8
-    public class SpecialLeaderEffect : Effect
-    {
-    }
-    */
-
     [Serializable]
     public class Card
     {
@@ -332,7 +399,7 @@ namespace SevenWonders
         public string description { get; private set; }
         public string iconName { get; private set; }
         int[] numAvailableByNumPlayers = new int[5];
-        public Cost cost = new Cost();
+        public Cost cost = new Cost();      // TODO: is it possible to make this immutable?
         public string[] chain = new string[2];
         public Effect effect;
 
@@ -406,7 +473,7 @@ namespace SevenWonders
                             break;
 
                         case 'B':
-                            // appliesTo = CommercialDiscountEffect.AppliesTo.BothNeighbors;
+                            // appliesTo = CommercialDiscountEffect.AppliesTo.BothNeighbors; (defaulted value)
                             break;
 
                         default:
@@ -416,7 +483,7 @@ namespace SevenWonders
                     switch (createParams[24][1])
                     {
                         case 'R':
-                            // affects = CommercialDiscountEffect.Affects.RawMaterial;
+                            // affects = CommercialDiscountEffect.Affects.RawMaterial; (defaulted value)
                             break;
 
                         case 'G':
@@ -431,7 +498,9 @@ namespace SevenWonders
                     break;
 
                 case Effect.Type.ResourceChoice:
-                    // player can choose one of the RawMaterials or Goods provided
+                    // player can choose one of the RawMaterials or Goods provided.  Raw Materials or
+                    // Goods can be bought by neighbors.  Yellow cards and wonder stages cannot be
+                    // used by neighboring cities.
                     effect = new ResourceChoiceEffect(structureType == StructureType.RawMaterial || structureType == StructureType.Goods, createParams[25]);
                     break;
 

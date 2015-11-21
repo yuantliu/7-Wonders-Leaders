@@ -41,10 +41,10 @@ namespace SevenWonders
         public Effect freeResource { get; private set; }
 
         //stage costs
-        public Cost[] cost;
+        public Cost[] cost;     // should be const
 
         //stage effects
-        public Effect[] effect;
+        public Effect[] effect; // should be const
 
         //the free resource that the board provides
         //e.g. W, O, P, T, etc.

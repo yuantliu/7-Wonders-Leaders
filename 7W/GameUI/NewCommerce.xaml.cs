@@ -173,14 +173,15 @@ namespace SevenWonders
         BitmapImage GetButtonIcon(char resource)
         {
             int resourceIconIndex = -1;
+
             switch(resource)
             {
                 case 'B': resourceIconIndex = 0; break;
                 case 'O': resourceIconIndex = 1; break;
-                case 'T': resourceIconIndex = 2; break;
+                case 'S': resourceIconIndex = 2; break;
                 case 'W': resourceIconIndex = 3; break;
                 case 'G': resourceIconIndex = 4; break;
-                case 'L': resourceIconIndex = 5; break;
+                case 'C': resourceIconIndex = 5; break;
                 case 'P': resourceIconIndex = 6; break;
             }
 
@@ -191,7 +192,7 @@ namespace SevenWonders
         /// <summary>
         /// Use the 3 DAGs in the object to generate the necessary Buttons in the UI and add EventHandlers for these newly added Buttons
         /// </summary>
-        private void generateOneDAG(StackPanel p, Button[,] b, DAG dag, bool isDagOwnedByPlayer)
+        private void generateOneDAG(StackPanel p, out Button[,] b, DAG dag, string buttonNamePrefix, bool isDagOwnedByPlayer)
         {
             //reset all DAG panels
             p.Children.Clear();
@@ -203,13 +204,13 @@ namespace SevenWonders
             b = new Button[dag.getSimpleStructures().Count + dag.getChoiceStructures(isDagOwnedByPlayer).Count, 7];
 
             List<SimpleEffect> dagGraphSimple = dag.getSimpleStructures();
-            int panelLevel = 0;
+            int i = 0;
 
-            for (int i = 0; i < dagGraphSimple.Count; ++i)
+            for ( ; i < dagGraphSimple.Count; ++i)
             {
-                levelPanels[panelLevel] = new StackPanel();
-                levelPanels[panelLevel].Orientation = Orientation.Horizontal;
-                levelPanels[panelLevel].HorizontalAlignment = HorizontalAlignment.Center;
+                levelPanels[i] = new StackPanel();
+                levelPanels[i].Orientation = Orientation.Horizontal;
+                levelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
 
                 b[i, 0] = new Button();
                 b[i, 0].Content = dagGraphSimple[i].type.ToString();
@@ -220,43 +221,43 @@ namespace SevenWonders
 
                 //set the name of the Button for eventHandler purposes
                 //Format: L_(level number)
-                b[i, 0].Name = "L_" + i;
+                b[i, 0].Name = buttonNamePrefix + i;
 
                 b[i, 0].IsEnabled = true;
 
                 //set action listener and add the button to the appropriate panel
                 b[i, 0].Click += dagResourceButtonPressed;
-                levelPanels[panelLevel].Children.Add(b[i, 0]);
-                panelLevel++;
+                levelPanels[i].Children.Add(b[i, 0]);
+                p.Children.Add(levelPanels[i]);
             }
 
             //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
             List<ResourceChoiceEffect> dagGraphChoice = dag.getChoiceStructures(false);
 
             //look at each level of the DAG
-            for (int i = 0; i < dagGraphChoice.Count; i++)
+            for ( ; i < dagGraphSimple.Count + dagGraphChoice.Count; i++)
             {
                 //initialise a StackPanels for the current level
-                levelPanels[panelLevel] = new StackPanel();
-                levelPanels[panelLevel].Orientation = Orientation.Horizontal;
-                levelPanels[panelLevel].HorizontalAlignment = HorizontalAlignment.Center;
+                levelPanels[i] = new StackPanel();
+                levelPanels[i].Orientation = Orientation.Horizontal;
+                levelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
 
                 //add to the StackPanels the appropriate buttons
-                for (int j = 0; j < dagGraphChoice[i].strChoiceData.Length; j++)
+                for (int j = 0; j < dagGraphChoice[i - dagGraphSimple.Count].strChoiceData.Length; j++)
                 {
                     b[i, j] = new Button();
-                    b[i, j].Content = dagGraphChoice[i].strChoiceData[j].ToString();
+                    b[i, j].Content = dagGraphChoice[i - dagGraphSimple.Count].strChoiceData[j].ToString();
                     b[i, j].FontSize = 1;
 
                     //set the Button's image to correspond with the resource
-                    b[i, j].Background = new ImageBrush(GetButtonIcon(dagGraphChoice[i].strChoiceData[j]));
+                    b[i, j].Background = new ImageBrush(GetButtonIcon(dagGraphChoice[i - dagGraphSimple.Count].strChoiceData[j]));
 
                     b[i, j].Width = DAG_BUTTON_WIDTH;
                     b[i, j].Height = DAG_BUTTON_WIDTH;
 
                     //set the name of the Button for eventHandler purposes
                     //Format: L_(level number)
-                    b[i, j].Name = "L_" + i;
+                    b[i, j].Name = buttonNamePrefix + i;
 
                     b[i, j].IsEnabled = true;
 
@@ -430,9 +431,9 @@ namespace SevenWonders
 
         private void generateDAGs()
         {
-            generateOneDAG(leftDagPanel, leftDagButton, leftDag, false);
-            generateOneDAG(middleDagPanel, middleDagButton, middleDag, true);
-            generateOneDAG(rightDagPanel, rightDagButton, rightDag, false);
+            generateOneDAG(leftDagPanel, out leftDagButton, leftDag, "L_", false);
+            generateOneDAG(middleDagPanel, out middleDagButton, middleDag, "M_", true);
+            generateOneDAG(rightDagPanel, out rightDagButton, rightDag, "R_", false);
         }
 
         /// <summary>
@@ -470,13 +471,11 @@ namespace SevenWonders
                 MessageBox.Show("You have for all necessary resources already");
                 return;
             }
-            /*
-            else if (DAG.eliminate(cardCost, newResource).Length == previous)
+            else if (DAG.eliminate(cardCost, 1, newResource).Total() == previous)
             {
                 MessageBox.Show("This resource will not help you pay for your cost");
                 return;
             }
-            */
 
             //add the appropriate amount of coins to the appropriate recepient
             //as well as doing appropriate checks
@@ -599,11 +598,13 @@ namespace SevenWonders
                     //hide the buttons
                     leftDagButton[level, 0].Visibility = Visibility.Hidden;
                 }
-
-                for (int i = 0; i < leftDag.getChoiceStructures(false)[level - c].strChoiceData.Length; i++)
+                else
                 {
-                    //hide the buttons
-                    leftDagButton[level, i].Visibility = Visibility.Hidden;
+                    for (int i = 0; i < leftDag.getChoiceStructures(false)[level - c].strChoiceData.Length; i++)
+                    {
+                        //hide the buttons
+                        leftDagButton[level, i].Visibility = Visibility.Hidden;
+                    }
                 }
             }
             else if (location == 'M')
@@ -614,11 +615,13 @@ namespace SevenWonders
                 {
                     middleDagButton[level, 0].Visibility = Visibility.Hidden;
                 }
-
-                for (int i = 0; i < middleDag.getChoiceStructures(true)[level - c].strChoiceData.Length; i++)
+                else
                 {
-                    //hide the buttons
-                    middleDagButton[level, i].Visibility = Visibility.Hidden;
+                    for (int i = 0; i < middleDag.getChoiceStructures(true)[level - c].strChoiceData.Length; i++)
+                    {
+                        //hide the buttons
+                        middleDagButton[level, i].Visibility = Visibility.Hidden;
+                    }
                 }
             }
             else if (location == 'R')
@@ -629,11 +632,13 @@ namespace SevenWonders
                 {
                     rightDagButton[level, 0].Visibility = Visibility.Hidden;
                 }
-
-                for (int i = 0; i < rightDag.getChoiceStructures(false)[level].strChoiceData.Length; i++)
+                else
                 {
-                    //hide the buttons
-                    rightDagButton[level, i].Visibility = Visibility.Hidden;
+                    for (int i = 0; i < rightDag.getChoiceStructures(false)[level - c].strChoiceData.Length; i++)
+                    {
+                        //hide the buttons
+                        rightDagButton[level, i].Visibility = Visibility.Hidden;
+                    }
                 }
             }
 
@@ -646,25 +651,68 @@ namespace SevenWonders
         /// </summary>
         private void generateCostPanel()
         {
-            throw new NotImplementedException();
-
             // generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost, currentResource));
+            generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost, 1, currentResource));
         }
 
         /// <summary>
         /// Construct the labels at the cost panel, given a cost
         /// </summary>
         /// <param name="cost"></param>
-        private void generateCostPanelAndUpdateSubtotal(string cost)
+        private void generateCostPanelAndUpdateSubtotal(Cost cost)
         {
             costPanel.Children.Clear();
-            Label[] costLabels = new Label[cost.Length];
+            Label[] costLabels = new Label[resourcesNeeded];
+
+            Cost cpyCost = cost.Copy();
 
             //fill the labels with the appropriate image
-            for (int i = 0; i < cost.Length; i++)
+            for (int i = 0; i < resourcesNeeded; i++)
             {
                 BitmapImage iconImage = null;
 
+                if (cpyCost.wood != 0)
+                {
+                    iconImage = GetButtonIcon('W');
+                    --cpyCost.wood;
+                }
+                else if (cpyCost.stone != 0)
+                {
+                    iconImage = GetButtonIcon('S');
+                    --cpyCost.stone;
+                }
+                else if (cpyCost.clay != 0)
+                {
+                    iconImage = GetButtonIcon('B');
+                    --cpyCost.clay;
+                }
+                else if (cpyCost.ore != 0)
+                {
+                    iconImage = GetButtonIcon('O');
+                    --cpyCost.ore;
+                }
+                else if (cpyCost.cloth != 0)
+                {
+                    iconImage = GetButtonIcon('C');
+                    --cpyCost.cloth;
+                }
+                else if (cpyCost.glass != 0)
+                {
+                    iconImage = GetButtonIcon('G');
+                    --cpyCost.glass;
+                }
+                else if (cpyCost.papyrus != 0)
+                {
+                    iconImage = GetButtonIcon('P');
+                    --cpyCost.papyrus;
+                }
+                else
+                {
+                    // something went wrong
+                    throw new Exception();
+                }
+
+                /*
                 switch (cost[i])
                 {
                     case 'B':
@@ -689,6 +737,7 @@ namespace SevenWonders
                         iconImage = resourceIcons[6];
                         break;
                 }
+                */
 
                 costLabels[i] = new Label();
 
@@ -716,11 +765,16 @@ namespace SevenWonders
             leftcoin = 0;
             rightcoin = 0;
 
+            if (cardCost.coin != 0)
+            {
+                // not sure whether this will work or not.
+                throw new NotImplementedException();
+            }
+
+            resourcesNeeded = cardCost.Total();
+
             generateCostPanel();
             generateDAGs();
-//            resourcesNeeded = cardCost.Length;
-            resourcesNeeded = cardCost.wood + cardCost.stone + cardCost.clay + cardCost.ore +
-                cardCost.cloth + cardCost.glass + cardCost.papyrus;
         }
 
         /// <summary>

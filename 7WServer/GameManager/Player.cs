@@ -384,11 +384,9 @@ namespace SevenWonders
                             wood += e.multiplier;
                             dag.add(e);
                             break;
-                            /*
                         case '$':
                             coin += e.multiplier;
                             break;
-                            */
                         case 'C':
                             loom += e.multiplier;
                             dag.add(e);
@@ -1062,11 +1060,11 @@ namespace SevenWonders
             }
 
             //can player afford cost with DAG resources?
-            if (isCostAffordableWithDAG(cost.Copy()) == Buildable.True)
+            if (isCostAffordableWithDAG(cost) == Buildable.True)
                 return Buildable.True;
 
             //can player afford cost by conducting commerce?
-            if (isCostAffordableWithNeighbours(cost.Copy()) == Buildable.CommerceRequired)
+            if (isCostAffordableWithNeighbours(cost) == Buildable.CommerceRequired)
                 return Buildable.CommerceRequired;
 
             //absolutely all options have been exhausted
@@ -1083,6 +1081,10 @@ namespace SevenWonders
         /// <returns></returns>
         private Buildable isCostAffordableWithDAG(Cost cost)
         {
+            // the passed-in cost structure must not be modified.  C# doesn't support const correctness?!?
+            // WTF!
+            cost = cost.Copy();
+
             //get rid of the coins from the cost, and see if DAG can afford the cost (already checked for coins at previous step)
             //this is relevant for the Black cards in the Cities expansion
             // cost = cost.Replace("$", "");
@@ -1101,6 +1103,8 @@ namespace SevenWonders
         /// <returns></returns>
         private Buildable isCostAffordableWithNeighbours(Cost cost)
         {
+            cost = cost.Copy();
+
             cost.coin = 0;
 
             //combine the left, centre, and right DAG
@@ -1137,7 +1141,6 @@ namespace SevenWonders
             //can player afford cost with DAG resources
             if (isCostAffordableWithDAG(cost) == Buildable.True) return Buildable.True;
 
-            //can player afford cost by conducting commerce?
             //can player afford cost by conducting commerce?
             if (isCostAffordableWithNeighbours(cost) == Buildable.CommerceRequired)
                 return Buildable.CommerceRequired;
