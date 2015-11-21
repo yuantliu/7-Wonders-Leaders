@@ -870,10 +870,7 @@ namespace SevenWonders
                     }
                 }
 
-                // undo this after the boardData is converted to the same effect object as the card data
-                throw new Exception();
-                // p.storeAction(p.playerBoard.effect[p.currentStageOfWonder++]);
-
+                p.storeAction(p.playerBoard.effect[p.currentStageOfWonder++]);
             }
             else
             {
@@ -1007,7 +1004,7 @@ namespace SevenWonders
         {
             //Update the Player Bar Panel
             //send the playerBarPanel information
-            // gmCoordinator.sendMessage(p, "B" + Marshaller.ObjectToString(new PlayerBarInformation(player)));
+            gmCoordinator.sendMessage(p, "B" + Marshaller.ObjectToString(new PlayerBarInformation(player)));
             //send the current stage of wonder information and tell it to start up the timer
             // gmCoordinator.sendMessage(p, "s" + p.currentStageOfWonder);
 
@@ -1067,12 +1064,17 @@ namespace SevenWonders
         /// </summary>
         public void updatePlayedCardPanel(String nickname)
         {
-            //get the player
-            Player p = playerFromNickname(nickname);
+            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            {
+                Player p = player[i];
 
-            String lastPlayedCardInformationString = "P" + Marshaller.ObjectToString(p.GetCardPlayed(p.GetNumberOfPlayedCards() - 1));
+                if (p.GetNumberOfPlayedCards() > 0)
+                {
+                    string lastPlayedCardInformationString = string.Format("P{0}{1}", i, Marshaller.ObjectToString(p.GetCardPlayed(p.GetNumberOfPlayedCards() - 1)));
 
-            gmCoordinator.sendMessage(p, lastPlayedCardInformationString);
+                    gmCoordinator.sendMessage(p, lastPlayedCardInformationString);
+                }
+            }
         }
 
         /// <summary>

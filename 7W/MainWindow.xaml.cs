@@ -17,12 +17,15 @@ namespace SevenWonders
     public class PlayerState
     {
         public int coins;
-        public Canvas canvas;
+
+        public Grid playerGrid;
+        public Image boardImage;
+        public StackPanel strcturesBuilt;
+        public Label coinsLabel;
 
         public PlayerState()
         {
             coins = 3;
-            canvas = new Canvas();
         }
     };
 
@@ -35,32 +38,14 @@ namespace SevenWonders
         //dimensions for the icons at the Player bars
         public const int ICON_HEIGHT = 25;
 
-        // JDF: remove (they are part of the ChooseCard dialogbox)
-        // public const int CARD_WIDTH = 50;
-        // public const int CARD_HEIGHT = 100;
-
         //Client's coordinator
         Coordinator coordinator;
 
-        //Current directory
-        // String currentPath = Environment.CurrentDirectory;
-
-        //Individual Player bar panel
-        // StackPanel[] playerBarPanel;
         PlayerState[] playerState;
 
-        //Buttons
-        //public Button[] buildStructureButton;
-        // Button[] buildStageButton;
-        // Button[] discardButton;
-
         public bool playerPlayedHisTurn = false;
-        //variable that represent the button that was pressed in the cardActionPanel
-        Button playedButton = new Button();
 
-        // ListBoxItem[] handButton = new ListBoxItem[8];
-
-        Image[] boardImage;
+        // Image[] boardImage;
         HandPanelInformation handPanelInformation;
 
         //constructor: create the UI. create the Coordinator object
@@ -71,63 +56,85 @@ namespace SevenWonders
             this.coordinator = c;
 
             playerState = new PlayerState[c.numPlayers];
-            boardImage = new Image[c.numPlayers];
 
             for (int i = 0; i < c.numPlayers; ++i)
             {
                 playerState[i] = new PlayerState();
             }
 
-            playerState[0].canvas.Margin = new Thickness(837, 529, 725, 10);
+            playerState[0].playerGrid = SeatA;
+            playerState[0].boardImage = PlayerBoardA;
+            playerState[0].strcturesBuilt = PlayedStructuresA;
+            playerState[0].coinsLabel = CoinsA;
 
             switch (c.numPlayers)
             {
                 case 3:
-                    playerState[1].canvas.Margin = new Thickness(481, 10, 1080, 529);
-                    playerState[2].canvas.Margin = new Thickness(1192, 10, 369, 529);
+                    playerState[1].playerGrid = SeatF;
+                    playerState[1].boardImage = PlayerBoardF;
+                    playerState[1].strcturesBuilt = PlayedStructuresF;
+                    playerState[1].coinsLabel = CoinsE;
+
+                    playerState[2].playerGrid = SeatD;
+                    playerState[2].boardImage = PlayerBoardD;
+                    playerState[2].strcturesBuilt = PlayedStructuresD;
+                    playerState[2].coinsLabel = CoinsD;
                     break;
 
                 case 4:
-                    playerState[1].canvas.Margin = new Thickness(125, 269, 1436, 270);
-                    playerState[2].canvas.Margin = new Thickness(837, 10, 725, 529);
-                    playerState[3].canvas.Margin = new Thickness(1548, 269, 10, 270);
+                    playerState[1].playerGrid = SeatC;
+                    playerState[1].boardImage = PlayerBoardC;
+                    playerState[1].strcturesBuilt = PlayedStructuresC;
+                    playerState[1].coinsLabel = CoinsC;
+
+                    playerState[2].playerGrid = SeatE;
+                    playerState[2].boardImage = PlayerBoardE;
+                    playerState[2].strcturesBuilt = PlayedStructuresE;
+                    playerState[2].coinsLabel = CoinsE;
+
+                    playerState[3].playerGrid = SeatG;
+                    playerState[3].boardImage = PlayerBoardG;
+                    playerState[3].strcturesBuilt = PlayedStructuresG;
+                    playerState[3].coinsLabel = CoinsG;
+
                     break;
 
                 case 5:
-                    playerState[1].canvas.Margin = new Thickness(125, 269, 1436, 270);
-                    playerState[2].canvas.Margin = new Thickness(481, 10, 1080, 529);
-                    playerState[3].canvas.Margin = new Thickness(1192, 10, 369, 529);
-                    playerState[4].canvas.Margin = new Thickness(1548, 269, 10, 270);
+                    playerState[1].playerGrid = SeatC;
+                    playerState[2].playerGrid = SeatD;
+                    playerState[3].playerGrid = SeatE;
+                    playerState[4].playerGrid = SeatF;
                     break;
 
                 case 6:
-                    playerState[1].canvas.Margin = new Thickness(481, 529, 1080, 10);
-                    playerState[2].canvas.Margin = new Thickness(481, 10, 1080, 529);
-                    playerState[3].canvas.Margin = new Thickness(837, 10, 725, 529);
-                    playerState[4].canvas.Margin = new Thickness(1192, 10, 369, 529);
-                    playerState[5].canvas.Margin = new Thickness(1192, 529, 369, 10);
+                    playerState[1].playerGrid = SeatB;
+                    playerState[2].playerGrid = SeatD;
+                    playerState[3].playerGrid = SeatE;
+                    playerState[4].playerGrid = SeatF;
+                    playerState[5].playerGrid = SeatH;
                     break;
 
                 case 7:
-                    playerState[1].canvas.Margin = new Thickness(481, 529, 1080, 10);
-                    playerState[2].canvas.Margin = new Thickness(125, 269, 1436, 270);
-                    playerState[3].canvas.Margin = new Thickness(481, 10, 1080, 529);
-                    playerState[4].canvas.Margin = new Thickness(1192, 10, 369, 529);
-                    playerState[5].canvas.Margin = new Thickness(1548, 269, 10, 270);
-                    playerState[6].canvas.Margin = new Thickness(1192, 529, 369, 10);
+                    playerState[1].playerGrid = SeatB;
+                    playerState[2].playerGrid = SeatC;
+                    playerState[3].playerGrid = SeatD;
+                    playerState[4].playerGrid = SeatF;
+                    playerState[5].playerGrid = SeatG;
+                    playerState[6].playerGrid = SeatH;
                     break;
 
                 case 8:
-                    playerState[1].canvas.Margin = new Thickness(481, 529, 1080, 10);
-                    playerState[2].canvas.Margin = new Thickness(125, 269, 1436, 270);
-                    playerState[3].canvas.Margin = new Thickness(481, 10, 1080, 529);
-                    playerState[4].canvas.Margin = new Thickness(837, 10, 725, 529);
-                    playerState[5].canvas.Margin = new Thickness(1192, 10, 369, 529);
-                    playerState[6].canvas.Margin = new Thickness(1548, 269, 10, 270);
-                    playerState[7].canvas.Margin = new Thickness(1192, 529, 369, 10);
+                    playerState[1].playerGrid = SeatB;
+                    playerState[2].playerGrid = SeatC;
+                    playerState[3].playerGrid = SeatD;
+                    playerState[4].playerGrid = SeatE;
+                    playerState[5].playerGrid = SeatF;
+                    playerState[6].playerGrid = SeatG;
+                    playerState[7].playerGrid = SeatH;
                     break;
             }
 
+            /*
             // create board images
             for (int i = 0; i < c.numPlayers; ++i)
             {
@@ -136,7 +143,7 @@ namespace SevenWonders
                 boardImage[i].Width = 200;
                 boardImage[i].Height = 100;
 
-                playerState[i].canvas.Children.Add(boardImage[i]);
+                //playerState[i].canvas.Children.Add(boardImage[i]);
 
                 Label coinText = new Label();
                 coinText.Margin = new Thickness(10, 489, 50, 50);
@@ -146,6 +153,7 @@ namespace SevenWonders
 
                 mainGrid.Children.Add(playerState[i].canvas);
             }
+            */
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,17 +199,22 @@ namespace SevenWonders
         /// <param name="playerBarPanelInformation"></param>
         public void showPlayerBarPanel(String playerBarPanelInformation)
         {
-            /*
             //clear the PlayerPanel of its current contents
-            playerPanel.Children.Clear();
+            // playerPanel.Children.Clear();
 
             PlayerBarInformation playerBarInformation = (PlayerBarInformation)Marshaller.StringToObject(playerBarPanelInformation);
 
             //if Player has no money, then disable Bilkis
 
             //get the number of players
-            int numberOfPlayers = playerBarInformation.numOfPlayers;            
+            int numberOfPlayers = playerBarInformation.numOfPlayers;
 
+            for (int i = 0; i < playerBarInformation.numOfPlayers; ++i)
+            {
+                playerState[i].coins = playerBarInformation.playerInfo[i].coin;
+            }
+
+            /*
             //initialize the icons
             //Static icon images used in Player Bar Panel
             Image[] brickIcon, oreIcon, stoneIcon, woodIcon, glassIcon, loomIcon, papyrusIcon, bearTrapIcon, sextantIcon, tabletIcon,
@@ -685,7 +698,7 @@ namespace SevenWonders
         {
             if (!playerPlayedHisTurn)
             {
-                playedButton = sender as Button;
+                Button playedButton = sender as Button;
                 String s = playedButton.Name;
 
                 //send to the server the Action selected
@@ -794,14 +807,14 @@ namespace SevenWonders
             boardImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/boards/" + information + ".jpg");
             boardImageSource.EndInit();
 
-            boardImage[player].Source = boardImageSource;
+            playerState[player].boardImage.Source = boardImageSource;
         }
         
         /// <summary>
         /// display the Played Cards combo boxes, given the String from Coordinator
         /// </summary>
         /// <param name="information"></param>
-        public void showPlayedCardsPanel(String information)
+        public void showPlayedCardsPanel(int player, String information)
         {
             //extract the colour
             //the name
@@ -815,21 +828,24 @@ namespace SevenWonders
             Label cardLabel = new Label();
             cardLabel.Content = lastPlayedCard.name;
 
-            BitmapImage bmi = new BitmapImage();
-            bmi.BeginInit();
-            bmi.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/Icons/" + lastPlayedCard.iconName + ".png");
-            bmi.EndInit();
-            Image iconImage = new Image();
-            iconImage.Source = bmi;
-            iconImage.Height = ICON_HEIGHT;
-
             StackPanel cardData = new StackPanel();
             cardData.Orientation = Orientation.Horizontal;
-
             cardData.Children.Add(cardLabel);
-            cardData.Children.Add(iconImage);
 
-            playerState[0].canvas.Children.Add(cardData);
+            if (lastPlayedCard.iconName != string.Empty)
+            {
+                BitmapImage bmi = new BitmapImage();
+                bmi.BeginInit();
+                bmi.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/Icons/" + lastPlayedCard.iconName + ".png");
+                bmi.EndInit();
+                Image iconImage = new Image();
+                iconImage.Source = bmi;
+                iconImage.Height = ICON_HEIGHT;
+                cardData.Children.Add(iconImage);
+            }
+
+            playerState[player].coinsLabel.Content = string.Format("Coins: {0}", playerState[player].coins);
+            playerState[player].strcturesBuilt.Children.Add(cardData);
 
             /*
             //add a selection to the appropriate drop down menu

@@ -5,7 +5,7 @@ Clay Pool,1,RawMaterial,Provides 1 clay resource,clay_1,1,1,2,2,2,,,,,,,,,,,Simp
 Ore Vein,1,RawMaterial,Provides 1 ore resource,ore_1,1,2,2,2,2,,,,,,,,,,,Simple,1,O,,,,,,,,,
 Tree Farm,1,RawMaterial,Provides 1 wood OR 1 clay resource,wood_clay,0,0,0,1,1,1,,,,,,,,,,ResourceChoice,,,,,WB,,,,,,
 Excavation,1,RawMaterial,Provides 1 stone OR 1 clay resource,stone_clay,0,1,1,1,1,1,,,,,,,,,,ResourceChoice,,,,,SB,,,,,,
-Clay Pit,1,RawMaterial,Provides 1 clay OR 1 ore resource,clay_core,1,1,1,1,1,1,,,,,,,,,,ResourceChoice,,,,,BO,,,,,,
+Clay Pit,1,RawMaterial,Provides 1 clay OR 1 ore resource,clay_ore,1,1,1,1,1,1,,,,,,,,,,ResourceChoice,,,,,BO,,,,,,
 Timber Yard,1,RawMaterial,Provides 1 stone OR 1 wood resource,stone_wood,1,1,1,1,1,1,,,,,,,,,,ResourceChoice,,,,,SW,,,,,,
 Forest Cave,1,RawMaterial,Provides 1 wood OR 1 ore resource,wood_ore,0,0,1,1,1,1,,,,,,,,,,ResourceChoice,,,,,WO,,,,,,
 Mine,1,RawMaterial,Provides 1 ore OR 1 stone resource,ore_stone,0,0,0,1,1,1,,,,,,,,,,ResourceChoice,,,,,OS,,,,,,

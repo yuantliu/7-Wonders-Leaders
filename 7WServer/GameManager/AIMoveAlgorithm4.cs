@@ -47,14 +47,13 @@ namespace SevenWonders
                 if ((player.hand[i].structureType == StructureType.Commerce && player.isCardBuildable(i) == Buildable.True) && player.hand[i].effect is ResourceChoiceEffect)
                 {
                     // char resource = player.hand[i].effect[2];        // hunh?
-                    char resource = ((SimpleEffect)player.hand[i].effect).type;     // won't this give me a runtime error?
+                    string resource = ((ResourceChoiceEffect)player.hand[i].effect).strChoiceData;
 
-                    if (resource == 'L' && player.brick < maxLPG * 2) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
-                    else if (resource == 'P' && player.ore < maxLPG * 2) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
-                    else if (resource == 'G' && player.stone < maxLPG * 2) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    if (resource.Contains("L") && player.loom < maxLPG * 2) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (resource.Contains("P") && player.papyrus < maxLPG * 2) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (resource.Contains("G") && player.glass < maxLPG * 2) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
 
                     // not sure what's going on here.  I think there may have been a bug in the original implementation.
-                    throw new Exception();
                 }
             }
 

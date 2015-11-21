@@ -577,7 +577,7 @@ namespace SevenWonders
             {
                 Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
-                    gameUI.showPlayedCardsPanel(message.Substring(1));
+                    gameUI.showPlayedCardsPanel(int.Parse(message.Substring(1, 1)), message.Substring(2));
                 }));
             }
             //indicate to client to start timer

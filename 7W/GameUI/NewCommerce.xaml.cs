@@ -188,7 +188,6 @@ namespace SevenWonders
             return resourceIcons[resourceIconIndex];
         }
 
-        
         /// <summary>
         /// Use the 3 DAGs in the object to generate the necessary Buttons in the UI and add EventHandlers for these newly added Buttons
         /// </summary>

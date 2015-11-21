@@ -334,6 +334,7 @@ namespace SevenWonders
         }
     };
 
+    [Serializable]
     // formerly category 5
     public class CoinsAndPointsEffect : Effect
     {
@@ -359,7 +360,7 @@ namespace SevenWonders
         }
     };
 
-
+    [Serializable]
     // formerly category 6
     public class SpecialAbilityEffect : Effect
     {
