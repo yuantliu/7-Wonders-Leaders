@@ -62,7 +62,6 @@ namespace SevenWonders
             {
                 if ((player.hand[i].structureType == StructureType.RawMaterial && player.isCardBuildable(i) == Buildable.True) && player.hand[i].effect is ResourceChoiceEffect)
                 {
-                    // char resource = player.hand[i].effect.simpleInfo.type;
                     string resource = ((ResourceChoiceEffect)player.hand[i].effect).strChoiceData;
 
                     if (player.brick < maxOBW && (resource[0] == 'B' || resource[1] == 'B') ) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }

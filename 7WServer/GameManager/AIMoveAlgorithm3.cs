@@ -20,9 +20,9 @@ namespace SevenWonders
             //look for buildable Red cards
             for (int i = 0; i < player.numOfHandCards; i++)
             {
-                if (player.hand[i].colour == "Red" && player.isCardBuildable(i) == 'T')
+                if (player.hand[i].structureType == StructureType.Military && player.isCardBuildable(i) == Buildable.True)
                 {
-                    gm.buildStructureFromHand(player.hand[i].id, player.nickname);
+                    gm.buildStructureFromHand(player.hand[i].name, player.nickname);
                     Console.WriteLine(player.nickname + " Just Bought a [Red Army] Card..");
                     return;
                     
@@ -32,15 +32,15 @@ namespace SevenWonders
             //look for buildable resource cards that give more than one resource ...
             for (int i = 0; i < player.numOfHandCards; i++)
             {
-                if ((player.hand[i].colour == "Brown" || player.hand[i].colour == "Grey") && player.isCardBuildable(i) == 'T')
+                if ((player.hand[i].structureType == StructureType.RawMaterial || player.hand[i].structureType == StructureType.Goods) && player.isCardBuildable(i) == Buildable.True && player.hand[i].effect is ResourceChoiceEffect)
                 {
-                    char resource = player.hand[i].effect[2];
+                    string resource = ((ResourceChoiceEffect)player.hand[i].effect).strChoiceData;
 
-                    if (resource == 'B' && player.brick < maxOBS){ gm.buildStructureFromHand(player.hand[i].id, player.nickname); return; }
-                    else if (resource == 'O' && player.ore < maxOBS){ gm.buildStructureFromHand(player.hand[i].id, player.nickname); return; }
-                    else if (resource == 'T' && player.stone < maxOBS){ gm.buildStructureFromHand(player.hand[i].id, player.nickname); return; }
-                    else if (resource == 'W' && player.wood < maxWood){ gm.buildStructureFromHand(player.hand[i].id, player.nickname); return; }
-                    else if (resource == 'L' && player.loom < maxLoom){ gm.buildStructureFromHand(player.hand[i].id, player.nickname); return; }
+                    if (resource.Contains('B') && player.brick < maxOBS){ gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (resource.Contains('O') && player.ore < maxOBS){ gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (resource.Contains('S') && player.stone < maxOBS){ gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (resource.Contains('W') && player.wood < maxWood){ gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (resource.Contains('L') && player.loom < maxLoom){ gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
                 }
             }
          
@@ -48,37 +48,34 @@ namespace SevenWonders
             //look for buildable resource cards that only give one ..
             for (int i = 0; i < player.numOfHandCards; i++)
             {
-                if ((player.hand[i].colour == "Brown" || player.hand[i].colour == "Grey") && player.isCardBuildable(i) == 'T' && player.hand[i].effect[0] != '4')
+                if ((player.hand[i].structureType == StructureType.RawMaterial || player.hand[i].structureType == StructureType.Goods) && player.isCardBuildable(i) == Buildable.True && player.hand[i].effect is SimpleEffect)
                 {
-                    char resource = player.hand[i].effect[2];
-                    int numOfResource = int.Parse(player.hand[i].effect[1] + "");
+                    SimpleEffect e = player.hand[i].effect as SimpleEffect;
 
-                    if (resource == 'B' && numOfResource + player.brick < maxOBS) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); return; }
-                    else if (resource == 'O' && numOfResource + player.ore < maxOBS) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); return; }
-                    else if (resource == 'T' && numOfResource + player.stone < maxOBS) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); return; }
-                    else if (resource == 'W' && numOfResource + player.wood < maxWood) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); return; }
-                    else if (resource == 'L' && numOfResource + player.loom < maxLoom) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); return; } 
+                    char resource = e.type;
+                    int numOfResource = e.multiplier;
+
+                    if (resource == 'B' && numOfResource + player.brick < maxOBS) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (resource == 'O' && numOfResource + player.ore < maxOBS) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (resource == 'T' && numOfResource + player.stone < maxOBS) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (resource == 'W' && numOfResource + player.wood < maxWood) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; }
+                    else if (resource == 'L' && numOfResource + player.loom < maxLoom) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); return; } 
                 }
             }
-         
-           
-            
-           //Discard the non-buildable Red cards
+
+            //Discard the non-buildable Red cards
             for (int i = 0; i < player.numOfHandCards; i++)
             {
-                if ((player.hand[i].colour == "Red" && player.isCardBuildable(i) == 'F') || (player.hand[i].colour == "Red" && player.isCardBuildable(i) == 'C'))
+                if ((player.hand[i].structureType == StructureType.Military && (player.isCardBuildable(i) == Buildable.False) |player.isCardBuildable(i) == Buildable.CommerceRequired))
                 {
-                    gm.discardCardForThreeCoins(player.hand[i].id, player.nickname);
+                    gm.discardCardForThreeCoins(player.hand[i].name, player.nickname);
                     Console.WriteLine(player.nickname + " Just Discard A (Red) Card for 3 Coins..");
                     return;
                 }
-            } 
-           
-            
-            gm.discardCardForThreeCoins(player.hand[0].id, player.nickname);
-            Console.WriteLine(player.nickname + " Just Discard A Random Card for 3 Coins..");
+            }
 
-         
-        } 
+            gm.discardCardForThreeCoins(player.hand[0].name, player.nickname);
+            Console.WriteLine(player.nickname + " Just Discard A Random Card for 3 Coins..");
+        }
     }
 }

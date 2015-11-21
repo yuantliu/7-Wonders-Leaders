@@ -48,6 +48,8 @@ namespace SevenWonders
         // Image[] boardImage;
         HandPanelInformation handPanelInformation;
 
+        List<Card> fullCardList = new List<Card>();
+
         //constructor: create the UI. create the Coordinator object
         public MainWindow(Coordinator c)
         {
@@ -132,6 +134,22 @@ namespace SevenWonders
                     playerState[6].playerGrid = SeatG;
                     playerState[7].playerGrid = SeatH;
                     break;
+            }
+
+            // load the card list
+            using (System.IO.StreamReader file = new System.IO.StreamReader(System.Reflection.Assembly.Load("GameManager").
+                GetManifestResourceStream("GameManager.7 Wonders Card list.csv")))
+            {
+                // skip the header line
+                file.ReadLine();
+
+                String line = file.ReadLine();
+
+                while (line != null && line != String.Empty)
+                {
+                    fullCardList.Add(new Card(line.Split(',')));
+                    line = file.ReadLine();
+                }
             }
 
             /*

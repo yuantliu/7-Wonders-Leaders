@@ -18,9 +18,9 @@ namespace SevenWonders
             //look for buildable blue cards
             for (int i = 0; i < player.numOfHandCards; i++)
             {
-                if (player.hand[i].colour == "Blue" && player.isCardBuildable(i) == 'T')
+                if (player.hand[i].structureType == StructureType.Civilian && player.isCardBuildable(i) == Buildable.True)
                 {
-                    gm.buildStructureFromHand(player.hand[i].id, player.nickname);
+                    gm.buildStructureFromHand(player.hand[i].name, player.nickname);
                     return;
                 }
             }
@@ -28,11 +28,11 @@ namespace SevenWonders
             //look for buildable yellow cards that gives some resources
             for (int i = 0; i < player.numOfHandCards; i++)
             {
-                if (player.hand[i].colour == "Yellow" && player.isCardBuildable(i) == 'T')
+                if (player.hand[i].structureType == StructureType.Commerce && player.isCardBuildable(i) == Buildable.True)
                 {
-                    if (player.hand[i].effect[0] == '4')
+                    if (player.hand[i].effect is ResourceChoiceEffect)
                     {
-                        gm.buildStructureFromHand(player.hand[i].id, player.nickname);
+                        gm.buildStructureFromHand(player.hand[i].name, player.nickname);
                         return;
                     }
                 }
@@ -41,25 +41,26 @@ namespace SevenWonders
             //look for buildable resource cards
             for (int i = 0; i < player.numOfHandCards; i++)
             {
-                if ((player.hand[i].colour == "Brown" || player.hand[i].colour == "Grey") && player.isCardBuildable(i) == 'T' && player.hand[i].effect[0] != '4')
+                if ((player.hand[i].structureType == StructureType.RawMaterial || player.hand[i].structureType == StructureType.Goods) && player.isCardBuildable(i) == Buildable.True && player.hand[i].effect is SimpleEffect)
                 {
-                    char resource = player.hand[i].effect[2];
-                    int numOfResource = int.Parse(player.hand[i].effect[1] + "");
+                    SimpleEffect e = player.hand[i].effect as SimpleEffect;
+                    char resource = e.type;
+                    int numOfResource = e.multiplier;
 
-                    if (resource == 'B' && numOfResource + player.brick < maxResourcesRequired ) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); }
-                    else if (resource == 'O' && numOfResource + player.ore < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); }
-                    else if (resource == 'T' && numOfResource + player.stone < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); }
-                    else if (resource == 'W' && numOfResource + player.wood < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); }
-                    else if (resource == 'G' && numOfResource + player.glass < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); }
-                    else if (resource == 'L' && numOfResource + player.loom < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); }
-                    else if (resource == 'P' && numOfResource + player.papyrus < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].id, player.nickname); }
+                    if (resource == 'B' && numOfResource + player.brick < maxResourcesRequired ) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
+                    else if (resource == 'O' && numOfResource + player.ore < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
+                    else if (resource == 'T' && numOfResource + player.stone < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
+                    else if (resource == 'W' && numOfResource + player.wood < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
+                    else if (resource == 'G' && numOfResource + player.glass < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
+                    else if (resource == 'L' && numOfResource + player.loom < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
+                    else if (resource == 'P' && numOfResource + player.papyrus < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
 
                     return;
                 }
             }
 
             //discard card[0]
-            gm.discardCardForThreeCoins(player.hand[0].id, player.nickname);
+            gm.discardCardForThreeCoins(player.hand[0].name, player.nickname);
         }
     }
 }

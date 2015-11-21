@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.IO;
-using System.Reflection;
 
 namespace SevenWonders
 {
@@ -12,14 +10,10 @@ namespace SevenWonders
         public int numOfPlayers { get; set; }
         public int numOfAI { get; set; }
 
-        //the total number of boards that are in 7 Wonders
-        protected int board_amount;
-
         public GMCoordinator gmCoordinator;
 
-        //Current age
         public int currentAge;
-        //Current turn
+
         public int currentTurn;
 
         // JDF I think player should be a dictionary rather than an array.
@@ -27,16 +21,19 @@ namespace SevenWonders
 
         public Player[] player;
 
-        //All possible decks
+        // A list would be better here.
         private Dictionary<Board.Wonder, Board> board;
 
         // I'd prefer to use a dictionary, but because there may be 2 (or even 3) of the same card,
         // I'll stay with a List container.
         List<Card> fullCardList = new List<Card>();
 
+        // TODO: change to a List
         public Deck[] deck;
 
+        // TODO: change to a list
         public Card[] discardPile;
+
         int numDiscardPile;
 
         public bool esteban = false;
@@ -119,8 +116,9 @@ namespace SevenWonders
                 player[i] = new Player(playerNicks[i], false, this);
             }
 
-            // load the card deck
-            using (StreamReader file = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("_7WServer.7 Wonders Card list.csv")))
+            // load the card list
+            using (System.IO.StreamReader file = new System.IO.StreamReader(System.Reflection.Assembly.Load("GameManager").
+                GetManifestResourceStream("GameManager.7 Wonders Card list.csv")))
             {
                 // skip the header line
                 file.ReadLine();
@@ -133,9 +131,6 @@ namespace SevenWonders
                     line = file.ReadLine();
                 }
             }
-
-            //vanilla has 14 boards
-            board_amount = 14;
 
             //initialize the vanilla boards objects
             //does not assign the boards to players yet
@@ -160,7 +155,6 @@ namespace SevenWonders
             Player thisAI = new Player(name, true, this);
             switch (strategy)
             {
-                /*
                 case '0':
                     thisAI.AIBehaviour = new AIMoveAlgorithm0();
                     break;
@@ -173,7 +167,6 @@ namespace SevenWonders
                 case '3':
                     thisAI.AIBehaviour = new AIMoveAlgorithm3();
                     break;
-                    */
                 case '4':
                     thisAI.AIBehaviour = new AIMoveAlgorithm4();
                     break;
