@@ -28,7 +28,23 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <StackPanel Grid.Column="0" Name="PlayedStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="CommerceStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="GoodsStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="ResourceStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="GuildStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="ScienceStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="MilitaryStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="CivilianStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                </Grid>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -49,7 +65,23 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <StackPanel Grid.Column="0" Name="PlayedStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="ResourceStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="GoodsStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="CommerceStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="GuildStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="MilitaryStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="ScienceStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="CivilianStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                </Grid>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -69,7 +101,23 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <StackPanel Grid.Column="0" Name="PlayedStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="CommerceStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="GoodsStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="ResourceStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="GuildStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="ScienceStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="MilitaryStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="CivilianStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                </Grid>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -89,7 +137,23 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <StackPanel Grid.Column="0" Name="PlayedStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="CommerceStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="GoodsStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="ResourceStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="GuildStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="ScienceStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="MilitaryStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="CivilianStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                </Grid>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -109,7 +173,23 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <StackPanel Grid.Column="0" Name="PlayedStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="CommerceStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="GoodsStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="ResourceStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="GuildStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="ScienceStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="MilitaryStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="CivilianStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                </Grid>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -129,7 +209,23 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <StackPanel Grid.Column="0" Name="PlayedStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="CommerceStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="GoodsStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="ResourceStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel Name="GuildStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="ScienceStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="MilitaryStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel Name="CivilianStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                    </StackPanel>
+                </Grid>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>

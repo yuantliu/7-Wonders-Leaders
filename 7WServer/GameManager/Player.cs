@@ -705,8 +705,9 @@ namespace SevenWonders
                                 points += e.victoryPointsAtEndOfGameMultiplier;
                         }
 
-                        for (int j = 0; j < leftNeighbour.numOfPlayedCards; j++)
+                        for (int j = 0; j < rightNeighbour.numOfPlayedCards; j++)
                         {
+                            // I hit a bug when a played the Spies Guild.  
                             if (e.classConsidered == rightNeighbour.playedStructure[j].structureType)
                                 points += e.victoryPointsAtEndOfGameMultiplier;
                         }

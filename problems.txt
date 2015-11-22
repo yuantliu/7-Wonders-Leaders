@@ -2,13 +2,25 @@
 Added by James Fairweather
 The UI is missing a bunch of information:
 - The resource/material that the city board produces is not depicted (the boards can be rescanned)
+  (fixed)
+
 - The overall game state is less than clear - what cards the player has played, and what cards the other players have played, military victories and losses
+  - Still need to add military wins and losses for each age.
+  - Many cards don't have icons.
+  - Cards need to be grouped into like structures
+  - The UI is still too crowded
+
+
 - The last card played by each player isn't obvious
+  (fixed)
+
 - The list of players (the datagrid) isn't hooked up at the match-making.
+
 - Commerce has a couple of bugs.  Brown cards that give 2 of a resource don't work, and possibly the either/or first age cards don't work right either, and the player can pick resources from yellow cards built by neighbours.
 - The protocol for the client/server communication is quite a lot more verbose than it needs to be.  Surely the server should wait for each client to make his choice, then broadcast the card each player played to every
   other player.  Instead, it sends the whole game state to every player after each turn.
-- There may be an issue in a 4+ player game where cards already built can be built a 2nd time.  Doesn't affect the 3 player game because there are no duplicates.
+
+- the game doesn't terminate nicely when it's shut down.  Must kill it.
 
 The AI seems weak, although the "difficult" setting may be smarter
 

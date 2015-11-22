@@ -20,7 +20,16 @@ namespace SevenWonders
 
         public Grid playerGrid;
         public Image boardImage;
-        public StackPanel strcturesBuilt;
+        public Dictionary<StructureType, StackPanel> structuresBuilt = new Dictionary<StructureType, StackPanel>(7);
+        /*
+        public StackPanel structuresBuiltRawMaterials;
+        public StackPanel structuresBuiltGoods;
+        public StackPanel structuresBuiltCommerce;
+        public StackPanel structuresBuiltMilitary;
+        public StackPanel structuresBuiltScience;
+        public StackPanel structuresBuiltCivilian;
+        public StackPanel structuresBuiltGuilds;
+        */
         public Label coinsLabel;
 
         public PlayerState()
@@ -66,7 +75,13 @@ namespace SevenWonders
 
             playerState[0].playerGrid = SeatA;
             playerState[0].boardImage = PlayerBoardA;
-            playerState[0].strcturesBuilt = PlayedStructuresA;
+            playerState[0].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresA;
+            playerState[0].structuresBuilt[StructureType.Goods] = GoodsStructuresA;
+            playerState[0].structuresBuilt[StructureType.Commerce] = CommerceStructuresA;
+            playerState[0].structuresBuilt[StructureType.Military] = MilitaryStructuresA;
+            playerState[0].structuresBuilt[StructureType.Science] = ScienceStructuresA;
+            playerState[0].structuresBuilt[StructureType.Civilian] = CivilianStructuresA;
+            playerState[0].structuresBuilt[StructureType.Guild] = GuildStructuresA;
             playerState[0].coinsLabel = CoinsA;
 
             switch (c.numPlayers)
@@ -74,29 +89,59 @@ namespace SevenWonders
                 case 3:
                     playerState[1].playerGrid = SeatF;
                     playerState[1].boardImage = PlayerBoardF;
-                    playerState[1].strcturesBuilt = PlayedStructuresF;
-                    playerState[1].coinsLabel = CoinsE;
+                    playerState[1].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresF;
+                    playerState[1].structuresBuilt[StructureType.Goods] = GoodsStructuresF;
+                    playerState[1].structuresBuilt[StructureType.Commerce] = CommerceStructuresF;
+                    playerState[1].structuresBuilt[StructureType.Military] = MilitaryStructuresF;
+                    playerState[1].structuresBuilt[StructureType.Science] = ScienceStructuresF;
+                    playerState[1].structuresBuilt[StructureType.Civilian] = CivilianStructuresF;
+                    playerState[1].structuresBuilt[StructureType.Guild] = GuildStructuresF;
+                    playerState[1].coinsLabel = CoinsF;
 
                     playerState[2].playerGrid = SeatD;
                     playerState[2].boardImage = PlayerBoardD;
-                    playerState[2].strcturesBuilt = PlayedStructuresD;
+                    playerState[2].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresD;
+                    playerState[2].structuresBuilt[StructureType.Goods] = GoodsStructuresD;
+                    playerState[2].structuresBuilt[StructureType.Commerce] = CommerceStructuresD;
+                    playerState[2].structuresBuilt[StructureType.Military] = MilitaryStructuresD;
+                    playerState[2].structuresBuilt[StructureType.Science] = ScienceStructuresD;
+                    playerState[2].structuresBuilt[StructureType.Civilian] = CivilianStructuresD;
+                    playerState[2].structuresBuilt[StructureType.Guild] = GuildStructuresD;
                     playerState[2].coinsLabel = CoinsD;
                     break;
 
                 case 4:
                     playerState[1].playerGrid = SeatC;
                     playerState[1].boardImage = PlayerBoardC;
-                    playerState[1].strcturesBuilt = PlayedStructuresC;
+                    playerState[1].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresC;
+                    playerState[1].structuresBuilt[StructureType.Goods] = GoodsStructuresC;
+                    playerState[1].structuresBuilt[StructureType.Commerce] = CommerceStructuresC;
+                    playerState[1].structuresBuilt[StructureType.Military] = MilitaryStructuresC;
+                    playerState[1].structuresBuilt[StructureType.Science] = ScienceStructuresC;
+                    playerState[1].structuresBuilt[StructureType.Civilian] = CivilianStructuresC;
+                    playerState[1].structuresBuilt[StructureType.Guild] = GuildStructuresC;
                     playerState[1].coinsLabel = CoinsC;
 
                     playerState[2].playerGrid = SeatE;
                     playerState[2].boardImage = PlayerBoardE;
-                    playerState[2].strcturesBuilt = PlayedStructuresE;
+                    playerState[2].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresE;
+                    playerState[2].structuresBuilt[StructureType.Goods] = GoodsStructuresE;
+                    playerState[2].structuresBuilt[StructureType.Commerce] = CommerceStructuresE;
+                    playerState[2].structuresBuilt[StructureType.Military] = MilitaryStructuresE;
+                    playerState[2].structuresBuilt[StructureType.Science] = ScienceStructuresE;
+                    playerState[2].structuresBuilt[StructureType.Civilian] = CivilianStructuresE;
+                    playerState[2].structuresBuilt[StructureType.Guild] = GuildStructuresE;
                     playerState[2].coinsLabel = CoinsE;
 
                     playerState[3].playerGrid = SeatG;
                     playerState[3].boardImage = PlayerBoardG;
-                    playerState[3].strcturesBuilt = PlayedStructuresG;
+                    playerState[3].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresG;
+                    playerState[3].structuresBuilt[StructureType.Goods] = GoodsStructuresG;
+                    playerState[3].structuresBuilt[StructureType.Commerce] = CommerceStructuresG;
+                    playerState[3].structuresBuilt[StructureType.Military] = MilitaryStructuresG;
+                    playerState[3].structuresBuilt[StructureType.Science] = ScienceStructuresG;
+                    playerState[3].structuresBuilt[StructureType.Civilian] = CivilianStructuresG;
+                    playerState[3].structuresBuilt[StructureType.Guild] = GuildStructuresG;
                     playerState[3].coinsLabel = CoinsG;
 
                     break;
@@ -196,396 +241,10 @@ namespace SevenWonders
         /// <param name="playerBarPanelInformation"></param>
         public void showPlayerBarPanel(int player, string playerBarPanelInformation)
         {
-            //clear the PlayerPanel of its current contents
-            // playerPanel.Children.Clear();
-
-            // PlayerBarInformation playerBarInformation = (PlayerBarInformation)Marshaller.StringToObject(playerBarPanelInformation);
-
-            //if Player has no money, then disable Bilkis
-
-            //get the number of players
-            /*
-            int numberOfPlayers = playerBarInformation.numOfPlayers;
-
-            for (int i = 0; i < playerBarInformation.numOfPlayers; ++i)
-            {
-                playerState[i].coins = playerBarInformation.playerInfo[i].coin;
-            }
-            */
-
             playerState[player].coins = int.Parse(playerBarPanelInformation);
             playerState[player].coinsLabel.Content = string.Format("Coins: {0}", playerState[player].coins);
-
-            /*
-            //initialize the icons
-            //Static icon images used in Player Bar Panel
-            Image[] brickIcon, oreIcon, stoneIcon, woodIcon, glassIcon, loomIcon, papyrusIcon, bearTrapIcon, sextantIcon, tabletIcon,
-                victoryIcon, shieldIcon, coinIcon, conflictIcon, conflictTokensCountIcon, lossIcon;
-            brickIcon = new Image[numberOfPlayers];
-            oreIcon = new Image[numberOfPlayers];
-            stoneIcon = new Image[numberOfPlayers];
-            woodIcon = new Image[numberOfPlayers];
-            glassIcon = new Image[numberOfPlayers];
-            loomIcon = new Image[numberOfPlayers];
-            papyrusIcon = new Image[numberOfPlayers];
-            bearTrapIcon = new Image[numberOfPlayers];
-            sextantIcon = new Image[numberOfPlayers];
-            tabletIcon = new Image[numberOfPlayers];
-            victoryIcon = new Image[numberOfPlayers];
-            shieldIcon = new Image[numberOfPlayers];
-            coinIcon = new Image[numberOfPlayers];
-            conflictIcon = new Image[numberOfPlayers];
-            conflictTokensCountIcon = new Image[numberOfPlayers];
-            lossIcon = new Image[numberOfPlayers];
-
-
-            //display the information
-            //create the appropriate amount of bars and add the elements to each bar
-            playerBarPanel = new StackPanel[numberOfPlayers];
-
-            Button[] viewDetails = new Button[numberOfPlayers];
-
-            //initilize the labels which will display the amounts
-            Label[] playerLabel = new Label[numberOfPlayers];
-            Label[] brickLabel = new Label[numberOfPlayers];
-            Label[] oreLabel = new Label[numberOfPlayers];
-            Label[] stoneLabel = new Label[numberOfPlayers];
-            Label[] woodLabel = new Label[numberOfPlayers];
-            Label[] glassLabel = new Label[numberOfPlayers];
-            Label[] loomLabel = new Label[numberOfPlayers];
-            Label[] papyrusLabel = new Label[numberOfPlayers];
-            Label[] bearTrapLabel = new Label[numberOfPlayers];
-            Label[] sextantLabel = new Label[numberOfPlayers];
-            Label[] tabletLabel = new Label[numberOfPlayers];
-            Label[] victoryLabel = new Label[numberOfPlayers];
-            Label[] shieldLabel = new Label[numberOfPlayers];
-            Label[] coinLabel = new Label[numberOfPlayers];
-            Label[] conflictLabel = new Label[numberOfPlayers];
-            Label[] conflictTokensCountLabel = new Label[numberOfPlayers];
-            Label[] lossLabel = new Label[numberOfPlayers];
-
-
-            for (int i = 0; i < numberOfPlayers; i++)
-            {
-                //create the icons
-                //create the view detail buttons
-                viewDetails[i] = new Button();
-                BitmapImage viewDetailsImageSource = new BitmapImage();
-                viewDetailsImageSource.BeginInit();
-                viewDetailsImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\details.png");
-                viewDetailsImageSource.EndInit();
-                viewDetails[i].Background = new ImageBrush(viewDetailsImageSource);
-                viewDetails[i].Width = ICON_WIDTH;
-                viewDetails[i].Height = ICON_WIDTH;
-                //add that player's name as the tag
-                viewDetails[i].Name = playerBarInformation.playerInfo[i].nickname;
-
-                //create the brick pictures
-                brickIcon[i] = new Image();
-                BitmapImage brickIconImageSource = new BitmapImage();
-                brickIconImageSource.BeginInit();
-                brickIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\brick.png");
-                brickIconImageSource.EndInit();
-                brickIcon[i].Source = brickIconImageSource;
-                brickIcon[i].Width = ICON_WIDTH;
-                brickIcon[i].Height = ICON_WIDTH;
-
-                //create the ore pictures
-                oreIcon[i] = new Image();
-                BitmapImage oreIconImageSource = new BitmapImage();
-                oreIconImageSource.BeginInit();
-                oreIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\ore.png");
-                oreIconImageSource.EndInit();
-                oreIcon[i].Source = oreIconImageSource;
-                oreIcon[i].Width = ICON_WIDTH;
-                oreIcon[i].Height = ICON_WIDTH;
-
-                //create the stone pictures
-                stoneIcon[i] = new Image();
-                BitmapImage stoneIconImageSource = new BitmapImage();
-                stoneIconImageSource.BeginInit();
-                stoneIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\stone.png");
-                stoneIconImageSource.EndInit();
-                stoneIcon[i].Source = stoneIconImageSource;
-                stoneIcon[i].Width = ICON_WIDTH;
-                stoneIcon[i].Height = ICON_WIDTH;
-
-                //create the wood picture
-                woodIcon[i] = new Image();
-                BitmapImage woodIconImageSource = new BitmapImage();
-                woodIconImageSource.BeginInit();
-                woodIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\wood.png");
-                woodIconImageSource.EndInit();
-                woodIcon[i].Source = woodIconImageSource;
-                woodIcon[i].Width = ICON_WIDTH;
-                woodIcon[i].Height = ICON_WIDTH;
-
-                //create the glass pictures
-                glassIcon[i] = new Image();
-                BitmapImage glassIconImageSource = new BitmapImage();
-                glassIconImageSource.BeginInit();
-                glassIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\glass.png");
-                glassIconImageSource.EndInit();
-                glassIcon[i].Source = glassIconImageSource;
-                glassIcon[i].Width = ICON_WIDTH;
-                glassIcon[i].Height = ICON_WIDTH;
-
-                //create the loom pictures
-                loomIcon[i] = new Image();
-                BitmapImage loomIconImageSource = new BitmapImage();
-                loomIconImageSource.BeginInit();
-                loomIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\loom.png");
-                loomIconImageSource.EndInit();
-                loomIcon[i].Source = loomIconImageSource;
-                loomIcon[i].Width = ICON_WIDTH;
-                loomIcon[i].Height = ICON_WIDTH;
-
-                //create the papyrus pictures
-                papyrusIcon[i] = new Image();
-                BitmapImage papyrusIconImageSource = new BitmapImage();
-                papyrusIconImageSource.BeginInit();
-                papyrusIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\papyrus.png");
-                papyrusIconImageSource.EndInit();
-                papyrusIcon[i].Source = papyrusIconImageSource;
-                papyrusIcon[i].Width = ICON_WIDTH;
-                papyrusIcon[i].Height = ICON_WIDTH;
-
-                //create the science pictures
-                bearTrapIcon[i] = new Image();
-                BitmapImage bearTrapIconImageSource = new BitmapImage();
-                bearTrapIconImageSource.BeginInit();
-                bearTrapIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\bearTrap.png");
-                bearTrapIconImageSource.EndInit();
-                bearTrapIcon[i].Source = bearTrapIconImageSource;
-                bearTrapIcon[i].Width = ICON_WIDTH;
-                bearTrapIcon[i].Height = ICON_WIDTH;
-
-                sextantIcon[i] = new Image();
-                BitmapImage sextantIconImageSource = new BitmapImage();
-                sextantIconImageSource.BeginInit();
-                sextantIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\sextant.png");
-                sextantIconImageSource.EndInit();
-                sextantIcon[i].Source = sextantIconImageSource;
-                sextantIcon[i].Width = ICON_WIDTH;
-                sextantIcon[i].Height = ICON_WIDTH;
-
-                tabletIcon[i] = new Image();
-                BitmapImage tabletIconImageSource = new BitmapImage();
-                tabletIconImageSource.BeginInit();
-                tabletIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\tablet.jpg");
-                tabletIconImageSource.EndInit();
-                tabletIcon[i].Source = tabletIconImageSource;
-                tabletIcon[i].Width = ICON_WIDTH;
-                tabletIcon[i].Height = ICON_WIDTH;
-
-                //create the victory pictures
-                victoryIcon[i] = new Image();
-                BitmapImage victoryIconImageSource = new BitmapImage();
-                victoryIconImageSource.BeginInit();
-                victoryIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\victory.png");
-                victoryIconImageSource.EndInit();
-                victoryIcon[i].Source = victoryIconImageSource;
-                victoryIcon[i].Width = ICON_WIDTH;
-                victoryIcon[i].Height = ICON_WIDTH;
-
-                //create the shield points pictures
-                shieldIcon[i] = new Image();
-                BitmapImage shieldIconImageSource = new BitmapImage();
-                shieldIconImageSource.BeginInit();
-                shieldIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\shield.jpg");
-                shieldIconImageSource.EndInit();
-                shieldIcon[i].Source = shieldIconImageSource;
-                shieldIcon[i].Width = ICON_WIDTH;
-                shieldIcon[i].Height = ICON_WIDTH;
-
-                //create the coin pictures
-                coinIcon[i] = new Image();
-                BitmapImage coinIconImageSource = new BitmapImage();
-                coinIconImageSource.BeginInit();
-                coinIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\coin.png");
-                coinIconImageSource.EndInit();
-                coinIcon[i].Source = coinIconImageSource;
-                coinIcon[i].Width = ICON_WIDTH;
-                coinIcon[i].Height = ICON_WIDTH;
-
-                //create the conflict pictures (total points from conflict)
-                conflictIcon[i] = new Image();
-                BitmapImage conflictIconImageSource = new BitmapImage();
-                conflictIconImageSource.BeginInit();
-                conflictIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\fight1.png");
-                conflictIconImageSource.EndInit();
-                conflictIcon[i].Source = conflictIconImageSource;
-                conflictIcon[i].Width = ICON_WIDTH;
-                conflictIcon[i].Height = ICON_WIDTH;
-
-                //number of conflict tokens present (from 0 - 6)
-                conflictTokensCountIcon[i] = new Image();
-                BitmapImage conflictTokensCountSource = new BitmapImage();
-                conflictTokensCountSource.BeginInit();
-                conflictTokensCountSource.UriSource = new Uri(currentPath + @"\Resources\Images\fight2.png");
-                conflictTokensCountSource.EndInit();
-                conflictTokensCountIcon[i].Source = conflictTokensCountSource;
-                conflictTokensCountIcon[i].Width = ICON_WIDTH;
-                conflictTokensCountIcon[i].Height = ICON_WIDTH;
-
-                //create the loss pictures
-                lossIcon[i] = new Image();
-                BitmapImage lossIconImageSource = new BitmapImage();
-                lossIconImageSource.BeginInit();
-                lossIconImageSource.UriSource = new Uri(currentPath + @"\Resources\Images\fight0.png");
-                lossIconImageSource.EndInit();
-                lossIcon[i].Source = lossIconImageSource;
-                lossIcon[i].Width = ICON_WIDTH;
-                lossIcon[i].Height = ICON_WIDTH;
-
-                //create and add each player's bar
-                playerBarPanel[i] = new StackPanel();
-                playerBarPanel[i].Orientation = Orientation.Horizontal;
-                playerPanel.Children.Add(playerBarPanel[i]);
-
-                //add the Magnifying buttons
-                playerBarPanel[i].Children.Add(viewDetails[i]);
-                //add the action listeners
-                viewDetails[i].Click += viewDetailsButtonPressed;
-
-                //the player's name label
-                playerLabel[i] = new Label();
-                playerLabel[i].Content = playerBarInformation.playerInfo[i].nickname;
-                playerLabel[i].Width = 50;
-                playerBarPanel[i].Children.Add(playerLabel[i]);
-
-                //brick icon
-                playerBarPanel[i].Children.Add(brickIcon[i]);
-                //brick label
-                brickLabel[i] = new Label();
-                brickLabel[i].Content = playerBarInformation.playerInfo[i].brick;
-                playerBarPanel[i].Children.Add(brickLabel[i]);
-
-                //ore icon
-                playerBarPanel[i].Children.Add(oreIcon[i]);
-                //ore label
-                oreLabel[i] = new Label();
-                oreLabel[i].Content = playerBarInformation.playerInfo[i].ore;
-                playerBarPanel[i].Children.Add(oreLabel[i]);
-
-                //stone icon
-                playerBarPanel[i].Children.Add(stoneIcon[i]);
-                //stone label
-                stoneLabel[i] = new Label();
-                stoneLabel[i].Content = playerBarInformation.playerInfo[i].stone;
-                playerBarPanel[i].Children.Add(stoneLabel[i]);
-
-                //wood icon
-                playerBarPanel[i].Children.Add(woodIcon[i]);
-                //wood label
-                woodLabel[i] = new Label();
-                woodLabel[i].Content = playerBarInformation.playerInfo[i].wood;
-                playerBarPanel[i].Children.Add(woodLabel[i]);
-
-
-                //glass icon
-                playerBarPanel[i].Children.Add(glassIcon[i]);
-                //glass label
-                glassLabel[i] = new Label();
-                glassLabel[i].Content = playerBarInformation.playerInfo[i].glass;
-                playerBarPanel[i].Children.Add(glassLabel[i]);
-
-                //papyrus icon
-                playerBarPanel[i].Children.Add(papyrusIcon[i]);
-                //papyrus label
-                papyrusLabel[i] = new Label();
-                papyrusLabel[i].Content = playerBarInformation.playerInfo[i].papyrus;
-                playerBarPanel[i].Children.Add(papyrusLabel[i]);
-
-                //loom icon
-                playerBarPanel[i].Children.Add(loomIcon[i]);
-                //loom label
-                loomLabel[i] = new Label();
-                loomLabel[i].Content = playerBarInformation.playerInfo[i].loom;
-                playerBarPanel[i].Children.Add(loomLabel[i]);
-
-                //science icons
-                playerBarPanel[i].Children.Add(bearTrapIcon[i]);
-                bearTrapLabel[i] = new Label();
-                bearTrapLabel[i].Content = playerBarInformation.playerInfo[i].bear;
-                playerBarPanel[i].Children.Add(bearTrapLabel[i]);
-
-                playerBarPanel[i].Children.Add(sextantIcon[i]);
-                sextantLabel[i] = new Label();
-                sextantLabel[i].Content = playerBarInformation.playerInfo[i].sextant;
-                playerBarPanel[i].Children.Add(sextantLabel[i]);
-
-                playerBarPanel[i].Children.Add(tabletIcon[i]);
-                tabletLabel[i] = new Label();
-                tabletLabel[i].Content = playerBarInformation.playerInfo[i].tablet;
-                playerBarPanel[i].Children.Add(tabletLabel[i]);
-
-                //victory icons
-                playerBarPanel[i].Children.Add(victoryIcon[i]);
-                victoryLabel[i] = new Label();
-                victoryLabel[i].Content = playerBarInformation.playerInfo[i].victory;
-                playerBarPanel[i].Children.Add(victoryLabel[i]);
-
-                //shield icons
-                playerBarPanel[i].Children.Add(shieldIcon[i]);
-                shieldLabel[i] = new Label();
-                shieldLabel[i].Content = playerBarInformation.playerInfo[i].shield;
-                playerBarPanel[i].Children.Add(shieldLabel[i]);
-
-                //coin icons
-                playerBarPanel[i].Children.Add(coinIcon[i]);
-                coinLabel[i] = new Label();
-                coinLabel[i].Content = playerBarInformation.playerInfo[i].coin;
-                playerBarPanel[i].Children.Add(coinLabel[i]);
-
-                //conflict icons
-                playerBarPanel[i].Children.Add(conflictIcon[i]);
-                conflictLabel[i] = new Label();
-                conflictLabel[i].Content = playerBarInformation.playerInfo[i].conflict;
-                playerBarPanel[i].Children.Add(conflictLabel[i]);
-
-                //conflict tokens count icons
-                playerBarPanel[i].Children.Add(conflictTokensCountIcon[i]);
-                conflictTokensCountLabel[i] = new Label();
-                conflictTokensCountLabel[i].Content = playerBarInformation.playerInfo[i].conflictTokensCount;
-                playerBarPanel[i].Children.Add(conflictTokensCountLabel[i]);
-
-                //loss icons
-                playerBarPanel[i].Children.Add(lossIcon[i]);
-                lossLabel[i] = new Label();
-                lossLabel[i].Content = playerBarInformation.playerInfo[i].loss;
-                playerBarPanel[i].Children.Add(lossLabel[i]);
-            }
-            */
         }
 
-        /*
-        /// <summary>
-        /// Action handler for the view details buttons
-        /// Send a request for information to the server
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void viewDetailsButtonPressed(object sender, RoutedEventArgs e)
-        {
-            Button viewDetailsButton = sender as Button;
-
-            //store the name of the player that is being inspected
-            String inspectedPlayerName = viewDetailsButton.Name;
-            
-            //send the information to the server
-            coordinator.sendToHost("V" + inspectedPlayerName);
-        }
-
-        /// <summary>
-        /// Create a new View Details UI
-        /// </summary>
-        /// <param name="information"></param>
-        public void handleViewDetails(String information)
-        {
-            ViewDetails detailUI = new ViewDetails(information.Substring(1));
-        }
-        */
         /// <summary>
         /// display the Cards in Player's hands and the available actions
         /// </summary>
@@ -609,18 +268,8 @@ namespace SevenWonders
                     stageBuildable = t.Item2;
             }
 
-            //convert the String to an HandPanelInformation object
-            //  handPanelInformation = (HandPanelInformation)Marshaller.StringToObject(information);
-
-            //Update the Age label
-            //since this method is only used in Age 1, 2, and 3, therefore, just show the age number
-            //Age 0 is handled in showHandLeadersPhase(String information)
-
-            // currentAge.Content = handPanelInformation.currentAge;
-
-            //update Images
-
-            int numberOfCards = id_buildable.Length - 1;   // should actually strtract the number of wonder stages
+            // should actually subtract the number of wonder stages that were included.  China can build them in any order the player wishes.
+            int numberOfCards = id_buildable.Length - 1;
 
             for (int i = 0; i < 8; ++i)
             {
@@ -824,23 +473,23 @@ namespace SevenWonders
 
             playerState[player].boardImage.Source = boardImageSource;
         }
-        
+
         /// <summary>
         /// display the Played Cards combo boxes, given the String from Coordinator
         /// </summary>
-        /// <param name="information"></param>
+        /// <param name="player">Player ID (0..7)</param>
+        /// <param name="cardName">Name of the card</param>
         public void showPlayedCardsPanel(int player, string cardName)
         {
-            //extract the colour
-            //the name
-            //the id number
-
             Card lastPlayedCard = fullCardList.Find(x => x.name == cardName);
 
             StructureType colour = lastPlayedCard.structureType;
 
             Label cardLabel = new Label();
             cardLabel.Content = lastPlayedCard.name;
+
+            // This is how to get a control's DesiredSize:
+            // cardLabel.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
             StackPanel cardData = new StackPanel();
             cardData.Orientation = Orientation.Horizontal;
@@ -858,34 +507,8 @@ namespace SevenWonders
                 cardData.Children.Add(iconImage);
             }
 
-            playerState[player].strcturesBuilt.Children.Add(cardData);
+            playerState[player].structuresBuilt[lastPlayedCard.structureType].Children.Add(cardData);
         }
-
-#if FALSE
-        //handler for the ComboBoxItems in Played Cards panel
-        private void playedCards_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox ca = e.Source as ComboBox;
-
-            ComboBoxItem caaa = ca.SelectedItem as ComboBoxItem;
-
-            //have the card Image change
-            showCardImage(currentPath + @"\Resources\Images\cards\" + caaa.Tag + ".jpg");
-        }
-
-        /// <summary>
-        /// Show the highlighted card's image from the Played Cards combobox
-        /// </summary>
-        /// <param name="path"></param>
-        public void showCardImage(String path)
-        {
-            BitmapImage cardImageSource = new BitmapImage();
-            cardImageSource.BeginInit();
-            cardImageSource.UriSource = new Uri(path);
-            cardImageSource.EndInit();
-            cardImage.Source = cardImageSource;
-        }
-#endif
 
         /// <summary>
         /// Send a chat message to the Coordinator

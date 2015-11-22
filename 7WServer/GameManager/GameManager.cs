@@ -1010,17 +1010,10 @@ namespace SevenWonders
                     Card card = p.GetCardPlayed(p.GetNumberOfPlayedCards() - 1);
 
                     strCardsPlayed += string.Format("&Player{0}={1}", i, card.name);
+                    p.bUIRequiresUpdating = false;
 
                     sendCardPlayMessage = true;
-
-                    p.bUIRequiresUpdating = false;
                 }
-                /*
-                else
-                {
-                    strCardsPlayed += string.Format("&Player{0}={1}", i, "Discarded");
-                }
-                */
 
                 strUpdateCoinsMessage += string.Format("&Player{0}={1}", i, player[i].coin);
             }
