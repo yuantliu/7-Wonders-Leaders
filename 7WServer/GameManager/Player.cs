@@ -175,6 +175,8 @@ namespace SevenWonders
 
         public DAG GetDAG() { return dag; }
 
+        public bool bUIRequiresUpdating { get; set; }
+
         /// <summary>
         /// Constructor. Create a Player with a given nickname
         /// </summary>
@@ -956,6 +958,7 @@ namespace SevenWonders
         public void addPlayedCardStructure(Card card)
         {
             playedStructure[numOfPlayedCards++] = card;
+            bUIRequiresUpdating = true;
         }
 
         /// <summary>

@@ -590,7 +590,7 @@ namespace SevenWonders
         /// display the Cards in Player's hands and the available actions
         /// </summary>
         /// <param name="information"></param>
-        public void showHandPanel(System.Collections.Specialized.NameValueCollection cardsAndStates/*String information*/)
+        public void showHandPanel(IList<KeyValuePair<string, string>> cardsAndStates/*String information*/)
         {
             //the player is in a new turn now because his UI are still updating.
             //Therefore set playerPlayedHisturn to false
@@ -600,8 +600,8 @@ namespace SevenWonders
 
             for (int i = 0; i < cardsAndStates.Count; ++i)
             {
-                Tuple<string, Buildable> t = new Tuple<string, Buildable>(cardsAndStates.Keys[i],
-                    (Buildable)Enum.Parse(typeof(Buildable), cardsAndStates[i]));
+                Tuple<string, Buildable> t = new Tuple<string, Buildable>(cardsAndStates[i].Key,
+                    (Buildable)Enum.Parse(typeof(Buildable), cardsAndStates[i].Value));
 
                 if (!t.Item1.StartsWith("WonderStage"))
                     id_buildable[i] = t;

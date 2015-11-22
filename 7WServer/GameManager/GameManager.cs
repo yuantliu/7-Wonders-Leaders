@@ -498,7 +498,8 @@ namespace SevenWonders
         /// <returns></returns>
         protected Board popRandomBoard()
         {
-            int index = (new Random()).Next(0, board.Count);
+            // int index = (new Random()).Next(0, board.Count);
+            int index = 0;
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
@@ -884,6 +885,8 @@ namespace SevenWonders
 
             //Find the card with the id number and find its effects
             Card c = null;
+            // Card c = fullCardList.Find(x => x.name == name);
+
             for (int i = 0; i < p.numOfHandCards; i++)
             {
                 //found the right card
@@ -1002,13 +1005,15 @@ namespace SevenWonders
             {
                 Player p = player[i];
 
-                if (p.GetNumberOfPlayedCards() > 0)
+                if (p.bUIRequiresUpdating)
                 {
                     Card card = p.GetCardPlayed(p.GetNumberOfPlayedCards() - 1);
 
                     strCardsPlayed += string.Format("&Player{0}={1}", i, card.name);
 
                     sendCardPlayMessage = true;
+
+                    p.bUIRequiresUpdating = false;
                 }
                 /*
                 else
@@ -1106,6 +1111,8 @@ namespace SevenWonders
         /// </summary>
         public void updatePlayedCardPanel(String nickname)
         {
+            
+            // bUIRequiresUpdating = true;
 #if FALSE
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {

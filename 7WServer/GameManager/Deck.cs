@@ -97,7 +97,10 @@ namespace SevenWonders
 
             for (int i = 0; i < card.Count; ++i)
             {
-                d.Add(card[shuffledcards[i]]);
+                d.Add(card[i]);
+
+                // Make the game deterministic for now.
+                //d.Add(card[shuffledcards[i]]);
             }
 
             card = d;

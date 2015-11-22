@@ -19,7 +19,6 @@ using System.Threading;
 using System.IO;
 using System.Data;
 using System.Timers;
-using System.Web;
 
 namespace SevenWonders
 {
@@ -37,7 +36,7 @@ namespace SevenWonders
         BabylonUI babylonUI;
 
         //The client that the application will use to interact with the server.
-        public Client client { get; private set;  }
+        public Client client { get; private set; }
 
         //User's nickname
         public string nickname;
@@ -182,7 +181,7 @@ namespace SevenWonders
         /// User quits the Client program
         /// </summary>
         public void quit()
-         {
+        {
 
             //If the client is a server, send the 
         }
@@ -365,7 +364,7 @@ namespace SevenWonders
             client = new Client(this, nickname);
 
             client.InitializeConnection(myIP);
-            
+
             //display the TableUI
             tableUI = new TableUI(this);
             //join the game as a player
@@ -451,7 +450,7 @@ namespace SevenWonders
         /// <param name="s"></param>
         public void sendToHost(string s)
         {
-            if(client != null)
+            if (client != null)
                 client.SendMessageToServer(s);
         }
 
@@ -472,19 +471,19 @@ namespace SevenWonders
             if (message.Length >= 8)
             {
                 bool messageHandled = false;
-                NameValueCollection qscoll;
+                IList<KeyValuePair<string, string>> qscoll;
 
                 switch (message.Substring(0, 8))
                 {
                     case "SetBoard":
                         // Parse the query string variables into a NameValueCollection.
-                        qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
 
                         for (int i = 0; i < qscoll.Count; ++i)
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.showBoardImage(i, qscoll[i]);
+                                gameUI.showBoardImage(i, qscoll[i].Value);
                             }));
                         }
 
@@ -497,7 +496,7 @@ namespace SevenWonders
                         break;
 
                     case "SetPlyrH":
-                        qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
 
                         Application.Current.Dispatcher.Invoke(new Action(delegate
                         {
@@ -508,25 +507,25 @@ namespace SevenWonders
                         break;
 
                     case "CardPlay":
-                        qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
 
                         for (int i = 0; i < qscoll.Count; ++i)
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.showPlayedCardsPanel(i, qscoll[i]);
+                                gameUI.showPlayedCardsPanel(i, qscoll[i].Value);
                             }));
                         }
                         messageHandled = true;
                         break;
 
                     case "SetCoins":
-                        qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
                         for (int i = 0; i < qscoll.Count; ++i)
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.showPlayerBarPanel(i, qscoll[i]);
+                                gameUI.showPlayerBarPanel(i, qscoll[i].Value);
                             }));
                         }
                         messageHandled = true;
