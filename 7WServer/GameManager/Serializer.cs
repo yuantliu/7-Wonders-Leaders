@@ -32,6 +32,7 @@ namespace SevenWonders
      * Player Bar Information
      * used by showPlayerBarPanel() in MainWindow
      */
+     /*
     [Serializable]
     public class PlayerBarInformation
     {
@@ -74,11 +75,12 @@ namespace SevenWonders
         public String nickname;
         public int brick, ore, stone, wood, glass, loom, papyrus, bear, sextant, tablet, victory, shield, coin, conflict, conflictTokensCount, loss;
     }
-
+    */
     /*
      * showHandPanel
      * Information needed for by the showHandPanel() function in MainWindow. It is used to display the cards
      */
+#if FALSE
     [Serializable]
     public class HandPanelInformation
     {
@@ -87,12 +89,13 @@ namespace SevenWonders
         //Tuples would make sure that and id would always be correctly paired with its corresponding buildability status
         public Tuple<string, Buildable> []id_buildable;
         public int informationSize;
-        public int currentAge;
+        // public int currentAge;
         public Buildable stageBuildable;
 
+        /*
         public HandPanelInformation(IPlayer p, int currentAge)
         {
-            this.currentAge = currentAge;
+            // this.currentAge = currentAge;
             informationSize = p.GetNumCardsInHand();
             id_buildable = new Tuple<string, Buildable>[informationSize];
 
@@ -104,8 +107,10 @@ namespace SevenWonders
 
             stageBuildable = p.isStageBuildable();
         }
+        */
     }
 
+#endif
     /// <summary>
     /// Serializable object representing only ids of current hands. No associated available actions are here.
     /// This is only used by the Recruitment phase (Age 0)

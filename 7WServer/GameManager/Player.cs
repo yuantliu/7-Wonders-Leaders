@@ -980,7 +980,6 @@ namespace SevenWonders
             //retrieve the cost
             Cost cost = card.cost;
 
-            
             //if the player already owns a copy of the card, Return F immediatley
             for (int i = 0; i < numOfPlayedCards; i++)
             {

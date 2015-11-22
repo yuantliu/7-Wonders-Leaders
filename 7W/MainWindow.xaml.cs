@@ -34,9 +34,8 @@ namespace SevenWonders
     /// </summary>
     public partial class MainWindow : Window
     {
-
         //dimensions for the icons at the Player bars
-        public const int ICON_HEIGHT = 25;
+        const int ICON_HEIGHT = 25;
 
         //Client's coordinator
         Coordinator coordinator;
@@ -45,8 +44,9 @@ namespace SevenWonders
 
         public bool playerPlayedHisTurn = false;
 
-        // Image[] boardImage;
-        HandPanelInformation handPanelInformation;
+        Tuple<string, Buildable>[] id_buildable;
+
+        Buildable stageBuildable;
 
         List<Card> fullCardList = new List<Card>();
 
@@ -590,14 +590,27 @@ namespace SevenWonders
         /// display the Cards in Player's hands and the available actions
         /// </summary>
         /// <param name="information"></param>
-        public void showHandPanel(String information)
+        public void showHandPanel(System.Collections.Specialized.NameValueCollection cardsAndStates/*String information*/)
         {
             //the player is in a new turn now because his UI are still updating.
             //Therefore set playerPlayedHisturn to false
             playerPlayedHisTurn = false;
 
+            id_buildable = new Tuple<string, Buildable>[cardsAndStates.Count];
+
+            for (int i = 0; i < cardsAndStates.Count; ++i)
+            {
+                Tuple<string, Buildable> t = new Tuple<string, Buildable>(cardsAndStates.Keys[i],
+                    (Buildable)Enum.Parse(typeof(Buildable), cardsAndStates[i]));
+
+                if (!t.Item1.StartsWith("WonderStage"))
+                    id_buildable[i] = t;
+                else
+                    stageBuildable = t.Item2;
+            }
+
             //convert the String to an HandPanelInformation object
-            handPanelInformation = (HandPanelInformation)Marshaller.StringToObject(information);
+            //  handPanelInformation = (HandPanelInformation)Marshaller.StringToObject(information);
 
             //Update the Age label
             //since this method is only used in Age 1, 2, and 3, therefore, just show the age number
@@ -607,7 +620,7 @@ namespace SevenWonders
 
             //update Images
 
-            int numberOfCards = handPanelInformation.id_buildable.Length;
+            int numberOfCards = id_buildable.Length - 1;   // should actually strtract the number of wonder stages
 
             for (int i = 0; i < 8; ++i)
             {
@@ -616,13 +629,13 @@ namespace SevenWonders
                     BitmapImage bmpImg = new BitmapImage();
                     bmpImg.BeginInit();
                     //Item1 of the id_buildable array of Tuples represents the id image
-                    bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/cards/" + handPanelInformation.id_buildable[i].Item1 + ".jpg");
+                    bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/cards/" + id_buildable[i].Item1 + ".jpg");
                     bmpImg.EndInit();
 
                     Image img = new Image();
                     img.Source = bmpImg;
 
-                    switch (handPanelInformation.id_buildable[i].Item2)
+                    switch (id_buildable[i].Item2)
                     {
                         case Buildable.True:
                             ((ListBoxItem)handPanel.Items[i]).BorderBrush = new SolidColorBrush(Colors.Green);
@@ -650,12 +663,12 @@ namespace SevenWonders
             btnBuildStructure.IsEnabled = false;
             btnDiscardStructure.IsEnabled = false;
 
-            if (handPanelInformation.stageBuildable == Buildable.True)
+            if (stageBuildable == Buildable.True)
             {
                 btnBuildWonderStage.Content = "Build a wonder stage with this card";
                 btnBuildWonderStage.IsEnabled = true;
             }
-            else if (handPanelInformation.stageBuildable == Buildable.CommerceRequired)
+            else if (stageBuildable == Buildable.CommerceRequired)
             {
                 btnBuildWonderStage.Content = "Build a wonder stage with this card (commerce required)";
                 btnBuildWonderStage.IsEnabled = true;
@@ -670,7 +683,7 @@ namespace SevenWonders
         private void handPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Update the status of the build buttons when a card is selected.
-            switch (handPanelInformation.id_buildable[handPanel.SelectedIndex].Item2)
+            switch (id_buildable[handPanel.SelectedIndex].Item2)
             {
                 case Buildable.True:
                     btnBuildStructure.Content = "Build this structure";
@@ -707,38 +720,38 @@ namespace SevenWonders
                 switch (playedButton.Name)
                 {
                     case "btnBuildStructure":
-                        if (handPanelInformation.id_buildable[handPanel.SelectedIndex].Item2 == Buildable.True)
+                        if (id_buildable[handPanel.SelectedIndex].Item2 == Buildable.True)
                         {
                             playedButton.IsEnabled = false;
                             playerPlayedHisTurn = true;
                             // bilkisButton.IsEnabled = false;
-                            coordinator.sendToHost("B" + handPanelInformation.id_buildable[handPanel.SelectedIndex].Item1);
+                            coordinator.sendToHost("B" + id_buildable[handPanel.SelectedIndex].Item1);
                             coordinator.endTurn();
                         }
                         else
                         {
-                            coordinator.sendToHost("Cb" + handPanelInformation.id_buildable[handPanel.SelectedIndex].Item1);
+                            coordinator.sendToHost("Cb" + id_buildable[handPanel.SelectedIndex].Item1);
                         }
                         break;
                     case "btnBuildWonderStage":
-                        if (handPanelInformation.stageBuildable == Buildable.True)
+                        if (stageBuildable == Buildable.True)
                         {
                             playedButton.IsEnabled = false;
                             playerPlayedHisTurn = true;
                             // bilkisButton.IsEnabled = false;
-                            coordinator.sendToHost("S" + handPanelInformation.id_buildable[handPanel.SelectedIndex].Item1);
+                            coordinator.sendToHost("S" + id_buildable[handPanel.SelectedIndex].Item1);
                             coordinator.endTurn();
                         }
                         else
                         {
-                            coordinator.sendToHost("Cs" + handPanelInformation.id_buildable[handPanel.SelectedIndex].Item1);
+                            coordinator.sendToHost("Cs" + id_buildable[handPanel.SelectedIndex].Item1);
                         }
                         break;
                     case "btnDiscardStructure":
                         playedButton.IsEnabled = false;
                         playerPlayedHisTurn = true;
                         // bilkisButton.IsEnabled = false;
-                        coordinator.sendToHost("D" + handPanelInformation.id_buildable[handPanel.SelectedIndex].Item1);
+                        coordinator.sendToHost("D" + id_buildable[handPanel.SelectedIndex].Item1);
                         coordinator.endTurn();
                         break;
                 }

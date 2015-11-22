@@ -1061,10 +1061,18 @@ namespace SevenWonders
                 {
                     // Replaced with sending the name of the last card played for each player. ("CardPlay");
                     //prepare to send the HandPanel information
-                    String handPanelInformationString = "U" + Marshaller.ObjectToString(new HandPanelInformation(p, currentAge));
+                    string strHand = "SetPlyrH";
+
+                    for (int j = 0; j < p.GetNumCardsInHand(); ++j)
+                    {
+                        strHand += string.Format("&{0}={1}", p.hand[j].name, p.isCardBuildable(j).ToString());
+                    }
+
+                    strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
+                    // String handPanelInformationString = "U" + Marshaller.ObjectToString(new HandPanelInformation(p, currentAge));
 
                     //send the Card Panel information to that player
-                    gmCoordinator.sendMessage(p, handPanelInformationString);
+                    gmCoordinator.sendMessage(p, strHand);
                 }
 
                 //send the timer signal if the current Age is less than 4 (i.e. game is still going)

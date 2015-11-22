@@ -496,6 +496,17 @@ namespace SevenWonders
                         messageHandled = true;
                         break;
 
+                    case "SetPlyrH":
+                        qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            gameUI.showHandPanel(qscoll);
+                        }));
+
+                        messageHandled = true;
+                        break;
+
                     case "CardPlay":
                         qscoll = HttpUtility.ParseQueryString(message.Substring(9));
 
@@ -567,11 +578,15 @@ namespace SevenWonders
             //update the Hand cards and Action panel
             else if (message[0] == 'U')
             {
+                // shouldn't see this any longer
+                throw new Exception();
+                /*
                 Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
                     //update the hand panel with the information
                     gameUI.showHandPanel(message.Substring(1));
                 }));
+                */
             }
             //update the Player Bar panel
             //also start up the timer
@@ -607,10 +622,13 @@ namespace SevenWonders
             //update the played cards panel
             else if (message[0] == 'P')
             {
+                throw new Exception();
+                /*
                 Application.Current.Dispatcher.Invoke(new Action(delegate
                 {
                     gameUI.showPlayedCardsPanel(int.Parse(message.Substring(1, 1)), message.Substring(2));
                 }));
+                */
             }
             //indicate to client to start timer
             else if (message[0] == 't')
