@@ -645,15 +645,17 @@ namespace SevenWonders
         /// </summary>
         /// <param name="nickname"></param>
         /// <param name="commerceInformation"></param>
-        public void buildStructureFromCommerce(string nickname, string commerceInformation)
+        public void buildStructureFromCommerce(string nickname, string structureName, int leftcoins, int rightcoins)//string commerceInformation)
         {
             Player p = playerFromNickname(nickname);
 
+            /*
             CommerceClientToServerResponse response = (CommerceClientToServerResponse)Marshaller.StringToObject(commerceInformation);
 
             string structureName = response.structureName;
             int leftcoins = response.leftCoins;
             int rightcoins = response.rightCoins;
+            */
 
             //Find the card with the id number
             Card c = null;
@@ -717,15 +719,17 @@ namespace SevenWonders
         /// </summary>
         /// <param name="nickname"></param>
         /// <param name="information"></param>
-        public virtual void buildStageOfWonderFromCommerce(string nickname, string information)
+        public virtual void buildStageOfWonderFromCommerce(string nickname, string structureName, int leftcoins, int rightcoins)
         {
             Player p = playerFromNickname(nickname);
 
+            /*
             CommerceClientToServerResponse response = (CommerceClientToServerResponse)Marshaller.StringToObject(information);
 
             int leftcoins = response.leftCoins;
             int rightcoins = response.rightCoins;
             string structureName = response.structureName;
+            */
 
             //build the stage of wonder
             buildStageOfWonder(structureName, nickname);

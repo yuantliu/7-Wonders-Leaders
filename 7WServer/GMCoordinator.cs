@@ -85,6 +85,40 @@ namespace SevenWonders
 
                 Console.WriteLine("Message received.  From: {0}; Message={1}", nickname, message);
 
+                bool MessageHandled = false;
+                IList<KeyValuePair<string, string>> qscoll;
+
+                if (message.Length >= 8)
+                {
+                    switch (message.Substring(0, 8))
+                    {
+                        case "ComerceB":
+                            qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+
+                            gameManager.buildStructureFromCommerce(nickname, qscoll[0].Value, int.Parse(qscoll[1].Value), int.Parse(qscoll[2].Value));
+
+                            //Update the Played card panel
+                            gameManager.updatePlayedCardPanel(nickname);
+
+                            MessageHandled = true;
+                            break;
+
+                        case "ComerceS":
+                            qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+
+                            // gameManager.buildStageOfWonderFromCommerce(nickname, message.Substring(2));
+                            gameManager.buildStageOfWonderFromCommerce(nickname, qscoll[0].Value, int.Parse(qscoll[1].Value), int.Parse(qscoll[2].Value));
+
+
+                            MessageHandled = true;
+
+                            break;
+                    }
+                }
+
+                if (MessageHandled)
+                    return;
+
                 //#: Chat string.
                 if (message[0] == '#')
                 {
@@ -287,20 +321,27 @@ namespace SevenWonders
                         gameManager.updateCommercePanel(message.Substring(2), nickname, true);
                     }
 
+                    /*
                     //player built the card from commerce window
                     else if (message[1] == 'B')
                     {
+                        throw new Exception();
+
                         gameManager.buildStructureFromCommerce(nickname, message.Substring(2));
                         //Update the Played card panel
                         gameManager.updatePlayedCardPanel(nickname);
+
+                        throw new Exception();
                     }
 
                     //player build stage of wonder from commerce window
                     else if (message[1] == 'S')
                     {
+                        throw new Exception();
                         gameManager.buildStageOfWonderFromCommerce(nickname, message.Substring(2));
 
                     }
+                    */
                 }
                 //t: player has taken an action for the turn
                 else if (message[0] == 't')
@@ -409,6 +450,11 @@ namespace SevenWonders
                 {
                     gameManager.playCourtesansGuild(nickname, message.Substring(1));
                     gameManager.updatePlayedCardPanel(nickname);
+                }
+                else
+                {
+                    // shouldn't get here.
+                    throw new Exception();
                 }
             }
         }

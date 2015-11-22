@@ -306,6 +306,23 @@ namespace SevenWonders
         }
     }
 
+
+    /// <summary>
+    /// Used by CommerceInformation to store each player's commerce info
+    /// </summary>
+    [Serializable]
+    public class PlayerCommerceInfo
+    {
+        public string name;
+        public DAG dag;
+
+        public PlayerCommerceInfo(IPlayer player)
+        {
+            this.name = player.GetNickName();
+            dag = player.GetDAG();
+        }
+    }
+
     /// <summary>
     /// Contains information needed to construct the NewCommerce UIs. Sent from Server to Client
     /// </summary>
@@ -354,22 +371,7 @@ namespace SevenWonders
 
     }
 
-    /// <summary>
-    /// Used by CommerceInformation to store each player's commerce info
-    /// </summary>
-    [Serializable]
-    public class PlayerCommerceInfo
-    {
-        public string name;
-        public DAG dag;
-
-        public PlayerCommerceInfo(IPlayer player)
-        {
-            this.name = player.GetNickName();
-            dag = player.GetDAG();
-        }
-    }
-
+    /*
     /// <summary>
     /// Used by Client to send commerce response to Server
     /// if id == 0, then we know that we are building the current stage of wonder
@@ -382,4 +384,5 @@ namespace SevenWonders
         // public int leftCoins, rightCoins, id;
         public int leftCoins, rightCoins;
     }
+    */
 }

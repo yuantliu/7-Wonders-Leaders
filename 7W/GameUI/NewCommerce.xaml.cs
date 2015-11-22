@@ -785,6 +785,7 @@ namespace SevenWonders
         {
             if ((resourcesNeeded == 0 && hasDiscount == false) || (resourcesNeeded == 1 && hasDiscount == true))
             {
+                /*
                 //construct the information
                 CommerceClientToServerResponse response = new CommerceClientToServerResponse();
                 response.leftCoins = leftcoin;
@@ -795,8 +796,10 @@ namespace SevenWonders
                 string serializedResponse = Marshaller.ObjectToString(response);
 
                 //send the appropriate information
+
                 if (isStage == true)
                 {
+                    string strResponseCmd = "ComerceB";
                     //stage
                     c.sendToHost("CS" + serializedResponse);
                 }
@@ -805,6 +808,10 @@ namespace SevenWonders
                     //build struct
                     c.sendToHost("CB" + serializedResponse);
                 }
+                */
+
+                string strResponse = string.Format("Comerce{0}&structureName={1}&leftCoins={2}&rightCoins={3}", isStage ? "S" : "B", structureName, leftcoin, rightcoin);
+                c.sendToHost(strResponse);
 
                 //end turn
                 c.endTurn();
