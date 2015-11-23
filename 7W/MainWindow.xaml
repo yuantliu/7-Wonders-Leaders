@@ -4,28 +4,38 @@
         Title="7 Wonders" Height="600" Width="1040" WindowStartupLocation="CenterScreen" Icon="Resources/Images/stage.png">
     <Grid Name="mainGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0">
-        <ListBox Grid.Column="0" Name="handPanel" SelectionChanged="handPanel_SelectionChanged">
-            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
-            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
-            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
-            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
-            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
-            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
-            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
-            <ListBoxItem Height="120" BorderThickness="3"></ListBoxItem>
-        </ListBox>
-            <Button Name="btnBuildStructure" Content="Build this structure" Click="cardActionButtonPressed"></Button>
-            <Button Name="btnBuildWonderStage" Content="Build a wonder stage with this card" Click="cardActionButtonPressed"></Button>
-            <Button Name="btnDiscardStructure" Content="Discard this structure" Click="cardActionButtonPressed"></Button>
-        </StackPanel>
+
+        <Grid Grid.Column="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="6*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <ListBox Grid.Row="0" Name="handPanel" SelectionChanged="handPanel_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBoxItem BorderThickness="3"></ListBoxItem>
+                    <ListBoxItem BorderThickness="3"></ListBoxItem>
+                    <ListBoxItem BorderThickness="3"></ListBoxItem>
+                    <ListBoxItem BorderThickness="3"></ListBoxItem>
+                    <ListBoxItem BorderThickness="3"></ListBoxItem>
+                    <ListBoxItem BorderThickness="3"></ListBoxItem>
+                    <ListBoxItem BorderThickness="3"></ListBoxItem>
+                    <!-- Add an 8th one for the extra card when the Cities version is played -->
+                    <ListBoxItem BorderThickness="3" Visibility="Hidden"></ListBoxItem>
+                </ListBox>
+                <StackPanel Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom">
+                    <Button Name="btnBuildStructure" Content="Build this structure" Click="cardActionButtonPressed"></Button>
+                    <Button Name="btnBuildWonderStage" Content="Build a wonder stage with this card" Click="cardActionButtonPressed"></Button>
+                    <Button Name="btnDiscardStructure" Content="Discard this structure" Click="cardActionButtonPressed"></Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
@@ -34,9 +44,9 @@
                 <RowDefinition Height="1*"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Grid Name="SeatC" Grid.Row="2">
+            <Grid Name="SeatC" Grid.Row="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="6*"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
@@ -78,7 +88,7 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Name="SeatD">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="6*"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
@@ -114,8 +124,8 @@
             </Grid>
             <Grid Grid.Row="1" Name="SeatB">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="417"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="6*"/>
+                    <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Grid>
@@ -138,8 +148,8 @@
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="71"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" Name="StatusPanelB">
                         <Label Name="CoinsB"></Label>
@@ -156,7 +166,7 @@
             </Grid.RowDefinitions>
             <Grid Name="SeatE" Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="6*"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
@@ -192,7 +202,7 @@
             </Grid>
             <Grid Name="SeatA" Grid.Row="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="6*"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Grid Row="0">
@@ -234,8 +244,8 @@
             </Grid.RowDefinitions>
             <Grid Name="SeatF" Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="417"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="6*"/>
+                    <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Grid>
@@ -258,8 +268,8 @@
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="71"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" Name="StatusPanelF">
                         <Label Name="CoinsF"></Label>
@@ -270,8 +280,8 @@
             </Grid>
             <Grid Name="SeatH" Grid.Row="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="417"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="6*"/>
+                    <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Grid>
@@ -294,8 +304,8 @@
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="71"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" Name="StatusPanelH">
                         <Label Name="CoinsH"></Label>
@@ -313,7 +323,7 @@
             </Grid.RowDefinitions>
             <Grid Name="SeatG" Grid.Row="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="6*"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
@@ -346,7 +356,6 @@
                     <Image Grid.Column="1" Name="PlayerBoardG">
                     </Image>
                 </Grid>
-
             </Grid>
         </Grid>
     </Grid>
