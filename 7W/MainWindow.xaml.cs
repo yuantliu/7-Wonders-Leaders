@@ -271,41 +271,40 @@ namespace SevenWonders
             // should actually subtract the number of wonder stages that were included.  China can build them in any order the player wishes.
             int numberOfCards = id_buildable.Length - 1;
 
-            for (int i = 0; i < 8; ++i)
+            handPanel.Items.Clear();
+
+            for (int i = 0; i < numberOfCards; ++i)
             {
-                if (i < numberOfCards)
+                BitmapImage bmpImg = new BitmapImage();
+                bmpImg.BeginInit();
+                //Item1 of the id_buildable array of Tuples represents the id image
+                bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/cards/" + id_buildable[i].Item1 + ".jpg");
+                bmpImg.EndInit();
+
+                Image img = new Image();
+                img.Source = bmpImg;
+
+                ListBoxItem entry = new ListBoxItem();
+                entry.Name = id_buildable[i].Item2.ToString();
+                entry.Content = img;
+                entry.BorderThickness = new Thickness(3);
+
+                switch (id_buildable[i].Item2)
                 {
-                    BitmapImage bmpImg = new BitmapImage();
-                    bmpImg.BeginInit();
-                    //Item1 of the id_buildable array of Tuples represents the id image
-                    bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/cards/" + id_buildable[i].Item1 + ".jpg");
-                    bmpImg.EndInit();
+                    case Buildable.True:
+                        entry.BorderBrush = new SolidColorBrush(Colors.Green);
+                        break;
 
-                    Image img = new Image();
-                    img.Source = bmpImg;
+                    case Buildable.CommerceRequired:
+                        entry.BorderBrush = new SolidColorBrush(Colors.Yellow);
+                        break;
 
-                    switch (id_buildable[i].Item2)
-                    {
-                        case Buildable.True:
-                            ((ListBoxItem)handPanel.Items[i]).BorderBrush = new SolidColorBrush(Colors.Green);
-                            break;
-
-                        case Buildable.CommerceRequired:
-                            ((ListBoxItem)handPanel.Items[i]).BorderBrush = new SolidColorBrush(Colors.Yellow);
-                            break;
-
-                        case Buildable.False:
-                            ((ListBoxItem)handPanel.Items[i]).BorderBrush = new SolidColorBrush(Colors.Gray);
-                            break;
-                    }
-                   
-                    ((ListBoxItem)handPanel.Items[i]).Content = img;
-                    ((ListBoxItem)handPanel.Items[i]).Visibility = Visibility.Visible;
+                    case Buildable.False:
+                        entry.BorderBrush = new SolidColorBrush(Colors.Gray);
+                        break;
                 }
-                else
-                {
-                    ((ListBoxItem)handPanel.Items[i]).Visibility = Visibility.Hidden;
-                }
+
+                handPanel.Items.Add(entry);
             }
 
             // The player must choose a card before 
@@ -331,8 +330,11 @@ namespace SevenWonders
 
         private void handPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (handPanel.SelectedItem == null)
+                return;
+
             // Update the status of the build buttons when a card is selected.
-            switch (id_buildable[handPanel.SelectedIndex].Item2)
+            switch ((Buildable)Enum.Parse(typeof(Buildable), ((ListBoxItem)handPanel.SelectedItem).Name))
             {
                 case Buildable.True:
                     btnBuildStructure.Content = "Build this structure";

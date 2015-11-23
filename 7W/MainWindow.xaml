@@ -18,17 +18,8 @@
                     <RowDefinition Height="6*"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
-                <ListBox Grid.Row="0" Name="handPanel" SelectionChanged="handPanel_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                    <ListBoxItem BorderThickness="3"></ListBoxItem>
-                    <ListBoxItem BorderThickness="3"></ListBoxItem>
-                    <ListBoxItem BorderThickness="3"></ListBoxItem>
-                    <ListBoxItem BorderThickness="3"></ListBoxItem>
-                    <ListBoxItem BorderThickness="3"></ListBoxItem>
-                    <ListBoxItem BorderThickness="3"></ListBoxItem>
-                    <ListBoxItem BorderThickness="3"></ListBoxItem>
-                    <!-- Add an 8th one for the extra card when the Cities version is played -->
-                    <ListBoxItem BorderThickness="3" Visibility="Hidden"></ListBoxItem>
-                </ListBox>
+                <ListBox Grid.Row="0" Name="handPanel" SelectionChanged="handPanel_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+
                 <StackPanel Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom">
                     <Button Name="btnBuildStructure" Content="Build this structure" Click="cardActionButtonPressed"></Button>
                     <Button Name="btnBuildWonderStage" Content="Build a wonder stage with this card" Click="cardActionButtonPressed"></Button>
