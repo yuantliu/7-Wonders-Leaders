@@ -95,27 +95,6 @@ namespace SevenWonders
         }
         */
 
-#if FALSE
-
-        /// <summary>
-        /// Discard card in first hand position
-        /// </summary>
-        public void discardRandomCard()
-        {
-            //grab the id number of the first Card to the right by accessing the name
-            if (gameUI.buildStructureButton[0].Name.StartsWith("BuildCommerce_"))
-            {
-                sendToHost("D" + gameUI.buildStructureButton[0].Name.Substring(14));
-            }
-            else
-            {
-                sendToHost("D" + gameUI.buildStructureButton[0].Name.Substring(6));
-            }
-
-            endTurn();
-        }
-#endif
-
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if FALSE
@@ -147,17 +126,6 @@ namespace SevenWonders
         }
 #endif
 
-#if FALSE
-        public void updateCardImage(string s)
-        {
-            gameUI.showCardImage(s);
-        }
-
-        public void updatePlayedCardsPanel(string s)
-        {
-            gameUI.showPlayedCardsPanel(s);
-        }
-#endif
 
         /// <summary>
         /// Update the Chat logs
@@ -513,7 +481,7 @@ namespace SevenWonders
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.showPlayedCardsPanel(i, qscoll[i].Value);
+                                gameUI.updateCardsPlayed(Convert.ToInt32(Char.GetNumericValue(qscoll[i].Key, 6)), qscoll[i].Value);
                             }));
                         }
                         messageHandled = true;
@@ -574,60 +542,10 @@ namespace SevenWonders
                     }));
                 }
             }
-            //update the Hand cards and Action panel
-            else if (message[0] == 'U')
-            {
-                // shouldn't see this any longer
-                throw new Exception();
-                /*
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    //update the hand panel with the information
-                    gameUI.showHandPanel(message.Substring(1));
-                }));
-                */
-            }
-            //update the Player Bar panel
-            //also start up the timer
-            else if (message[0] == 'B')
-            {
-                // should not get here any more.
-
-                throw new Exception();
-                /*
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    gameUI.showPlayerBarPanel(message.Substring(1));
-                }));
-                */
-            }
             //update the current stage of wonder information
             else if (message[0] == 's')
             {
                 // updateCurrentStageLabelAndStartTimer(message);
-            }
-            //update the board panel
-            else if (message[0] == 'b')
-            {
-                // Now handled by the first "if" statement, above
-                //"b_(name)"
-                /*
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    gameUI.showBoardImage(message.Substring(1));
-                }));
-                */
-            }
-            //update the played cards panel
-            else if (message[0] == 'P')
-            {
-                throw new Exception();
-                /*
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    gameUI.showPlayedCardsPanel(int.Parse(message.Substring(1, 1)), message.Substring(2));
-                }));
-                */
             }
             //indicate to client to start timer
             else if (message[0] == 't')
@@ -687,17 +605,6 @@ namespace SevenWonders
                     }
                 }
             }
-            //receive the information on view details for player
-            else if (message[0] == 'V')
-            {
-                /*
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    //pass this information to handleViewDetails in GameUI
-                    gameUI.handleViewDetails(message);
-                }));
-                */
-            }
             //received an unable to join message from the server
             //UC-02 R07
             else if (message[0] == '0')
@@ -748,6 +655,11 @@ namespace SevenWonders
             else if (message[0] == 'e')
             {
                 // timer.Stop();
+            }
+            else
+            {
+                // recieved a message from the server that the client cannot handle.
+                throw new Exception();
             }
         }
 
