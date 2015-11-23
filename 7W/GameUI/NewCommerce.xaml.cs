@@ -42,7 +42,7 @@ namespace SevenWonders
         bool isStage;
 
         //current accumulated resources
-        string currentResource = "";
+        string strCurrentResourcesUsed = "";
         //how much coin to pay to left and right
         int leftcoin = 0, rightcoin = 0;
         //how many resources are still needed. 0 means no more resources are needed
@@ -459,7 +459,7 @@ namespace SevenWonders
             int previous = resourcesNeeded;
 
             //add to the currentResources
-            string newResource = currentResource + resource;
+            string strPossibleNewResourceList = strCurrentResourcesUsed + resource;
 
             //check if the newResource gets us closer to paying the cost.
             //If the newResource has the same distance as previous, then we have not gotten closer, and therefore we have just added an unnecessar resource
@@ -470,121 +470,45 @@ namespace SevenWonders
                 MessageBox.Show("You have for all necessary resources already");
                 return;
             }
-            else if (DAG.eliminate(cardCost, 1, newResource).Total() == previous)
+            else if (DAG.eliminate(cardCost.Copy(), false, 1, strPossibleNewResourceList).Total() == previous)
             {
                 MessageBox.Show("This resource will not help you pay for your cost");
                 return;
             }
 
+            bool isResourceRawMaterial = (resource == 'B' || resource == 'O' || resource == 'S' || resource == 'W');
+            bool isResourceGoods = (resource == 'G' || resource == 'C' || resource == 'P');
+
             //add the appropriate amount of coins to the appropriate recepient
             //as well as doing appropriate checks
             if (location == 'L')
             {
-                if (leftRawMarket == true && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
+                int coinsRequired = (isResourceRawMaterial && leftRawMarket) || (isResourceGoods && leftManuMarket) ? 1 : 2;
+
+                if ((PLAYER_COIN - (leftcoin + rightcoin)) <= coinsRequired)
                 {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
-                    {
-                        leftcoin++;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
+                    MessageBox.Show("You cannot afford this resource");
+                    return;
                 }
-                else if (leftRawMarket == false && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
-                {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
-                    {
-                        leftcoin += 2;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
-                }
-                else if (leftManuMarket == true && (resource == 'G' || resource == 'L' || resource == 'P'))
-                {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
-                    {
-                        leftcoin++;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
-                }
-                else if (leftManuMarket == false && (resource == 'G' || resource == 'L' || resource == 'P'))
-                {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
-                    {
-                        leftcoin += 2;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
-                }
+
+                leftcoin += coinsRequired;
             }
             else if (location == 'R')
             {
-                if (rightRawMarket == true && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
+                int coinsRequired = (isResourceRawMaterial && rightRawMarket) || (isResourceGoods && rightManuMarket) ? 1 : 2;
+
+                if ((PLAYER_COIN - (leftcoin + rightcoin)) <= coinsRequired)
                 {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
-                    {
-                        rightcoin++;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
+                    MessageBox.Show("You cannot afford this resource");
+                    return;
                 }
-                else if (rightRawMarket == false && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
-                {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
-                    {
-                        rightcoin += 2;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
-                }
-                else if (rightManuMarket == true && (resource == 'G' || resource == 'L' || resource == 'P'))
-                {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
-                    {
-                        rightcoin++;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
-                }
-                else if (rightManuMarket == false && (resource == 'G' || resource == 'L' || resource == 'P'))
-                {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
-                    {
-                        rightcoin += 2;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
-                }
+
+                rightcoin += coinsRequired;
             }
 
-            //We have gotten closer to paying for the resource
-            //set the new values
+            // The resource chosen is good: it is required and affordable.
             resourcesNeeded--;
-            currentResource = newResource;
+            strCurrentResourcesUsed = strPossibleNewResourceList;
 
             //disable (make hidden) all buttons on the same level
             if (location == 'L')
@@ -651,7 +575,7 @@ namespace SevenWonders
         private void generateCostPanel()
         {
             // generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost, currentResource));
-            generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost, 1, currentResource));
+            generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost.Copy(), false, 1, strCurrentResourcesUsed));
         }
 
         /// <summary>
@@ -760,7 +684,7 @@ namespace SevenWonders
         /// </summary>
         private void reset()
         {
-            currentResource = "";
+            strCurrentResourcesUsed = string.Empty;
             leftcoin = 0;
             rightcoin = 0;
 

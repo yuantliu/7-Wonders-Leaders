@@ -249,11 +249,11 @@ namespace SevenWonders
 
     // formerly category 0 or '$'
     // Used when losing money
-    public class MoneyEffect : Effect
+    public class CostEffect : Effect
     {
         public int coins;
 
-        public MoneyEffect(int coins)
+        public CostEffect(int coins)
         {
             this.coins = coins;
         }

@@ -595,7 +595,7 @@ namespace SevenWonders
             }
             */
 
-            p.storeAction(new MoneyEffect(costInCoins));
+            p.storeAction(new CostEffect(costInCoins));
 
             //determine if the player should get 2 coins for having those leaders (get 2 coins for playing a yellow and playing a pre-req
             giveCoinFromLeadersOnBuild(p, c);
@@ -686,7 +686,7 @@ namespace SevenWonders
 
             //store the deduction
             // p.storeAction("$" + commerceCost);
-            p.storeAction(new SimpleEffect(commerceCost, '$'));
+            p.storeAction(new CostEffect(commerceCost));
 
             //give the coins that neigbours earned from commerce
             // p.leftNeighbour.storeAction("1" + leftcoins + "$");
@@ -737,7 +737,7 @@ namespace SevenWonders
 
             //store the deduction
             // p.storeAction("$" + commerceCost);
-            p.storeAction(new MoneyEffect(commerceCost));
+            p.storeAction(new CostEffect(commerceCost));
 
             //give the coins that neigbours earned from commerce
             // p.leftNeighbour.storeAction("1" + leftcoins + "$");

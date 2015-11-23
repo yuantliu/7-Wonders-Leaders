@@ -22,6 +22,7 @@ namespace SevenWonders
         public Image boardImage;
         public Dictionary<StructureType, StackPanel> structuresBuilt = new Dictionary<StructureType, StackPanel>(7);
         public Label coinsLabel;
+        public Label nameLabel;
 
         public PlayerState()
         {
@@ -74,6 +75,7 @@ namespace SevenWonders
             playerState[0].structuresBuilt[StructureType.Civilian] = CivilianStructuresA;
             playerState[0].structuresBuilt[StructureType.Guild] = GuildStructuresA;
             playerState[0].coinsLabel = CoinsA;
+            playerState[0].nameLabel = NameA;
 
             switch (c.numPlayers)
             {
@@ -88,6 +90,7 @@ namespace SevenWonders
                     playerState[1].structuresBuilt[StructureType.Civilian] = CivilianStructuresF;
                     playerState[1].structuresBuilt[StructureType.Guild] = GuildStructuresF;
                     playerState[1].coinsLabel = CoinsF;
+                    playerState[1].nameLabel = NameF;
 
                     playerState[2].playerGrid = SeatD;
                     playerState[2].boardImage = PlayerBoardD;
@@ -99,6 +102,8 @@ namespace SevenWonders
                     playerState[2].structuresBuilt[StructureType.Civilian] = CivilianStructuresD;
                     playerState[2].structuresBuilt[StructureType.Guild] = GuildStructuresD;
                     playerState[2].coinsLabel = CoinsD;
+                    playerState[2].nameLabel = NameD;
+
                     break;
 
                 case 4:
@@ -112,6 +117,7 @@ namespace SevenWonders
                     playerState[1].structuresBuilt[StructureType.Civilian] = CivilianStructuresC;
                     playerState[1].structuresBuilt[StructureType.Guild] = GuildStructuresC;
                     playerState[1].coinsLabel = CoinsC;
+                    playerState[1].nameLabel = NameC;
 
                     playerState[2].playerGrid = SeatE;
                     playerState[2].boardImage = PlayerBoardE;
@@ -123,6 +129,7 @@ namespace SevenWonders
                     playerState[2].structuresBuilt[StructureType.Civilian] = CivilianStructuresE;
                     playerState[2].structuresBuilt[StructureType.Guild] = GuildStructuresE;
                     playerState[2].coinsLabel = CoinsE;
+                    playerState[2].nameLabel = NameE;
 
                     playerState[3].playerGrid = SeatG;
                     playerState[3].boardImage = PlayerBoardG;
@@ -134,6 +141,7 @@ namespace SevenWonders
                     playerState[3].structuresBuilt[StructureType.Civilian] = CivilianStructuresG;
                     playerState[3].structuresBuilt[StructureType.Guild] = GuildStructuresG;
                     playerState[3].coinsLabel = CoinsG;
+                    playerState[3].nameLabel = NameG;
 
                     break;
 

@@ -11,6 +11,7 @@ namespace SevenWonders
 {
     public class Marshaller
     {
+        // Used by the server
         public static string ObjectToString(object obj)
         {
             MemoryStream ms = new MemoryStream();
@@ -18,6 +19,7 @@ namespace SevenWonders
             return Convert.ToBase64String(ms.ToArray());
         }
 
+        // Used on the client side
         public static object StringToObject(string base64String)
         {
             byte[] bytes = Convert.FromBase64String(base64String);
@@ -28,89 +30,6 @@ namespace SevenWonders
         }
     }
 
-    /*
-     * Player Bar Information
-     * used by showPlayerBarPanel() in MainWindow
-     */
-     /*
-    [Serializable]
-    public class PlayerBarInformation
-    {
-        public PlayerBarInformationIndividual[] playerInfo;
-        public int numOfPlayers;
-
-        public PlayerBarInformation(IPlayer[] player)
-        {
-            numOfPlayers = player.Length;
-
-            playerInfo = new PlayerBarInformationIndividual[numOfPlayers];
-            
-            for (int i = 0; i < player.Length; i++)
-            {
-                playerInfo[i] = new PlayerBarInformationIndividual();
-                playerInfo[i].nickname = player[i].GetNickName();
-                playerInfo[i].brick = player[i].GetBrick();
-                playerInfo[i].ore = player[i].GetOre();
-                playerInfo[i].stone = player[i].GetStone();
-                playerInfo[i].wood = player[i].GetWood();
-                playerInfo[i].glass = player[i].GetGlass();
-                playerInfo[i].loom = player[i].GetLoom();
-                playerInfo[i].papyrus = player[i].GetPapyrus();
-                playerInfo[i].bear = player[i].GetBearTrap();
-                playerInfo[i].sextant = player[i].GetSextant();
-                playerInfo[i].tablet = player[i].GetTablet();
-                playerInfo[i].victory = player[i].GetVictoryPoint();
-                playerInfo[i].shield = player[i].GetShield();
-                playerInfo[i].coin = player[i].GetCoin();
-                playerInfo[i].conflict = player[i].GetConflictTokenOne() + (player[i].GetConflictTokenTwo() * 3) + (player[i].GetConflictTokenThree() * 5);
-                playerInfo[i].conflictTokensCount = player[i].GetConflictTokenOne() + player[i].GetConflictTokenTwo() + player[i].GetConflictTokenThree();
-                playerInfo[i].loss = player[i].GetLossToken();
-            }
-        }
-    }
-
-    [Serializable]
-    public class PlayerBarInformationIndividual
-    {
-        public String nickname;
-        public int brick, ore, stone, wood, glass, loom, papyrus, bear, sextant, tablet, victory, shield, coin, conflict, conflictTokensCount, loss;
-    }
-    */
-    /*
-     * showHandPanel
-     * Information needed for by the showHandPanel() function in MainWindow. It is used to display the cards
-     */
-#if FALSE
-    [Serializable]
-    public class HandPanelInformation
-    {
-        //use tuples to represent the ID-buildable pair
-        //the char can be T, F, or C (for buildable with commerce)
-        //Tuples would make sure that and id would always be correctly paired with its corresponding buildability status
-        public Tuple<string, Buildable> []id_buildable;
-        public int informationSize;
-        // public int currentAge;
-        public Buildable stageBuildable;
-
-        /*
-        public HandPanelInformation(IPlayer p, int currentAge)
-        {
-            // this.currentAge = currentAge;
-            informationSize = p.GetNumCardsInHand();
-            id_buildable = new Tuple<string, Buildable>[informationSize];
-
-            //add the IDs and their buildability into array of pair-Tuples
-            for (int i = 0; i < informationSize; i++)
-            {
-                id_buildable[i] = new Tuple<string, Buildable>(p.GetCard(i).name, p.isCardBuildable(i));
-            }
-
-            stageBuildable = p.isStageBuildable();
-        }
-        */
-    }
-
-#endif
     /// <summary>
     /// Serializable object representing only ids of current hands. No associated available actions are here.
     /// This is only used by the Recruitment phase (Age 0)
@@ -130,81 +49,6 @@ namespace SevenWonders
         }
     }
 
-    /*
-    /// <summary>
-    /// Information to be sent when player wishes to view the details of a particular player
-    /// </summary>
-    [Serializable]
-    public class ViewDetailsInformation
-    {
-        //Cards that the player has played
-        //pairs of tuples will represent each name and id
-        //there needs to be 8 lists of tuples. One set for each colour.
-        public List<Tuple<string, int>> blueCards = new List<Tuple<string, int>>();
-        public List<Tuple<string, int>> brownCards = new List<Tuple<string, int>>();
-        public List<Tuple<string, int>> greenCards = new List<Tuple<string, int>>();
-        public List<Tuple<string, int>> greyCards = new List<Tuple<string, int>>();
-        public List<Tuple<string, int>> purpleCards = new List<Tuple<string, int>>();
-        public List<Tuple<string, int>> redCards = new List<Tuple<string, int>>();
-        public List<Tuple<string, int>> yellowCards = new List<Tuple<string, int>>();
-        public List<Tuple<string, int>> whiteCards = new List<Tuple<string, int>>();
-
-        public String boardname;
-
-        public int numOfStagesBuilt;
-
-        public ViewDetailsInformation(IPlayer p)
-        {
-            numOfStagesBuilt = p.GetCurrentStageOfWonder();
-
-            //set the board name
-            boardname = p.GetBoardName();
-
-            for (int i = 0; i < p.GetNumberOfPlayedCards(); i++)
-            {
-                if (p.GetCardPlayed(i).colour == "Blue")
-                {
-                    blueCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
-                }
-
-                else if (p.GetCardPlayed(i).colour == "Brown")
-                {
-                    brownCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
-                }
-
-                else if (p.GetCardPlayed(i).colour == "Green")
-                {
-                    greenCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
-                }
-
-                else if (p.GetCardPlayed(i).colour == "Grey")
-                {
-                    greyCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
-                }
-
-                else if (p.GetCardPlayed(i).colour == "Purple")
-                {
-                    purpleCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
-                }
-
-                else if (p.GetCardPlayed(i).colour == "Red")
-                {
-                    redCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
-                }
-
-                else if (p.GetCardPlayed(i).colour == "Yellow")
-                {
-                    yellowCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
-                }
-
-                else if (p.GetCardPlayed(i).colour == "White")
-                {
-                    whiteCards.Add(new Tuple<string, int>(p.GetCardPlayed(i).name, p.GetCardPlayed(i).id));
-                }
-            }
-        }
-    }
-    */
     /// <summary>
     /// Information for dialogues that involve playing cards for free
     /// For example, Olympia (for current hand cards) and Rome (for Leader cards)
@@ -251,24 +95,6 @@ namespace SevenWonders
             {
                 throw new NotImplementedException();
             }
-        }
-    }
-
-    /// <summary>
-    /// Class to be sent to form the commerce window and containing commerce information
-    /// Contains information made by Yunus
-    /// As well as whether the player has the appropriate discount or not
-    /// </summary>
-    [Serializable]
-    public class CommerceInformationPackage
-    {
-        public string information;
-        public bool hasDiscount;
-
-        public CommerceInformationPackage(string information, bool hasDiscount)
-        {
-            this.information = information;
-            this.hasDiscount = hasDiscount;
         }
     }
 
@@ -370,19 +196,4 @@ namespace SevenWonders
         }
 
     }
-
-    /*
-    /// <summary>
-    /// Used by Client to send commerce response to Server
-    /// if id == 0, then we know that we are building the current stage of wonder
-    /// </summary>
-    [Serializable]
-    public class CommerceClientToServerResponse
-    {
-        public string structureName;
-
-        // public int leftCoins, rightCoins, id;
-        public int leftCoins, rightCoins;
-    }
-    */
 }

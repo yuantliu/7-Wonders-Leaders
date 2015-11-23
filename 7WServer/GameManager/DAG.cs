@@ -147,7 +147,7 @@ namespace SevenWonders
 	     * @param A = COST
 	     * @param B = RESOURCES
 	     */
-        public static Cost eliminate(Cost structureCost, int multiplier, string resourceString)
+        public static Cost eliminate(Cost structureCost, bool stopAfterAMatchIsFound, int multiplier, string resourceString)
         {
             // interesting.  structs do not need to be instantiated.  Classes do.  But structs
             // can only be PoD types, they cannot contain functions.
@@ -162,7 +162,7 @@ namespace SevenWonders
                         if (c.wood != 0)
                         {
                             c.wood = Math.Max(c.wood - multiplier, 0);
-                            return c;
+                            if (stopAfterAMatchIsFound) return c;
                         }
                         break;
 
@@ -170,7 +170,7 @@ namespace SevenWonders
                         if (c.stone != 0)
                         {
                             c.stone = Math.Max(c.stone - multiplier, 0);
-                            return c;
+                            if (stopAfterAMatchIsFound) return c;
                         }
                         break;
 
@@ -178,7 +178,7 @@ namespace SevenWonders
                         if (c.clay != 0)
                         {
                             c.clay = Math.Max(c.clay - multiplier, 0);
-                            return c;
+                            if (stopAfterAMatchIsFound) return c;
                         }
                         break;
 
@@ -186,7 +186,7 @@ namespace SevenWonders
                         if (c.ore != 0)
                         {
                             c.ore = Math.Max(c.ore - multiplier, 0);
-                            return c;
+                            if (stopAfterAMatchIsFound) return c;
                         }
                         break;
 
@@ -194,7 +194,7 @@ namespace SevenWonders
                         if (c.cloth != 0)
                         {
                             c.cloth = Math.Max(c.cloth - multiplier, 0);
-                            return c;
+                            if (stopAfterAMatchIsFound) return c;
                         }
                         break;
 
@@ -202,7 +202,7 @@ namespace SevenWonders
                         if (c.glass != 0)
                         {
                             c.glass = Math.Max(c.glass - multiplier, 0);
-                            return c;
+                            if (stopAfterAMatchIsFound) return c;
                         }
                         break;
 
@@ -210,7 +210,7 @@ namespace SevenWonders
                         if (c.papyrus != 0)
                         {
                             c.papyrus = Math.Max(c.papyrus - multiplier, 0);
-                            return c;
+                            if (stopAfterAMatchIsFound) return c;
                         }
                         break;
 
@@ -220,23 +220,6 @@ namespace SevenWonders
             }
 
             return c;
-
-            /*
-            for (int i = 0; i < B.Length; i++)
-            {
-                for (int j = 0; j < A.Length; j++)
-                {
-                    if (A[j] == B[i])
-                    {
-                        A = A.Substring(0, j) + A.Substring(j + 1);
-                        break;
-                    }
-                }
-            }
-
-            return A;
-            */
-
         }
 
         /**
@@ -247,13 +230,13 @@ namespace SevenWonders
         {
             foreach (SimpleEffect e in graph.simpleResources)
             {
-                if (eliminate(cost, e.multiplier, e.type.ToString()).IsZero())
+                if (eliminate(cost, true, e.multiplier, e.type.ToString()).IsZero())
                     return true;
             }
 
             foreach (ResourceChoiceEffect e in graph.effectChoices)
             {
-                if (eliminate(cost, 1, e.strChoiceData).IsZero())
+                if (eliminate(cost, true, 1, e.strChoiceData).IsZero())
                     return true;
             }
             /*

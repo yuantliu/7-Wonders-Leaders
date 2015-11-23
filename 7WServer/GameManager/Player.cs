@@ -349,9 +349,9 @@ namespace SevenWonders
 
                 //category $: deduct a given amount of coins
                 // if (actactions[i][0] == '$')
-                if (act is MoneyEffect)
+                if (act is CostEffect)
                 {
-                    coin -= ((MoneyEffect)act).coins;// int.Parse(actions[i].Substring(1));
+                    coin -= ((CostEffect)act).coins;
                 }
                 //category 1: give one kind of non-science thing
                 // else if (actions[i][0] == '1')

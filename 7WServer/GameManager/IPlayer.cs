@@ -8,55 +8,14 @@ namespace SevenWonders
 {
     public interface IPlayer
     {
-        bool GetIsAI();
-
         String GetNickName();
 
-        String GetBoardName();
-
-        //current Stage of wonder
-        int GetCurrentStageOfWonder();
-
-        //resources
-        int GetBrick();
-
-        int GetOre();
-
-        int GetStone();
-
-        int GetWood();
-
-        int GetGlass();
-
-        int GetLoom();
-
-        int GetPapyrus();
-
         int GetCoin();
-
-        //science
-        int GetBearTrap();
-        int GetTablet();
-        int GetSextant();
-
-        //Points and stuff
-        int GetVictoryPoint();
-
-        int GetShield();
-
-        int GetLossToken();
-
-        int GetConflictTokenOne();
-
-        int GetConflictTokenTwo();
-
-        int GetConflictTokenThree();
 
         int GetNumCardsInHand();
 
         Card GetCard(int i);
 
-        // TODO: make these return values into an enum
         Buildable isCardBuildable(int i);
 
         Buildable isStageBuildable();
