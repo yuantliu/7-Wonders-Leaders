@@ -107,17 +107,17 @@ namespace SevenWonders
                     break;
 
                 case 4:
-                    playerState[1].playerGrid = SeatC;
-                    playerState[1].boardImage = PlayerBoardC;
-                    playerState[1].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresC;
-                    playerState[1].structuresBuilt[StructureType.Goods] = GoodsStructuresC;
-                    playerState[1].structuresBuilt[StructureType.Commerce] = CommerceStructuresC;
-                    playerState[1].structuresBuilt[StructureType.Military] = MilitaryStructuresC;
-                    playerState[1].structuresBuilt[StructureType.Science] = ScienceStructuresC;
-                    playerState[1].structuresBuilt[StructureType.Civilian] = CivilianStructuresC;
-                    playerState[1].structuresBuilt[StructureType.Guild] = GuildStructuresC;
-                    playerState[1].coinsLabel = CoinsC;
-                    playerState[1].nameLabel = NameC;
+                    playerState[3].playerGrid = SeatC;
+                    playerState[3].boardImage = PlayerBoardC;
+                    playerState[3].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresC;
+                    playerState[3].structuresBuilt[StructureType.Goods] = GoodsStructuresC;
+                    playerState[3].structuresBuilt[StructureType.Commerce] = CommerceStructuresC;
+                    playerState[3].structuresBuilt[StructureType.Military] = MilitaryStructuresC;
+                    playerState[3].structuresBuilt[StructureType.Science] = ScienceStructuresC;
+                    playerState[3].structuresBuilt[StructureType.Civilian] = CivilianStructuresC;
+                    playerState[3].structuresBuilt[StructureType.Guild] = GuildStructuresC;
+                    playerState[3].coinsLabel = CoinsC;
+                    playerState[3].nameLabel = NameC;
 
                     playerState[2].playerGrid = SeatE;
                     playerState[2].boardImage = PlayerBoardE;
@@ -131,17 +131,17 @@ namespace SevenWonders
                     playerState[2].coinsLabel = CoinsE;
                     playerState[2].nameLabel = NameE;
 
-                    playerState[3].playerGrid = SeatG;
-                    playerState[3].boardImage = PlayerBoardG;
-                    playerState[3].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresG;
-                    playerState[3].structuresBuilt[StructureType.Goods] = GoodsStructuresG;
-                    playerState[3].structuresBuilt[StructureType.Commerce] = CommerceStructuresG;
-                    playerState[3].structuresBuilt[StructureType.Military] = MilitaryStructuresG;
-                    playerState[3].structuresBuilt[StructureType.Science] = ScienceStructuresG;
-                    playerState[3].structuresBuilt[StructureType.Civilian] = CivilianStructuresG;
-                    playerState[3].structuresBuilt[StructureType.Guild] = GuildStructuresG;
-                    playerState[3].coinsLabel = CoinsG;
-                    playerState[3].nameLabel = NameG;
+                    playerState[1].playerGrid = SeatG;
+                    playerState[1].boardImage = PlayerBoardG;
+                    playerState[1].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresG;
+                    playerState[1].structuresBuilt[StructureType.Goods] = GoodsStructuresG;
+                    playerState[1].structuresBuilt[StructureType.Commerce] = CommerceStructuresG;
+                    playerState[1].structuresBuilt[StructureType.Military] = MilitaryStructuresG;
+                    playerState[1].structuresBuilt[StructureType.Science] = ScienceStructuresG;
+                    playerState[1].structuresBuilt[StructureType.Civilian] = CivilianStructuresG;
+                    playerState[1].structuresBuilt[StructureType.Guild] = GuildStructuresG;
+                    playerState[1].coinsLabel = CoinsG;
+                    playerState[1].nameLabel = NameG;
 
                     break;
 
@@ -480,7 +480,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="player">Player ID (0..7)</param>
         /// <param name="cardName">Name of the card</param>
-        public void showPlayedCardsPanel(int player, string cardName)
+        public void updateCardsPlayed(int player, string cardName)
         {
             Card lastPlayedCard = fullCardList.Find(x => x.name == cardName);
 
