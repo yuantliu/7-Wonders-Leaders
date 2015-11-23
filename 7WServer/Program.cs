@@ -19,10 +19,10 @@ namespace SevenWonders
         {
             gmCoordinator = new GMCoordinator();
 
+            /*
             // TODO: test whether we can use other names, such as "James", "Mike", "Greg", "Ricky", "John", "Kevin"
             StatusChangedEventArgs cmd = new StatusChangedEventArgs("Host", "");
 
-            /*
             cmd.message = "JHost"; gmCoordinator.receiveMessage(null, cmd);     // Host joins the table
             cmd.message = "aa3"; gmCoordinator.receiveMessage(null, cmd);       // Add AI (Prefer military cards)
             cmd.message = "aa4"; gmCoordinator.receiveMessage(null, cmd);       // Add AI (Difficult AI)

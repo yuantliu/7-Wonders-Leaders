@@ -21,15 +21,6 @@ namespace SevenWonders
         public Grid playerGrid;
         public Image boardImage;
         public Dictionary<StructureType, StackPanel> structuresBuilt = new Dictionary<StructureType, StackPanel>(7);
-        /*
-        public StackPanel structuresBuiltRawMaterials;
-        public StackPanel structuresBuiltGoods;
-        public StackPanel structuresBuiltCommerce;
-        public StackPanel structuresBuiltMilitary;
-        public StackPanel structuresBuiltScience;
-        public StackPanel structuresBuiltCivilian;
-        public StackPanel structuresBuiltGuilds;
-        */
         public Label coinsLabel;
 
         public PlayerState()

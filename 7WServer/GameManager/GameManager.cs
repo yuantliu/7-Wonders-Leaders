@@ -595,9 +595,7 @@ namespace SevenWonders
             }
             */
 
-            //store the deduction
-            // Was ths correct before?
-            // p.storeAction("$" + costInCoins);
+            p.storeAction(new MoneyEffect(costInCoins));
 
             //determine if the player should get 2 coins for having those leaders (get 2 coins for playing a yellow and playing a pre-req
             giveCoinFromLeadersOnBuild(p, c);
