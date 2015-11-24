@@ -40,29 +40,25 @@ namespace SevenWonders
 
         public Effect freeResource { get; private set; }
 
-        //stage costs
-        public Cost[] cost;     // should be const
-
-        //stage effects
-        public Effect[] effect; // should be const
+        //stage costs & effects
+        public Card[] stageCard;
 
         public bool inPlay;
 
-        //the free resource that the board provides
-        //e.g. W, O, P, T, etc.
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="numOfStages"></param>
-        /// <param name="name"></param>
-        /// <param name="effect"></param>
-        /// <param name="path"></param>
+        /// <param name="otherside">Name of the other side of this Wonder.  Kind of useless</param>
+        /// <param name="name">Name of the active side of the Wonder (e.g. "Giza (B)")</param>
+        /// <param name="effect">This is the starting resource or effect that the Wonder Board provides</param>
+        /// <param name="nStages">The number of stages this wonder has (1, 2, 3, 4)</param>
         public Board(Wonder otherside, string name, Effect boardEffect, int nStages)
         {
             this.otherSide = otherside;
             this.name = name;
             this.freeResource = boardEffect;
             this.numOfStages = nStages;
+
             inPlay = false;
         }
     }

@@ -29,6 +29,16 @@ namespace SevenWonders
             cmd.message = "R"; gmCoordinator.receiveMessage(null, cmd);         // Player is ready.  After all non-AI players send this, the game begins.
             cmd.message = "U"; gmCoordinator.receiveMessage(null, cmd);         // UI is ready to accept the first update
             cmd.message = "r"; gmCoordinator.receiveMessage(null, cmd);         // ready for the first hand of cards
+            cmd.message = "BTimber Yard"; gmCoordinator.receiveMessage(null, cmd);
+            cmd.message = "t"; gmCoordinator.receiveMessage(null, cmd);
+            cmd.message = "DBaths"; gmCoordinator.receiveMessage(null, cmd);
+            cmd.message = "t"; gmCoordinator.receiveMessage(null, cmd);
+            cmd.message = "BWorkshop"; gmCoordinator.receiveMessage(null, cmd);
+            cmd.message = "t"; gmCoordinator.receiveMessage(null, cmd);
+            cmd.message = "BStone Pit"; gmCoordinator.receiveMessage(null, cmd);
+            cmd.message = "t"; gmCoordinator.receiveMessage(null, cmd);
+            cmd.message = "SWest Trading Post"; gmCoordinator.receiveMessage(null, cmd);
+            cmd.message = "t"; gmCoordinator.receiveMessage(null, cmd);
             */
 
             while (true)

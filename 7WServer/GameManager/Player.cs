@@ -1130,7 +1130,7 @@ namespace SevenWonders
                 return Buildable.False;
 
             //retrieve the cost
-            Cost cost = playerBoard.cost[currentStageOfWonder];
+            Cost cost = playerBoard.stageCard[currentStageOfWonder].cost;
             
             //check for the stage discount card (Imhotep)
             if (hasIDPlayed(/*212*/"Imhotep") == true)

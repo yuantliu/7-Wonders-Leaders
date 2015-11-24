@@ -412,40 +412,52 @@ namespace SevenWonders
         /// <param name="cardName">Name of the card</param>
         public void updateCardsPlayed(int player, string cardName)
         {
-            Card lastPlayedCard = fullCardList.Find(x => x.name == cardName);
-
-            StructureType colour = lastPlayedCard.structureType;
-
-            Label cardLabel = new Label();
-            cardLabel.Background = new SolidColorBrush(Colors.LightGray);
-            cardLabel.Background.Opacity = 0.5;
-            cardLabel.Content = lastPlayedCard.name;
-
-            if (playerState[player].lastCardPlayed != null)
-                playerState[player].lastCardPlayed.Background = null;
-
-            playerState[player].lastCardPlayed = cardLabel;
-
-            // This is how to get a control's DesiredSize:
-            // cardLabel.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-
-            StackPanel cardData = new StackPanel();
-            cardData.Orientation = Orientation.Horizontal;
-            cardData.Children.Add(cardLabel);
-
-            if (lastPlayedCard.iconName != string.Empty)
+            if (cardName.Length == 12 && cardName.Substring(0, 11) == "WonderStage")
             {
-                BitmapImage bmi = new BitmapImage();
-                bmi.BeginInit();
-                bmi.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/Icons/" + lastPlayedCard.iconName + ".png");
-                bmi.EndInit();
-                Image iconImage = new Image();
-                iconImage.Source = bmi;
-                iconImage.Height = ICON_HEIGHT;
-                cardData.Children.Add(iconImage);
-            }
+                int stage = int.Parse(cardName.Substring(11));
 
-            playerState[player].structuresBuilt[lastPlayedCard.structureType].Children.Add(cardData);
+                Label l = playerState[player].wonderStages.Children[stage - 1] as Label;
+
+                l.Content = string.Format("Stage {0}", stage);
+                l.Background = new SolidColorBrush(Colors.Yellow);
+            }
+            else
+            {
+                Card lastPlayedCard = fullCardList.Find(x => x.name == cardName);
+
+                StructureType colour = lastPlayedCard.structureType;
+
+                Label cardLabel = new Label();
+                cardLabel.Background = new SolidColorBrush(Colors.LightGray);
+                cardLabel.Background.Opacity = 0.5;
+                cardLabel.Content = lastPlayedCard.name;
+
+                if (playerState[player].lastCardPlayed != null)
+                    playerState[player].lastCardPlayed.Background = null;
+
+                playerState[player].lastCardPlayed = cardLabel;
+
+                // This is how to get a control's DesiredSize:
+                // cardLabel.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+                StackPanel cardData = new StackPanel();
+                cardData.Orientation = Orientation.Horizontal;
+                cardData.Children.Add(cardLabel);
+
+                if (lastPlayedCard.iconName != string.Empty)
+                {
+                    BitmapImage bmi = new BitmapImage();
+                    bmi.BeginInit();
+                    bmi.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/Icons/" + lastPlayedCard.iconName + ".png");
+                    bmi.EndInit();
+                    Image iconImage = new Image();
+                    iconImage.Source = bmi;
+                    iconImage.Height = ICON_HEIGHT;
+                    cardData.Children.Add(iconImage);
+                }
+
+                playerState[player].structuresBuilt[lastPlayedCard.structureType].Children.Add(cardData);
+            }
         }
 
         /// <summary>

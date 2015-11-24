@@ -489,17 +489,15 @@ namespace SevenWonders
 
             foreach (Board b in board.Values)
             {
-                b.cost = new Cost[b.numOfStages];
-                b.effect = new Effect[b.numOfStages];
+                // b.cost = new Cost[b.numOfStages];
+                // b.effect = new Effect[b.numOfStages];
+                b.stageCard = new Card[b.numOfStages];
 
                 for (int i = 0; i < b.numOfStages; ++i)
                 {
-                    Card card = fullCardList.Find(c => c.structureType == StructureType.WonderStage && c.name == b.name && c.wonderStage == i+1);
+                    b.stageCard[i] = fullCardList.Find(c => c.structureType == StructureType.WonderStage && c.name == b.name && c.wonderStage == i+1);
 
-                    b.cost[i] = card.cost;
-                    b.effect[i] = card.effect;
-
-                    fullCardList.Remove(card);
+                    fullCardList.Remove(b.stageCard[i]);
                 }
             }
         }
@@ -557,6 +555,9 @@ namespace SevenWonders
                     break;
                 }
             }
+
+            if (c == null)
+                throw new Exception("Received a message from the client to build a card that wasn't in the player's hand.");
 
             //add the card to played card structure
             p.addPlayedCardStructure(c);
@@ -884,10 +885,10 @@ namespace SevenWonders
 
                 // Find the corresponding wonder stage and add it to the played CardStructure
 
-                c = fullCardList.Find(x => x.wonderStage == p.currentStageOfWonder && x.name == p.playerBoard.name);
-                p.addPlayedCardStructure(c);
+                p.addPlayedCardStructure(p.playerBoard.stageCard[p.currentStageOfWonder]);
+                p.storeAction(p.playerBoard.stageCard[p.currentStageOfWonder].effect);
 
-                p.storeAction(p.playerBoard.effect[p.currentStageOfWonder++]);
+                p.currentStageOfWonder++;
             }
             else
             {
@@ -1035,7 +1036,14 @@ namespace SevenWonders
                     // TODO: update this to send built Wonder stage updates as well as the cards played panel.
                     Card card = p.GetCardPlayed(p.GetNumberOfPlayedCards() - 1);
 
-                    strCardsPlayed += string.Format("&Player{0}={1}", i, card.name);
+                    if (card.structureType == StructureType.WonderStage)
+                    {
+                        strCardsPlayed += string.Format("&Player{0}=WonderStage{1}", i, card.wonderStage);
+                    }
+                    else
+                    {
+                        strCardsPlayed += string.Format("&Player{0}={1}", i, card.name);
+                    }
                     p.bUIRequiresUpdating = false;
 
                     sendCardPlayMessage = true;
@@ -1337,7 +1345,7 @@ namespace SevenWonders
             Cost cost = c.cost;
             if (isStage == true)
             {
-                cost = p.playerBoard.cost[p.currentStageOfWonder];
+                cost = p.playerBoard.stageCard[p.currentStageOfWonder].cost;
             }
 
             CommerceInformation commerceInfo = new CommerceInformation(p.leftNeighbour, p, p.rightNeighbour, hasDiscount, structureName, cost, isStage);
