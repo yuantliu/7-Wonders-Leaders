@@ -329,7 +329,7 @@ namespace SevenWonders
             {
                 int coinsRequired = (isResourceRawMaterial && leftRawMarket) || (isResourceGoods && leftManuMarket) ? 1 : 2;
 
-                if ((PLAYER_COIN - (leftcoin + rightcoin)) <= coinsRequired)
+                if ((PLAYER_COIN - (leftcoin + rightcoin)) < coinsRequired)
                 {
                     MessageBox.Show("You cannot afford this resource");
                     return;
@@ -341,7 +341,7 @@ namespace SevenWonders
             {
                 int coinsRequired = (isResourceRawMaterial && rightRawMarket) || (isResourceGoods && rightManuMarket) ? 1 : 2;
 
-                if ((PLAYER_COIN - (leftcoin + rightcoin)) <= coinsRequired)
+                if ((PLAYER_COIN - (leftcoin + rightcoin)) < coinsRequired)
                 {
                     MessageBox.Show("You cannot afford this resource");
                     return;
