@@ -177,13 +177,20 @@ namespace SevenWonders
                                 gameManager = new GameManager(this, numOfPlayers, playerNicks, numOfAI, AIStrats);
                             }
                             else throw new NotImplementedException();
-                            
+
+                            string strStartGameMsg = "GameStrt";
+
                             //S[n], n = number of players in this game
                             for (int i = 0; i < gameManager.numOfAI + gameManager.numOfPlayers; i++)
                             {
-                                sendMessage(gameManager.player[i], string.Format("S{0}", gameManager.numOfAI + gameManager.numOfPlayers));
+                                strStartGameMsg += string.Format("&Player{0}={1}", i, gameManager.player[i].nickname);
                             }
-                            
+
+                            for (int i = 0; i < gameManager.numOfAI + gameManager.numOfPlayers; i++)
+                            {
+                                sendMessage(gameManager.player[i], strStartGameMsg);
+                            }
+
                             //set up the game, send information on boards to players, etc.
                             gameManager.beginningOfSessionActions();
 

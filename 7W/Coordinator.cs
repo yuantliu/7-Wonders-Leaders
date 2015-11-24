@@ -183,40 +183,6 @@ namespace SevenWonders
             sendToHost("R");
         }
 
-        /*
-        /// <summary>
-        /// All players are ready. Initialise the game UI elements.
-        /// </summary>
-        private void initGameUI()
-        {
-            string currentPath = Environment.CurrentDirectory;
-            ImageBrush back = new ImageBrush();
-            BitmapImage source = new BitmapImage();
-            source.BeginInit();
-            source.UriSource = new Uri(currentPath + @"\Resources\Images\background.jpg");
-            source.EndInit();
-            back.ImageSource = source;
-
-            gameUI.mainGrid.Background = null;
-            gameUI.mainGrid.Background = back;
-            // gameUI.chatTextField.Visibility = Visibility.Visible;
-            // gameUI.sendButton.Visibility = Visibility.Visible;
-            // gameUI.scroll.Visibility = Visibility.Visible;
-            // gameUI.timerTextBox.Visibility = Visibility.Visible;
-
-            // JDF removed these special buttons until the UI redesign is done.
-            //gameUI.olympiaButton.Visibility = Visibility.Visible;
-            //gameUI.estebanButton.Visibility = Visibility.Visible;
-            //gameUI.bilkisButton.Visibility = Visibility.Visible;
-
-            //gameUI.currentAgeLabel.Visibility = Visibility.Visible;
-            //gameUI.currentAge.Visibility = Visibility.Visible;
-            // gameUI.stackPanel1.Visibility = Visibility.Visible;
-            // gameUI.canvas1.Visibility = Visibility.Hidden;
-            // gameUI.helpButton.Visibility = Visibility.Visible;
-        }
-        */
-
         public void sendChat()
         {
             string message;
@@ -443,6 +409,19 @@ namespace SevenWonders
 
                 switch (message.Substring(0, 8))
                 {
+                    case "CardPlay":
+                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+
+                        for (int i = 0; i < qscoll.Count; ++i)
+                        {
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                gameUI.updateCardsPlayed(Convert.ToInt32(Char.GetNumericValue(qscoll[i].Key, 6)), qscoll[i].Value);
+                            }));
+                        }
+                        messageHandled = true;
+                        break;
+
                     case "SetBoard":
                         // Parse the query string variables into a NameValueCollection.
                         qscoll = UriExtensions.ParseQueryString(message.Substring(8));
@@ -463,30 +442,6 @@ namespace SevenWonders
                         messageHandled = true;
                         break;
 
-                    case "SetPlyrH":
-                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
-
-                        Application.Current.Dispatcher.Invoke(new Action(delegate
-                        {
-                            gameUI.showHandPanel(qscoll);
-                        }));
-
-                        messageHandled = true;
-                        break;
-
-                    case "CardPlay":
-                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
-
-                        for (int i = 0; i < qscoll.Count; ++i)
-                        {
-                            Application.Current.Dispatcher.Invoke(new Action(delegate
-                            {
-                                gameUI.updateCardsPlayed(Convert.ToInt32(Char.GetNumericValue(qscoll[i].Key, 6)), qscoll[i].Value);
-                            }));
-                        }
-                        messageHandled = true;
-                        break;
-
                     case "SetCoins":
                         qscoll = UriExtensions.ParseQueryString(message.Substring(8));
                         for (int i = 0; i < qscoll.Count; ++i)
@@ -498,6 +453,17 @@ namespace SevenWonders
                         }
                         messageHandled = true;
 
+                        break;
+
+                    case "SetPlyrH":
+                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            gameUI.showHandPanel(qscoll);
+                        }));
+
+                        messageHandled = true;
                         break;
                 }
 
@@ -515,6 +481,10 @@ namespace SevenWonders
             //S1 means game cannot (because of insufficient players)
             else if (message[0] == 'S')
             {
+                throw new Exception();
+
+                // TODO: handle this situation fully in the switch statement above.
+                /*
                 //Handle when game cannot start
                 if (message[1] == '0')
                 {
@@ -541,6 +511,7 @@ namespace SevenWonders
                         tableUI.Close();
                     }));
                 }
+                */
             }
             //update the current stage of wonder information
             else if (message[0] == 's')

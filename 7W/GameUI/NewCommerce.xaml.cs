@@ -231,7 +231,7 @@ namespace SevenWonders
             }
 
             //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
-            List<ResourceChoiceEffect> dagGraphChoice = dag.getChoiceStructures(false);
+            List<ResourceChoiceEffect> dagGraphChoice = dag.getChoiceStructures(isDagOwnedByPlayer);
 
             //look at each level of the DAG
             for ( ; i < dagGraphSimple.Count + dagGraphChoice.Count; i++)
@@ -270,162 +270,6 @@ namespace SevenWonders
                 //add the stack to the parent panel.
                 p.Children.Add(levelPanels[i]);
             }
-
-            ////////////////////////////////////////////////////////////////////////////////
-
-            /*
-            //Same for middle DAG
-
-            //reset all DAG panels
-            middleDagPanel.Children.Clear();
-
-            //generate middle DAG
-            //generate the needed amount of stackPanels, each representing a level
-            StackPanel[] middleLevelPanels = new StackPanel[middleDag.getSimpleStructures().Count + middleDag.getChoiceStructures(true).Count];
-            //generate the needed amount of buttons
-            middleDagButton = new Button[middleDag.getSimpleStructures().Count + middleDag.getChoiceStructures(true).Count, 7];
-
-            //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
-            List<SimpleEffect> middleDagGraph = middleDag.getSimpleStructures();
-
-            //look at each level of the DAG
-            for (int i = 0; i < middleDag.getSimpleStructures().Count; i++)
-            {
-                //initialise a StackPanels for the current level
-                middleLevelPanels[i] = new StackPanel();
-                middleLevelPanels[i].Orientation = Orientation.Horizontal;
-                middleLevelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
-
-                //add to the StackPanels the appropriate buttons
-                for (int j = 0; j < middleDagGraph[i].Length; j++)
-                {
-                    middleDagButton[i, j] = new Button();
-                    middleDagButton[i, j].Content = middleDagGraph[i][j] + "";
-                    middleDagButton[i, j].FontSize = 1;
-
-                    //set the Button's image to correspond with the resource
-                    switch (middleDagGraph[i][j])
-                    {
-                        case 'B':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[0]);
-                            break;
-                        case 'O':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[1]);
-                            break;
-                        case 'T':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[2]);
-                            break;
-                        case 'W':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[3]);
-                            break;
-                        case 'G':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[4]);
-                            break;
-                        case 'L':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[5]);
-                            break;
-                        case 'P':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[6]);
-                            break;
-                    }
-
-                    middleDagButton[i, j].Width = DAG_BUTTON_WIDTH;
-                    middleDagButton[i, j].Height = DAG_BUTTON_WIDTH;
-
-                    //set the name of the Button for eventHandler purposes
-                    //Format: M_(level)
-                    middleDagButton[i, j].Name = "M_" + i;
-
-                    middleDagButton[i, j].IsEnabled = true;
-
-                    //set action listener and add the button to the appropriate panel
-                    middleDagButton[i, j].Click += dagResourceButtonPressed;
-                    middleLevelPanels[i].Children.Add(middleDagButton[i, j]);
-
-                    //middleLevelPanels[i] has middleDagButton[i,j] added
-                } //middleLevelPanels[i] has added all the buttons appropriate for that level and its event handlers
-
-                //add middleLevelPanels[i]
-                middleDagPanel.Children.Add(middleLevelPanels[i]);
-            }
-
-            /////////////////////////////////////////////////////////////////////////
-
-            //same for right DAG
-
-            //reset all DAG panels
-            rightDagPanel.Children.Clear();
-
-            //generate right DAG
-            //generate the needed amount of stackPanels, each representing a level
-            StackPanel[] rightLevelPanels = new StackPanel[rightDag.getSimpleStructures().Count + rightDag.getChoiceStructures(false).Count];
-            //generate the needed amount of buttons
-            rightDagButton = new Button[rightDag.getSimpleStructures().Count + rightDag.getChoiceStructures(false).Count, 7];
-
-            //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
-            List<SimpleEffect> rightDagGraph = rightDag.getSimpleStructures();
-
-            //look at each level of the DAG
-            for (int i = 0; i < rightDag.getSimpleStructures().Count; i++)
-            {
-                //initialise a StackPanels for the current level
-                rightLevelPanels[i] = new StackPanel();
-                rightLevelPanels[i].Orientation = Orientation.Horizontal;
-                rightLevelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
-
-                //add to the StackPanels the appropriate buttons
-                for (int j = 0; j < rightDagGraph[i].Length; j++)
-                {
-                    rightDagButton[i, j] = new Button();
-                    rightDagButton[i, j].Content = rightDagGraph[i][j] + "";
-                    rightDagButton[i, j].FontSize = 1;
-
-                    //set the Button's image to correspond with the resource
-                    switch (rightDagGraph[i][j])
-                    {
-                        case 'B':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[0]);
-                            break;
-                        case 'O':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[1]);
-                            break;
-                        case 'T':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[2]);
-                            break;
-                        case 'W':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[3]);
-                            break;
-                        case 'G':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[4]);
-                            break;
-                        case 'L':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[5]);
-                            break;
-                        case 'P':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[6]);
-                            break;
-                    }
-
-                    rightDagButton[i, j].Width = DAG_BUTTON_WIDTH;
-                    rightDagButton[i, j].Height = DAG_BUTTON_WIDTH;
-
-                    //set the name of the Button for eventHandler purposes
-                    //Format: R_(level)
-                    rightDagButton[i, j].Name = "R_" + i;
-
-                    rightDagButton[i, j].IsEnabled = true;
-
-                    //set action listener and add the button to the appropriate panel
-                    rightDagButton[i, j].Click += dagResourceButtonPressed;
-                    rightLevelPanels[i].Children.Add(rightDagButton[i, j]);
-
-                    //rightLevelPanels[i] has rightDagButton[i,j] added
-                } //rightLevelPanels[i] has added all the buttons appropriate for that level and its event handlers
-
-                //add rightLevelPanels[i]
-                rightDagPanel.Children.Add(rightLevelPanels[i]);
-            }
-            */
         }
 
         private void generateDAGs()
@@ -635,33 +479,6 @@ namespace SevenWonders
                     throw new Exception();
                 }
 
-                /*
-                switch (cost[i])
-                {
-                    case 'B':
-                        iconImage = resourceIcons[0];
-                        break;
-                    case 'O':
-                        iconImage = resourceIcons[1];
-                        break;
-                    case 'T':
-                        iconImage = resourceIcons[2];
-                        break;
-                    case 'W':
-                        iconImage = resourceIcons[3];
-                        break;
-                    case 'G':
-                        iconImage = resourceIcons[4];
-                        break;
-                    case 'L':
-                        iconImage = resourceIcons[5];
-                        break;
-                    case 'P':
-                        iconImage = resourceIcons[6];
-                        break;
-                }
-                */
-
                 costLabels[i] = new Label();
 
                 costLabels[i].Background = new ImageBrush(iconImage);
@@ -709,31 +526,6 @@ namespace SevenWonders
         {
             if ((resourcesNeeded == 0 && hasDiscount == false) || (resourcesNeeded == 1 && hasDiscount == true))
             {
-                /*
-                //construct the information
-                CommerceClientToServerResponse response = new CommerceClientToServerResponse();
-                response.leftCoins = leftcoin;
-                response.rightCoins = rightcoin;
-                // response.structureName = ID;
-                response.structureName = structureName;
-
-                string serializedResponse = Marshaller.ObjectToString(response);
-
-                //send the appropriate information
-
-                if (isStage == true)
-                {
-                    string strResponseCmd = "ComerceB";
-                    //stage
-                    c.sendToHost("CS" + serializedResponse);
-                }
-                else
-                {
-                    //build struct
-                    c.sendToHost("CB" + serializedResponse);
-                }
-                */
-
                 string strResponse = string.Format("Comerce{0}&structureName={1}&leftCoins={2}&rightCoins={3}", isStage ? "S" : "B", structureName, leftcoin, rightcoin);
                 c.sendToHost(strResponse);
 
