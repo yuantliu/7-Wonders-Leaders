@@ -882,6 +882,11 @@ namespace SevenWonders
                     }
                 }
 
+                // Find the corresponding wonder stage and add it to the played CardStructure
+
+                c = fullCardList.Find(x => x.wonderStage == p.currentStageOfWonder && x.name == p.playerBoard.name);
+                p.addPlayedCardStructure(c);
+
                 p.storeAction(p.playerBoard.effect[p.currentStageOfWonder++]);
             }
             else

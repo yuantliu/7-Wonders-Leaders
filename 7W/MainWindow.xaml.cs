@@ -392,12 +392,10 @@ namespace SevenWonders
 
             for (int i = 0; i < nWonderStages; ++i)
             {
-                Button b = new Button();
+                Label b = new Label();
 
                 b.Background = new SolidColorBrush(Colors.Azure);
-                b.IsEnabled = false;
                 Grid.SetColumn(b, i);
-
                 playerState[player].wonderStages.Children.Add(b);
             }
         }
