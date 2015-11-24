@@ -1,28 +1,50 @@
 
 Added by James Fairweather
-The UI is missing a bunch of information:
-- The resource/material that the city board produces is not depicted (the boards can be rescanned)
-  (fixed)
-
-- The overall game state is less than clear - what cards the player has played, and what cards the other players have played, military victories and losses
+UI problems:
+  - The player state should include the name of the player
+  - Can we use other names?
+  - The last card played should be highlighted to make it more obvious
   - Still need to add military wins and losses for each age.
-  - Many cards don't have icons.
-  - Cards need to be grouped into like structures
-  - The UI is still too crowded
+  - Some cards do not have icons.
+  - The GUI needs a way to show what Wonder stages have been built
 
+Commerce issues:
+	- brown cards that give 2 of a resource don't work
+	- possibly the either/or first age cards don't work right either
+	- the player's yellow cards aren't selectable.
+	- Initial Commerce request from the server should include the card name
+	- response from the server would be:
+		- resouce/commerce/Wonders the player can use (P=Timber Yard,Stone Pit,Caravansery,etc)
+		- data affecting commerce (discounts, leaders that affect commerce)
+		- L=west neighbor's resource cards (L=Clay Pit,Tree Farm,...)
+		- R=east neighbor's resourde cards (R=Mine,Quarry,...)
+	- Submit data from client should look like: BldStrct&Structure=<Card Name>&CommerceData=true&Player=W/Clay Pit&Player=S/Quarry&Player=S/Quarry&Left=W/Tree Farm&Right=G/Glassworks
+		- Commerce Data is only required for structures that require it.
+		- The card name can be WonderStagen, n { 1, 2, 3, 4 }
 
-- The last card played by each player isn't obvious
-  (fixed)
+AI players
+	- Could be improved a lot without much effort
+	- Take advantage of commerce ability
+	- Don't overplay military
+	- Go for sets in science
+	- Take advantage of Wonder effects.
+	- Look at what other cards have been played to guess what's coming in the next hand.
+
+Technical stories:
+
+- See if we can replace all or most of the arrays with dictionaries or lists.
+
+- I want to get rid of the remaining "Serializable" objects
 
 - The list of players (the datagrid) isn't hooked up at the match-making.
 
-- Commerce has a couple of bugs.  Brown cards that give 2 of a resource don't work, and possibly the either/or first age cards don't work right either, and the player can pick resources from yellow cards built by neighbours.
 - The protocol for the client/server communication is quite a lot more verbose than it needs to be.  Surely the server should wait for each client to make his choice, then broadcast the card each player played to every
   other player.  Instead, it sends the whole game state to every player after each turn.
+	- stil working on this.
+
+- it would be nice to use data binding, if I can figure it out.
 
 - the game doesn't terminate nicely when it's shut down.  Must kill it.
-
-The AI seems weak, although the "difficult" setting may be smarter
 
 Original text below:
 

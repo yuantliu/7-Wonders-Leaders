@@ -18,15 +18,24 @@ namespace SevenWonders
     {
         public int coins;
 
-        public Grid playerGrid;
         public Image boardImage;
         public Dictionary<StructureType, StackPanel> structuresBuilt = new Dictionary<StructureType, StackPanel>(7);
         public Label coinsLabel;
         public Label nameLabel;
 
-        public PlayerState()
+        public PlayerState(PlayerStateWindow plyr)
         {
             coins = 3;
+            boardImage = plyr.PlayerBoard;
+            structuresBuilt[StructureType.RawMaterial] = plyr.ResourceStructures;
+            structuresBuilt[StructureType.Goods] = plyr.GoodsStructures;
+            structuresBuilt[StructureType.Commerce] = plyr.CommerceStructures;
+            structuresBuilt[StructureType.Military] = plyr.MilitaryStructures;
+            structuresBuilt[StructureType.Science] = plyr.ScienceStructures;
+            structuresBuilt[StructureType.Civilian] = plyr.CivilianStructures;
+            structuresBuilt[StructureType.Guild] = plyr.GuildStructures;
+            coinsLabel = plyr.Coins;
+            nameLabel = plyr.PlayerName;
         }
     };
 
@@ -56,128 +65,22 @@ namespace SevenWonders
         {
             InitializeComponent();
 
+            PlayerStateWindow[,] seatMap = new PlayerStateWindow[,] {
+                { SeatA, SeatF, SeatD, null, null, null, null, null },      // 3 players
+                { SeatA, SeatG, SeatE, SeatC, null, null, null, null },     // 4 players
+                { SeatA, SeatG, SeatF, SeatD, SeatC, null, null, null },    // 5 players
+                { SeatA, SeatH, SeatF, SeatE, SeatD, SeatB, null, null },   // 6 players
+                { SeatA, SeatH, SeatG, SeatF, SeatD, SeatC, SeatB, null},   // 7 players
+                { SeatA, SeatH, SeatG, SeatF, SeatE, SeatD, SeatC, SeatB }, // 8 players
+           };
+
             this.coordinator = c;
 
             playerState = new PlayerState[c.numPlayers];
 
             for (int i = 0; i < c.numPlayers; ++i)
             {
-                playerState[i] = new PlayerState();
-            }
-
-            playerState[0].playerGrid = SeatA;
-            playerState[0].boardImage = PlayerBoardA;
-            playerState[0].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresA;
-            playerState[0].structuresBuilt[StructureType.Goods] = GoodsStructuresA;
-            playerState[0].structuresBuilt[StructureType.Commerce] = CommerceStructuresA;
-            playerState[0].structuresBuilt[StructureType.Military] = MilitaryStructuresA;
-            playerState[0].structuresBuilt[StructureType.Science] = ScienceStructuresA;
-            playerState[0].structuresBuilt[StructureType.Civilian] = CivilianStructuresA;
-            playerState[0].structuresBuilt[StructureType.Guild] = GuildStructuresA;
-            playerState[0].coinsLabel = CoinsA;
-            playerState[0].nameLabel = NameA;
-
-            switch (c.numPlayers)
-            {
-                case 3:
-                    playerState[1].playerGrid = SeatF;
-                    playerState[1].boardImage = PlayerBoardF;
-                    playerState[1].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresF;
-                    playerState[1].structuresBuilt[StructureType.Goods] = GoodsStructuresF;
-                    playerState[1].structuresBuilt[StructureType.Commerce] = CommerceStructuresF;
-                    playerState[1].structuresBuilt[StructureType.Military] = MilitaryStructuresF;
-                    playerState[1].structuresBuilt[StructureType.Science] = ScienceStructuresF;
-                    playerState[1].structuresBuilt[StructureType.Civilian] = CivilianStructuresF;
-                    playerState[1].structuresBuilt[StructureType.Guild] = GuildStructuresF;
-                    playerState[1].coinsLabel = CoinsF;
-                    playerState[1].nameLabel = NameF;
-
-                    playerState[2].playerGrid = SeatD;
-                    playerState[2].boardImage = PlayerBoardD;
-                    playerState[2].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresD;
-                    playerState[2].structuresBuilt[StructureType.Goods] = GoodsStructuresD;
-                    playerState[2].structuresBuilt[StructureType.Commerce] = CommerceStructuresD;
-                    playerState[2].structuresBuilt[StructureType.Military] = MilitaryStructuresD;
-                    playerState[2].structuresBuilt[StructureType.Science] = ScienceStructuresD;
-                    playerState[2].structuresBuilt[StructureType.Civilian] = CivilianStructuresD;
-                    playerState[2].structuresBuilt[StructureType.Guild] = GuildStructuresD;
-                    playerState[2].coinsLabel = CoinsD;
-                    playerState[2].nameLabel = NameD;
-
-                    break;
-
-                case 4:
-                    playerState[3].playerGrid = SeatC;
-                    playerState[3].boardImage = PlayerBoardC;
-                    playerState[3].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresC;
-                    playerState[3].structuresBuilt[StructureType.Goods] = GoodsStructuresC;
-                    playerState[3].structuresBuilt[StructureType.Commerce] = CommerceStructuresC;
-                    playerState[3].structuresBuilt[StructureType.Military] = MilitaryStructuresC;
-                    playerState[3].structuresBuilt[StructureType.Science] = ScienceStructuresC;
-                    playerState[3].structuresBuilt[StructureType.Civilian] = CivilianStructuresC;
-                    playerState[3].structuresBuilt[StructureType.Guild] = GuildStructuresC;
-                    playerState[3].coinsLabel = CoinsC;
-                    playerState[3].nameLabel = NameC;
-
-                    playerState[2].playerGrid = SeatE;
-                    playerState[2].boardImage = PlayerBoardE;
-                    playerState[2].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresE;
-                    playerState[2].structuresBuilt[StructureType.Goods] = GoodsStructuresE;
-                    playerState[2].structuresBuilt[StructureType.Commerce] = CommerceStructuresE;
-                    playerState[2].structuresBuilt[StructureType.Military] = MilitaryStructuresE;
-                    playerState[2].structuresBuilt[StructureType.Science] = ScienceStructuresE;
-                    playerState[2].structuresBuilt[StructureType.Civilian] = CivilianStructuresE;
-                    playerState[2].structuresBuilt[StructureType.Guild] = GuildStructuresE;
-                    playerState[2].coinsLabel = CoinsE;
-                    playerState[2].nameLabel = NameE;
-
-                    playerState[1].playerGrid = SeatG;
-                    playerState[1].boardImage = PlayerBoardG;
-                    playerState[1].structuresBuilt[StructureType.RawMaterial] = ResourceStructuresG;
-                    playerState[1].structuresBuilt[StructureType.Goods] = GoodsStructuresG;
-                    playerState[1].structuresBuilt[StructureType.Commerce] = CommerceStructuresG;
-                    playerState[1].structuresBuilt[StructureType.Military] = MilitaryStructuresG;
-                    playerState[1].structuresBuilt[StructureType.Science] = ScienceStructuresG;
-                    playerState[1].structuresBuilt[StructureType.Civilian] = CivilianStructuresG;
-                    playerState[1].structuresBuilt[StructureType.Guild] = GuildStructuresG;
-                    playerState[1].coinsLabel = CoinsG;
-                    playerState[1].nameLabel = NameG;
-
-                    break;
-
-                case 5:
-                    playerState[1].playerGrid = SeatC;
-                    playerState[2].playerGrid = SeatD;
-                    playerState[3].playerGrid = SeatE;
-                    playerState[4].playerGrid = SeatF;
-                    break;
-
-                case 6:
-                    playerState[1].playerGrid = SeatB;
-                    playerState[2].playerGrid = SeatD;
-                    playerState[3].playerGrid = SeatE;
-                    playerState[4].playerGrid = SeatF;
-                    playerState[5].playerGrid = SeatH;
-                    break;
-
-                case 7:
-                    playerState[1].playerGrid = SeatB;
-                    playerState[2].playerGrid = SeatC;
-                    playerState[3].playerGrid = SeatD;
-                    playerState[4].playerGrid = SeatF;
-                    playerState[5].playerGrid = SeatG;
-                    playerState[6].playerGrid = SeatH;
-                    break;
-
-                case 8:
-                    playerState[1].playerGrid = SeatB;
-                    playerState[2].playerGrid = SeatC;
-                    playerState[3].playerGrid = SeatD;
-                    playerState[4].playerGrid = SeatE;
-                    playerState[5].playerGrid = SeatF;
-                    playerState[6].playerGrid = SeatG;
-                    playerState[7].playerGrid = SeatH;
-                    break;
+                playerState[i] = new PlayerState(seatMap[c.numPlayers-3, i]);
             }
 
             // load the card list

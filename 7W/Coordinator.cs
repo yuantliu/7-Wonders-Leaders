@@ -656,6 +656,10 @@ namespace SevenWonders
             {
                 // timer.Stop();
             }
+            else if (message[0] == '1')
+            {
+                // don't do anything
+            }
             else
             {
                 // recieved a message from the server that the client cannot handle.

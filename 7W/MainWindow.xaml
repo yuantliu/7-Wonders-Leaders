@@ -1,6 +1,8 @@
 ﻿<Window x:Class="SevenWonders.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:SevenWonders"
         Title="7 Wonders" Width="1600" Height="900"  WindowStartupLocation="CenterScreen" Icon="Resources/Images/stage.png">
     <Grid Name="mainGrid">
         <Grid.ColumnDefinitions>
@@ -34,284 +36,32 @@
                 <RowDefinition Height="2*"></RowDefinition>
                 <RowDefinition Height="1*"></RowDefinition>
             </Grid.RowDefinitions>
-
-            <Grid Name="SeatC" Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="CommerceStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="GoodsStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ResourceStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="GuildStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ScienceStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="MilitaryStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="CivilianStructuresC" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="3*"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Vertical" Name="StatusPanelC">
-                        <Label Name="CoinsC"></Label>
-                        <Label Name="NameC"></Label>
-                </StackPanel>
-                <Image Grid.Column="1" Name="PlayerBoardC">
-                </Image>
-            </Grid>
-            </Grid>
+            
+            <local:PlayerStateWindow Grid.Row="1" x:Name="SeatC"/>
         </Grid>
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Name="SeatD">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="CommerceStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="GoodsStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ResourceStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="GuildStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ScienceStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="MilitaryStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="CivilianStructuresD" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical" Name="StatusPanelD">
-                        <Label Name="CoinsD"></Label>
-                        <Label Name="NameD"></Label>
-                    </StackPanel>
-                    <Image Grid.Column="1" Name="PlayerBoardD">
-                    </Image>
-                </Grid>
-            </Grid>
-            <Grid Grid.Row="1" Name="SeatB">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="ResourceStructuresB" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="GoodsStructuresB" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="CommerceStructuresB" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="GuildStructuresB" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="MilitaryStructuresB" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ScienceStructuresB" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="CivilianStructuresB" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical" Name="StatusPanelB">
-                        <Label Name="CoinsB"></Label>
-                        <Label Name="NameB"></Label>
-                    </StackPanel>
-                    <Image Grid.Column="1" Name="PlayerBoardB">
-                    </Image>
-                </Grid>
-            </Grid>
+            <local:PlayerStateWindow Grid.Row="0" x:Name="SeatD"/>
+            <local:PlayerStateWindow Grid.Row="1" x:Name="SeatB"/>
         </Grid>
         <Grid Grid.Column="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <Grid Name="SeatE" Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="CommerceStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="GoodsStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ResourceStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="GuildStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ScienceStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="MilitaryStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="CivilianStructuresE" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical" Name="StatusPanelE">
-                        <Label Name="CoinsE"></Label>
-                        <Label Name="NameE"></Label>
-                    </StackPanel>
-                    <Image Grid.Column="1" Name="PlayerBoardE">
-                    </Image>
-                </Grid>
-            </Grid>
-            <Grid Name="SeatA" Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <Grid Row="0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="CommerceStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="GoodsStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ResourceStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="GuildStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ScienceStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="MilitaryStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="CivilianStructuresA" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical" Name="StatusPanelA">
-                        <Label Name="CoinsA"></Label>
-                        <Label Name="NameA"></Label>
-                    </StackPanel>
-                    <Image Grid.Column="1" Name="PlayerBoardA">
-                    </Image>
-                </Grid>
-            </Grid>
+            <local:PlayerStateWindow Grid.Row="0" x:Name="SeatE"/>
+            <local:PlayerStateWindow Grid.Row="1" x:Name="SeatA"/>
         </Grid>
         <Grid Grid.Column="4">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <Grid Name="SeatF" Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="CommerceStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="GoodsStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ResourceStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="GuildStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ScienceStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="MilitaryStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="CivilianStructuresF" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical" Name="StatusPanelF">
-                        <Label Name="CoinsF"></Label>
-                        <Label Name="NameF"></Label>
-                    </StackPanel>
-                    <Image Grid.Column="1" Name="PlayerBoardF">
-                    </Image>
-                </Grid>
-            </Grid>
-            <Grid Name="SeatH" Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="CommerceStructuresH" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="GoodsStructuresH" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ResourceStructuresH" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="GuildStructuresH" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ScienceStructuresH" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="MilitaryStructuresH" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="CivilianStructuresH" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical" Name="StatusPanelH">
-                        <Label Name="CoinsH"></Label>
-                        <Label Name="NameH"></Label>
-                    </StackPanel>
-                    <Image Grid.Column="1" Name="PlayerBoardH">
-                    </Image>
-                </Grid>
-            </Grid>
+            <local:PlayerStateWindow Grid.Row="0" x:Name="SeatF"/>
+            <local:PlayerStateWindow Grid.Row="1" x:Name="SeatH"/>
         </Grid>
         <Grid Grid.Column="5">
             <Grid.RowDefinitions>
@@ -319,43 +69,7 @@
                 <RowDefinition Height="2*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <Grid Name="SeatG" Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="CommerceStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="GoodsStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ResourceStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
-                            <StackPanel Name="GuildStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="ScienceStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="MilitaryStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                            <StackPanel Name="CivilianStructuresG" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical" Name="StatusPanelG">
-                        <Label Name="CoinsG"></Label>
-                        <Label Name="NameG"></Label>
-                    </StackPanel>
-                    <Image Grid.Column="1" Name="PlayerBoardG">
-                    </Image>
-                </Grid>
-            </Grid>
+            <local:PlayerStateWindow Grid.Row="1" x:Name="SeatG"/>
         </Grid>
     </Grid>
 </Window>
