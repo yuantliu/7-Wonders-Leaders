@@ -455,6 +455,19 @@ namespace SevenWonders
 
                         break;
 
+                    case "SetNames":
+                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+                        for (int i = 0; i < qscoll.Count; ++i)
+                        {
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                gameUI.SetPlayerName(i, qscoll[i].Value);
+                            }));
+                        }
+                        messageHandled = true;
+
+                        break;
+
                     case "SetPlyrH":
                         qscoll = UriExtensions.ParseQueryString(message.Substring(8));
 
@@ -481,10 +494,6 @@ namespace SevenWonders
             //S1 means game cannot (because of insufficient players)
             else if (message[0] == 'S')
             {
-                throw new Exception();
-
-                // TODO: handle this situation fully in the switch statement above.
-                /*
                 //Handle when game cannot start
                 if (message[1] == '0')
                 {
@@ -511,7 +520,6 @@ namespace SevenWonders
                         tableUI.Close();
                     }));
                 }
-                */
             }
             //update the current stage of wonder information
             else if (message[0] == 's')

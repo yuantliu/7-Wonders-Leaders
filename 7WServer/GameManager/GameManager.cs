@@ -179,18 +179,30 @@ namespace SevenWonders
 
 
 
-        public virtual void sendBoardInformation()
+        public virtual void sendBoardAndPlayerNames()
         {
-            string strBoardInfoMsg = "SetBoard";
+            string strMsg = string.Empty;
 
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
-                strBoardInfoMsg += string.Format("&Player{0}={1}", i, player[i].playerBoard.name);
+                strMsg += string.Format("&Player{0}={1}", i, player[i].nickname);
             }
 
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
-                gmCoordinator.sendMessage(player[i], strBoardInfoMsg);
+                gmCoordinator.sendMessage(player[i], "SetNames" + strMsg);
+            }
+
+            strMsg = string.Empty;
+
+            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            {
+                strMsg += string.Format("&Player{0}={1}", i, player[i].playerBoard.name);
+            }
+
+            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            {
+                gmCoordinator.sendMessage(player[i], "SetBoard" + strMsg);
 
                 player[i].executeAction(this);
             }

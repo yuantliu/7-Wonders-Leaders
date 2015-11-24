@@ -379,6 +379,11 @@ namespace SevenWonders
             playerState[player].boardImage.Source = boardImageSource;
         }
 
+        public void SetPlayerName(int player, string name)
+        {
+            playerState[player].nameLabel.Content = "Name: " + name;
+        }
+
         /// <summary>
         /// display the Played Cards combo boxes, given the String from Coordinator
         /// </summary>
