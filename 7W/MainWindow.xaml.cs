@@ -22,6 +22,7 @@ namespace SevenWonders
         public Dictionary<StructureType, StackPanel> structuresBuilt = new Dictionary<StructureType, StackPanel>(7);
         public Label coinsLabel;
         public Label nameLabel;
+        public Label lastCardPlayed;
 
         public PlayerState(PlayerStateWindow plyr)
         {
@@ -390,7 +391,14 @@ namespace SevenWonders
             StructureType colour = lastPlayedCard.structureType;
 
             Label cardLabel = new Label();
+            cardLabel.Background = new SolidColorBrush(Colors.LightGray);
+            cardLabel.Background.Opacity = 0.5;
             cardLabel.Content = lastPlayedCard.name;
+
+            if (playerState[player].lastCardPlayed != null)
+                playerState[player].lastCardPlayed.Background = null;
+
+            playerState[player].lastCardPlayed = cardLabel;
 
             // This is how to get a control's DesiredSize:
             // cardLabel.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
