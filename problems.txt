@@ -1,17 +1,14 @@
 
 Added by James Fairweather
 UI problems:
-  - The player state should include the name of the player
+  - The GUI wonder stages aren't updating when they're built.
+  - Military wins & losses for each age need to be shown.
   - Can we use other names?
-  - Still need to add military wins and losses for each age.
   - Some cards do not have icons.
-  - The GUI needs a way to show what Wonder stages have been built
 
 Commerce issues:
-	- there's a problem with an off-by-1 situation.
 	- brown cards that give 2 of a resource don't work
 	- possibly the either/or first age cards don't work right either
-	- the player's yellow cards aren't selectable in the commerce window.
 	- Initial Commerce request from the server should include the card name
 	- response from the server would be:
 		- resouce/commerce/Wonders the player can use (P=Timber Yard,Stone Pit,Caravansery,etc)

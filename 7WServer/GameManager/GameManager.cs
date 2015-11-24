@@ -197,7 +197,7 @@ namespace SevenWonders
 
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
-                strMsg += string.Format("&Player{0}={1}", i, player[i].playerBoard.name);
+                strMsg += string.Format("&Player{0}={1}/{2}", i, player[i].playerBoard.numOfStages, player[i].playerBoard.name);
             }
 
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
@@ -463,7 +463,7 @@ namespace SevenWonders
         /// </summary>
         protected void createBoards()
         {
-            board = new Dictionary<Board.Wonder, Board>(16)
+            board = new Dictionary<Board.Wonder, Board>(14)
             {
                 { Board.Wonder.Alexandria_A, new Board(Board.Wonder.Alexandria_B, "Alexandria (A)", new SimpleEffect(1, 'G'), 3) },
                 { Board.Wonder.Alexandria_B, new Board(Board.Wonder.Alexandria_A, "Alexandria (B)", new SimpleEffect(1, 'G'), 3) },
@@ -515,10 +515,16 @@ namespace SevenWonders
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
+            while(board[randomBoard.Key].inPlay == true)
+            {
+                ++index;
+                randomBoard = board.ElementAt(index);
+            }
+
             // Remove the other side (i.e. if we returned the Babylon A, remove Babylon B from
             // the board list)
-            board.Remove(randomBoard.Key);
-            board.Remove(randomBoard.Value.otherSide);
+            board[randomBoard.Key].inPlay = true;
+            board[randomBoard.Value.otherSide].inPlay = true;
 
             return randomBoard.Value;
         }
@@ -1021,6 +1027,7 @@ namespace SevenWonders
 
                 if (p.bUIRequiresUpdating)
                 {
+                    // TODO: update this to send built Wonder stage updates as well as the cards played panel.
                     Card card = p.GetCardPlayed(p.GetNumberOfPlayedCards() - 1);
 
                     strCardsPlayed += string.Format("&Player{0}={1}", i, card.name);

@@ -46,6 +46,8 @@ namespace SevenWonders
         //stage effects
         public Effect[] effect; // should be const
 
+        public bool inPlay;
+
         //the free resource that the board provides
         //e.g. W, O, P, T, etc.
         /// <summary>
@@ -61,6 +63,7 @@ namespace SevenWonders
             this.name = name;
             this.freeResource = boardEffect;
             this.numOfStages = nStages;
+            inPlay = false;
         }
     }
 }

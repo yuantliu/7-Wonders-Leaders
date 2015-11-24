@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SevenWonders"
-             mc:Ignorable="d">
+             mc:Ignorable="d" d:DesignWidth="100" d:DesignHeight="200">
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="6*"/>
+                <RowDefinition Height="3*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
@@ -36,10 +36,20 @@
                     <ColumnDefinition Width="3*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Vertical">
-                    <Label x:Name="Coins"></Label>
-                    <Label x:Name="PlayerName"></Label>
+                    <Label x:Name="Coins" FontSize="8"></Label>
+                    <Label x:Name="PlayerName" FontSize="8"></Label>
                 </StackPanel>
-                <Image Grid.Column="1" x:Name="PlayerBoard"/>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="4*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Image Grid.Row="0" x:Name="PlayerBoard" Stretch="Fill" />
+                    <Grid Grid.Row="1">
+                        <Grid x:Name="WonderStage"/>
+                        <!-- Grid size created programmatically depending on the number of wonder stages the board has. -->
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

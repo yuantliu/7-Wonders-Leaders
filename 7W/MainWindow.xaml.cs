@@ -23,6 +23,7 @@ namespace SevenWonders
         public Label coinsLabel;
         public Label nameLabel;
         public Label lastCardPlayed;
+        public Grid wonderStages;
 
         public PlayerState(PlayerStateWindow plyr)
         {
@@ -35,6 +36,7 @@ namespace SevenWonders
             structuresBuilt[StructureType.Science] = plyr.ScienceStructures;
             structuresBuilt[StructureType.Civilian] = plyr.CivilianStructures;
             structuresBuilt[StructureType.Guild] = plyr.GuildStructures;
+            wonderStages = plyr.WonderStage;
             coinsLabel = plyr.Coins;
             nameLabel = plyr.PlayerName;
         }
@@ -368,15 +370,36 @@ namespace SevenWonders
         /// display the Board, given the String from Coordinator
         /// </summary>
         /// <param name="information"></param>
-        public void showBoardImage(int player, String information)
+        public void showBoardImage(int player, String boardInformation)
         {
             //information holds the board image file name
             BitmapImage boardImageSource = new BitmapImage();
             boardImageSource.BeginInit();
-            boardImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/boards/" + information + ".jpg");
+            boardImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/boards/" + boardInformation.Substring(2) + ".jpg");
             boardImageSource.EndInit();
 
             playerState[player].boardImage.Source = boardImageSource;
+
+            int nWonderStages = Int32.Parse(boardInformation.Substring(0, 1));
+
+            for (int i = 0; i < nWonderStages; ++i)
+            {
+                ColumnDefinition cd = new ColumnDefinition();
+                cd.Width = new GridLength(1, GridUnitType.Star);
+
+                playerState[player].wonderStages.ColumnDefinitions.Add(cd);
+            }
+
+            for (int i = 0; i < nWonderStages; ++i)
+            {
+                Button b = new Button();
+
+                b.Background = new SolidColorBrush(Colors.Azure);
+                b.IsEnabled = false;
+                Grid.SetColumn(b, i);
+
+                playerState[player].wonderStages.Children.Add(b);
+            }
         }
 
         public void SetPlayerName(int player, string name)
