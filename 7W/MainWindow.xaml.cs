@@ -204,25 +204,10 @@ namespace SevenWonders
                 handPanel.Items.Add(entry);
             }
 
-            // The player must choose a card before 
+            // A card must be selected before the action buttons are activated.
             btnBuildStructure.IsEnabled = false;
+            btnBuildWonderStage.IsEnabled = false;
             btnDiscardStructure.IsEnabled = false;
-
-            if (stageBuildable == Buildable.True)
-            {
-                btnBuildWonderStage.Content = "Build a wonder stage with this card";
-                btnBuildWonderStage.IsEnabled = true;
-            }
-            else if (stageBuildable == Buildable.CommerceRequired)
-            {
-                btnBuildWonderStage.Content = "Build a wonder stage with this card (commerce required)";
-                btnBuildWonderStage.IsEnabled = true;
-            }
-            else
-            {
-                btnBuildWonderStage.Content = "Wonder stage not buildable";
-                btnBuildWonderStage.IsEnabled = false;
-            }
         }
 
         private void handPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -247,6 +232,22 @@ namespace SevenWonders
                     btnBuildStructure.Content = "Resource requirements not met for building this card";
                     btnBuildStructure.IsEnabled = false;
                     break;
+            }
+
+            if (stageBuildable == Buildable.True)
+            {
+                btnBuildWonderStage.Content = "Build a wonder stage with this card";
+                btnBuildWonderStage.IsEnabled = true;
+            }
+            else if (stageBuildable == Buildable.CommerceRequired)
+            {
+                btnBuildWonderStage.Content = "Build a wonder stage with this card (commerce required)";
+                btnBuildWonderStage.IsEnabled = true;
+            }
+            else
+            {
+                btnBuildWonderStage.Content = "Wonder stage not buildable";
+                btnBuildWonderStage.IsEnabled = false;
             }
 
             btnDiscardStructure.IsEnabled = true;
