@@ -416,7 +416,22 @@ namespace SevenWonders
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.updateCardsPlayed(Convert.ToInt32(Char.GetNumericValue(qscoll[i].Key, 6)), qscoll[i].Value);
+                                int playerNum = Convert.ToInt32(Char.GetNumericValue(qscoll[i].Key, 6));
+                                gameUI.updateCardsPlayed(playerNum, qscoll[i].Value);
+                            }));
+                        }
+                        messageHandled = true;
+                        break;
+
+                    case "Military":
+                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+
+                        for (int i = 0; i < qscoll.Count; ++i)
+                        {
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                int playerNum = Convert.ToInt32(Char.GetNumericValue(qscoll[i].Key, 6));
+                                gameUI.updateMilitaryTokens(playerNum, qscoll[i].Value);
                             }));
                         }
                         messageHandled = true;

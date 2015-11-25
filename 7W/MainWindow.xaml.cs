@@ -16,19 +16,15 @@ namespace SevenWonders
 {
     public class PlayerState
     {
-        public int coins;
-
-        public Image boardImage;
         public Dictionary<StructureType, StackPanel> structuresBuilt = new Dictionary<StructureType, StackPanel>(7);
-        public Label coinsLabel;
-        public Label nameLabel;
         public Label lastCardPlayed;
-        public Grid wonderStages;
+
+        public PlayerStateWindow state;
 
         public PlayerState(PlayerStateWindow plyr)
         {
-            coins = 3;
-            boardImage = plyr.PlayerBoard;
+            state = plyr;
+
             structuresBuilt[StructureType.RawMaterial] = plyr.ResourceStructures;
             structuresBuilt[StructureType.Goods] = plyr.GoodsStructures;
             structuresBuilt[StructureType.Commerce] = plyr.CommerceStructures;
@@ -36,9 +32,6 @@ namespace SevenWonders
             structuresBuilt[StructureType.Science] = plyr.ScienceStructures;
             structuresBuilt[StructureType.Civilian] = plyr.CivilianStructures;
             structuresBuilt[StructureType.Guild] = plyr.GuildStructures;
-            wonderStages = plyr.WonderStage;
-            coinsLabel = plyr.Coins;
-            nameLabel = plyr.PlayerName;
         }
     };
 
@@ -146,8 +139,7 @@ namespace SevenWonders
         /// <param name="playerBarPanelInformation"></param>
         public void showPlayerBarPanel(int player, string playerBarPanelInformation)
         {
-            playerState[player].coins = int.Parse(playerBarPanelInformation);
-            playerState[player].coinsLabel.Content = string.Format("Coins: {0}", playerState[player].coins);
+            playerState[player].state.Coins.Content = string.Format("Coins: {0}", int.Parse(playerBarPanelInformation));
         }
 
         /// <summary>
@@ -378,7 +370,7 @@ namespace SevenWonders
             boardImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/boards/" + boardInformation.Substring(2) + ".jpg");
             boardImageSource.EndInit();
 
-            playerState[player].boardImage.Source = boardImageSource;
+            playerState[player].state.PlayerBoard.Source = boardImageSource;
 
             int nWonderStages = Int32.Parse(boardInformation.Substring(0, 1));
 
@@ -387,7 +379,7 @@ namespace SevenWonders
                 ColumnDefinition cd = new ColumnDefinition();
                 cd.Width = new GridLength(1, GridUnitType.Star);
 
-                playerState[player].wonderStages.ColumnDefinitions.Add(cd);
+                playerState[player].state.WonderStage.ColumnDefinitions.Add(cd);
             }
 
             for (int i = 0; i < nWonderStages; ++i)
@@ -396,13 +388,13 @@ namespace SevenWonders
 
                 b.Background = new SolidColorBrush(Colors.Azure);
                 Grid.SetColumn(b, i);
-                playerState[player].wonderStages.Children.Add(b);
+                playerState[player].state.WonderStage.Children.Add(b);
             }
         }
 
         public void SetPlayerName(int player, string name)
         {
-            playerState[player].nameLabel.Content = "Name: " + name;
+            playerState[player].state.PlayerName.Content = "Name: " + name;
         }
 
         /// <summary>
@@ -416,7 +408,7 @@ namespace SevenWonders
             {
                 int stage = int.Parse(cardName.Substring(11));
 
-                Label l = playerState[player].wonderStages.Children[stage - 1] as Label;
+                Label l = playerState[player].state.WonderStage.Children[stage - 1] as Label;
 
                 l.Content = string.Format("Stage {0}", stage);
                 l.Background = new SolidColorBrush(Colors.Yellow);
@@ -458,6 +450,36 @@ namespace SevenWonders
 
                 playerState[player].structuresBuilt[lastPlayedCard.structureType].Children.Add(cardData);
             }
+        }
+
+        public void updateMilitaryTokens(int player, string strConflictData)
+        {
+            // string should be age/victories in this age/total losses
+            string[] s = strConflictData.Split('/');
+
+            if (s.Length != 3)
+                throw new Exception();
+
+            int age = int.Parse(s[0]);
+            int victoriesInThisAge = int.Parse(s[1]);
+            int totalLosses = int.Parse(s[2]);
+
+            switch (age)
+            {
+                case 1:
+                    playerState[player].state.Age1ConflictTokens.Content = string.Format("Age {0} Victories: {1}", age, victoriesInThisAge);
+                    break;
+
+                case 2:
+                    playerState[player].state.Age2ConflictTokens.Content = string.Format("Age {0} Conflicts: {1}", age, victoriesInThisAge);
+                    break;
+
+                case 3:
+                    playerState[player].state.Age3ConflictTokens.Content = string.Format("Age {0} Conflicts: {1}", age, victoriesInThisAge);
+                    break;
+            }
+
+            playerState[player].state.LossTokens.Content = string.Format("Loss tokens: {0}", totalLosses);
         }
 
         /// <summary>

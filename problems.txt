@@ -1,11 +1,11 @@
 
 Added by James Fairweather
 UI problems:
-  - Military wins & losses for each age need to be shown.
   - Can we use other nicknames?
   - Some cards do not have icons.
   - it would be nice if PlayerStatePanels were created dynamically so we maximized our use of space on the Main Window.
     The current behavior is that all 8 panels are created statically and only the ones in use are activated.
+  - Conflict tokens and losses could be presented using icons instead of text labels.
 
 Commerce issues:
 	- brown cards that give 2 of a resource don't work

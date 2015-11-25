@@ -262,6 +262,28 @@ namespace SevenWonders
             //distribute tokens
             distributeConflictTokens();
 
+            string strUpdateMilitaryTokens = "Military";
+
+            for (int i = 0; i < numOfPlayers + numOfAI; ++i)
+            {
+                int nVictoryTokens = 0;
+
+                switch(currentAge)
+                {
+                    case 1: nVictoryTokens = player[i].conflictTokenOne; break;
+                    case 2: nVictoryTokens = player[i].conflictTokenTwo; break;
+                    case 3: nVictoryTokens = player[i].conflictTokenThree; break;
+                }
+
+                // this string has the format: Current Age/Victories (0, 1, 2) for the *current* age/total loss tokens so far (0 or more)
+                strUpdateMilitaryTokens += string.Format("&Player{0}={1}/{2}/{3}", i, currentAge, nVictoryTokens, player[i].lossToken);
+            }
+
+            for (int i = 0; i < numOfPlayers + numOfAI; ++i)
+            {
+                gmCoordinator.sendMessage(player[i], strUpdateMilitaryTokens);
+            }
+
             //reenable Olympia and Babylon
             //disable Halicarnassus
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
@@ -489,8 +511,6 @@ namespace SevenWonders
 
             foreach (Board b in board.Values)
             {
-                // b.cost = new Cost[b.numOfStages];
-                // b.effect = new Effect[b.numOfStages];
                 b.stageCard = new Card[b.numOfStages];
 
                 for (int i = 0; i < b.numOfStages; ++i)
