@@ -28,13 +28,9 @@ namespace SevenWonders
         // I'll stay with a List container.
         List<Card> fullCardList = new List<Card>();
 
-        // TODO: change to a List
         public List<Deck> deckList = new List<Deck>();
 
-        // TODO: change to a list
-        public Card[] discardPile;
-
-        int numDiscardPile;
+        public List<Card> discardPile = new List<Card>();
 
         public bool esteban = false;
 
@@ -53,10 +49,6 @@ namespace SevenWonders
             player = new Player[numOfPlayers + numOfAI];
             this.numOfPlayers = numOfPlayers;
             this.numOfAI = numOfAI;
-
-            //set the discard pile
-            discardPile = new Card[300];
-            numDiscardPile = 0;
 
             //set the game to not finished, since we are just starting
             gameConcluded = false;
@@ -309,7 +301,7 @@ namespace SevenWonders
                 if (player[i].numOfHandCards >= 1)
                 {
                     //put it in the bin
-                    discardPile[numDiscardPile++] = player[i].hand[0];
+                    discardPile.Add(player[i].hand[0]);
                     player[i].numOfHandCards = 0;
                 }
             }
@@ -812,7 +804,7 @@ namespace SevenWonders
             //check if the Card costs money
             int costInCoins = 0;
 
-            for (int i = 0; i < numDiscardPile; i++)
+            for (int i = 0; i < discardPile.Count; i++)
             {
                 //found the card
                 if (discardPile[i].name == name)
@@ -842,25 +834,8 @@ namespace SevenWonders
             p.storeAction(new SimpleEffect(costInCoins, '$'));
 
             //Find the card with the id number
-            Card c = null;
-
-            for (int i = 0; i < numDiscardPile; i++)
-            {
-                //found the right card
-                if (discardPile[i].name == name)
-                {
-                    c = discardPile[i];
-                    //remove it from the discard pile
-                    for (int j = i; j < numDiscardPile - 1; j++)
-                    {
-                        discardPile[j] = discardPile[j + 1];
-                    }
-
-                    numDiscardPile--;
-
-                    break;
-                }
-            }
+            Card c = discardPile.Find(x => x.name == name);
+            discardPile.Remove(c);
 
             //add the card to played card structure
             p.addPlayedCardStructure(c);
@@ -953,7 +928,7 @@ namespace SevenWonders
             }
 
             //add the card to the discard pile
-            discardPile[numDiscardPile++] = c;
+            discardPile.Add(c);
         }
 
         
@@ -1240,16 +1215,17 @@ namespace SevenWonders
         /// <param name="p"></param>
         public void sendHalicarnassusInformation(String nickname)
         {
+            // test this.
+            throw new NotImplementedException();
+
             Player p = playerFromNickname(nickname);
-            
+
             //if there are no cards in the discard pile, send it H0, for nothing
-            if (numDiscardPile == 0)
+            if (discardPile.Count == 0)
             {
                 gmCoordinator.sendMessage(p, "H0");
                 return;
             }
-
-            
 
             //information to be sent
             String information = "H";
@@ -1257,11 +1233,12 @@ namespace SevenWonders
             //gather the necessary information
             //H_(num of cards)_(id1)&(name)_(id2)&(name)_...(id_last)&(name)|
 
-            information += "_" + numDiscardPile;
+            information += "_" + discardPile.Count;
 
-            for (int i = 0; i < numDiscardPile; i++)
+            foreach (Card c in discardPile)
             {
-                information += "_" + discardPile[i].name + "&" + discardPile[i].name;
+                // this used to be the Card ID and name.  Now it should just be the card name
+                information += "_" + c.name + "&" + c.name;
             }
 
             information += "|";
