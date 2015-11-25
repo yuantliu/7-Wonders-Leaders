@@ -294,16 +294,17 @@ namespace SevenWonders
                 }
             }
 
-            //take all player's remaining cards, deposit it to the discard pile
+            // take all player's remaining cards, deposit it to the discard pile
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
                 //if they still have a card
-                if (player[i].numOfHandCards >= 1)
+                if (player[i].hand.Count >= 1)
                 {
                     //put it in the bin
                     discardPile.Add(player[i].hand[0]);
-                    player[i].numOfHandCards = 0;
                 }
+
+                player[i].hand.Clear();
             }
         }
 
@@ -463,7 +464,7 @@ namespace SevenWonders
                 for (int j = 0; j < numCardsToDeal; j++)
                 {
                     Card c = deck.GetTopCard();
-                    player[i].addHand(c);
+                    player[i].hand.Add(c);
                 }
             }
         }
@@ -548,28 +549,12 @@ namespace SevenWonders
             Player p = playerFromNickname(playerNickname);
 
             //Find the card with the id number
-            Card c = null;
-            for (int i = 0; i < p.numOfHandCards; i++)
-            {
-                //found the right card
-                if (p.hand[i].name == name)
-                {
-                    c = p.hand[i];
-
-                    //remove it from hand
-                    for (int j = i; j < p.numOfHandCards - 1; j++)
-                    {
-                        p.hand[j] = p.hand[j + 1];
-                    }
-
-                    p.numOfHandCards--;
-
-                    break;
-                }
-            }
+            Card c = p.hand.Find(x => x.name == name);
 
             if (c == null)
                 throw new Exception("Received a message from the client to build a card that wasn't in the player's hand.");
+
+            p.hand.Remove(c);
 
             //add the card to played card structure
             p.addPlayedCardStructure(c);
@@ -687,25 +672,12 @@ namespace SevenWonders
             */
 
             //Find the card with the id number
-            Card c = null;
-            for (int i = 0; i < p.numOfHandCards; i++)
-            {
-                //found the right card
-                if (p.hand[i].name == structureName)
-                {
-                    c = p.hand[i];
+            Card c = p.hand.Find(x => x.name == structureName);
 
-                    //remove it from hand
-                    for (int j = i; j < p.numOfHandCards - 1; j++)
-                    {
-                        p.hand[j] = p.hand[j + 1];
-                    }
+            if (c == null)
+                throw new Exception("Unexpected card name");
 
-                    p.numOfHandCards--;
-
-                    break;
-                }
-            }
+            p.hand.Remove(c);
 
             //add the card to played card structure
             p.addPlayedCardStructure(c);
@@ -858,25 +830,8 @@ namespace SevenWonders
             if (p.currentStageOfWonder < p.playerBoard.numOfStages)
             {
                 //Find the card with the id number
-                Card c = null;
-                for (int i = 0; i < p.numOfHandCards; i++)
-                {
-                    //found the right card
-                    if (p.hand[i].name == structureName)
-                    {
-                        c = p.hand[i];
-
-                        //remove it from hand
-                        for (int j = i; j < p.numOfHandCards - 1; j++)
-                        {
-                            p.hand[j] = p.hand[j + 1];
-                        }
-
-                        p.numOfHandCards--;
-
-                        break;
-                    }
-                }
+                Card c = p.hand.Find(x => x.name == structureName);
+                p.hand.Remove(c);
 
                 // Find the corresponding wonder stage and add it to the played CardStructure
 
@@ -905,27 +860,8 @@ namespace SevenWonders
             p.storeAction(new SimpleEffect(3, '$'));
 
             //Find the card with the id number and find its effects
-            Card c = null;
-            // Card c = fullCardList.Find(x => x.name == name);
-
-            for (int i = 0; i < p.numOfHandCards; i++)
-            {
-                //found the right card
-                if (p.hand[i].name == name)
-                {
-                    c = p.hand[i];
-
-                    //remove it from hand
-                    for (int j = i; j < p.numOfHandCards - 1; j++)
-                    {
-                        p.hand[j] = p.hand[j + 1];
-                    }
-
-                    p.numOfHandCards--;
-
-                    break;
-                }
-            }
+            Card c = p.hand.Find(x => x.name == name);
+            p.hand.Remove(c);
 
             //add the card to the discard pile
             discardPile.Add(c);
@@ -940,7 +876,7 @@ namespace SevenWonders
         {
             if (currentAge % 2 == 1)
             {
-                Card[] firstPlayerHand = player[0].hand;
+                List<Card> firstPlayerHand = player[0].hand;
 
                 for (int i = 0; i < numOfPlayers + numOfAI - 1; i++)
                 {
@@ -951,7 +887,7 @@ namespace SevenWonders
             }
             else
             {
-                Card[] firstPlayerHand = player[numOfPlayers + numOfAI - 1].hand;
+                List<Card> firstPlayerHand = player[numOfPlayers + numOfAI - 1].hand;
 
                 for (int i = numOfPlayers + numOfAI - 1; i > 0; i--)
                 {
@@ -1177,30 +1113,12 @@ namespace SevenWonders
             //check if the Card costs money
             int costInCoins = 0;
 
-            for (int i = 0; i < p.numOfHandCards; i++)
-            {
-                //found the card
-                if (p.hand[i].name == structureName)
-                {
-                    costInCoins = p.hand[i].cost.coin;
-                    /*
-                    //count how many $ signs in the cost. Each $ means 1 coin cost
-                    for (int j = 0; j < p.hand[i].cost.Length; j++)
-                    {
-                        if (p.hand[i].cost[j] == '$')
-                        {
-                            costInCoins++;
-                        }
-                    }
-                    */
-
-                    break;
-                }
-            }
+            Card c = p.hand.Find(x => x.name == structureName);
+            costInCoins = c.cost.coin;
 
             //store the reimbursement
             // p.storeAction("1" + costInCoins + "$");
-            p.storeAction(new SimpleEffect(costInCoins, '$'));
+            p.storeAction(new SimpleEffect(c.cost.coin, '$'));
 
             //build the structure
             buildStructureFromHand(structureName, nickname);
@@ -1297,20 +1215,7 @@ namespace SevenWonders
 
             bool hasDiscount;
 
-            //Find the card with the id number
-            Card c = null;
-            if (structureName != null)
-            {
-                for (int i = 0; i < p.numOfHandCards; i++)
-                {
-                    //found the right card
-                    if (p.hand[i].name == structureName)
-                    {
-                        c = p.hand[i];
-                        break;
-                    }
-                }
-            }
+            Card c = p.hand.Find(x => x.name == structureName);
 
             if (isStage == true)
             {

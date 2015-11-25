@@ -95,15 +95,13 @@ namespace SevenWonders
 
         public int GetConflictTokenThree() { return conflictTokenThree; }
 
-        public int GetNumCardsInHand() { return numOfHandCards; }
+        public int GetNumCardsInHand() { return hand.Count; }
 
         public Card GetCard(int i) { return hand[i]; }
 
         public Card GetCardPlayed(int i) { return playedStructure[i]; }
 
-        public Card[] hand;
-
-        public int numOfHandCards { get; set; }
+        public List<Card> hand = new List<Card>(7);
 
         public List<Card> playedStructure = new List<Card>();
 
@@ -178,8 +176,6 @@ namespace SevenWonders
 
             this.isAI = isAI;
 
-            hand = new Card[7];
-            numOfHandCards = 0;
             currentStageOfWonder = 0;
             changeNickName = false;
             newNickName = "";
@@ -797,15 +793,6 @@ namespace SevenWonders
         {
             playedStructure.Add(card);
             bUIRequiresUpdating = true;
-        }
-
-        /// <summary>
-        /// Add a card to the Player's Hand
-        /// </summary>
-        /// <param name="card"></param>
-        public void addHand(Card card)
-        {
-            hand[numOfHandCards++] = card;
         }
 
         /// <summary>

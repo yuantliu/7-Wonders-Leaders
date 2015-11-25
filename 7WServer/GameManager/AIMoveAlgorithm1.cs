@@ -12,7 +12,7 @@ namespace SevenWonders
         {
             //if first card is buildable, do it.
             //otherwise, discard it
-            for(int i = 0; i < p.numOfHandCards; i++){
+            for(int i = 0; i < p.hand.Count; i++){
                 if (p.isCardBuildable(i) == Buildable.True)
                 {
                     gm.buildStructureFromHand(p.hand[i].name, p.nickname);

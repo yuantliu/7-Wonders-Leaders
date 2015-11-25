@@ -16,7 +16,7 @@ namespace SevenWonders
             //otherwise, discard first card
 
             //look for buildable blue cards
-            for (int i = 0; i < player.numOfHandCards; i++)
+            for (int i = 0; i < player.hand.Count; i++)
             {
                 if (player.hand[i].structureType == StructureType.Civilian && player.isCardBuildable(i) == Buildable.True)
                 {
@@ -26,7 +26,7 @@ namespace SevenWonders
             }
 
             //look for buildable yellow cards that gives some resources
-            for (int i = 0; i < player.numOfHandCards; i++)
+            for (int i = 0; i < player.hand.Count; i++)
             {
                 if (player.hand[i].structureType == StructureType.Commerce && player.isCardBuildable(i) == Buildable.True)
                 {
@@ -39,7 +39,7 @@ namespace SevenWonders
             }
 
             //look for buildable resource cards
-            for (int i = 0; i < player.numOfHandCards; i++)
+            for (int i = 0; i < player.hand.Count; i++)
             {
                 if ((player.hand[i].structureType == StructureType.RawMaterial || player.hand[i].structureType == StructureType.Goods) && player.isCardBuildable(i) == Buildable.True && player.hand[i].effect is SimpleEffect)
                 {

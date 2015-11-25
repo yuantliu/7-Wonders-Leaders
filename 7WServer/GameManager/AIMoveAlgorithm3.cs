@@ -18,7 +18,7 @@ namespace SevenWonders
             //otherwise, discard first card
 
             //look for buildable Red cards
-            for (int i = 0; i < player.numOfHandCards; i++)
+            for (int i = 0; i < player.hand.Count; i++)
             {
                 if (player.hand[i].structureType == StructureType.Military && player.isCardBuildable(i) == Buildable.True)
                 {
@@ -30,7 +30,7 @@ namespace SevenWonders
             }
 
             //look for buildable resource cards that give more than one resource ...
-            for (int i = 0; i < player.numOfHandCards; i++)
+            for (int i = 0; i < player.hand.Count; i++)
             {
                 if ((player.hand[i].structureType == StructureType.RawMaterial || player.hand[i].structureType == StructureType.Goods) && player.isCardBuildable(i) == Buildable.True && player.hand[i].effect is ResourceChoiceEffect)
                 {
@@ -46,7 +46,7 @@ namespace SevenWonders
          
             
             //look for buildable resource cards that only give one ..
-            for (int i = 0; i < player.numOfHandCards; i++)
+            for (int i = 0; i < player.hand.Count; i++)
             {
                 if ((player.hand[i].structureType == StructureType.RawMaterial || player.hand[i].structureType == StructureType.Goods) && player.isCardBuildable(i) == Buildable.True && player.hand[i].effect is SimpleEffect)
                 {
@@ -64,7 +64,7 @@ namespace SevenWonders
             }
 
             //Discard the non-buildable Red cards
-            for (int i = 0; i < player.numOfHandCards; i++)
+            for (int i = 0; i < player.hand.Count; i++)
             {
                 if ((player.hand[i].structureType == StructureType.Military && (player.isCardBuildable(i) == Buildable.False) |player.isCardBuildable(i) == Buildable.CommerceRequired))
                 {
