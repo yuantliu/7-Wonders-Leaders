@@ -66,7 +66,7 @@ namespace SevenWonders
             //Discard the non-buildable Red cards
             for (int i = 0; i < player.hand.Count; i++)
             {
-                if ((player.hand[i].structureType == StructureType.Military && (player.isCardBuildable(i) == Buildable.False) |player.isCardBuildable(i) == Buildable.CommerceRequired))
+                if ((player.hand[i].structureType == StructureType.Military) && (player.isCardBuildable(i) != Buildable.True))
                 {
                     gm.discardCardForThreeCoins(player.hand[i].name, player.nickname);
                     Console.WriteLine(player.nickname + " Just Discard A (Red) Card for 3 Coins..");

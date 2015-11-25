@@ -153,59 +153,15 @@ namespace SevenWonders
         {
             return coin + wood + stone + clay + ore + cloth + glass + papyrus;
         }
-
-        /*
-        public static bool operator == (Cost a, Cost b)
-        {
-            return a.coin == b.coin && a.wood == b.wood && a.stone == b.stone && a.clay == b.clay &&
-                a.ore == b.ore && a.cloth == b.cloth && a.glass == b.glass && a.papyrus == b.papyrus;
-        }
-
-        public static bool operator != (Cost a, Cost b)
-        {
-            return !(a == b);
-        }
-
-        public override bool Equals(object obj)
-        {
-            Cost c = obj as Cost;
-            if (c != null)
-            {
-                return c == this;
-            }
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return GetHashCode();
-        }
-
-        public static Cost operator -(Cost input, Cost subtractionAmount)
-        {
-            Cost result = new Cost();
-
-            result.coin =    Math.Max(input.coin -    subtractionAmount.coin, 0);
-            result.wood =    Math.Max(input.wood -    subtractionAmount.wood, 0);
-            result.stone =   Math.Max(input.stone -   subtractionAmount.stone, 0);
-            result.clay =    Math.Max(input.clay -    subtractionAmount.clay, 0);
-            result.ore =     Math.Max(input.ore -     subtractionAmount.ore, 0);
-            result.cloth =   Math.Max(input.cloth -   subtractionAmount.cloth, 0);
-            result.glass =   Math.Max(input.wood -    subtractionAmount.glass, 0);
-            result.papyrus = Math.Max(input.papyrus - subtractionAmount.papyrus, 0);
-
-            return result;
-        }
-
-                    */
-
     };
 
     public enum Buildable
     {
         True,
-        False,
         CommerceRequired,
+        InsufficientResources,
+        InsufficientCoins,
+        StructureAlreadyBuilt,      // for Wonder stages, this means all wonders stages have been built already.
     };
 
     public enum StructureType

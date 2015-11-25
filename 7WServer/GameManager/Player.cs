@@ -810,7 +810,7 @@ namespace SevenWonders
 
             //if the player already owns a copy of the card, Return F immediatley
             if (playedStructure.Exists(x => x.name == card.name))
-                return Buildable.False;
+                return Buildable.StructureAlreadyBuilt;
 
             //if the cost is !, that means its free. Return T immediately
             if (cost.coin == 0 && cost.wood == 0 && cost.stone == 0 && cost.clay == 0 &&
@@ -872,7 +872,7 @@ namespace SevenWonders
             {
                 // if the card has a coin cost and we don't have enough money, bail out and
                 // return not buildable.
-                return Buildable.False;
+                return Buildable.InsufficientCoins;
             }
 
             //can player afford cost with DAG resources?
@@ -885,7 +885,7 @@ namespace SevenWonders
 
             //absolutely all options have been exhausted
             //finally return 'F'
-            return Buildable.False;
+            return Buildable.InsufficientResources;
         }
 
         /// <summary>
@@ -909,7 +909,7 @@ namespace SevenWonders
             //can I afford the cost with resources in my DAG?
             if (DAG.canAfford(dag, cost)) return Buildable.True;
 
-            return Buildable.False;
+            return Buildable.InsufficientResources;
         }
 
         /// <summary>
@@ -929,7 +929,7 @@ namespace SevenWonders
             //determine if the combined DAG can afford the cost
             if (DAG.canAfford(combinedDAG, cost)) return Buildable.CommerceRequired;
 
-            return Buildable.False;
+            return Buildable.InsufficientResources;
         }
 
         /// <summary>
@@ -941,7 +941,7 @@ namespace SevenWonders
         {
             //check if the current Stage is already the maximum stage
             if (currentStageOfWonder >= playerBoard.numOfStages)
-                return Buildable.False;
+                return Buildable.StructureAlreadyBuilt;
 
             //retrieve the cost
             Cost cost = playerBoard.stageCard[currentStageOfWonder].cost;
@@ -962,7 +962,7 @@ namespace SevenWonders
                 return Buildable.CommerceRequired;
 
             //absolutely all options exhausted. return F
-            return Buildable.False;
+            return Buildable.InsufficientResources;
         }
 
         /// <summary>
