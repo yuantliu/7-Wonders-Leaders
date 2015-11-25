@@ -55,7 +55,7 @@ namespace SevenWonders
             }
 
             //discard card[0]
-            gm.discardCardForThreeCoins(player.hand[0].name, player.nickname);
+            gm.discardCardForThreeCoins(player.hand[0], player);
         }
     }
 }

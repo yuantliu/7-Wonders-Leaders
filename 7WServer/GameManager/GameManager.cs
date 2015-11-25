@@ -529,9 +529,6 @@ namespace SevenWonders
             return randomBoard.Value;
         }
 
-        /// <summary>
-        /// build a structure from hand, given the Card id number and the Player
-        /// </summary>
         public void buildStructureFromHand(string name, string playerNickname)
         {
             //Find the Player object given the playerNickname
@@ -543,6 +540,14 @@ namespace SevenWonders
             if (c == null)
                 throw new Exception("Received a message from the client to build a card that wasn't in the player's hand.");
 
+            buildStructureFromHand(c, p);
+        }
+
+        /// <summary>
+        /// build a structure from hand, given the Card id number and the Player
+        /// </summary>
+        public void buildStructureFromHand(Card c, Player p)
+        {
             p.hand.Remove(c);
 
             //add the card to played card structure
@@ -840,19 +845,25 @@ namespace SevenWonders
             }
         }
 
+        public void discardCardForThreeCoins(string name, String nickname)
+        {
+            Player p = player[nickname];
+
+            Card c = p.hand.Find(x => x.name == name);
+
+            discardCardForThreeCoins(c, p);
+        }
+
         /// <summary>
         /// discard a given card's id for three coins
         /// </summary>
         /// <param name="id"></param>
         /// <param name="p"></param>
-        public void discardCardForThreeCoins(string name, String nickname)
+        public void discardCardForThreeCoins(Card c, Player p)
         {
-            Player p = player[nickname];
-
             p.storeAction(new SimpleEffect(3, '$'));
 
             //Find the card with the id number and find its effects
-            Card c = p.hand.Find(x => x.name == name);
             p.hand.Remove(c);
 
             //add the card to the discard pile
