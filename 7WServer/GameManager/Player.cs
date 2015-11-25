@@ -123,10 +123,7 @@ namespace SevenWonders
         private List<Effect> actions = new List<Effect>();
 
         //stored actions for the end of the game
-        private Effect[] endOfGameActions;      // shouldn't this be a list or queue?
-        private int numOfEndOfGameActions;
-        //up to 20 stored actions allowed
-        private const int MAX_ALLOWED_END_OF_GAME_ACTIONS = 20;
+        private List<Effect> endOfGameActions = new List<Effect>();
 
         //Player's left and right neighbours
         public Player leftNeighbour { get; set; }
@@ -152,7 +149,7 @@ namespace SevenWonders
         public bool GetRightManu() { return rightManu; }
 
         //Leaders pile. The pile that holds the unplayed leaders cards
-        public List<Card> leadersPile;
+        public List<Card> leadersPile = new List<Card>();
 
         public List<Card> GetLeadersPile() { return leadersPile; }
 
@@ -178,17 +175,14 @@ namespace SevenWonders
             dag = new DAG();
 
             this.nickname = nickname;
-            //set whether or not this is an AI
-            this.isAI = isAI;
-            //assume there can only be up to 10 stored actions
 
-            endOfGameActions = new Effect[MAX_ALLOWED_END_OF_GAME_ACTIONS];
+            this.isAI = isAI;
+
             hand = new Card[7];
             numOfHandCards = 0;
             currentStageOfWonder = 0;
             changeNickName = false;
             newNickName = "";
-            leadersPile = new List<Card>();
 
             //set used halicarnassus and babylon to true, to make sure its not available
             usedHalicarnassus = true;
@@ -317,7 +311,7 @@ namespace SevenWonders
         /// <param name="s"></param>
         public void storeEndOfGameAction(Effect s)
         {
-            endOfGameActions[numOfEndOfGameActions++] = s;
+            endOfGameActions.Add(s);
         }
 
         //Execute actions
@@ -508,14 +502,14 @@ namespace SevenWonders
 
                     if (e.victoryPointsAtEndOfGameMultiplier != 0)      // JDF: I added this line.  No point in adding Vineyard & Bazar to end of game actions.
                     //for victory points, just copy the effect to endOfGameActions and have executeEndOfGameActions do it later
-                        endOfGameActions[numOfEndOfGameActions++] = act;
+                        endOfGameActions.Add(act);
 
                 }
                 //category 6: special guild cards
                 //put these directly into executeEndOfGameActions array
                 else if (act is SpecialAbilityEffect)
                 {
-                    endOfGameActions[numOfEndOfGameActions++] = act;
+                    endOfGameActions.Add(act);
                 }
                 /*
                 //category 7: hard coded board powers
@@ -609,66 +603,54 @@ namespace SevenWonders
         /// </summary>
         public void executeEndOfGameActions()
         {
-            //2 types of effects: category 5 (yellow cards that add victory points) or category 6 (guild cards)
-            for (int i = 0; i < numOfEndOfGameActions; i++)
+            foreach (Effect act in endOfGameActions)
             {
-                // String act = endOfGameActions[i].Substring(1);
-                Effect act = endOfGameActions[i];
-
-                int points = 0;
-
-                //category 5
-                // if (endOfGameActions[i][0] == '5')
                 if (act is CoinsAndPointsEffect)
                 {
-                    //add victory points
-                    //colours that are being looked for: G = grey, B = brown, b = blue, N = green, Y = yellow, S = stage, L = loss, R=red, P=purple, W=White, c = conflict token
-                    // char colour = act[3];
-
                     CoinsAndPointsEffect e = act as CoinsAndPointsEffect;
 
                     if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors ||
                         e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Neighbors)
                     {
-                        points += e.victoryPointsAtEndOfGameMultiplier * leftNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
-                        points += e.victoryPointsAtEndOfGameMultiplier * rightNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
+                        victoryPoint += e.victoryPointsAtEndOfGameMultiplier * leftNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
+                        victoryPoint += e.victoryPointsAtEndOfGameMultiplier * rightNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
 
                         if (e.classConsidered == StructureType.MilitaryLosses)
                         {
-                            points += leftNeighbour.lossToken * e.victoryPointsAtEndOfGameMultiplier;
-                            points += rightNeighbour.lossToken * e.victoryPointsAtEndOfGameMultiplier;
+                            victoryPoint += leftNeighbour.lossToken * e.victoryPointsAtEndOfGameMultiplier;
+                            victoryPoint += rightNeighbour.lossToken * e.victoryPointsAtEndOfGameMultiplier;
                         }
 
                         if (e.classConsidered == StructureType.MilitaryVictories)
                         {
-                            points += (leftNeighbour.conflictTokenOne + leftNeighbour.conflictTokenTwo + leftNeighbour.conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
-                            points += (rightNeighbour.conflictTokenOne + rightNeighbour.conflictTokenTwo + rightNeighbour.conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
+                            victoryPoint += (leftNeighbour.conflictTokenOne + leftNeighbour.conflictTokenTwo + leftNeighbour.conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
+                            victoryPoint += (rightNeighbour.conflictTokenOne + rightNeighbour.conflictTokenTwo + rightNeighbour.conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
                         }
 
                         if (e.classConsidered == StructureType.WonderStage)
                         {
-                            points += leftNeighbour.currentStageOfWonder* e.victoryPointsAtEndOfGameMultiplier;
-                            points += rightNeighbour.currentStageOfWonder * e.victoryPointsAtEndOfGameMultiplier;
+                            victoryPoint += leftNeighbour.currentStageOfWonder* e.victoryPointsAtEndOfGameMultiplier;
+                            victoryPoint += rightNeighbour.currentStageOfWonder * e.victoryPointsAtEndOfGameMultiplier;
                         }
                     }
 
                     if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors || e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
                     {
-                        points += e.victoryPointsAtEndOfGameMultiplier * playedStructure.Where(x => x.structureType == e.classConsidered).Count();
+                        victoryPoint += e.victoryPointsAtEndOfGameMultiplier * playedStructure.Where(x => x.structureType == e.classConsidered).Count();
 
                         if (e.classConsidered == StructureType.MilitaryLosses)
                         {
-                            points += lossToken * e.victoryPointsAtEndOfGameMultiplier;
+                            victoryPoint += lossToken * e.victoryPointsAtEndOfGameMultiplier;
                         }
 
                         if (e.classConsidered == StructureType.MilitaryVictories)
                         {
-                            points += (conflictTokenOne + conflictTokenTwo + conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
+                            victoryPoint += (conflictTokenOne + conflictTokenTwo + conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
                         }
 
                         if (e.classConsidered == StructureType.WonderStage)
                         {
-                            points += currentStageOfWonder * e.victoryPointsAtEndOfGameMultiplier;
+                            victoryPoint += currentStageOfWonder * e.victoryPointsAtEndOfGameMultiplier;
                         }
                     }
                 }
@@ -706,7 +688,7 @@ namespace SevenWonders
                         {
                             if (playedStructure[j].colour == "Brown" || playedStructure[j].colour == "Grey" || playedStructure[j].colour == "Purple")
                             {
-                                points++;
+                                victoryPoint++;
                             }
                         }
 
@@ -716,7 +698,7 @@ namespace SevenWonders
                     //add 1 victory point for each 3 coins at the end of the game
                     if (act.Substring(1) == "302" || act.Substring(2) == "218")
                     {
-                        points += (int)(coin / 3);
+                        victoryPoint += (int)(coin / 3);
                     }
 
                     //card number 203
@@ -726,7 +708,7 @@ namespace SevenWonders
                     if (act.Substring(1) == "203")
                     {
                         int least = Math.Min(Math.Min(bearTrap, sextant), tablet);
-                        points += (least * 3);
+                        victoryPoint += (least * 3);
                     }
 
                     //card number 213 (Justinian)
@@ -743,11 +725,11 @@ namespace SevenWonders
                         }
 
                         int least = Math.Min(Math.Min(blue, red), green);
-                        points += (least * 3);
+                        victoryPoint += (least * 3);
                     }
 
                     //card number 224 (Platon)
-                    //add 7 victory points for each set of brown, grey, blue, yellow, green, red, and purple card played
+                    //add 7 victory point for each set of brown, grey, blue, yellow, green, red, and purple card played
                     if (act.Substring(1) == "224")
                     {
                         //let the 7 numbers be put into an array of integers. Sort these integers. The lowest number will be the least amount
@@ -773,21 +755,21 @@ namespace SevenWonders
                         int least = colours[0];
 
                         //add multiple of 7 of the least amount.
-                        points += (least * 7);
+                        victoryPoint += (least * 7);
                     }
 
                     //card number 200
                     //Alexander: one extra point per conflict token
                     if (act.Substring(1) == "200")
                     {
-                        points += (conflictTokenOne + conflictTokenTwo + conflictTokenThree);
+                        victoryPoint += (conflictTokenOne + conflictTokenTwo + conflictTokenThree);
                     }
 
                     //card number 238
                     //Louis Armstrong
                     if (act.Substring(1) == "238")
                     {
-                        points += (7 - (conflictTokenOne + conflictTokenTwo + conflictTokenThree));
+                        victoryPoint += (7 - (conflictTokenOne + conflictTokenTwo + conflictTokenThree));
                     }
                     */
                 }
@@ -804,10 +786,7 @@ namespace SevenWonders
 
                     throw new NotImplementedException();
                 }
-
-                victoryPoint += points;
             }
-
         }
 
         /// <summary>
