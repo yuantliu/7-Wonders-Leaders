@@ -29,96 +29,92 @@ namespace SevenWonders
 
             Console.WriteLine(strOutput);
 
-            Card c = null;
-
             //look for buildable blue cards at the third age ..
-            for (int i = 0; i < player.hand.Count && c == null; i++)
+            Card c = player.hand.Find(x => x.structureType == StructureType.Civilian && player.isCardBuildable(x) == Buildable.True && x.age == 3);
+
+            if (c == null)
             {
-                if (player.hand[i].structureType == StructureType.Civilian && player.isCardBuildable(i) == Buildable.True && player.hand[i].age == 3)
+                //look for buildable green cards
+                c = player.hand.Find(x => x.structureType == StructureType.Science && player.isCardBuildable(x) == Buildable.True);
+            }
+
+            if (c == null)
+            {
+                //look for buildable resource cards that give more than one manufactory resources ...
+                foreach (Card card in player.hand)
                 {
-                    c = player.hand[i];
+                    if ((card.structureType == StructureType.Commerce && player.isCardBuildable(card) == Buildable.True) && card.effect is ResourceChoiceEffect)
+                    {
+                        // char resource = player.hand[i].effect[2];        // hunh?
+                        string resource = ((ResourceChoiceEffect)card.effect).strChoiceData;
+
+                        if (resource.Contains("C") && player.loom < maxLPG * 2) { c = card; }
+                        else if (resource.Contains("P") && player.papyrus < maxLPG * 2) { c = card; }
+                        else if (resource.Contains("G") && player.glass < maxLPG * 2) { c = card; }
+
+                        // not sure what's going on here.  I think there may have been a bug in the original implementation.
+                    }
+                }
+            }
+
+            if (c == null)
+            {
+                //look for buildable resource cards that give more than one resource ...
+                foreach (Card card in player.hand)
+                {
+                    if ((card.structureType == StructureType.RawMaterial && player.isCardBuildable(card) == Buildable.True) && card.effect is ResourceChoiceEffect)
+                    {
+                        string resource = ((ResourceChoiceEffect)card.effect).strChoiceData;
+
+                        if (player.brick < maxOBW && resource.Contains('B') ) { c = card; }
+                        else if (player.ore < maxOBW && resource.Contains('O') ) { c = card; }
+                        else if (player.stone < maxStone && resource.Contains('S') ) { c = card; }
+                        else if (player.wood < maxOBW && resource.Contains('W') ) { c = card; }
+                    }
                 }
             }
 
 
-            //look for buildable green cards
-            for (int i = 0; i < player.hand.Count && c == null; i++)
+            if (c == null)
             {
-                if (player.hand[i].structureType == StructureType.Science && player.isCardBuildable(i) == Buildable.True)
+                //look for buildable resource cards that only give one and the manufactory resources ..
+                foreach (Card card in player.hand)
                 {
-                    c = player.hand[i];
+                    if ((card.structureType == StructureType.RawMaterial || card.structureType == StructureType.Goods) && player.isCardBuildable(card) == Buildable.True && card.effect is SimpleEffect)
+                    {
+                        char resource = ((SimpleEffect)card.effect).type;
+                        int numOfResource = ((SimpleEffect)card.effect).multiplier;
+
+                        if (resource == 'C' && player.loom < maxLPG) { c = card; }
+                        else if (resource == 'G' && player.glass < maxLPG) { c = card; }
+                        else if (resource == 'P' && player.papyrus < maxLPG) { c = card; }
+                        else if (resource == 'B' && numOfResource + player.brick < maxOBW) { c = card; }
+                        else if (resource == 'O' && numOfResource + player.ore < maxOBW) { c = card; }
+                        else if (resource == 'S' && numOfResource + player.stone < maxStone) { c = card; }
+                        else if (resource == 'W' && numOfResource + player.wood < maxOBW) { c = card; }
+                    }
                 }
             }
 
-            //look for buildable resource cards that give more than one manufactory resources ...
-            for (int i = 0; i < player.hand.Count && c == null; i++)
+            if (c == null)
             {
-                if ((player.hand[i].structureType == StructureType.Commerce && player.isCardBuildable(i) == Buildable.True) && player.hand[i].effect is ResourceChoiceEffect)
-                {
-                    // char resource = player.hand[i].effect[2];        // hunh?
-                    string resource = ((ResourceChoiceEffect)player.hand[i].effect).strChoiceData;
-
-                    if (resource.Contains("C") && player.loom < maxLPG * 2) { c = player.hand[i];  }
-                    else if (resource.Contains("P") && player.papyrus < maxLPG * 2) { c = player.hand[i]; }
-                    else if (resource.Contains("G") && player.glass < maxLPG * 2) { c = player.hand[i]; }
-
-                    // not sure what's going on here.  I think there may have been a bug in the original implementation.
-                }
+                //look for buildable Red cards
+                c = player.hand.Find(x => x.structureType == StructureType.Military && player.isCardBuildable(x) == Buildable.True);
             }
 
-            //look for buildable resource cards that give more than one resource ...
-            for (int i = 0; i < player.hand.Count && c == null; i++)
+            if (c == null)
             {
-                if ((player.hand[i].structureType == StructureType.RawMaterial && player.isCardBuildable(i) == Buildable.True) && player.hand[i].effect is ResourceChoiceEffect)
+                //Discard the non-buildable Red cards
+                foreach (Card card in player.hand)
                 {
-                    string resource = ((ResourceChoiceEffect)player.hand[i].effect).strChoiceData;
-
-                    if (player.brick < maxOBW && (resource[0] == 'B' || resource[1] == 'B') ) { c = player.hand[i]; }
-                    else if (player.ore < maxOBW && (resource[0] == 'O' || resource[1] == 'O') ) { c = player.hand[i]; }
-                    else if (player.stone < maxStone && (resource[0] == 'S' || resource[1] == 'S') ) { c = player.hand[i]; }
-                    else if (player.wood < maxOBW && (resource[0] == 'W' || resource[1] == 'W') ) { c = player.hand[i]; }
+                    if (card.structureType == StructureType.Military && player.isCardBuildable(card) != Buildable.True)
+                    {
+                        Console.WriteLine(player.nickname + " Action: Discard {0}", card.name);
+                        gm.discardCardForThreeCoins(card.name, player.nickname);
+                        return;
+                    }
                 }
             }
-
-
-            //look for buildable resource cards that only give one and the manufactory resources ..
-            for (int i = 0; i < player.hand.Count && c == null; i++)
-            {
-                if ((player.hand[i].structureType == StructureType.RawMaterial || player.hand[i].structureType == StructureType.Goods) && player.isCardBuildable(i) == Buildable.True && player.hand[i].effect is SimpleEffect)
-                {
-                    char resource = ((SimpleEffect)player.hand[i].effect).type;
-                    int numOfResource = ((SimpleEffect)player.hand[i].effect).multiplier;
-
-                    if (resource == 'C' && player.loom < maxLPG) { c = player.hand[i]; }
-                    else if (resource == 'G' && player.glass < maxLPG) { c = player.hand[i]; }
-                    else if (resource == 'P' && player.papyrus < maxLPG) { c = player.hand[i]; }
-                    else if (resource == 'B' && numOfResource + player.brick < maxOBW) { c = player.hand[i]; }
-                    else if (resource == 'O' && numOfResource + player.ore < maxOBW) { c = player.hand[i]; }
-                    else if (resource == 'S' && numOfResource + player.stone < maxStone) { c = player.hand[i]; }
-                    else if (resource == 'W' && numOfResource + player.wood < maxOBW) { c = player.hand[i]; }
-                }
-            }
-
-            //look for buildable Red cards
-            for (int i = 0; i < player.hand.Count && c == null; i++)
-            {
-                if (player.hand[i].structureType == StructureType.Military && player.isCardBuildable(i) == Buildable.True)
-                {
-                    c = player.hand[i]; 
-                }
-            }
-
-            //Discard the non-buildable Red cards
-            for (int i = 0; (i < player.hand.Count) && (c == null); i++)
-            {
-                if (player.hand[i].structureType == StructureType.Military && player.isCardBuildable(i) != Buildable.True)
-                {
-                    Console.WriteLine(player.nickname + " Action: Discard {0}", player.hand[i].name);
-                    gm.discardCardForThreeCoins(player.hand[i].name, player.nickname);
-                    return;
-                }
-            }
-
             if (c != null)
             {
                 Console.WriteLine(player.nickname + " Action: Constuct {0}", c.name);

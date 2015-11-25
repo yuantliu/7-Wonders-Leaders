@@ -760,10 +760,8 @@ namespace SevenWonders
         /// </summary>
         /// <param name="card"></param>
         /// <returns></returns>
-        public Buildable isCardBuildable(int j)
+        public Buildable isCardBuildable(Card card)
         {
-            Card card = hand[j];
-
             //retrieve the cost
             Cost cost = card.cost;
 

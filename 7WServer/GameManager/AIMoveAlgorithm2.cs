@@ -16,46 +16,41 @@ namespace SevenWonders
             //otherwise, discard first card
 
             //look for buildable blue cards
-            for (int i = 0; i < player.hand.Count; i++)
-            {
-                if (player.hand[i].structureType == StructureType.Civilian && player.isCardBuildable(i) == Buildable.True)
-                {
-                    gm.buildStructureFromHand(player.hand[i].name, player.nickname);
-                    return;
-                }
-            }
+            Card c = player.hand.Find(x => x.structureType == StructureType.Civilian && player.isCardBuildable(x) == Buildable.True);
 
-            //look for buildable yellow cards that gives some resources
-            for (int i = 0; i < player.hand.Count; i++)
+            if (c != null)
             {
-                if (player.hand[i].structureType == StructureType.Commerce && player.isCardBuildable(i) == Buildable.True)
-                {
-                    if (player.hand[i].effect is ResourceChoiceEffect)
-                    {
-                        gm.buildStructureFromHand(player.hand[i].name, player.nickname);
-                        return;
-                    }
-                }
+                gm.buildStructureFromHand(c.name, player.nickname);
+                return;
+            }
+           
+            //look for buildable yellow cards that gives some resources
+            c = player.hand.Find(x => x.structureType == StructureType.Commerce &&
+                player.isCardBuildable(x) == Buildable.True &&
+                x.effect is ResourceChoiceEffect);
+
+            if (c != null)
+            {
+                gm.buildStructureFromHand(c.name, player.nickname);
+                return;
             }
 
             //look for buildable resource cards
-            for (int i = 0; i < player.hand.Count; i++)
+            foreach(Card card in player.hand)
             {
-                if ((player.hand[i].structureType == StructureType.RawMaterial || player.hand[i].structureType == StructureType.Goods) && player.isCardBuildable(i) == Buildable.True && player.hand[i].effect is SimpleEffect)
+                if ((card.structureType == StructureType.RawMaterial || card.structureType == StructureType.Goods) && player.isCardBuildable(card) == Buildable.True && card.effect is SimpleEffect)
                 {
-                    SimpleEffect e = player.hand[i].effect as SimpleEffect;
+                    SimpleEffect e = card.effect as SimpleEffect;
                     char resource = e.type;
                     int numOfResource = e.multiplier;
 
-                    if (resource == 'B' && numOfResource + player.brick < maxResourcesRequired ) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
-                    else if (resource == 'O' && numOfResource + player.ore < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
-                    else if (resource == 'T' && numOfResource + player.stone < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
-                    else if (resource == 'W' && numOfResource + player.wood < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
-                    else if (resource == 'G' && numOfResource + player.glass < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
-                    else if (resource == 'L' && numOfResource + player.loom < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
-                    else if (resource == 'P' && numOfResource + player.papyrus < maxResourcesRequired) { gm.buildStructureFromHand(player.hand[i].name, player.nickname); }
-
-                    return;
+                    if (resource == 'B' && numOfResource + player.brick < maxResourcesRequired ) { gm.buildStructureFromHand(card.name, player.nickname); return; }
+                    else if (resource == 'O' && numOfResource + player.ore < maxResourcesRequired) { gm.buildStructureFromHand(card.name, player.nickname); return; }
+                    else if (resource == 'T' && numOfResource + player.stone < maxResourcesRequired) { gm.buildStructureFromHand(card.name, player.nickname); return; }
+                    else if (resource == 'W' && numOfResource + player.wood < maxResourcesRequired) { gm.buildStructureFromHand(card.name, player.nickname); return; }
+                    else if (resource == 'G' && numOfResource + player.glass < maxResourcesRequired) { gm.buildStructureFromHand(card.name, player.nickname); return; }
+                    else if (resource == 'L' && numOfResource + player.loom < maxResourcesRequired) { gm.buildStructureFromHand(card.name, player.nickname); return; }
+                    else if (resource == 'P' && numOfResource + player.papyrus < maxResourcesRequired) { gm.buildStructureFromHand(card.name, player.nickname); return; }
                 }
             }
 

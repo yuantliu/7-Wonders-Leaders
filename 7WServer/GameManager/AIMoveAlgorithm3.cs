@@ -13,6 +13,7 @@ namespace SevenWonders
 
         public void makeMove(Player player, GameManager gm)
         {
+            /*
             //go for Red cards whenever you can
             //if not, Discard Red Cards
             //otherwise, discard first card
@@ -73,6 +74,7 @@ namespace SevenWonders
                     return;
                 }
             }
+            */
 
             gm.discardCardForThreeCoins(player.hand[0].name, player.nickname);
             Console.WriteLine(player.nickname + " Just Discard A Random Card for 3 Coins..");

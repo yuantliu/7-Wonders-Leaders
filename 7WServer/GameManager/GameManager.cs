@@ -1018,9 +1018,9 @@ namespace SevenWonders
                     //prepare to send the HandPanel information
                     string strHand = "SetPlyrH";
 
-                    for (int j = 0; j < p.GetNumCardsInHand(); ++j)
+                    foreach (Card card in p.hand)
                     {
-                        strHand += string.Format("&{0}={1}", p.hand[j].name, p.isCardBuildable(j).ToString());
+                        strHand += string.Format("&{0}={1}", card.name, p.isCardBuildable(card).ToString());
                     }
 
                     strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
@@ -1191,7 +1191,7 @@ namespace SevenWonders
             //get the id
             information += "_" + lastCard.name + "_";
             //get if the card is playable from hand
-            information += p.isCardBuildable(0);
+            information += p.isCardBuildable(lastCard);
             //get if stage is buildable from hand
             information += p.isStageBuildable();
 

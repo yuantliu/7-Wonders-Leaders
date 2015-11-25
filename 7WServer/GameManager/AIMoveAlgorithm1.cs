@@ -10,12 +10,13 @@ namespace SevenWonders
     {
         public void makeMove(Player p, GameManager gm)
         {
-            //if first card is buildable, do it.
-            //otherwise, discard it
-            for(int i = 0; i < p.hand.Count; i++){
-                if (p.isCardBuildable(i) == Buildable.True)
+            // Build the first card in the hand that we can build.  If there
+            // are no buildable cards, discard the first one.
+            foreach (Card c in p.hand)
+            {
+                if (p.isCardBuildable(c) == Buildable.True)
                 {
-                    gm.buildStructureFromHand(p.hand[i].name, p.nickname);
+                    gm.buildStructureFromHand(c.name, p.nickname);
                     return;
                 }
             }

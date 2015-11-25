@@ -12,7 +12,7 @@ namespace SevenWonders
 
         int GetCoin();
 
-        Buildable isCardBuildable(int i);
+        Buildable isCardBuildable(Card card);
 
         Buildable isStageBuildable();
 
