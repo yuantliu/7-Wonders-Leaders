@@ -19,7 +19,7 @@ namespace SevenWonders
         // JDF I think player should be a dictionary rather than an array.
         // public Dictionary<string, Player> player;
 
-        public Player[] player;
+        public Dictionary<string, Player> player = new Dictionary<string, Player>();
 
         // A list would be better here.
         private Dictionary<Board.Wonder, Board> board;
@@ -34,6 +34,8 @@ namespace SevenWonders
 
         public bool esteban = false;
 
+        string[] playerNicks;
+
         public bool gameConcluded { get; set; }
 
         /// <summary>
@@ -46,9 +48,9 @@ namespace SevenWonders
             this.gmCoordinator = gmCoordinator;
 
             //set the maximum number of players in the game to numOfPlayers + numOfAI
-            player = new Player[numOfPlayers + numOfAI];
             this.numOfPlayers = numOfPlayers;
             this.numOfAI = numOfAI;
+            this.playerNicks = playerNicks;
 
             //set the game to not finished, since we are just starting
             gameConcluded = false;
@@ -58,7 +60,7 @@ namespace SevenWonders
             //if not, then load the other vanilla only initilisation tasks
             // if (this is LeadersGameManager == false)
             // {
-                vanillaGameManagerInitialisation(playerNicks, AIStrats);
+                vanillaGameManagerInitialisation(AIStrats);
             // }
         }
 
@@ -73,19 +75,19 @@ namespace SevenWonders
             //this determines player positioning
             //UC-19: R1
             //assign player positions
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            for (int i = 0; i < player.Count; i++)
             {
                 if (i == 0)
                 {
-                    player[i].setNeighbours(player[numOfPlayers + numOfAI - 1], player[1]);
+                    player[playerNicks[i]].setNeighbours(player[playerNicks[numOfPlayers + numOfAI - 1]], player[playerNicks[1]]);
                 }
                 else if (i == numOfPlayers + numOfAI - 1)
                 {
-                    player[i].setNeighbours(player[i - 1], player[0]);
+                    player[playerNicks[i]].setNeighbours(player[playerNicks[i - 1]], player[playerNicks[0]]);
                 }
                 else
                 {
-                    player[i].setNeighbours(player[i - 1], player[i + 1]);
+                    player[playerNicks[i]].setNeighbours(player[playerNicks[i - 1]], player[playerNicks[i + 1]]);
                 }
             }
         }
@@ -93,7 +95,7 @@ namespace SevenWonders
         /*
          * intialisation tasks for the vanilla manager
          */
-        private void vanillaGameManagerInitialisation(string []playerNicks, char[] AIStrats)
+        private void vanillaGameManagerInitialisation(char[] AIStrats)
         {
             //vanilla starts at age 1. It does not have the Leaders recruitment phase, which is age 0
             currentAge = 1;
@@ -105,7 +107,7 @@ namespace SevenWonders
             //player initialisation
             for (int i = 0; i < numOfPlayers; i++)
             {
-                player[i] = new Player(playerNicks[i], false, this);
+                player.Add(playerNicks[i], new Player(playerNicks[i], false, this));
             }
 
             // load the card list
@@ -131,7 +133,8 @@ namespace SevenWonders
             //creating the vanilla AIs
             for (int i = numOfPlayers; i < numOfAI + numOfPlayers; i++)
             {
-                player[i] = createAI("AI" + (i + 1), AIStrats[i-numOfPlayers]);
+                playerNicks[i] = "AI" + (i + 1);
+                player.Add(playerNicks[i], createAI(playerNicks[i], AIStrats[i-numOfPlayers]));
             }
 
             //set up the player positions
@@ -175,28 +178,30 @@ namespace SevenWonders
         {
             string strMsg = string.Empty;
 
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            /*
+            for (int i = 0; i < player.Values.Count; i++)
             {
-                strMsg += string.Format("&Player{0}={1}", i, player[i].nickname);
+                strMsg += string.Format("&Player{0}={1}", i, playerNicks[i]);
             }
 
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
-                gmCoordinator.sendMessage(player[i], "SetNames" + strMsg);
+                gmCoordinator.sendMessage(p, "SetNames" + strMsg);
             }
 
             strMsg = string.Empty;
+            */
 
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
-                strMsg += string.Format("&Player{0}={1}/{2}", i, player[i].playerBoard.numOfStages, player[i].playerBoard.name);
+                strMsg += string.Format("&{0}={1}/{2}", p.nickname, p.playerBoard.numOfStages, p.playerBoard.name);
             }
 
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
-                gmCoordinator.sendMessage(player[i], "SetBoard" + strMsg);
+                gmCoordinator.sendMessage(p, "SetBoard" + strMsg);
 
-                player[i].executeAction(this);
+                p.executeAction(this);
             }
         }
 
@@ -211,14 +216,14 @@ namespace SevenWonders
         {
             //distribute a random board and 3 coins to all and give the player their free resource
             //send the board display at this point
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
-                player[i].playerBoard = popRandomBoard();
+                p.playerBoard = popRandomBoard();
                 // gmCoordinator.sendMessage(player[i], "b" + player[i].playerBoard.name);
                 // player[i].storeAction("13$");
-                player[i].storeAction(new CoinsAndPointsEffect(CoinsAndPointsEffect.CardsConsidered.None, StructureType.Constant, 3, 0));
+                p.storeAction(new CoinsAndPointsEffect(CoinsAndPointsEffect.CardsConsidered.None, StructureType.Constant, 3, 0));
                 // player[i].storeAction("11" + player[i].playerBoard.freeResource);
-                player[i].storeAction(player[i].playerBoard.freeResource);
+                p.storeAction(p.playerBoard.freeResource);
 
                 // deferred until the client is ready to accept UI information
                 // player[i].executeAction(this);
@@ -254,57 +259,57 @@ namespace SevenWonders
 
             string strUpdateMilitaryTokens = "Military";
 
-            for (int i = 0; i < numOfPlayers + numOfAI; ++i)
+            foreach (Player p in player.Values)
             {
                 int nVictoryTokens = 0;
 
                 switch(currentAge)
                 {
-                    case 1: nVictoryTokens = player[i].conflictTokenOne; break;
-                    case 2: nVictoryTokens = player[i].conflictTokenTwo; break;
-                    case 3: nVictoryTokens = player[i].conflictTokenThree; break;
+                    case 1: nVictoryTokens = p.conflictTokenOne; break;
+                    case 2: nVictoryTokens = p.conflictTokenTwo; break;
+                    case 3: nVictoryTokens = p.conflictTokenThree; break;
                 }
 
                 // this string has the format: Current Age/Victories (0, 1, 2) for the *current* age/total loss tokens so far (0 or more)
-                strUpdateMilitaryTokens += string.Format("&Player{0}={1}/{2}/{3}", i, currentAge, nVictoryTokens, player[i].lossToken);
+                strUpdateMilitaryTokens += string.Format("&Player{0}={1}/{2}/{3}", p.nickname, currentAge, nVictoryTokens, p.lossToken);
             }
 
-            for (int i = 0; i < numOfPlayers + numOfAI; ++i)
+            foreach (Player p in player.Values)
             {
-                gmCoordinator.sendMessage(player[i], strUpdateMilitaryTokens);
+                gmCoordinator.sendMessage(p, strUpdateMilitaryTokens);
             }
 
             //reenable Olympia and Babylon
             //disable Halicarnassus
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
                 //Olympia always reactivate after every age.
-                if (player[i].playerBoard.name == "OA" && player[i].currentStageOfWonder >= 2)
+                if (p.playerBoard.name == "OA" && p.currentStageOfWonder >= 2)
                 {
-                    player[i].olympiaPowerEnabled = true;
+                    p.olympiaPowerEnabled = true;
                 }
 
                 //always disables Halicarnassus after every age.
-                player[i].usedHalicarnassus = true;
+                p.usedHalicarnassus = true;
 
                 //always reactivate Babylon after every age
-                if (player[i].playerBoard.name == "BB" && player[i].currentStageOfWonder >= 2)
+                if (p.playerBoard.name == "BB" && p.currentStageOfWonder >= 2)
                 {
-                    player[i].usedBabylon = false;
+                    p.usedBabylon = false;
                 }
             }
 
             // take all player's remaining cards, deposit it to the discard pile
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
                 //if they still have a card
-                if (player[i].hand.Count >= 1)
+                if (p.hand.Count >= 1)
                 {
                     //put it in the bin
-                    discardPile.Add(player[i].hand[0]);
+                    discardPile.Add(p.hand[0]);
                 }
 
-                player[i].hand.Clear();
+                p.hand.Clear();
             }
         }
 
@@ -319,81 +324,81 @@ namespace SevenWonders
 
             //the amount of conflict tokens one would get depends on the number of shields
 
-            for(int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
 
                 //if the current player's shield is greater than the next person, increase conflicttoken by the appropriate age
                 //if less, get a losstoken
-                if (player[i].shield > player[i].rightNeighbour.shield)
+                if (p.shield > p.rightNeighbour.shield)
                 {
                     if (currentAge == 1)
                     {
-                        player[i].conflictTokenOne += 1;
+                        p.conflictTokenOne += 1;
                     }
                     else if (currentAge == 2)
                     {
-                        player[i].conflictTokenTwo += 1;
+                        p.conflictTokenTwo += 1;
                     }
                     else if (currentAge == 3)
                     {
-                        player[i].conflictTokenThree += 1;
+                        p.conflictTokenThree += 1;
                     }
 
                     //check if player has played card 220: gain 2 coins for every victory point gained
                     //give 2 coins if so
-                    if (player[i].playedStructure.Exists(x => x.name == "Nero"))
+                    if (p.playedStructure.Exists(x => x.name == "Nero"))
                     {
-                        player[i].coin += 2;
+                        p.coin += 2;
                     }
 
                     //check if right neighbour has played card 232: return conflict loss token received
                     //if no, receive lossToken
                     //if yes, do not get lossToken, instead, give lossToken to winner
-                    if (player[i].rightNeighbour.playedStructure.Exists(x => x.name == "Tomyris") == false)
+                    if (p.rightNeighbour.playedStructure.Exists(x => x.name == "Tomyris") == false)
                     {
-                        player[i].rightNeighbour.lossToken++;
+                        p.rightNeighbour.lossToken++;
                     }
                     else
                     {
                         //the loser is rightNeighbour
                         //the winner is current player. current player will get the loss token
-                        player[i].lossToken++;
+                        p.lossToken++;
                     }
                 }
-                else if (player[i].shield < player[i].rightNeighbour.shield)
+                else if (p.shield < p.rightNeighbour.shield)
                 {
                     if (currentAge == 1)
                     {
-                        player[i].rightNeighbour.conflictTokenOne += 1;
+                        p.rightNeighbour.conflictTokenOne += 1;
                     }
                     else if (currentAge == 2)
                     {
-                        player[i].rightNeighbour.conflictTokenTwo += 1;
+                        p.rightNeighbour.conflictTokenTwo += 1;
                     }
                     else if (currentAge == 3)
                     {
-                        player[i].rightNeighbour.conflictTokenThree += 1;
+                        p.rightNeighbour.conflictTokenThree += 1;
                     }
 
                     //check if player has played card 220: gain 2 coins for every victory point gained
                     //give 2 coins if so
-                    if (player[i].rightNeighbour.playedStructure.Exists(x => x.name == "Nero"))
+                    if (p.rightNeighbour.playedStructure.Exists(x => x.name == "Nero"))
                     {
-                        player[i].rightNeighbour.coin += 2;
+                        p.rightNeighbour.coin += 2;
                     }
 
                     //check if I have played card 232: return conflict loss token received
                     //if no, receive lossToken
                     //if yes, do not get lossToken, instead, give lossToken to rightNeighbour
-                    if (player[i].playedStructure.Exists(x => x.name == "Tomyris") == false)
+                    if (p.playedStructure.Exists(x => x.name == "Tomyris") == false)
                     {
-                        player[i].lossToken++;
+                        p.lossToken++;
                     }
                     else
                     {
                         //the loser is rightNeighbour
                         //the winner is current player. current player will get the loss token
-                        player[i].rightNeighbour.lossToken++;
+                        p.rightNeighbour.lossToken++;
                     }
                 }
 
@@ -411,33 +416,31 @@ namespace SevenWonders
 
             //execute the end of game actions for all players
             //find the maximum final score
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
-                player[i].executeEndOfGameActions();
+                p.executeEndOfGameActions();
 
-                if (maxScore < player[i].finalScore())
+                if (maxScore < p.finalScore())
                 {
-                    maxScore = player[i].finalScore();
-                    winner = player[i].nickname;
+                    maxScore = p.finalScore();
+                    winner = p.nickname;
                 }
             }
 
             //broadcast the individual scores
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
-                for (int j = 0; j < numOfPlayers + numOfAI; j++)
+                foreach (Player p2 in player.Values)
                 {
-                    gmCoordinator.sendMessage(player[i], "#" + player[j].nickname + " scored " + player[j].finalScore() + " points.");
+                    gmCoordinator.sendMessage(p, "#" + p2.nickname + " scored " + p2.finalScore() + " points.");
                 }
             }
 
             //broadcast in chat the winner
-            for(int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
-                gmCoordinator.sendMessage(player[i], "#" + winner + " is the winner with " + maxScore + " points!");
+                gmCoordinator.sendMessage(p, "#" + winner + " is the winner with " + maxScore + " points!");
             }
-
-            
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////
@@ -459,12 +462,12 @@ namespace SevenWonders
             numCardsToDeal = currentAge == 0 ? 4 : 7;
 
             //deal cards to each Player from Deck d
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
                 for (int j = 0; j < numCardsToDeal; j++)
                 {
                     Card c = deck.GetTopCard();
-                    player[i].hand.Add(c);
+                    p.hand.Add(c);
                 }
             }
         }
@@ -546,7 +549,7 @@ namespace SevenWonders
         public void buildStructureFromHand(string name, string playerNickname)
         {
             //Find the Player object given the playerNickname
-            Player p = playerFromNickname(playerNickname);
+            Player p = player[playerNickname];
 
             //Find the card with the id number
             Card c = p.hand.Find(x => x.name == name);
@@ -661,7 +664,7 @@ namespace SevenWonders
         /// <param name="commerceInformation"></param>
         public void buildStructureFromCommerce(string nickname, string structureName, int leftcoins, int rightcoins)//string commerceInformation)
         {
-            Player p = playerFromNickname(nickname);
+            Player p = player[nickname];
 
             /*
             CommerceClientToServerResponse response = (CommerceClientToServerResponse)Marshaller.StringToObject(commerceInformation);
@@ -722,7 +725,7 @@ namespace SevenWonders
         /// <param name="information"></param>
         public virtual void buildStageOfWonderFromCommerce(string nickname, string structureName, int leftcoins, int rightcoins)
         {
-            Player p = playerFromNickname(nickname);
+            Player p = player[nickname];
 
             /*
             CommerceClientToServerResponse response = (CommerceClientToServerResponse)Marshaller.StringToObject(information);
@@ -770,7 +773,7 @@ namespace SevenWonders
         public void buildStructureFromDiscardPile(string name, string playerNickname)
         {
             //Find the Player object given the playerNickname
-            Player p = playerFromNickname(playerNickname);
+            Player p = player[playerNickname];
 
             //if the structure costed money, reimburse the money
             //check if the Card costs money
@@ -824,7 +827,7 @@ namespace SevenWonders
         /// <param name="p"></param>
         public virtual void buildStageOfWonder(string structureName, string nickname)
         {
-            Player p = playerFromNickname(nickname);
+            Player p = player[nickname];
 
             //Player has less Stage of Wonder built than the max allowed on his board
             if (p.currentStageOfWonder < p.playerBoard.numOfStages)
@@ -855,7 +858,7 @@ namespace SevenWonders
         /// <param name="p"></param>
         public void discardCardForThreeCoins(string name, String nickname)
         {
-            Player p = playerFromNickname(nickname);
+            Player p = player[nickname];
 
             p.storeAction(new SimpleEffect(3, '$'));
 
@@ -874,33 +877,30 @@ namespace SevenWonders
         /// </summary>
         public void passRemainingCardsToNeighbour()
         {
-            if (currentAge % 2 == 1)
-            {
-                List<Card> firstPlayerHand = player[0].hand;
+            throw new Exception();
+            // test this.
+            List<Card> firstPlayerHand = player.Values.First().hand;
 
-                for (int i = 0; i < numOfPlayers + numOfAI - 1; i++)
+            foreach (Player p in player.Values)
+            {
+                if (currentAge % 2 == 1)
                 {
-                    player[i].hand = player[i + 1].hand;
+                    // First and third age the cards are passed to each player's left neighbor
+                    p.leftNeighbour.hand = p.hand;
+                }
+                else
+                {
+                    p.rightNeighbour.hand = p.hand;
                 }
 
-                player[numOfPlayers + numOfAI - 1].hand = firstPlayerHand;
-            }
-            else
-            {
-                List<Card> firstPlayerHand = player[numOfPlayers + numOfAI - 1].hand;
-
-                for (int i = numOfPlayers + numOfAI - 1; i > 0; i--)
-                {
-                    player[i].hand = player[i - 1].hand;
-                }
-
-                player[0].hand = firstPlayerHand;
+                player.Values.Last().hand = firstPlayerHand;
             }
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////
         //Utility functions
 
+            /*
         /// <summary>
         /// Return the Player object given the nickname
         /// </summary>
@@ -908,6 +908,7 @@ namespace SevenWonders
         /// <returns></returns>
         public Player playerFromNickname(String nickname)
         {
+            /*
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
                 if (player[i].nickname == nickname)
@@ -918,6 +919,7 @@ namespace SevenWonders
 
             throw new Exception();
         }
+        */
 
         /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -930,19 +932,19 @@ namespace SevenWonders
             executeAIActions();
 
             //execute the Actions for each players
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
-                player[i].executeAction(this);
+                p.executeAction(this);
             }
         }
 
         private void executeAIActions()
         {
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
-                if (player[i].isAI)
+                if (p.isAI)
                 {
-                    player[i].makeMove(this);
+                    p.makeMove(this);
                 }
             }
         }
@@ -956,10 +958,8 @@ namespace SevenWonders
             string strCardsPlayed = "CardPlay";
             string strUpdateCoinsMessage = "SetCoins";
 
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
-                Player p = player[i];
-
                 if (p.bUIRequiresUpdating)
                 {
                     // TODO: update this to send built Wonder stage updates as well as the cards played panel.
@@ -967,26 +967,24 @@ namespace SevenWonders
 
                     if (card.structureType == StructureType.WonderStage)
                     {
-                        strCardsPlayed += string.Format("&Player{0}=WonderStage{1}", i, card.wonderStage);
+                        strCardsPlayed += string.Format("&{0}=WonderStage{1}", p.nickname, card.wonderStage);
                     }
                     else
                     {
-                        strCardsPlayed += string.Format("&Player{0}={1}", i, card.name);
+                        strCardsPlayed += string.Format("&{0}={1}", p.nickname, card.name);
                     }
                     p.bUIRequiresUpdating = false;
                 }
                 else
                 {
-                    strCardsPlayed += string.Format("&Player{0}={1}", i, "Discarded");
+                    strCardsPlayed += string.Format("&{0}={1}", p.nickname, "Discarded");
                 }
 
-                strUpdateCoinsMessage += string.Format("&Player{0}={1}", i, player[i].coin);
+                strUpdateCoinsMessage += string.Format("&{0}={1}", p.nickname, p);
             }
 
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            foreach (Player p in player.Values)
             {
-                Player p = player[i];
-
                 gmCoordinator.sendMessage(p, strCardsPlayed);
                 gmCoordinator.sendMessage(p, strUpdateCoinsMessage);
 
@@ -1089,7 +1087,7 @@ namespace SevenWonders
             /// <param name="p"></param>
         public void sendOlympiaInformation(String nickname)
         {
-            Player p = playerFromNickname(nickname);
+            Player p = player[nickname];
 
             //information to be sent
             String information = "O";
@@ -1107,7 +1105,7 @@ namespace SevenWonders
         /// <param name="id"></param>
         public void playCardForFreeWithOlympia(String nickname, string structureName)
         {
-            Player p = playerFromNickname(nickname);
+            Player p = player[nickname];
 
             //if the structure costed money, reimburse the money
             //check if the Card costs money
@@ -1136,7 +1134,7 @@ namespace SevenWonders
             // test this.
             throw new NotImplementedException();
 
-            Player p = playerFromNickname(nickname);
+            Player p = player[nickname];
 
             //if there are no cards in the discard pile, send it H0, for nothing
             if (discardPile.Count == 0)
@@ -1172,7 +1170,6 @@ namespace SevenWonders
         /// <param name="id"></param>
         public void playCardForFreeWithHalicarnassus(string nickname, string structureName)
         {
-            Player p = playerFromNickname(nickname);
             //build from the discard pile
             buildStructureFromDiscardPile(structureName, nickname);
         }
@@ -1183,7 +1180,7 @@ namespace SevenWonders
         /// <param name="nickname"></param>
         public void sendBabylonInformation(string nickname)
         {
-            Player p = playerFromNickname(nickname);
+            Player p = player[nickname];
 
             //information to be sent
             String information = "A";
@@ -1211,7 +1208,7 @@ namespace SevenWonders
         /// <param name="nickname"></param>
         public void updateCommercePanel(string structureName, string nickname, bool isStage)
         {
-            Player p = playerFromNickname(nickname);
+            Player p = player[nickname];
 
             bool hasDiscount;
 
@@ -1277,7 +1274,7 @@ namespace SevenWonders
          */
         public virtual void turnTaken(String nickname)
         {
-            Player p = playerFromNickname(nickname);
+            Player p = player[nickname];
 
             //if player doesn't even have Halicarnassus or Babylon board, then no more action is required
             if (p.playerBoard.name != "BB" && p.playerBoard.name[0] != 'H')

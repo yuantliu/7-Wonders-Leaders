@@ -179,9 +179,17 @@ namespace SevenWonders
                             else throw new NotImplementedException();
 
                             //S[n], n = number of players in this game
-                            for (int i = 0; i < gameManager.numOfAI + gameManager.numOfPlayers; i++)
+
+                            string strCreateUIMsg = string.Format("StrtGame{0}", gameManager.player.Count);
+
+                            foreach (Player p in gameManager.player.Values)
                             {
-                                sendMessage(gameManager.player[i], string.Format("S{0}", gameManager.numOfAI + gameManager.numOfPlayers));
+                                strCreateUIMsg += string.Format(",{0}", p.nickname);
+                            }
+
+                            foreach (Player p in gameManager.player.Values)
+                            {
+                                sendMessage(p, strCreateUIMsg);
                             }
 
                             //set up the game, send information on boards to players, etc.
@@ -420,7 +428,7 @@ namespace SevenWonders
                     //if user attempts to use Esteban power during recruitment turn, then re-enable their button, because Esteban power can't be used
                     if (gameManager.currentTurn == 0)
                     {
-                        sendMessage(gameManager.playerFromNickname(nickname), "EE");
+                        sendMessage(gameManager.player[nickname], "EE");
                     }
                     //otherwise, toggle the Esteban variable in the gameManager
                     else

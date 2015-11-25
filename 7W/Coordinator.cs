@@ -41,7 +41,7 @@ namespace SevenWonders
         //User's nickname
         public string nickname;
 
-        public int numPlayers { get; private set; }
+        public string[] playerNames;
 
         //Timer
         // int timeElapsed;
@@ -416,8 +416,7 @@ namespace SevenWonders
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                int playerNum = Convert.ToInt32(Char.GetNumericValue(qscoll[i].Key, 6));
-                                gameUI.updateCardsPlayed(playerNum, qscoll[i].Value);
+                                gameUI.updateCardsPlayed(qscoll[i].Key, qscoll[i].Value);
                             }));
                         }
                         messageHandled = true;
@@ -430,8 +429,43 @@ namespace SevenWonders
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                int playerNum = Convert.ToInt32(Char.GetNumericValue(qscoll[i].Key, 6));
-                                gameUI.updateMilitaryTokens(playerNum, qscoll[i].Value);
+                                gameUI.updateMilitaryTokens(qscoll[i].Key, qscoll[i].Value);
+                            }));
+                        }
+                        messageHandled = true;
+                        break;
+
+                    case "StrtGame":
+                        //Handle when game cannot start
+                        if (message[1] == '0')
+                        {
+                            //re-enable the ready button
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                tableUI.readyButton.IsEnabled = true;
+                            }));
+                        }
+                        //game is starting
+                        else
+                        {
+                            //tell the server UI initialisation is done
+                            // sendToHost("r"); // JDF - moved to another location until after the gameUI is created.
+
+                            // find out the number of players.
+                            int nPlayers = int.Parse(message.Substring(8, 1));
+
+                            // I may be able to set this to playerNames, but I'm not sure about thread safety.
+                            playerNames = message.Substring(10).Split(',');
+
+                            if (playerNames.Length != nPlayers)
+                            {
+                                throw new Exception(string.Format("Server said there were {0} players, but sent {1} names.", nPlayers, playerNames.Length));
+                            }
+
+                            //close the TableUI
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                tableUI.Close();
                             }));
                         }
                         messageHandled = true;
@@ -445,7 +479,7 @@ namespace SevenWonders
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.showBoardImage(i, qscoll[i].Value);
+                                gameUI.showBoardImage(qscoll[i].Key, qscoll[i].Value);
                             }));
                         }
 
@@ -463,25 +497,27 @@ namespace SevenWonders
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.showPlayerBarPanel(i, qscoll[i].Value);
+                                gameUI.showPlayerBarPanel(qscoll[i].Key, qscoll[i].Value);
                             }));
                         }
                         messageHandled = true;
 
                         break;
 
+                        /*
                     case "SetNames":
                         qscoll = UriExtensions.ParseQueryString(message.Substring(8));
                         for (int i = 0; i < qscoll.Count; ++i)
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.SetPlayerName(i, qscoll[i].Value);
+                                gameUI.SetPlayerName(qscoll[i].Key, qscoll[i].Value);
                             }));
                         }
                         messageHandled = true;
 
                         break;
+                        */
 
                     case "SetPlyrH":
                         qscoll = UriExtensions.ParseQueryString(message.Substring(8));
@@ -509,6 +545,9 @@ namespace SevenWonders
             //S1 means game cannot (because of insufficient players)
             else if (message[0] == 'S')
             {
+                // S[0|n] message is no longer used.
+                throw new Exception();
+                /*
                 //Handle when game cannot start
                 if (message[1] == '0')
                 {
@@ -535,6 +574,7 @@ namespace SevenWonders
                         tableUI.Close();
                     }));
                 }
+                */
             }
             //update the current stage of wonder information
             else if (message[0] == 's')

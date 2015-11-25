@@ -21,7 +21,7 @@ namespace SevenWonders
 
         public PlayerStateWindow state;
 
-        public PlayerState(PlayerStateWindow plyr)
+        public PlayerState(PlayerStateWindow plyr, string name)
         {
             state = plyr;
 
@@ -32,6 +32,8 @@ namespace SevenWonders
             structuresBuilt[StructureType.Science] = plyr.ScienceStructures;
             structuresBuilt[StructureType.Civilian] = plyr.CivilianStructures;
             structuresBuilt[StructureType.Guild] = plyr.GuildStructures;
+
+            plyr.PlayerName.Content = "Name: " + name;
         }
     };
 
@@ -46,7 +48,7 @@ namespace SevenWonders
         //Client's coordinator
         Coordinator coordinator;
 
-        PlayerState[] playerState;
+        Dictionary<string, PlayerState> playerState = new Dictionary<string, PlayerState>();
 
         public bool playerPlayedHisTurn = false;
 
@@ -72,11 +74,9 @@ namespace SevenWonders
 
             this.coordinator = c;
 
-            playerState = new PlayerState[c.numPlayers];
-
-            for (int i = 0; i < c.numPlayers; ++i)
+            for (int i = 0; i < c.playerNames.Length; ++i)
             {
-                playerState[i] = new PlayerState(seatMap[c.numPlayers-3, i]);
+                playerState.Add(c.playerNames[i], new PlayerState(seatMap[c.playerNames.Length - 3, i], c.playerNames[i]));
             }
 
             // load the card list
@@ -137,9 +137,9 @@ namespace SevenWonders
         /// Display the Player Bar Panel information, given the String from Coordinator
         /// </summary>
         /// <param name="playerBarPanelInformation"></param>
-        public void showPlayerBarPanel(int player, string playerBarPanelInformation)
+        public void showPlayerBarPanel(string playerName, string playerBarPanelInformation)
         {
-            playerState[player].state.Coins.Content = string.Format("Coins: {0}", int.Parse(playerBarPanelInformation));
+            playerState[playerName].state.Coins.Content = string.Format("Coins: {0}", int.Parse(playerBarPanelInformation));
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace SevenWonders
         /// display the Board, given the String from Coordinator
         /// </summary>
         /// <param name="information"></param>
-        public void showBoardImage(int player, String boardInformation)
+        public void showBoardImage(string player, String boardInformation)
         {
             //information holds the board image file name
             BitmapImage boardImageSource = new BitmapImage();
@@ -411,31 +411,27 @@ namespace SevenWonders
             }
         }
 
-        public void SetPlayerName(int player, string name)
-        {
-            playerState[player].state.PlayerName.Content = "Name: " + name;
-        }
-
         /// <summary>
         /// display the Played Cards combo boxes, given the String from Coordinator
         /// </summary>
         /// <param name="player">Player ID (0..7)</param>
         /// <param name="cardName">Name of the card</param>
-        public void updateCardsPlayed(int player, string cardName)
+        public void updateCardsPlayed(string playerName, string cardName)
         {
+            // some of these functions should be in the PlayerState class.
             if (cardName.Length == 12 && cardName.Substring(0, 11) == "WonderStage")
             {
                 int stage = int.Parse(cardName.Substring(11));
 
-                Label l = playerState[player].state.WonderStage.Children[stage - 1] as Label;
+                Label l = playerState[playerName].state.WonderStage.Children[stage - 1] as Label;
 
                 l.Content = string.Format("Stage {0}", stage);
                 l.Background = new SolidColorBrush(Colors.Yellow);
             }
             else if (cardName == "Discarded")
             {
-                if (playerState[player].lastCardPlayed != null)
-                    playerState[player].lastCardPlayed.Background = null;
+                if (playerState[playerName].lastCardPlayed != null)
+                    playerState[playerName].lastCardPlayed.Background = null;
             }
             else
             {
@@ -448,10 +444,10 @@ namespace SevenWonders
                 cardLabel.Background.Opacity = 0.5;
                 cardLabel.Content = lastPlayedCard.name;
 
-                if (playerState[player].lastCardPlayed != null)
-                    playerState[player].lastCardPlayed.Background = null;
+                if (playerState[playerName].lastCardPlayed != null)
+                    playerState[playerName].lastCardPlayed.Background = null;
 
-                playerState[player].lastCardPlayed = cardLabel;
+                playerState[playerName].lastCardPlayed = cardLabel;
 
                 // This is how to get a control's DesiredSize:
                 // cardLabel.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -472,11 +468,11 @@ namespace SevenWonders
                     cardData.Children.Add(iconImage);
                 }
 
-                playerState[player].structuresBuilt[lastPlayedCard.structureType].Children.Add(cardData);
+                playerState[playerName].structuresBuilt[lastPlayedCard.structureType].Children.Add(cardData);
             }
         }
 
-        public void updateMilitaryTokens(int player, string strConflictData)
+        public void updateMilitaryTokens(string playerName, string strConflictData)
         {
             // string should be age/victories in this age/total losses
             string[] s = strConflictData.Split('/');
@@ -491,19 +487,19 @@ namespace SevenWonders
             switch (age)
             {
                 case 1:
-                    playerState[player].state.Age1ConflictTokens.Content = string.Format("Age {0} Victories: {1}", age, victoriesInThisAge);
+                    playerState[playerName].state.Age1ConflictTokens.Content = string.Format("Age {0} Victories: {1}", age, victoriesInThisAge);
                     break;
 
                 case 2:
-                    playerState[player].state.Age2ConflictTokens.Content = string.Format("Age {0} Conflicts: {1}", age, victoriesInThisAge);
+                    playerState[playerName].state.Age2ConflictTokens.Content = string.Format("Age {0} Conflicts: {1}", age, victoriesInThisAge);
                     break;
 
                 case 3:
-                    playerState[player].state.Age3ConflictTokens.Content = string.Format("Age {0} Conflicts: {1}", age, victoriesInThisAge);
+                    playerState[playerName].state.Age3ConflictTokens.Content = string.Format("Age {0} Conflicts: {1}", age, victoriesInThisAge);
                     break;
             }
 
-            playerState[player].state.LossTokens.Content = string.Format("Loss tokens: {0}", totalLosses);
+            playerState[playerName].state.LossTokens.Content = string.Format("Loss tokens: {0}", totalLosses);
         }
 
         /// <summary>
