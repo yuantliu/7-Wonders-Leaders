@@ -29,7 +29,7 @@ namespace SevenWonders
         List<Card> fullCardList = new List<Card>();
 
         // TODO: change to a List
-        public Deck[] deck;
+        public List<Deck> deckList = new List<Deck>();
 
         // TODO: change to a list
         public Card[] discardPile;
@@ -234,16 +234,14 @@ namespace SevenWonders
 
             //initialize, load, and remove unused cards
             //there are 3 decks, but load 4, deck 0 (leader phase) will not be used.
-            deck = new Deck[4];
             //Read the textfile information and initialize the decks according to the information
-            for (int i = 1; i < deck.Length; i++)
+            for (int i = 1; i < 4; i++)
             {
                 //deck[1] is age 1. deck[2] is age 2 ....
-                deck[i] = new Deck(fullCardList, i, numOfAI + numOfPlayers);
+                deckList.Add(new Deck(fullCardList, i, numOfAI + numOfPlayers));
             }
 
-            deck[3].removeAge3Guilds(numOfAI + numOfPlayers);
-
+            deckList.Find(x => x.age == 3).removeAge3Guilds(numOfAI + numOfPlayers);
 
             //deal the cards for the first age to the players
             //currentAge not incremented?
@@ -459,7 +457,8 @@ namespace SevenWonders
         protected void dealDeck(int currentAge)
         {
             //shuffle the deck
-            deck[currentAge].shuffle();
+            Deck deck = deckList.Find(x => x.age == currentAge);
+            deck.shuffle();
 
             //if the current deck is 0, then that means we are dealing with the leaders deck
             int numCardsToDeal;
@@ -471,7 +470,7 @@ namespace SevenWonders
             {
                 for (int j = 0; j < numCardsToDeal; j++)
                 {
-                    Card c = deck[currentAge].GetTopCard();
+                    Card c = deck.GetTopCard();
                     player[i].addHand(c);
                 }
             }

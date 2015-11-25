@@ -9,8 +9,10 @@ namespace SevenWonders
 {
     public class Deck
     {
+        public int age;
+
         //array of cards, which will represent the cards in the deck
-        List<Card> card = new List<Card>();
+        List<Card> cardList = new List<Card>();
 
         /// <summary>
         /// Load the cards by reading the File.
@@ -19,6 +21,8 @@ namespace SevenWonders
         /// <param name="cardFile"></param>
         public Deck(List<Card> cardList, int age, int numOfPlayers)
         {
+            this.age = age;
+
             // Create the card list for this age & number of players
             foreach (Card c in cardList)
             {
@@ -26,7 +30,7 @@ namespace SevenWonders
 
                 for (int i = 0; i < nToAdd; ++i)
                 {
-                    card.Add(c);
+                    cardList.Add(c);
                 }
             }
         }
@@ -41,11 +45,11 @@ namespace SevenWonders
             // int numOfPurpleCardsToRemove = 7 - numPlayers;
             int nGuildsToRemove = 8 - nPlayers;      // should be *8* - numPlayers, no?  Old code wasn't removing enough Guild structures.
 
-            for (int i = card.Count - 1; i >= 0 && nGuildsToRemove > 0; --i)
+            for (int i = cardList.Count - 1; i >= 0 && nGuildsToRemove > 0; --i)
             {
-                if (card[i].structureType == StructureType.Guild)
+                if (cardList[i].structureType == StructureType.Guild)
                 {
-                    card.RemoveAt(i);
+                    cardList.RemoveAt(i);
                     --nGuildsToRemove;
                 }
             }
@@ -84,26 +88,26 @@ namespace SevenWonders
 
         public int numOfCards()
         {
-            return card.Count;
+            return cardList.Count;
         }
 
         //shuffle the cards in the deck
         public void shuffle()
         {
-            var c = Enumerable.Range(0, card.Count);
+            var c = Enumerable.Range(0, cardList.Count);
             var shuffledcards = c.OrderBy(a => Guid.NewGuid()).ToArray();
 
-            List<Card> d = new List<Card>(card.Count);
+            List<Card> d = new List<Card>(cardList.Count);
 
-            for (int i = 0; i < card.Count; ++i)
+            for (int i = 0; i < cardList.Count; ++i)
             {
-                d.Add(card[i]);
+                d.Add(cardList[i]);
 
                 // Make the game deterministic for now.
                 //d.Add(card[shuffledcards[i]]);
             }
 
-            card = d;
+            cardList = d;
             /*
             JDF - old code
             Random random = new Random();
@@ -145,10 +149,10 @@ namespace SevenWonders
 
         public Card GetTopCard()
         {
-            Card topCard = card.First();
+            Card topCard = cardList.First();
 
             //remove the random card
-            card.RemoveAt(0);
+            cardList.RemoveAt(0);
 
             //return the random card
             return topCard;
