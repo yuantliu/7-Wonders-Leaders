@@ -413,6 +413,11 @@ namespace SevenWonders
                 l.Content = string.Format("Stage {0}", stage);
                 l.Background = new SolidColorBrush(Colors.Yellow);
             }
+            else if (cardName == "Discarded")
+            {
+                if (playerState[player].lastCardPlayed != null)
+                    playerState[player].lastCardPlayed.Background = null;
+            }
             else
             {
                 Card lastPlayedCard = fullCardList.Find(x => x.name == cardName);

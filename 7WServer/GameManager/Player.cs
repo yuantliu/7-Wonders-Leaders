@@ -101,15 +101,11 @@ namespace SevenWonders
 
         public Card GetCardPlayed(int i) { return playedStructure[i]; }
 
-        //hand
         public Card[] hand;
+
         public int numOfHandCards { get; set; }
 
-        //played structure
-        public Card[] playedStructure;
-        public int numOfPlayedCards { get; set; }
-
-        public int GetNumberOfPlayedCards() { return numOfPlayedCards; }
+        public List<Card> playedStructure = new List<Card>();
 
         //can activate wonder power?
         public bool hasOlympia { get; set; }
@@ -192,7 +188,6 @@ namespace SevenWonders
             endOfGameActions = new Effect[MAX_ALLOWED_END_OF_GAME_ACTIONS];
             hand = new Card[7];
             numOfHandCards = 0;
-            playedStructure = new Card[25];
             currentStageOfWonder = 0;
             changeNickName = false;
             newNickName = "";
@@ -487,8 +482,6 @@ namespace SevenWonders
                 {
                     CoinsAndPointsEffect e = act as CoinsAndPointsEffect;
 
-                    //add gold only if there are gold to add
-                    // if (act[4] != '0')
                     if (e.coinsGrantedAtTimeOfPlayMultiplier != 0)
                     {
                         if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.None)
@@ -496,32 +489,10 @@ namespace SevenWonders
                             coin += e.coinsGrantedAtTimeOfPlayMultiplier;
                         }
 
-                        //colours that are being looked for: G = grey, B = brown, b = blue, N = green, Y = yellow, S = stage
-                        // char colour = act[3];
-
-                        //add the gold to the effects immediately
-                        //look at the left
-                        // if (act[0] == 'L')
-                        if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors || 
-                            e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Neighbors)
+                        if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors || e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Neighbors)
                         {
-                            /*
-                            if (leftNeighbour.playedStructure[j].colour == "Grey" && colour == 'G') coin += int.Parse(act[4] + "");
-                            else if (leftNeighbour.playedStructure[j].colour == "Brown" && colour == 'B') coin += int.Parse(act[4] + "");
-                            else if (leftNeighbour.playedStructure[j].colour == "Yellow" && colour == 'Y') coin += int.Parse(act[4] + "");
-                            */
-
-                            for (int j = 0; j < leftNeighbour.numOfPlayedCards; j++)
-                            {
-                                if (e.classConsidered == leftNeighbour.playedStructure[j].structureType)
-                                    coin += e.coinsGrantedAtTimeOfPlayMultiplier;
-                            }
-
-                            for (int j = 0; j < rightNeighbour.numOfPlayedCards; j++)
-                            {
-                                if (e.classConsidered == rightNeighbour.playedStructure[j].structureType)
-                                    coin += e.coinsGrantedAtTimeOfPlayMultiplier;
-                            }
+                            coin += e.coinsGrantedAtTimeOfPlayMultiplier * leftNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
+                            coin += e.coinsGrantedAtTimeOfPlayMultiplier * rightNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
 
                             if (e.classConsidered == StructureType.WonderStage)
                             {
@@ -530,49 +501,15 @@ namespace SevenWonders
                             }
                         }
 
-                        if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors ||
-                            e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
+                        if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors || e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
                         {
-                            for (int j = 0; j < numOfPlayedCards; j++)
-                            {
-                                if (e.classConsidered == playedStructure[j].structureType)
-                                    coin += e.coinsGrantedAtTimeOfPlayMultiplier;
-                            }
+                            coin += e.coinsGrantedAtTimeOfPlayMultiplier * playedStructure.Where(x => x.structureType == e.classConsidered).Count();
 
                             if (e.classConsidered == StructureType.WonderStage)
                             {
                                 coin += currentStageOfWonder * e.coinsGrantedAtTimeOfPlayMultiplier;
                             }
                         }
-
-                        /*
-                        //look at centre
-                        if (act[1] == 'C')
-                        {
-                            for (int j = 0; j < numOfPlayedCards; j++)
-                            {
-                                if (playedStructure[j].colour == "Grey" && colour == 'G') coin += int.Parse(act[4] + "");
-                                else if (playedStructure[j].colour == "Brown" && colour == 'B') coin += int.Parse(act[4] + "");
-                                else if (playedStructure[j].colour == "Yellow" && colour == 'Y') coin += int.Parse(act[4] + "");
-                            }
-                        }
-                        //look at right
-                        if (act[2] == 'R')
-                        {
-                            for (int j = 0; j < rightNeighbour.numOfPlayedCards; j++)
-                            {
-                                if (rightNeighbour.playedStructure[j].colour == "Grey" && colour == 'G') coin += int.Parse(act[4] + "");
-                                else if (rightNeighbour.playedStructure[j].colour == "Brown" && colour == 'B') coin += int.Parse(act[4] + "");
-                                else if (rightNeighbour.playedStructure[j].colour == "Yellow" && colour == 'Y') coin += int.Parse(act[4] + "");
-                                
-                            }
-                        }
-
-                        //add the coins for the appropriate stages
-                        if (colour == 'S') coin += ((leftNeighbour.currentStageOfWonder) * (int.Parse(act[4] + "")));
-                        if (colour == 'S') coin += (currentStageOfWonder * (int.Parse(act[4] + "")));
-                        if (colour == 'S') coin += ((rightNeighbour.currentStageOfWonder) * (int.Parse(act[4] + "")));
-                                                */
                     }
 
                     if (e.victoryPointsAtEndOfGameMultiplier != 0)      // JDF: I added this line.  No point in adding Vineyard & Bazar to end of game actions.
@@ -699,17 +636,8 @@ namespace SevenWonders
                     if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors ||
                         e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Neighbors)
                     {
-                        for (int j = 0; j < leftNeighbour.numOfPlayedCards; j++)
-                        {
-                            if (e.classConsidered == leftNeighbour.playedStructure[j].structureType)
-                                points += e.victoryPointsAtEndOfGameMultiplier;
-                        }
-
-                        for (int j = 0; j < rightNeighbour.numOfPlayedCards; j++)
-                        {
-                            if (e.classConsidered == rightNeighbour.playedStructure[j].structureType)
-                                points += e.victoryPointsAtEndOfGameMultiplier;
-                        }
+                        points += e.victoryPointsAtEndOfGameMultiplier * leftNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
+                        points += e.victoryPointsAtEndOfGameMultiplier * rightNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
 
                         if (e.classConsidered == StructureType.MilitaryLosses)
                         {
@@ -730,14 +658,9 @@ namespace SevenWonders
                         }
                     }
 
-                    if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors ||
-                        e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
+                    if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors || e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
                     {
-                        for (int j = 0; j < numOfPlayedCards; j++)
-                        {
-                            if (e.classConsidered == playedStructure[j].structureType)
-                                points += e.victoryPointsAtEndOfGameMultiplier;
-                        }
+                        points += e.victoryPointsAtEndOfGameMultiplier * playedStructure.Where(x => x.structureType == e.classConsidered).Count();
 
                         if (e.classConsidered == StructureType.MilitaryLosses)
                         {
@@ -754,64 +677,6 @@ namespace SevenWonders
                             points += currentStageOfWonder * e.victoryPointsAtEndOfGameMultiplier;
                         }
                     }
-
-                    /*
-                        //add the victory points
-                        //look at the left
-                        if (act[0] == 'L')
-                    {
-                        for (int j = 0; j < leftNeighbour.numOfPlayedCards; j++)
-                        {
-                            if (leftNeighbour.playedStructure[j].colour == "Grey" && colour == 'G') points += int.Parse(act[5] + "");
-                            else if (leftNeighbour.playedStructure[j].colour == "Brown" && colour == 'B') points += int.Parse(act[5] + "");
-                            else if (leftNeighbour.playedStructure[j].colour == "Blue" && colour == 'b') points += int.Parse(act[5] + "");
-                            else if (leftNeighbour.playedStructure[j].colour == "Green" && colour == 'N') points += int.Parse(act[5] + "");
-                            else if (leftNeighbour.playedStructure[j].colour == "Red" && colour == 'R') points += int.Parse(act[5] + "");
-                            else if (leftNeighbour.playedStructure[j].colour == "Yellow" && colour == 'Y') points += int.Parse(act[5] + "");
-                            else if (leftNeighbour.playedStructure[j].colour == "White" && colour == 'W') points += int.Parse(act[5] + "");
-                            else if (leftNeighbour.playedStructure[j].colour == "Purple" && colour == 'P') points += int.Parse(act[5] + "");
-                        }
-                    }
-                    //look at centre
-                    if (act[1] == 'C')
-                    {
-                        for (int j = 0; j < numOfPlayedCards; j++)
-                        {
-                            if (playedStructure[j].colour == "Grey" && colour == 'G') points += int.Parse(act[5] + "");
-                            else if (playedStructure[j].colour == "Brown" && colour == 'B') points += int.Parse(act[5] + "");
-                            else if (playedStructure[j].colour == "Blue" && colour == 'b') points += int.Parse(act[5] + "");
-                            else if (playedStructure[j].colour == "Green" && colour == 'N') points += int.Parse(act[5] + "");
-                            else if (playedStructure[j].colour == "Red" && colour == 'R') points += int.Parse(act[5] + "");
-                            else if (playedStructure[j].colour == "Yellow" && colour == 'Y') points += int.Parse(act[5] + "");
-                            else if (playedStructure[j].colour == "White" && colour == 'W') points += int.Parse(act[5] + "");
-                            else if (playedStructure[j].colour == "Purple" && colour == 'P') points += int.Parse(act[5] + "");
-
-                        }
-                    }
-                    //look at right
-                    if (act[2] == 'R')
-                    {
-                        for (int j = 0; j < rightNeighbour.numOfPlayedCards; j++)
-                        {
-                            if (rightNeighbour.playedStructure[j].colour == "Grey" && colour == 'G') points += int.Parse(act[5] + "");
-                            else if (rightNeighbour.playedStructure[j].colour == "Blue" && colour == 'b') points += int.Parse(act[5] + "");
-                            else if (rightNeighbour.playedStructure[j].colour == "Green" && colour == 'N') points += int.Parse(act[5] + "");
-                            else if (rightNeighbour.playedStructure[j].colour == "Red" && colour == 'R') points += int.Parse(act[5] + "");
-                            else if (rightNeighbour.playedStructure[j].colour == "Brown" && colour == 'B') points += int.Parse(act[5] + "");
-                            else if (rightNeighbour.playedStructure[j].colour == "Yellow" && colour == 'Y') points += int.Parse(act[5] + "");
-                            else if (rightNeighbour.playedStructure[j].colour == "White" && colour == 'W') points += int.Parse(act[5] + "");
-                            else if (rightNeighbour.playedStructure[j].colour == "Purple" && colour == 'P') points += int.Parse(act[5] + "");
-
-                        }
-                    }
-                    //look into stages and losses
-                if (colour == 'L') points += ((leftNeighbour.lossToken) * (int.Parse(act[5] + "")));
-                if (colour == 'S') points += ((leftNeighbour.currentStageOfWonder) * (int.Parse(act[5] + "")));
-                if (colour == 'L') points += ((lossToken) * (int.Parse(act[5] + "")));
-                if (colour == 'S') points += ((currentStageOfWonder) * (int.Parse(act[5] + "")));
-                if (colour == 'L') points += ((rightNeighbour.lossToken) * (int.Parse(act[5] + "")));
-                if (colour == 'S') points += ((rightNeighbour.currentStageOfWonder) * (int.Parse(act[5] + "")));
-                                        */
                 }
                 //category 6: special guild cards and leader cards
                 //6_132 or 6_135
@@ -957,7 +822,7 @@ namespace SevenWonders
         /// <param name="card"></param>
         public void addPlayedCardStructure(Card card)
         {
-            playedStructure[numOfPlayedCards++] = card;
+            playedStructure.Add(card);
             bUIRequiresUpdating = true;
         }
 
@@ -984,14 +849,9 @@ namespace SevenWonders
             Cost cost = card.cost;
 
             //if the player already owns a copy of the card, Return F immediatley
-            for (int i = 0; i < numOfPlayedCards; i++)
-            {
-                if (playedStructure[i].name == card.name)
-                {
-                    return Buildable.False;
-                }
-            }
-            
+            if (playedStructure.Exists(x => x.name == card.name))
+                return Buildable.False;
+
             //if the cost is !, that means its free. Return T immediately
             if (cost.coin == 0 && cost.wood == 0 && cost.stone == 0 && cost.clay == 0 &&
                 cost.ore == 0 &&  cost.cloth == 0 && cost.glass == 0 && cost.papyrus == 0)
@@ -1000,14 +860,8 @@ namespace SevenWonders
             }
 
             //if the player owns the prerequiste, Return T immediately
-            for (int i = 0; i < numOfPlayedCards; i++)
-            {
-                if (playedStructure[i].chain[0] == card.name ||
-                    playedStructure[i].chain[1] == card.name)
-                {
-                    return Buildable.True;
-                }
-            }
+            if (playedStructure.Exists(x => (x.chain[0] == card.name) || (x.chain[1] == card.name)))
+                return Buildable.True;
 
             //if the owner has built card 217: free leader cards
             //if the owner has Rome A board, then same
@@ -1036,7 +890,7 @@ namespace SevenWonders
 
             //if the owner has built card 228: free guild cards
             //return T if the card is purple
-            if (card.structureType == StructureType.Guild && hasIDPlayed(/*228*/"Ramses"))
+            if (card.structureType == StructureType.Guild && playedStructure.Exists(x => x.name == "Ramses"))
             {
                 return Buildable.True;
             }
@@ -1133,7 +987,7 @@ namespace SevenWonders
             Cost cost = playerBoard.stageCard[currentStageOfWonder].cost;
             
             //check for the stage discount card (Imhotep)
-            if (hasIDPlayed(/*212*/"Imhotep") == true)
+            if (playedStructure.Exists(x => x.name == "Imhotep") == true)
             {
                 bool newCostResult = DAG.canAffordOffByOne(dag, cost);
 
@@ -1288,24 +1142,6 @@ namespace SevenWonders
                 LeadersAIBehaviour.makeMove(this, (LeadersGameManager)gm);
             }
             */
-        }
-
-        /// <summary>
-        /// Determine if player has played a card with the given ID
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public bool hasIDPlayed(string cardName)
-        {
-            for (int i = 0; i < numOfPlayedCards; i++)
-            {
-                if (playedStructure[i].name == cardName)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }

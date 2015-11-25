@@ -105,6 +105,7 @@ namespace SevenWonders
     [Serializable]
     public class CourtesanGuildInformation
     {
+        /*
         // TODO: remove this mapping (no longer needed)
         public List<Tuple<string, string>> card;
 
@@ -130,6 +131,7 @@ namespace SevenWonders
                 }
             }
         }
+        */
     }
 
 

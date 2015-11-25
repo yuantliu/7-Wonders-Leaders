@@ -350,7 +350,7 @@ namespace SevenWonders
 
                     //check if player has played card 220: gain 2 coins for every victory point gained
                     //give 2 coins if so
-                    if (player[i].hasIDPlayed(/*220*/"Nero"))
+                    if (player[i].playedStructure.Exists(x => x.name == "Nero"))
                     {
                         player[i].coin += 2;
                     }
@@ -358,7 +358,7 @@ namespace SevenWonders
                     //check if right neighbour has played card 232: return conflict loss token received
                     //if no, receive lossToken
                     //if yes, do not get lossToken, instead, give lossToken to winner
-                    if (player[i].rightNeighbour.hasIDPlayed(/*232*/"Tomyris") == false)
+                    if (player[i].rightNeighbour.playedStructure.Exists(x => x.name == "Tomyris") == false)
                     {
                         player[i].rightNeighbour.lossToken++;
                     }
@@ -386,7 +386,7 @@ namespace SevenWonders
 
                     //check if player has played card 220: gain 2 coins for every victory point gained
                     //give 2 coins if so
-                    if (player[i].rightNeighbour.hasIDPlayed(/*220*/"Nero"))
+                    if (player[i].rightNeighbour.playedStructure.Exists(x => x.name == "Nero"))
                     {
                         player[i].rightNeighbour.coin += 2;
                     }
@@ -394,7 +394,7 @@ namespace SevenWonders
                     //check if I have played card 232: return conflict loss token received
                     //if no, receive lossToken
                     //if yes, do not get lossToken, instead, give lossToken to rightNeighbour
-                    if (player[i].hasIDPlayed(/*232*/"Tomyris") == false)
+                    if (player[i].playedStructure.Exists(x => x.name == "Tomyris") == false)
                     {
                         player[i].lossToken++;
                     }
@@ -597,7 +597,7 @@ namespace SevenWonders
             //if player has card 217: free leaders, then leaders are free. add the appropriate amount of coins first to offset the deduction
             //OR
             //if player has Rome A, then leaders are free. (board has D resource (big discount))
-            if ((p.hasIDPlayed(/*217*/"Maecenas") == true /* || p.playerBoard.freeResource == 'D'*/) && c.structureType == StructureType.Leader)
+            if ((p.playedStructure.Exists(x => x.name == "Maecenas") == true /* || p.playerBoard.freeResource == 'D'*/) && c.structureType == StructureType.Leader)
             {
                 // p.storeAction("1" + costInCoins + "$");
                 p.storeAction(new SimpleEffect(costInCoins, '$'));
@@ -1045,8 +1045,6 @@ namespace SevenWonders
             string strCardsPlayed = "CardPlay";
             string strUpdateCoinsMessage = "SetCoins";
 
-            bool sendCardPlayMessage = false;
-
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
                 Player p = player[i];
@@ -1054,7 +1052,7 @@ namespace SevenWonders
                 if (p.bUIRequiresUpdating)
                 {
                     // TODO: update this to send built Wonder stage updates as well as the cards played panel.
-                    Card card = p.GetCardPlayed(p.GetNumberOfPlayedCards() - 1);
+                    Card card = p.playedStructure.Last();// GetCardPlayed(p.GetNumberOfPlayedCards() - 1);
 
                     if (card.structureType == StructureType.WonderStage)
                     {
@@ -1065,8 +1063,10 @@ namespace SevenWonders
                         strCardsPlayed += string.Format("&Player{0}={1}", i, card.name);
                     }
                     p.bUIRequiresUpdating = false;
-
-                    sendCardPlayMessage = true;
+                }
+                else
+                {
+                    strCardsPlayed += string.Format("&Player{0}={1}", i, "Discarded");
                 }
 
                 strUpdateCoinsMessage += string.Format("&Player{0}={1}", i, player[i].coin);
@@ -1076,11 +1076,7 @@ namespace SevenWonders
             {
                 Player p = player[i];
 
-                if (sendCardPlayMessage)
-                {
-                    gmCoordinator.sendMessage(p, strCardsPlayed);
-                }
-
+                gmCoordinator.sendMessage(p, strCardsPlayed);
                 gmCoordinator.sendMessage(p, strUpdateCoinsMessage);
 
                 //Update the Player Bar Panel
@@ -1341,7 +1337,7 @@ namespace SevenWonders
 
             if (isStage == true)
             {
-                if (p.hasIDPlayed(/*212*/"Imhotep") == true)
+                if (p.playedStructure.Exists(x => x.name == "Imhotep") == true)
                 {
                     hasDiscount = true;
                 }
@@ -1351,9 +1347,9 @@ namespace SevenWonders
                 }
             }
             else if (
-                (c.structureType == StructureType.Science && p.hasIDPlayed(/*202*/"Archimedes")) ||
-               (c.structureType == StructureType.Civilian && p.hasIDPlayed(/*207*/"Hammurabi")) ||
-               (c.structureType == StructureType.Military && p.hasIDPlayed(/*216*/"Leonidas")))
+                (c.structureType == StructureType.Science && p.playedStructure.Exists(x => x.name == "Archimedes")) ||
+               (c.structureType == StructureType.Civilian && p.playedStructure.Exists(x => x.name == "Hammurabi")) ||
+               (c.structureType == StructureType.Military && p.playedStructure.Exists(x => x.name == "Leonidas")))
             {
                 hasDiscount = true;
             }

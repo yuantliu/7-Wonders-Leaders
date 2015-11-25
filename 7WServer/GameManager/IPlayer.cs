@@ -22,8 +22,6 @@ namespace SevenWonders
 
         Card GetCardPlayed(int index);
 
-        int GetNumberOfPlayedCards();
-
         IPlayer GetLeftNeighbour();
 
         IPlayer GetRightNeighbour();
