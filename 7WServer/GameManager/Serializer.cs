@@ -41,11 +41,13 @@ namespace SevenWonders
 
         public RecruitmentPhaseInformation(IPlayer p)
         {
+            /*
             ids = new string[p.GetNumCardsInHand()];
             for (int i = 0; i < ids.Length; i++)
             {
                 ids[i] = p.GetCard(i).name;
             }
+            */
         }
     }
 
@@ -70,6 +72,8 @@ namespace SevenWonders
             //get hand information to play hand cards for free
             if (mode == 'O')
             {
+                throw new Exception();
+                /*
                 // cards = new Tuple<string, int>[p.GetNumCardsInHand()];
                 cards = new Tuple<string, string>[p.GetNumCardsInHand()];
 
@@ -77,6 +81,7 @@ namespace SevenWonders
                 {
                     cards[i] = new Tuple<string, string>(p.GetCard(i).name, p.GetCard(i).name);
                 }
+                */
             }
             /*
             //Rome information

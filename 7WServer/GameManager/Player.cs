@@ -10,48 +10,29 @@ namespace SevenWonders
     {
         public bool isAI {get; set;}
 
-        public bool GetIsAI() { return isAI; }
-        
         public String nickname { get; set; }
 
         public String GetNickName() { return nickname; }
 
         public Board playerBoard { get; set; }
 
-        public string GetBoardName() { return playerBoard.name; }
         //current Stage of wonder
         public int currentStageOfWonder { get; set; }
-
-        public int GetCurrentStageOfWonder() { return currentStageOfWonder; }
 
         //resources
         public int brick { get; set; }
 
-        public int GetBrick() { return brick; }
-
         public int ore { get; set; }
-
-        public int GetOre() { return ore; }
 
         public int stone { get; set; }
 
-        public int GetStone() { return stone; }
-
         public int wood { get; set; }
-
-        public int GetWood() { return wood; }
 
         public int glass { get; set; }
 
-        public int GetGlass() { return glass; }
-
         public int loom { get; set; }
 
-        public int GetLoom() { return loom; }
-
         public int papyrus { get; set; }
-
-        public int GetPapyrus() { return papyrus; }
 
         public int coin { get; set; }
 
@@ -60,46 +41,24 @@ namespace SevenWonders
         //science
         public int bearTrap { get; set; }
 
-        public int GetBearTrap() { return bearTrap; }
-
         public int tablet { get; set; }
 
-        public int GetTablet() { return tablet; }
-
         public int sextant { get; set; }
-
-        public int GetSextant() { return sextant; }
 
         //Points and stuff
         public int victoryPoint { get; set; }
 
-        public int GetVictoryPoint() { return victoryPoint; }
-
         public int shield { get; set; }
-
-        public int GetShield() { return shield; }
 
         public int lossToken { get; set; }
 
-        public int GetLossToken() { return lossToken; }
-
         public int conflictTokenOne { get; set; }
-
-        public int GetConflictTokenOne() { return conflictTokenOne; }
 
         public int conflictTokenTwo { get; set; }
 
-        public int GetConflictTokenTwo() { return conflictTokenTwo; }
-
         public int conflictTokenThree { get; set; }
 
-        public int GetConflictTokenThree() { return conflictTokenThree; }
-
         public int GetNumCardsInHand() { return hand.Count; }
-
-        public Card GetCard(int i) { return hand[i]; }
-
-        public Card GetCardPlayed(int i) { return playedStructure[i]; }
 
         public List<Card> hand = new List<Card>(7);
 

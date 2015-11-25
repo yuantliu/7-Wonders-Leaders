@@ -12,21 +12,9 @@ namespace SevenWonders
 
         int GetCoin();
 
-        int GetNumCardsInHand();
-
-        Card GetCard(int i);
-
         Buildable isCardBuildable(int i);
 
         Buildable isStageBuildable();
-
-        Card GetCardPlayed(int index);
-
-        IPlayer GetLeftNeighbour();
-
-        IPlayer GetRightNeighbour();
-
-        List<Card> GetLeadersPile();
 
         bool GetLeftRaw();
 
