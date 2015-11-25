@@ -30,7 +30,7 @@ namespace SevenWonders
 
                 for (int i = 0; i < nToAdd; ++i)
                 {
-                    cardList.Add(c);
+                    this.cardList.Add(c);
                 }
             }
         }
