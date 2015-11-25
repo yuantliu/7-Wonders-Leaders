@@ -120,10 +120,7 @@ namespace SevenWonders
         public bool hasBilkis;
 
         //stored actions for the turn
-        private Effect[] actions;       // shouldn't this be a list or queue?
-        private int numOfActions;
-        //up to 10 stored actions allowed
-        private const int MAX_ALLOWED_ACTIONS = 10;
+        private List<Effect> actions = new List<Effect>();
 
         //stored actions for the end of the game
         private Effect[] endOfGameActions;      // shouldn't this be a list or queue?
@@ -184,7 +181,7 @@ namespace SevenWonders
             //set whether or not this is an AI
             this.isAI = isAI;
             //assume there can only be up to 10 stored actions
-            actions = new Effect[MAX_ALLOWED_ACTIONS];
+
             endOfGameActions = new Effect[MAX_ALLOWED_END_OF_GAME_ACTIONS];
             hand = new Card[7];
             numOfHandCards = 0;
@@ -223,7 +220,7 @@ namespace SevenWonders
         /// <param name="s"></param>
         public void storeAction(Effect s)
         {
-            actions[numOfActions++] = s;
+            actions.Add(s);
         }
 
         /// <summary>
@@ -337,11 +334,8 @@ namespace SevenWonders
             */
 
             //go through each action and execute the actions stored
-            for (int i = 0; i < numOfActions; i++)
+            foreach (Effect act in actions)
             {
-                //this will be the string that represents the action for category 1
-                Effect act = actions[i];
-
                 //category $: deduct a given amount of coins
                 // if (actactions[i][0] == '$')
                 if (act is CostEffect)
@@ -514,14 +508,14 @@ namespace SevenWonders
 
                     if (e.victoryPointsAtEndOfGameMultiplier != 0)      // JDF: I added this line.  No point in adding Vineyard & Bazar to end of game actions.
                     //for victory points, just copy the effect to endOfGameActions and have executeEndOfGameActions do it later
-                        endOfGameActions[numOfEndOfGameActions++] = actions[i];
+                        endOfGameActions[numOfEndOfGameActions++] = act;
 
                 }
                 //category 6: special guild cards
                 //put these directly into executeEndOfGameActions array
                 else if (act is SpecialAbilityEffect)
                 {
-                    endOfGameActions[numOfEndOfGameActions++] = actions[i];
+                    endOfGameActions[numOfEndOfGameActions++] = act;
                 }
                 /*
                 //category 7: hard coded board powers
@@ -606,7 +600,7 @@ namespace SevenWonders
                 }
             }
 
-            numOfActions = 0;
+            actions.Clear();
         }
 
         /// <summary>
