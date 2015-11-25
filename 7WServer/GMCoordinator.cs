@@ -204,7 +204,7 @@ namespace SevenWonders
                 else if (message[0] == 'U')
                 {
                     // main UI on client-side is ready; send board information to each one and initial actions
-                    gameManager.sendBoardAndPlayerNames();
+                    gameManager.sendBoardNames();
                 }
                 //m: game mode options
                 //changed by TableUI

@@ -137,9 +137,9 @@ namespace SevenWonders
         /// Display the Player Bar Panel information, given the String from Coordinator
         /// </summary>
         /// <param name="playerBarPanelInformation"></param>
-        public void showPlayerBarPanel(string playerName, string playerBarPanelInformation)
+        public void showPlayerBarPanel(string playerName, string strCoins)
         {
-            playerState[playerName].state.Coins.Content = string.Format("Coins: {0}", int.Parse(playerBarPanelInformation));
+            playerState[playerName].state.Coins.Content = string.Format("Coins: {0}", strCoins);
         }
 
         /// <summary>

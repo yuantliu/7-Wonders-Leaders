@@ -79,7 +79,7 @@ namespace SevenWonders
             {
                 if (i == 0)
                 {
-                    player[playerNicks[i]].setNeighbours(player[playerNicks[numOfPlayers + numOfAI - 1]], player[playerNicks[1]]);
+                    player[playerNicks[i]].setNeighbours(player[playerNicks[numOfPlayers + numOfAI - 1]], player[playerNicks[i + 1]]);
                 }
                 else if (i == numOfPlayers + numOfAI - 1)
                 {
@@ -174,23 +174,9 @@ namespace SevenWonders
 
 
 
-        public virtual void sendBoardAndPlayerNames()
+        public virtual void sendBoardNames()
         {
             string strMsg = string.Empty;
-
-            /*
-            for (int i = 0; i < player.Values.Count; i++)
-            {
-                strMsg += string.Format("&Player{0}={1}", i, playerNicks[i]);
-            }
-
-            foreach (Player p in player.Values)
-            {
-                gmCoordinator.sendMessage(p, "SetNames" + strMsg);
-            }
-
-            strMsg = string.Empty;
-            */
 
             foreach (Player p in player.Values)
             {
@@ -271,7 +257,7 @@ namespace SevenWonders
                 }
 
                 // this string has the format: Current Age/Victories (0, 1, 2) for the *current* age/total loss tokens so far (0 or more)
-                strUpdateMilitaryTokens += string.Format("&Player{0}={1}/{2}/{3}", p.nickname, currentAge, nVictoryTokens, p.lossToken);
+                strUpdateMilitaryTokens += string.Format("&{0}={1}/{2}/{3}", p.nickname, currentAge, nVictoryTokens, p.lossToken);
             }
 
             foreach (Player p in player.Values)
@@ -614,7 +600,10 @@ namespace SevenWonders
             }
             */
 
-            p.storeAction(new CostEffect(costInCoins));
+            if (costInCoins != 0)
+            {
+                p.storeAction(new CostEffect(costInCoins));
+            }
 
             //determine if the player should get 2 coins for having those leaders (get 2 coins for playing a yellow and playing a pre-req
             giveCoinFromLeadersOnBuild(p, c);
@@ -877,49 +866,58 @@ namespace SevenWonders
         /// </summary>
         public void passRemainingCardsToNeighbour()
         {
-            throw new Exception();
-            // test this.
-            List<Card> firstPlayerHand = player.Values.First().hand;
+            Player p = player.Values.First();
+            List<Card> p1hand = p.hand;
 
-            foreach (Player p in player.Values)
+            do
             {
                 if (currentAge % 2 == 1)
                 {
                     // First and third age the cards are passed to each player's left neighbor
-                    p.leftNeighbour.hand = p.hand;
+                    p.hand = p.rightNeighbour.hand;
+                    p = p.rightNeighbour;
                 }
                 else
                 {
-                    p.rightNeighbour.hand = p.hand;
+                    p.hand = p.leftNeighbour.hand;
+                    p = p.leftNeighbour;
                 }
 
-                player.Values.Last().hand = firstPlayerHand;
+            } while (p != player.Values.First());
+
+            if (currentAge % 2 == 1)
+            {
+                p.leftNeighbour.hand = p1hand;
+            }
+            else
+            {
+                p.rightNeighbour.hand = p1hand;
             }
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////
         //Utility functions
 
-            /*
-        /// <summary>
-        /// Return the Player object given the nickname
-        /// </summary>
-        /// <param name="nickname"></param>
-        /// <returns></returns>
-        public Player playerFromNickname(String nickname)
+        /*
+    /// <summary>
+    /// Return the Player object given the nickname
+    /// </summary>
+    /// <param name="nickname"></param>
+    /// <returns></returns>
+    public Player playerFromNickname(String nickname)
+    {
+        /*
+        for (int i = 0; i < numOfPlayers + numOfAI; i++)
         {
-            /*
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
+            if (player[i].nickname == nickname)
             {
-                if (player[i].nickname == nickname)
-                {
-                    return player[i];
-                }
+                return player[i];
             }
-
-            throw new Exception();
         }
-        */
+
+        throw new Exception();
+    }
+    */
 
         /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -980,7 +978,7 @@ namespace SevenWonders
                     strCardsPlayed += string.Format("&{0}={1}", p.nickname, "Discarded");
                 }
 
-                strUpdateCoinsMessage += string.Format("&{0}={1}", p.nickname, p);
+                strUpdateCoinsMessage += string.Format("&{0}={1}", p.nickname, p.coin);
             }
 
             foreach (Player p in player.Values)
