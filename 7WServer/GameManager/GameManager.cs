@@ -511,13 +511,14 @@ namespace SevenWonders
 
             foreach (Board b in board.Values)
             {
-                b.stageCard = new Card[b.numOfStages];
+                b.stageCard = new List<Card>(b.numOfStages);
 
                 for (int i = 0; i < b.numOfStages; ++i)
                 {
-                    b.stageCard[i] = fullCardList.Find(c => c.structureType == StructureType.WonderStage && c.name == b.name && c.wonderStage == i+1);
+                    Card card = fullCardList.Find(c => c.structureType == StructureType.WonderStage && c.name == b.name && c.wonderStage == i + 1);
 
-                    fullCardList.Remove(b.stageCard[i]);
+                    fullCardList.Remove(card);
+                    b.stageCard.Add(card);
                 }
             }
         }

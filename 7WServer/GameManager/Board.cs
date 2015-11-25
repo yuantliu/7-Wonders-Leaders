@@ -41,7 +41,7 @@ namespace SevenWonders
         public Effect freeResource { get; private set; }
 
         //stage costs & effects
-        public Card[] stageCard;
+        public List<Card> stageCard;
 
         public bool inPlay;
 
