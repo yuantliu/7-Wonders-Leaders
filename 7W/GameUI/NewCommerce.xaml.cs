@@ -131,7 +131,7 @@ namespace SevenWonders
 
             string commercialEffectCardList = qscoll["discountEffects"];
 
-            if (commercialEffectCardList != string.Empty)
+            if (commercialEffectCardList != null)
             {
                 string[] commercialCardList = commercialEffectCardList.Split(',');
 

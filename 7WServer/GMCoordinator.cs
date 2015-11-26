@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 namespace SevenWonders
 {
@@ -86,30 +88,51 @@ namespace SevenWonders
                 Console.WriteLine("Message received.  From: {0}; Message={1}", nickname, message);
 
                 bool MessageHandled = false;
-                IList<KeyValuePair<string, string>> qscoll;
+                NameValueCollection qscoll;
 
                 if (message.Length >= 8)
                 {
                     switch (message.Substring(0, 8))
                     {
-                        case "ComerceB":
-                            qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+                        case "BldStrct":
 
-                            gameManager.buildStructureFromCommerce(nickname, qscoll[0].Value, int.Parse(qscoll[1].Value), int.Parse(qscoll[2].Value));
-
-                            //Update the Played card panel
-                            gameManager.updatePlayedCardPanel(nickname);
+                            qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+                            gameManager.buildStructureFromHand(qscoll["Structure"], qscoll["WonderStage"], nickname);
 
                             MessageHandled = true;
+
                             break;
 
-                        case "ComerceS":
-                            qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+                        /*
+                    case "BldStage":
+                        //Tell the GameManager that Player has decided to build stage of wonder with card
+                        // gameManager.buildStageOfWonder(id, nickname);
+                        gameManager.buildStageOfWonder(message.Substring(8), nickname);
 
-                            // gameManager.buildStageOfWonderFromCommerce(nickname, message.Substring(2));
-                            gameManager.buildStageOfWonderFromCommerce(nickname, qscoll[0].Value, int.Parse(qscoll[1].Value), int.Parse(qscoll[2].Value));
+                        MessageHandled = true;
+                        break;
+
+                    case "ComerceB":
+                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+
+                        gameManager.buildStructureFromCommerce(nickname, qscoll[0].Value, int.Parse(qscoll[1].Value), int.Parse(qscoll[2].Value));
+
+                        MessageHandled = true;
+                        break;
+
+                    case "ComerceS":
+                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+
+                        // gameManager.buildStageOfWonderFromCommerce(nickname, message.Substring(2));
+                        gameManager.buildStageOfWonderFromCommerce(nickname, qscoll[0].Value, int.Parse(qscoll[1].Value), int.Parse(qscoll[2].Value));
+                        MessageHandled = true;
+
+                        break;
+                        */
+                        case "Discards":
+                            qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+                            gameManager.discardCardForThreeCoins(qscoll["Structure"], nickname);
                             MessageHandled = true;
-
                             break;
 
                         case "SendComm":
@@ -246,35 +269,40 @@ namespace SevenWonders
                 //B: player decides to build structure on the card
                 else if (message[0] == 'B')
                 {
+                    throw new Exception();
+                    // This is handled above, now.
                     //get the id of the card
                     // int id = int.Parse(message.Substring(1));
 
                     //Tell the GameManager that Player has decided to build structure with the Card
                     // gameManager.buildStructureFromHand(id, nickname);
-                    gameManager.buildStructureFromHand(message.Substring(1), nickname);
+                    // gameManager.buildStructureFromHand(message.Substring(1), nickname);
 
                     //Update the Played card panel
-                    gameManager.updatePlayedCardPanel(nickname);
+                    // gameManager.updatePlayedCardPanel(nickname);
                 }
                 //S: player decides to build stage of wonder
                 else if (message[0] == 'S')
                 {
+                    throw new Exception();
+                    // this is handled above, now.
                     //get the id of the card
                     // int id = int.Parse(message.Substring(1));
 
                     //Tell the GameManager that Player has decided to build stage of wonder with card
                     // gameManager.buildStageOfWonder(id, nickname);
-                    gameManager.buildStageOfWonder(message.Substring(1), nickname);
+                    // gameManager.buildStageOfWonder(message.Substring(1), nickname);
                 }
                 //D: player decides to discard card for three coins
                 else if (message[0] == 'D')
                 {
+                    throw new Exception();
+                    // handled above, now.
                     //get the id of the card
                     // int id = int.Parse(message.Substring(1));
 
                     //Tell the GM that player has decided to discard the card for 3 coins
                     // gameManager.discardCardForThreeCoins(id, nickname);
-                    gameManager.discardCardForThreeCoins(message.Substring(1), nickname);
                 }
                 //O: player hits the Olympia power button
                 else if (message[0] == 'O')

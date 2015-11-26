@@ -529,7 +529,7 @@ namespace SevenWonders
             return randomBoard.Value;
         }
 
-        public void buildStructureFromHand(string name, string playerNickname)
+        public void buildStructureFromHand(string name, string strWonderStage, string playerNickname)
         {
             //Find the Player object given the playerNickname
             Player p = player[playerNickname];
@@ -540,15 +540,27 @@ namespace SevenWonders
             if (c == null)
                 throw new Exception("Received a message from the client to build a card that wasn't in the player's hand.");
 
-            buildStructureFromHand(c, p);
+            buildStructureFromHand(c, p, strWonderStage == "1");
         }
 
         /// <summary>
         /// build a structure from hand, given the Card id number and the Player
         /// </summary>
-        public void buildStructureFromHand(Card c, Player p)
+        public void buildStructureFromHand(Card c, Player p, bool wonderStage)
         {
             p.hand.Remove(c);
+
+            if (wonderStage)
+            {
+                if (p.currentStageOfWonder >= p.playerBoard.numOfStages)
+                {
+                    //Player is attempting to build a Stage of Wonder when he has already built all of the Wonders. Something is wrong. This should never be reached.
+                    throw new Exception("GameManager.buildStageOfWonder(Player p) error");
+                }
+
+                c = p.playerBoard.stageCard[p.currentStageOfWonder];
+                p.currentStageOfWonder++;
+            }
 
             //add the card to played card structure
             p.addPlayedCardStructure(c);
@@ -821,6 +833,9 @@ namespace SevenWonders
         /// <param name="p"></param>
         public virtual void buildStageOfWonder(string structureName, string nickname)
         {
+            throw new Exception();
+
+            /*
             Player p = player[nickname];
 
             //Player has less Stage of Wonder built than the max allowed on his board
@@ -843,6 +858,7 @@ namespace SevenWonders
                 Console.WriteLine("GameManager.buildStageOfWonder(Player p) error");
                 throw new System.Exception();
             }
+            */
         }
 
         public void discardCardForThreeCoins(string name, String nickname)
@@ -972,7 +988,7 @@ namespace SevenWonders
                 if (p.bUIRequiresUpdating)
                 {
                     // TODO: update this to send built Wonder stage updates as well as the cards played panel.
-                    Card card = p.playedStructure.Last();// GetCardPlayed(p.GetNumberOfPlayedCards() - 1);
+                    Card card = p.playedStructure.Last();
 
                     if (card.structureType == StructureType.WonderStage)
                     {
@@ -1128,7 +1144,7 @@ namespace SevenWonders
             p.storeAction(new SimpleEffect(c.cost.coin, '$'));
 
             //build the structure
-            buildStructureFromHand(structureName, nickname);
+            buildStructureFromHand(structureName, nickname, "0");
 
             //disable Olympia
             p.olympiaPowerEnabled = false;

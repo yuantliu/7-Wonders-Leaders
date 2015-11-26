@@ -281,7 +281,7 @@ namespace SevenWonders
                             playedButton.IsEnabled = false;
                             playerPlayedHisTurn = true;
                             // bilkisButton.IsEnabled = false;
-                            coordinator.sendToHost("B" + id_buildable[handPanel.SelectedIndex].Item1);
+                            coordinator.sendToHost(string.Format("BldStrct&WonderStage={0}&Structure={1}", "0", id_buildable[handPanel.SelectedIndex].Item1));
                             coordinator.endTurn();
                         }
                         else
@@ -299,7 +299,7 @@ namespace SevenWonders
                             playedButton.IsEnabled = false;
                             playerPlayedHisTurn = true;
                             // bilkisButton.IsEnabled = false;
-                            coordinator.sendToHost("S" + id_buildable[handPanel.SelectedIndex].Item1);
+                            coordinator.sendToHost(string.Format("BldStrct&WonderStage={0}&Structure={1}", "1", id_buildable[handPanel.SelectedIndex].Item1));
                             coordinator.endTurn();
                         }
                         else
@@ -315,7 +315,7 @@ namespace SevenWonders
                         playedButton.IsEnabled = false;
                         playerPlayedHisTurn = true;
                         // bilkisButton.IsEnabled = false;
-                        coordinator.sendToHost("D" + id_buildable[handPanel.SelectedIndex].Item1);
+                        coordinator.sendToHost(string.Format("Discards&Structure={0}", id_buildable[handPanel.SelectedIndex].Item1));
                         coordinator.endTurn();
                         break;
                 }

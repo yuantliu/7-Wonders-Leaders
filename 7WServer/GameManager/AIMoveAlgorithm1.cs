@@ -16,7 +16,7 @@ namespace SevenWonders
             {
                 if (p.isCardBuildable(c) == Buildable.True)
                 {
-                    gm.buildStructureFromHand(c, p);
+                    gm.buildStructureFromHand(c, p, false);
                     return;
                 }
             }

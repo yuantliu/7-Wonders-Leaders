@@ -119,7 +119,7 @@ namespace SevenWonders
             if (c != null)
             {
                 Console.WriteLine(player.nickname + " Action: Constuct {0}", c.name);
-                gm.buildStructureFromHand(c, player);
+                gm.buildStructureFromHand(c, player, false);
             }
             else
             {
