@@ -139,6 +139,7 @@ namespace SevenWonders
         */
     }
 
+#if FALSE
 
     /// <summary>
     /// Used by CommerceInformation to store each player's commerce info
@@ -201,6 +202,6 @@ namespace SevenWonders
             playerCommerceInfo[1] = new PlayerCommerceInfo(centre);
             playerCommerceInfo[2] = new PlayerCommerceInfo(right);
         }
-
     }
+#endif
 }

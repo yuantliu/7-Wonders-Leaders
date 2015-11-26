@@ -108,10 +108,13 @@ namespace SevenWonders
 
                             // gameManager.buildStageOfWonderFromCommerce(nickname, message.Substring(2));
                             gameManager.buildStageOfWonderFromCommerce(nickname, qscoll[0].Value, int.Parse(qscoll[1].Value), int.Parse(qscoll[2].Value));
-
-
                             MessageHandled = true;
 
+                            break;
+
+                        case "SendComm":
+                            gameManager.updateCommercePanel(nickname);
+                            MessageHandled = true;
                             break;
                     }
                 }
@@ -312,6 +315,9 @@ namespace SevenWonders
                 //C player decides to open the commerce window
                 else if (message[0] == 'C')
                 {
+                    // should not be seeing this any more
+                    throw new Exception();
+                    /*
                     //b for buildStructure Commerce
                     if (message[1] == 'b')
                     {
@@ -328,6 +334,7 @@ namespace SevenWonders
                         // gameManager.updateCommercePanel(id, nickname, true);
                         gameManager.updateCommercePanel(message.Substring(2), nickname, true);
                     }
+                    */
 
                     /*
                     //player built the card from commerce window

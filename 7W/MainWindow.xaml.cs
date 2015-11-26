@@ -56,10 +56,15 @@ namespace SevenWonders
 
         Buildable stageBuildable;
 
-        List<Card> fullCardList = new List<Card>();
+        // List<Card> fullCardList = new List<Card>();
+
+        public string commerceStructure { get; private set; }
+        // 0 if we're building a structure, 1-4 if we're building a stage
+
+        public int commerceStage { get; private set; }
 
         //constructor: create the UI. create the Coordinator object
-        public MainWindow(Coordinator c)
+        public MainWindow(Coordinator coordinator)
         {
             InitializeComponent();
 
@@ -72,27 +77,11 @@ namespace SevenWonders
                 { SeatA, SeatH, SeatG, SeatF, SeatE, SeatD, SeatC, SeatB }, // 8 players
            };
 
-            this.coordinator = c;
+            this.coordinator = coordinator;
 
-            for (int i = 0; i < c.playerNames.Length; ++i)
+            for (int i = 0; i < coordinator.playerNames.Length; ++i)
             {
-                playerState.Add(c.playerNames[i], new PlayerState(seatMap[c.playerNames.Length - 3, i], c.playerNames[i]));
-            }
-
-            // load the card list
-            using (System.IO.StreamReader file = new System.IO.StreamReader(System.Reflection.Assembly.Load("GameManager").
-                GetManifestResourceStream("GameManager.7 Wonders Card list.csv")))
-            {
-                // skip the header line
-                file.ReadLine();
-
-                String line = file.ReadLine();
-
-                while (line != null && line != String.Empty)
-                {
-                    fullCardList.Add(new Card(line.Split(',')));
-                    line = file.ReadLine();
-                }
+                playerState.Add(coordinator.playerNames[i], new PlayerState(seatMap[coordinator.playerNames.Length - 3, i], coordinator.playerNames[i]));
             }
         }
 
@@ -297,7 +286,11 @@ namespace SevenWonders
                         }
                         else
                         {
-                            coordinator.sendToHost("Cb" + id_buildable[handPanel.SelectedIndex].Item1);
+                            commerceStructure = id_buildable[handPanel.SelectedIndex].Item1;
+                            commerceStage = 0;
+                            coordinator.sendToHost("SendComm");
+
+                            // coordinator.sendToHost("Cb" + id_buildable[handPanel.SelectedIndex].Item1);
                         }
                         break;
                     case "btnBuildWonderStage":
@@ -311,7 +304,11 @@ namespace SevenWonders
                         }
                         else
                         {
-                            coordinator.sendToHost("Cs" + id_buildable[handPanel.SelectedIndex].Item1);
+                            commerceStructure = id_buildable[handPanel.SelectedIndex].Item1;
+                            commerceStage = 0;
+                            coordinator.sendToHost("SendComm");
+
+                            // coordinator.sendToHost("Cs" + id_buildable[handPanel.SelectedIndex].Item1);
                         }
                         break;
                     case "btnDiscardStructure":
@@ -435,7 +432,7 @@ namespace SevenWonders
             }
             else
             {
-                Card lastPlayedCard = fullCardList.Find(x => x.name == cardName);
+                Card lastPlayedCard = coordinator.FindCard(cardName);
 
                 StructureType colour = lastPlayedCard.structureType;
 

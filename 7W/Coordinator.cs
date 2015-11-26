@@ -19,6 +19,7 @@ using System.Threading;
 using System.IO;
 using System.Data;
 using System.Timers;
+using System.Web;
 
 namespace SevenWonders
 {
@@ -54,6 +55,8 @@ namespace SevenWonders
         //Leaders
         BilkisUI bilkisUI;
 
+        List<Card> fullCardList = new List<Card>();
+
         public Coordinator()
         {
             nickname = "";
@@ -66,6 +69,21 @@ namespace SevenWonders
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = new TimeSpan(0, 0, 1);
             */
+            // load the card list
+            using (System.IO.StreamReader file = new System.IO.StreamReader(System.Reflection.Assembly.Load("GameManager").
+                GetManifestResourceStream("GameManager.7 Wonders Card list.csv")))
+            {
+                // skip the header line
+                file.ReadLine();
+
+                String line = file.ReadLine();
+
+                while (line != null && line != String.Empty)
+                {
+                    fullCardList.Add(new Card(line.Split(',')));
+                    line = file.ReadLine();
+                }
+            }
         }
 
         public void SetMainWindow(MainWindow mw)
@@ -422,6 +440,17 @@ namespace SevenWonders
                         messageHandled = true;
                         break;
 
+                    case "Commerce":
+
+                        {
+                            NameValueCollection qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+
+                            ShowCommerceDialog(qcoll);
+                        }
+
+                        messageHandled = true;
+                        break;
+
                     case "Military":
                         qscoll = UriExtensions.ParseQueryString(message.Substring(8));
 
@@ -589,7 +618,8 @@ namespace SevenWonders
             //create the commerce if necessary 
             else if (message[0] == 'C')
             {
-                createAndUpdateCommerce(message.Substring(1));
+                throw new Exception("Client should not get a 'C' message from the server any more");
+                // createAndUpdateCommerce(message.Substring(1));
             }
             //enable the Olympia button
             else if (message == "EO")
@@ -701,12 +731,25 @@ namespace SevenWonders
             }
         }
 
+        /*
         public void createAndUpdateCommerce(string s)
         {
             Application.Current.Dispatcher.Invoke(new Action(delegate
             {
                 //gameUI.showCommerceUI(s);
                 NewCommerce commerce = new NewCommerce(this, s);
+
+                commerce.ShowDialog();
+            }));
+        }
+        */
+
+        void ShowCommerceDialog(NameValueCollection qscoll)
+        {
+            Application.Current.Dispatcher.Invoke(new Action(delegate
+            {
+                //gameUI.showCommerceUI(s);
+                NewCommerce commerce = new NewCommerce(this, fullCardList, gameUI.commerceStructure, gameUI.commerceStage, qscoll);
 
                 commerce.ShowDialog();
             }));
@@ -719,6 +762,11 @@ namespace SevenWonders
         {
             if (currentTurn > 4) return true;
             else return false;
+        }
+
+        public Card FindCard(string name)
+        {
+            return fullCardList.Find(x => x.name == name);
         }
     }
 }

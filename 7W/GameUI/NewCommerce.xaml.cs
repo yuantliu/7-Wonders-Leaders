@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -10,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Web;
 
 namespace SevenWonders
 {
@@ -27,7 +29,7 @@ namespace SevenWonders
         int PLAYER_COIN;
 
         //player's coordinator
-        Coordinator c;
+        Coordinator coordinator;
 
         //immutable original string cost
         // string cardCost;
@@ -49,7 +51,7 @@ namespace SevenWonders
         int resourcesNeeded;
 
         //DAGs
-        DAG leftDag, middleDag, rightDag;
+        DAG leftDag = new DAG(), middleDag = new DAG(), rightDag = new DAG();
 
         //DAG buttons. [level][number]
         //e.g. For a DAG that has only 1 level, consisting of WBO, to get O, use [0][2]
@@ -59,15 +61,105 @@ namespace SevenWonders
         //Order: BOTW-GLP
         BitmapImage[] resourceIcons = new BitmapImage[7];
 
+        void CreateDag(DAG d, string sourceStr)
+        {
+            string[] playerEffectsSplit = sourceStr.Split(',');
+
+            for (int i = 0; i < playerEffectsSplit.Length; ++i)
+            {
+                switch (playerEffectsSplit[i].Length)
+                {
+                    case 1:
+                        {
+                            SimpleEffect e = new SimpleEffect(1, playerEffectsSplit[i][0]);
+                            d.add(e);
+                        }
+                        break;
+
+                    case 2:
+                        // if they are the same resource, it's two of the same (simple)
+                        if (playerEffectsSplit[i][0] == playerEffectsSplit[i][1])
+                        {
+                            SimpleEffect e = new SimpleEffect(2, playerEffectsSplit[i][0]);
+                            d.add(e);
+                        }
+                        else
+                        {
+                            // choice of two
+                            ResourceChoiceEffect e = new ResourceChoiceEffect(true, playerEffectsSplit[i]);
+                            d.add(e);
+                        }
+                        break;
+
+                    default:
+
+                        {
+                            // The server will filter cards in the neighbor's city we cannnot use.  Therefore it's safe to assume
+                            // that any resource choice card that has more than 2 resources is available as it must belong to the player
+                            ResourceChoiceEffect e = new ResourceChoiceEffect(true, playerEffectsSplit[i]);
+                            d.add(e);
+                        }
+                        break;
+                }
+            }
+        }
+
         /// <summary>
         /// Set the coordinator and handle CommerceInformation, which contains all necessary UI data, from GameManager
         /// </summary>
-        public NewCommerce(Coordinator c, string data)
+        public NewCommerce(Coordinator coordinator, List<Card> cardList, string cardName, int wonderStage, NameValueCollection qscoll )
         {
             //intialise all the UI components in the xaml file (labels, etc.) to avoid null pointer
             InitializeComponent();
 
-            this.c = c;
+            this.coordinator = coordinator;
+
+            cardCost = cardList.Find(x => x.name == cardName).cost;
+
+            // Leader discount for the type of card being constructed
+            hasDiscount = false;
+
+            leftName = "Left Neighbor";
+            middleName = "Player";
+            rightName = "Right Neighbor";
+
+            structureName = cardName;
+            isStage = wonderStage != 0;
+
+            leftRawMarket = false;
+            rightRawMarket = false;
+
+            string commercialEffectCardList = qscoll["discountEffects"];
+
+            if (commercialEffectCardList != string.Empty)
+            {
+                string[] commercialCardList = commercialEffectCardList.Split(',');
+
+                for (int i = 0; i < commercialCardList.Length; ++i)
+                {
+                    CommercialDiscountEffect cde = cardList.Find(x => x.name == commercialCardList[i]).effect as CommercialDiscountEffect;
+
+                    if (cde.appliesTo == CommercialDiscountEffect.AppliesTo.LeftNeighbor || cde.appliesTo == CommercialDiscountEffect.AppliesTo.BothNeighbors)
+                    {
+                        leftRawMarket = cde.affects == CommercialDiscountEffect.Affects.RawMaterial;
+                        leftManuMarket = cde.affects == CommercialDiscountEffect.Affects.Goods;
+                    }
+
+                    if (cde.appliesTo == CommercialDiscountEffect.AppliesTo.RightNeighbor || cde.appliesTo == CommercialDiscountEffect.AppliesTo.BothNeighbors)
+                    {
+                        rightRawMarket = cde.affects == CommercialDiscountEffect.Affects.RawMaterial;
+                        rightManuMarket = cde.affects == CommercialDiscountEffect.Affects.Goods;
+                    }
+                }
+            }
+
+            PLAYER_COIN = int.Parse(qscoll["coin"]);
+
+            CreateDag(middleDag, qscoll["PlayerResources"]);
+            CreateDag(leftDag, qscoll["LeftResources"]);
+            CreateDag(rightDag, qscoll["RightResources"]);
+
+            /*
             CommerceInformation commerceData = (CommerceInformation)Marshaller.StringToObject(data);
 
             //gather necessary UI information
@@ -90,6 +182,7 @@ namespace SevenWonders
             leftDag = commerceData.playerCommerceInfo[0].dag;
             middleDag = commerceData.playerCommerceInfo[1].dag;
             rightDag = commerceData.playerCommerceInfo[2].dag;
+            */
             //all necessary UI information gathered
 
             //construct the UI
@@ -527,13 +620,13 @@ namespace SevenWonders
             if ((resourcesNeeded == 0 && hasDiscount == false) || (resourcesNeeded == 1 && hasDiscount == true))
             {
                 string strResponse = string.Format("Comerce{0}&structureName={1}&leftCoins={2}&rightCoins={3}", isStage ? "S" : "B", structureName, leftcoin, rightcoin);
-                c.sendToHost(strResponse);
+                coordinator.sendToHost(strResponse);
 
                 //end turn
-                c.endTurn();
+                coordinator.endTurn();
 
                 //signify to MainWindow that turn has been played
-                c.gameUI.playerPlayedHisTurn = true;
+                coordinator.gameUI.playerPlayedHisTurn = true;
 
                 Close();
             }

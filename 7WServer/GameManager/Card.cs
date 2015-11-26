@@ -87,7 +87,6 @@ namespace SevenWonders
         Builders_Guild,
     };
 
-    [Serializable]
     // will be used for Wonder stages as well as card structures
     public class Cost
     {
@@ -105,7 +104,6 @@ namespace SevenWonders
             coin = wood = stone = clay = ore = cloth = glass = papyrus = 0;
         }
 
-        /*
         public Cost(string initStr)
         {
             coin = wood = stone = clay = ore = cloth = glass = papyrus = 0;
@@ -114,6 +112,7 @@ namespace SevenWonders
             {
                 switch (c)
                 {
+                    case '$': ++coin; break;
                     case 'W': ++wood; break;
                     case 'S': ++stone; break;
                     case 'B': ++clay; break;
@@ -126,7 +125,6 @@ namespace SevenWonders
                 }
             }
         }
-        */
 
         public bool IsZero()
         {
@@ -188,7 +186,6 @@ namespace SevenWonders
         City,
     };
 
-    [Serializable]
     public abstract class Effect
     {
         public enum Type
@@ -215,7 +212,6 @@ namespace SevenWonders
         }
     }
 
-    [Serializable]
     // formerly category 1
     public class SimpleEffect : Effect
     {
@@ -229,7 +225,6 @@ namespace SevenWonders
         }
     };
 
-    [Serializable]
     // formerly category 2
     public class ScienceEffect : Effect
     {
@@ -248,7 +243,6 @@ namespace SevenWonders
         }
     };
 
-    [Serializable]
     // formerly category 3
     public class CommercialDiscountEffect : Effect
     {
@@ -275,7 +269,6 @@ namespace SevenWonders
         }
     };
 
-    [Serializable]
     // formerly category 4
     public class ResourceChoiceEffect : Effect
     {
@@ -290,7 +283,6 @@ namespace SevenWonders
         }
     };
 
-    [Serializable]
     // formerly category 5
     public class CoinsAndPointsEffect : Effect
     {
@@ -316,7 +308,6 @@ namespace SevenWonders
         }
     };
 
-    [Serializable]
     // formerly category 6
     public class SpecialAbilityEffect : Effect
     {

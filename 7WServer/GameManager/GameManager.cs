@@ -470,8 +470,8 @@ namespace SevenWonders
             {
                 { Board.Wonder.Alexandria_A, new Board(Board.Wonder.Alexandria_B, "Alexandria (A)", new SimpleEffect(1, 'G'), 3) },
                 { Board.Wonder.Alexandria_B, new Board(Board.Wonder.Alexandria_A, "Alexandria (B)", new SimpleEffect(1, 'G'), 3) },
-                { Board.Wonder.Babylon_A, new Board(Board.Wonder.Babylon_B, "Babylon (A)", new SimpleEffect(1, 'C'), 3) },
-                { Board.Wonder.Babylon_B, new Board(Board.Wonder.Babylon_A, "Babylon (B)", new SimpleEffect(1, 'C'), 3) },
+                { Board.Wonder.Babylon_A, new Board(Board.Wonder.Babylon_B, "Babylon (A)", new SimpleEffect(1, 'B'), 3) },
+                { Board.Wonder.Babylon_B, new Board(Board.Wonder.Babylon_A, "Babylon (B)", new SimpleEffect(1, 'B'), 3) },
                 { Board.Wonder.Ephesos_A, new Board(Board.Wonder.Ephesos_B, "Ephesos (A)", new SimpleEffect(1, 'P'), 3) },
                 { Board.Wonder.Ephesos_B, new Board(Board.Wonder.Ephesos_A, "Ephesos (B)", new SimpleEffect(1, 'P'), 3) },
                 { Board.Wonder.Giza_A, new Board(Board.Wonder.Giza_B, "Giza (A)", new SimpleEffect(1, 'S'), 3) },
@@ -1210,53 +1210,113 @@ namespace SevenWonders
             gmCoordinator.sendMessage(p, information);
         }
 
+        /*
+        Attempting to build the commerce send string from played cards rather than effects.
+        string BuildResourceString(string who, Player plyr, bool isSelf)
+        {
+            string strRet = string.Format("&{0}Resources=", who);
+
+            foreach (Card c in plyr.playedStructure.Where(x => x.effect is SimpleEffect || (())
+            {
+                strRet += string.Format("{0},", c.name);
+            }
+
+            if (isSelf)
+            {
+                if (plyr.playedStructure.Where(x => x.effect is ResourceChoiceEffect))
+                { }
+
+
+            }
+
+            foreach (ResourceChoiceEffect e in plyr.dag.getChoiceStructures(isSelf))
+            {
+                ResourceChoiceEffect rce = e as ResourceChoiceEffect;
+
+                strRet += string.Format("{0},", rce.strChoiceData);
+            }
+
+            // remove the trailing comma, if necessary
+            if (strRet.EndsWith(","))
+                strRet = strRet.Remove(strRet.Length - 1);
+
+            return strRet;
+        }
+        */
+
+        string BuildResourceString(string who, Player plyr, bool isSelf)
+        {
+            string strRet = string.Format("&{0}Resources=", who);
+
+            foreach (Effect e in plyr.dag.getSimpleStructures())
+            {
+                SimpleEffect se = e as SimpleEffect;
+
+                strRet += se.type.ToString();
+
+                if (se.multiplier == 2)
+                    strRet += se.type.ToString();
+
+                strRet += ",";
+            }
+
+            foreach (ResourceChoiceEffect e in plyr.dag.getChoiceStructures(isSelf))
+            {
+                ResourceChoiceEffect rce = e as ResourceChoiceEffect;
+
+                strRet += string.Format("{0},", rce.strChoiceData);
+            }
+
+            // remove the trailing comma, if necessary
+            if (strRet.EndsWith(","))
+                strRet = strRet.Remove(strRet.Length - 1);
+
+            return strRet;
+        }
+
         /// <summary>
         /// Server to Client message consisting of Commerce UI updates
         /// </summary>
         /// <param name="id"></param>
         /// <param name="nickname"></param>
-        public void updateCommercePanel(string structureName, string nickname, bool isStage)
+//        public void updateCommercePanel(string structureName, string nickname, bool isStage)
+        public void updateCommercePanel(string nickname)
         {
             Player p = player[nickname];
 
-            bool hasDiscount;
+            // Leaders who give discounts on certain card types:
+            // "Imhotep" (Wonder stages)
+            // "Archimedes" (Science cards)
+            // "Hammurabi" (Civilian)
+            // "Leonidas" (Military)
 
-            Card c = p.hand.Find(x => x.name == structureName);
+            // old structure included structure name, cost, whether a Wonder stage is being constructed, and leader discount
+            // I'm going to skip the name and whether it is a wonder stage (client already knows these) and the cost (client knows all card info) and the leaders, for now.
 
-            if (isStage == true)
+            string strCommerce = "Commerce";
+
+            strCommerce += string.Format("&coin={0}", p.coin);
+
+            List<Card> commerceEffectCards = p.playedStructure.Where(x => x.effect is CommercialDiscountEffect).ToList();
+
+            if (commerceEffectCards.Count != 0)
             {
-                if (p.playedStructure.Exists(x => x.name == "Imhotep") == true)
+                strCommerce += "&discountEffects=";
+
+                foreach(Card c in commerceEffectCards)
                 {
-                    hasDiscount = true;
+                    strCommerce += string.Format("{0},", c.name);
                 }
-                else
-                {
-                    hasDiscount = false;
-                }
-            }
-            else if (
-                (c.structureType == StructureType.Science && p.playedStructure.Exists(x => x.name == "Archimedes")) ||
-               (c.structureType == StructureType.Civilian && p.playedStructure.Exists(x => x.name == "Hammurabi")) ||
-               (c.structureType == StructureType.Military && p.playedStructure.Exists(x => x.name == "Leonidas")))
-            {
-                hasDiscount = true;
-            }
-            else
-            {
-                hasDiscount = false;
+
+                // remove the trailing comma
+                strCommerce = strCommerce.Remove(strCommerce.Length - 1);
             }
 
-            Cost cost = c.cost;
-            if (isStage == true)
-            {
-                cost = p.playerBoard.stageCard[p.currentStageOfWonder].cost;
-            }
+            strCommerce += BuildResourceString("Player", p, true);
+            strCommerce += BuildResourceString("Left", p.leftNeighbour, false);
+            strCommerce += BuildResourceString("Right", p.rightNeighbour, false);
 
-            CommerceInformation commerceInfo = new CommerceInformation(p.leftNeighbour, p, p.rightNeighbour, hasDiscount, structureName, cost, isStage);
-
-            string commercePackageInformation = "C" + Marshaller.ObjectToString(commerceInfo);
-
-            gmCoordinator.sendMessage(p, commercePackageInformation);
+            gmCoordinator.sendMessage(p, strCommerce);
         }
 
         /*
