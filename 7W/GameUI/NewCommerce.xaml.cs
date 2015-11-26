@@ -314,22 +314,26 @@ namespace SevenWonders
                 levelPanels[i].Orientation = Orientation.Horizontal;
                 levelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
 
-                b[i, 0] = new Button();
-                b[i, 0].Content = dagGraphSimple[i].type.ToString();
-                b[i, 0].FontSize = 1;
-                b[i, 0].Background = new ImageBrush(GetButtonIcon(dagGraphSimple[i].type));
-                b[i, 0].Width = DAG_BUTTON_WIDTH;
-                b[i, 0].Height = DAG_BUTTON_WIDTH;
+                for (int j = 0; j < dagGraphSimple[i].multiplier; j++)
+                {
+                    b[i, j] = new Button();
+                    b[i, j].Content = dagGraphSimple[i];
 
-                //set the name of the Button for eventHandler purposes
-                //Format: L_(level number)
-                b[i, 0].Name = buttonNamePrefix + i;
+                    b[i, j].FontSize = 1;
+                    b[i, j].Background = new ImageBrush(GetButtonIcon(dagGraphSimple[i].type));
+                    b[i, j].Width = DAG_BUTTON_WIDTH;
+                    b[i, j].Height = DAG_BUTTON_WIDTH;
 
-                b[i, 0].IsEnabled = true;
+                    //set the name of the Button for eventHandler purposes
+                    //Format: L_(level number)
+                    b[i, j].Name = buttonNamePrefix + i;
 
-                //set action listener and add the button to the appropriate panel
-                b[i, 0].Click += dagResourceButtonPressed;
-                levelPanels[i].Children.Add(b[i, 0]);
+                    b[i, j].IsEnabled = true;
+
+                    //set action listener and add the button to the appropriate panel
+                    b[i, j].Click += dagResourceButtonPressed;
+                    levelPanels[i].Children.Add(b[i, j]);
+                }
                 p.Children.Add(levelPanels[i]);
             }
 
@@ -348,7 +352,7 @@ namespace SevenWonders
                 for (int j = 0; j < dagGraphChoice[i - dagGraphSimple.Count].strChoiceData.Length; j++)
                 {
                     b[i, j] = new Button();
-                    b[i, j].Content = dagGraphChoice[i - dagGraphSimple.Count].strChoiceData[j].ToString();
+                    b[i, j].Content = dagGraphChoice[i - dagGraphSimple.Count];
                     b[i, j].FontSize = 1;
 
                     //set the Button's image to correspond with the resource
@@ -359,7 +363,7 @@ namespace SevenWonders
 
                     //set the name of the Button for eventHandler purposes
                     //Format: L_(level number)
-                    b[i, j].Name = buttonNamePrefix + i;
+                    b[i, j].Name = buttonNamePrefix + i + j;
 
                     b[i, j].IsEnabled = true;
 
@@ -394,13 +398,33 @@ namespace SevenWonders
             string s = pressed.Name;
 
             //determine some information about the pressed button
-            
+
             //level of the resource
             int level = Convert.ToInt32(s.Substring(2));
-            //resource obtained
-            char resource = ((string)pressed.Content)[0];
             //the location of the button (whether left, right, or middle)
             char location = s[0];
+
+            //resource obtained
+            Effect effect = pressed.Content as Effect;
+
+            char resource;
+            int mulitplier = 1;
+
+            if (effect is SimpleEffect)
+            {
+                SimpleEffect se = effect as SimpleEffect;
+
+                resource = se.type;
+                mulitplier = se.multiplier;
+            }
+            else
+            {
+                ResourceChoiceEffect rce = effect as ResourceChoiceEffect;
+
+                int resourceStringIndex = Convert.ToInt32(s.Substring(3));
+
+                resource = rce.strChoiceData[resourceStringIndex];
+            }
 
             //remember the current resource obtained amount for comparison with new resource obtained amount later
             int previous = resourcesNeeded;
@@ -417,7 +441,7 @@ namespace SevenWonders
                 MessageBox.Show("You have for all necessary resources already");
                 return;
             }
-            else if (DAG.eliminate(cardCost.Copy(), false, 1, strPossibleNewResourceList).Total() == previous)
+            else if (DAG.eliminate(cardCost.Copy(), false, mulitplier, strPossibleNewResourceList).Total() == previous)
             {
                 MessageBox.Show("This resource will not help you pay for your cost");
                 return;
