@@ -53,6 +53,7 @@ namespace SevenWonders
 
         public void processInformation(String information)
         {
+#if FALSE
             //convert to Data
             PlayForFreeInformation info = (PlayForFreeInformation)(Marshaller.StringToObject(information));
 
@@ -77,6 +78,7 @@ namespace SevenWonders
 
                 cardComboBox.Items.Add(cardComboBoxItems[i]);
             }
+#endif
         }
 
         /// <summary>

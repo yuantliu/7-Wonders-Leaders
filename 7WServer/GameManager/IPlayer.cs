@@ -6,24 +6,8 @@ using System.Net.Sockets;
 
 namespace SevenWonders
 {
-    public interface IPlayer
+    public interface pIPlayer
     {
         String GetNickName();
-
-        int GetCoin();
-
-        Buildable isCardBuildable(Card card);
-
-        Buildable isStageBuildable();
-
-        bool GetLeftRaw();
-
-        bool GetLeftManu();
-
-        bool GetRightRaw();
-
-        bool GetRightManu();
-
-        DAG GetDAG();
     }
 }

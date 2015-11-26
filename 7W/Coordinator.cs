@@ -423,42 +423,41 @@ namespace SevenWonders
             if (message.Length >= 8)
             {
                 bool messageHandled = false;
-                IList<KeyValuePair<string, string>> qscoll;
+
+                NameValueCollection qcoll;
 
                 switch (message.Substring(0, 8))
                 {
                     case "CardPlay":
-                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
 
-                        for (int i = 0; i < qscoll.Count; ++i)
+                        foreach (string s in qcoll.Keys)
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.updateCardsPlayed(qscoll[i].Key, qscoll[i].Value);
+                                gameUI.updateCardsPlayed(s, qcoll[s]);
                             }));
                         }
                         messageHandled = true;
                         break;
 
-                    case "Commerce":
+                    case "CommData":        // Commerce data
 
-                        {
-                            NameValueCollection qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
 
-                            ShowCommerceDialog(qcoll);
-                        }
+                        ShowCommerceDialog(qcoll);
 
                         messageHandled = true;
                         break;
 
                     case "Military":
-                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
 
-                        for (int i = 0; i < qscoll.Count; ++i)
+                        foreach (string s in qcoll.Keys)
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.updateMilitaryTokens(qscoll[i].Key, qscoll[i].Value);
+                                gameUI.updateMilitaryTokens(s, qcoll[s]);
                             }));
                         }
                         messageHandled = true;
@@ -502,59 +501,49 @@ namespace SevenWonders
 
                     case "SetBoard":
                         // Parse the query string variables into a NameValueCollection.
-                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
 
-                        for (int i = 0; i < qscoll.Count; ++i)
+                        foreach (string s in qcoll.Keys)
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.showBoardImage(qscoll[i].Key, qscoll[i].Value);
+                                gameUI.showBoardImage(s, qcoll[s]);
                             }));
                         }
 
-                        // Tell game server this client is ready to receive its first hand data
-                        // Used to be sent in response to the "S[0|1]" message, indicating the game client
-                        // is ready to accept the hand data.
+                        // Tell game server this client is ready to receive its first UI update, which will
+                        // include coins and hand of cards.
                         sendToHost("r");
 
                         messageHandled = true;
                         break;
 
                     case "SetCoins":
-                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
-                        for (int i = 0; i < qscoll.Count; ++i)
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+
+                        foreach (string s in qcoll.Keys)
                         {
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.showPlayerBarPanel(qscoll[i].Key, qscoll[i].Value);
+                                gameUI.showPlayerBarPanel(s, qcoll[s]);
                             }));
                         }
                         messageHandled = true;
 
                         break;
 
-                        /*
-                    case "SetNames":
-                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
-                        for (int i = 0; i < qscoll.Count; ++i)
+                    case "SetPlyrH":        // Set player hand
                         {
+                            // we cannot use the nicer NameValuePair because there may be two of the same
+                            // card in the hand and these would be duplicate keys.  So we have to use a data
+                            // structure 
+                            IList<KeyValuePair<string, string>> qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+
                             Application.Current.Dispatcher.Invoke(new Action(delegate
                             {
-                                gameUI.SetPlayerName(qscoll[i].Key, qscoll[i].Value);
+                                gameUI.showHandPanel(qscoll);
                             }));
                         }
-                        messageHandled = true;
-
-                        break;
-                        */
-
-                    case "SetPlyrH":
-                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
-
-                        Application.Current.Dispatcher.Invoke(new Action(delegate
-                        {
-                            gameUI.showHandPanel(qscoll);
-                        }));
 
                         messageHandled = true;
                         break;

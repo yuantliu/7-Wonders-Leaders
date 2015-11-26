@@ -34,13 +34,12 @@ namespace SevenWonders
     /// Serializable object representing only ids of current hands. No associated available actions are here.
     /// This is only used by the Recruitment phase (Age 0)
     /// </summary>
-    [Serializable]
     public class RecruitmentPhaseInformation
     {
         public string[] ids;
 
-        public RecruitmentPhaseInformation(IPlayer p)
-        {
+        // public RecruitmentPhaseInformation(Player p)
+        //{
             /*
             ids = new string[p.GetNumCardsInHand()];
             for (int i = 0; i < ids.Length; i++)
@@ -48,7 +47,7 @@ namespace SevenWonders
                 ids[i] = p.GetCard(i).name;
             }
             */
-        }
+        //}
     }
 
     /// <summary>
@@ -56,15 +55,16 @@ namespace SevenWonders
     /// For example, Olympia (for current hand cards) and Rome (for Leader cards)
     /// O is Olympia, R is Rome
     /// </summary>
-    [Serializable]
+
     public class PlayForFreeInformation
     {
+#if FALSE
         public char mode;
         //string: name, int: id
         // public Tuple<string, int>[] cards;
         public Tuple<string, string>[] cards;       // TODO: get rid of this mapping.  It's not needed any more
 
-        public PlayForFreeInformation(IPlayer p, char mode)
+        public PlayForFreeInformation(Player p, char mode)
         {
             this.mode = mode;
 
@@ -101,6 +101,7 @@ namespace SevenWonders
                 throw new NotImplementedException();
             }
         }
+#endif
     }
 
     /// <summary>

@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace SevenWonders
 {
-    public class Player : IPlayer
+    public class Player
     {
         public bool isAI {get; set;}
 
@@ -85,11 +85,11 @@ namespace SevenWonders
         //Player's left and right neighbours
         public Player leftNeighbour { get; set; }
 
-        public IPlayer GetLeftNeighbour() { return leftNeighbour; }
+        public Player GetLeftNeighbour() { return leftNeighbour; }
 
         public Player rightNeighbour { get; set; }
 
-        public IPlayer GetRightNeighbour() { return rightNeighbour; }
+        public Player GetRightNeighbour() { return rightNeighbour; }
 
         public Boolean changeNickName {get; set; }
         public String newNickName {get; set; }

@@ -529,24 +529,32 @@ namespace SevenWonders
             return randomBoard.Value;
         }
 
-        public void buildStructureFromHand(string name, string strWonderStage, string playerNickname)
+        public void buildStructureFromHand(string cardName, string playerNickname, string strWonderStage, string strLeftCoins, string strRightCoins)
         {
             //Find the Player object given the playerNickname
             Player p = player[playerNickname];
 
             //Find the card with the id number
-            Card c = p.hand.Find(x => x.name == name);
+            Card c = p.hand.Find(x => x.name == cardName);
 
             if (c == null)
                 throw new Exception("Received a message from the client to build a card that wasn't in the player's hand.");
 
-            buildStructureFromHand(c, p, strWonderStage == "1");
+            int nLeftCoins = 0, nRightCoins = 0;
+
+            if (strLeftCoins != null)
+                nLeftCoins = int.Parse(strLeftCoins);
+
+            if (strRightCoins != null)
+                nRightCoins = int.Parse(strRightCoins);
+
+            buildStructureFromHand(c, p, strWonderStage == "1", nLeftCoins, nRightCoins);
         }
 
         /// <summary>
         /// build a structure from hand, given the Card id number and the Player
         /// </summary>
-        public void buildStructureFromHand(Card c, Player p, bool wonderStage)
+        public void buildStructureFromHand(Card c, Player p, bool wonderStage, int nLeftCoins = 0, int nRightCoins = 0)
         {
             p.hand.Remove(c);
 
@@ -568,8 +576,9 @@ namespace SevenWonders
             p.storeAction(c.effect);
 
             //if the structure played costs money, deduct it
-            //check if the Card costs money
-            int costInCoins = c.cost.coin;
+            //check if the Card costs money and add the coins paid to the neighbors for their resources
+            int costInCoins = c.cost.coin + nLeftCoins + nRightCoins;
+
             /*
             for (int i = 0; i < c.cost.Length; i++)
             {
@@ -582,8 +591,7 @@ namespace SevenWonders
             //if player has Rome A, then leaders are free. (board has D resource (big discount))
             if ((p.playedStructure.Exists(x => x.name == "Maecenas") == true /* || p.playerBoard.freeResource == 'D'*/) && c.structureType == StructureType.Leader)
             {
-                // p.storeAction("1" + costInCoins + "$");
-                p.storeAction(new SimpleEffect(costInCoins, '$'));
+                costInCoins -= c.cost.coin;
             }
 
             //if player has Rome B, then playing leaders will refund a 2 coin discount
@@ -621,6 +629,12 @@ namespace SevenWonders
             {
                 p.storeAction(new CostEffect(costInCoins));
             }
+
+            if (nLeftCoins != 0)
+                p.leftNeighbour.storeAction(new SimpleEffect(nLeftCoins, '$'));
+
+            if (nRightCoins != 0)
+                p.rightNeighbour.storeAction(new SimpleEffect(nRightCoins, '$'));
 
             //determine if the player should get 2 coins for having those leaders (get 2 coins for playing a yellow and playing a pre-req
             giveCoinFromLeadersOnBuild(p, c);
@@ -663,6 +677,7 @@ namespace SevenWonders
             */
         }
 
+#if FALSE
         /// <summary>
         /// Player finishes conducting commerce to pay for a card
         /// </summary>
@@ -770,6 +785,7 @@ namespace SevenWonders
             }
             */
         }
+#endif
 
         /// <summary>
         /// build a structure from a card in discard pile, given the Card id number and the Player
@@ -1112,6 +1128,7 @@ namespace SevenWonders
             /// <param name="p"></param>
         public void sendOlympiaInformation(String nickname)
         {
+            /*
             Player p = player[nickname];
 
             //information to be sent
@@ -1121,6 +1138,7 @@ namespace SevenWonders
 
             //send the information
             gmCoordinator.sendMessage(p, information);
+            */
         }
 
         /// <summary>
@@ -1144,7 +1162,7 @@ namespace SevenWonders
             p.storeAction(new SimpleEffect(c.cost.coin, '$'));
 
             //build the structure
-            buildStructureFromHand(structureName, nickname, "0");
+            buildStructureFromHand(structureName, nickname, null, null, null);
 
             //disable Olympia
             p.olympiaPowerEnabled = false;
@@ -1309,7 +1327,7 @@ namespace SevenWonders
             // old structure included structure name, cost, whether a Wonder stage is being constructed, and leader discount
             // I'm going to skip the name and whether it is a wonder stage (client already knows these) and the cost (client knows all card info) and the leaders, for now.
 
-            string strCommerce = "Commerce";
+            string strCommerce = "CommData";
 
             strCommerce += string.Format("&coin={0}", p.coin);
 
@@ -1334,21 +1352,6 @@ namespace SevenWonders
 
             gmCoordinator.sendMessage(p, strCommerce);
         }
-
-        /*
-        //return the view detail UI information, given a player name
-        public void sendViewDetailInformation(String requesterName, String requestedName)
-        {
-            Player requester = playerFromNickname(requesterName);
-            Player requested = playerFromNickname(requestedName);
-            String information = "V";
-
-            ViewDetailsInformation info = new ViewDetailsInformation(requested);
-            information += Marshaller.ObjectToString(info);
-
-            gmCoordinator.sendMessage(requester, information);
-        }
-        */
 
         protected int numOfPlayersThatHaveTakenTheirTurn = 0;
 

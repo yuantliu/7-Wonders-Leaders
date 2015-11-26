@@ -619,7 +619,7 @@ namespace SevenWonders
         {
             if ((resourcesNeeded == 0 && hasDiscount == false) || (resourcesNeeded == 1 && hasDiscount == true))
             {
-                string strResponse = string.Format("Comerce{0}&structureName={1}&leftCoins={2}&rightCoins={3}", isStage ? "S" : "B", structureName, leftcoin, rightcoin);
+                string strResponse = string.Format("BldStrct&WonderStage={0}&Structure={1}&leftCoins={2}&rightCoins={3}", isStage ? "1" : "0", structureName, leftcoin, rightcoin);
                 coordinator.sendToHost(strResponse);
 
                 //end turn

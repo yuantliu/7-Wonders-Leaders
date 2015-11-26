@@ -143,13 +143,13 @@ namespace SevenWonders
 
             id_buildable = new Tuple<string, Buildable>[cardsAndStates.Count];
 
-            for (int i = 0; i < cardsAndStates.Count; ++i)
+            int buildableIndexi = 0;
+            foreach (KeyValuePair<string, string> kvp in cardsAndStates)
             {
-                Tuple<string, Buildable> t = new Tuple<string, Buildable>(cardsAndStates[i].Key,
-                    (Buildable)Enum.Parse(typeof(Buildable), cardsAndStates[i].Value));
+                Tuple<string, Buildable> t = new Tuple<string, Buildable>(kvp.Key, (Buildable)Enum.Parse(typeof(Buildable), kvp.Value));
 
                 if (!t.Item1.StartsWith("WonderStage"))
-                    id_buildable[i] = t;
+                    id_buildable[buildableIndexi++] = t;
                 else
                     stageBuildable = t.Item2;
             }
@@ -281,16 +281,14 @@ namespace SevenWonders
                             playedButton.IsEnabled = false;
                             playerPlayedHisTurn = true;
                             // bilkisButton.IsEnabled = false;
-                            coordinator.sendToHost(string.Format("BldStrct&WonderStage={0}&Structure={1}", "0", id_buildable[handPanel.SelectedIndex].Item1));
+                            coordinator.sendToHost(string.Format("BldStrct&WonderStage=0&Structure={0}", id_buildable[handPanel.SelectedIndex].Item1));
                             coordinator.endTurn();
                         }
                         else
                         {
                             commerceStructure = id_buildable[handPanel.SelectedIndex].Item1;
                             commerceStage = 0;
-                            coordinator.sendToHost("SendComm");
-
-                            // coordinator.sendToHost("Cb" + id_buildable[handPanel.SelectedIndex].Item1);
+                            coordinator.sendToHost("SendComm");     // the server's response will open the Commerce Dialog box
                         }
                         break;
                     case "btnBuildWonderStage":
@@ -299,16 +297,14 @@ namespace SevenWonders
                             playedButton.IsEnabled = false;
                             playerPlayedHisTurn = true;
                             // bilkisButton.IsEnabled = false;
-                            coordinator.sendToHost(string.Format("BldStrct&WonderStage={0}&Structure={1}", "1", id_buildable[handPanel.SelectedIndex].Item1));
+                            coordinator.sendToHost(string.Format("BldStrct&WonderStage=1&Structure={0}", id_buildable[handPanel.SelectedIndex].Item1));
                             coordinator.endTurn();
                         }
                         else
                         {
                             commerceStructure = id_buildable[handPanel.SelectedIndex].Item1;
                             commerceStage = 0;
-                            coordinator.sendToHost("SendComm");
-
-                            // coordinator.sendToHost("Cs" + id_buildable[handPanel.SelectedIndex].Item1);
+                            coordinator.sendToHost("SendComm");     // the server's response will open the Commerce Dialog box
                         }
                         break;
                     case "btnDiscardStructure":
