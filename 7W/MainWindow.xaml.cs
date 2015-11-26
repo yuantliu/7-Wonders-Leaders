@@ -303,7 +303,7 @@ namespace SevenWonders
                         else
                         {
                             commerceStructure = id_buildable[handPanel.SelectedIndex].Item1;
-                            commerceStage = 0;
+                            commerceStage = 1;
                             coordinator.sendToHost("SendComm");     // the server's response will open the Commerce Dialog box
                         }
                         break;

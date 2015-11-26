@@ -1346,6 +1346,8 @@ namespace SevenWonders
                 strCommerce = strCommerce.Remove(strCommerce.Length - 1);
             }
 
+            strCommerce += string.Format("&wonderInfo={0}/{1}", p.currentStageOfWonder, p.playerBoard.name);
+
             strCommerce += BuildResourceString("Player", p, true);
             strCommerce += BuildResourceString("Left", p.leftNeighbour, false);
             strCommerce += BuildResourceString("Right", p.rightNeighbour, false);

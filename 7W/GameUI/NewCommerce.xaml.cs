@@ -114,8 +114,6 @@ namespace SevenWonders
 
             this.coordinator = coordinator;
 
-            cardCost = cardList.Find(x => x.name == cardName).cost;
-
             // Leader discount for the type of card being constructed
             hasDiscount = false;
 
@@ -124,7 +122,19 @@ namespace SevenWonders
             rightName = "Right Neighbor";
 
             structureName = cardName;
+
             isStage = wonderStage != 0;
+
+            if (isStage)
+            {
+                string[] wonderData = qscoll["wonderInfo"].Split('/');
+
+                cardCost = cardList.Find(x => x.name == wonderData[1] && x.wonderStage == (int.Parse(wonderData[0]) + 1)).cost;
+            }
+            else
+            {
+                cardCost = cardList.Find(x => x.name == cardName).cost;
+            }
 
             leftRawMarket = false;
             rightRawMarket = false;
