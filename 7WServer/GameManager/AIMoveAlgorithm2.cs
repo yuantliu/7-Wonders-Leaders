@@ -27,7 +27,7 @@ namespace SevenWonders
             //look for buildable yellow cards that gives some resources
             c = player.hand.Find(x => x.structureType == StructureType.Commerce &&
                 player.isCardBuildable(x) == Buildable.True &&
-                x.effect is ResourceChoiceEffect);
+                x.effect is ResourceEffect);
 
             if (c != null)
             {
@@ -38,11 +38,11 @@ namespace SevenWonders
             //look for buildable resource cards
             foreach(Card card in player.hand)
             {
-                if ((card.structureType == StructureType.RawMaterial || card.structureType == StructureType.Goods) && player.isCardBuildable(card) == Buildable.True && card.effect is SimpleEffect)
+                if ((card.structureType == StructureType.RawMaterial || card.structureType == StructureType.Goods) && player.isCardBuildable(card) == Buildable.True && card.effect is ResourceEffect)
                 {
-                    SimpleEffect e = card.effect as SimpleEffect;
-                    char resource = e.type;
-                    int numOfResource = e.multiplier;
+                    ResourceEffect e = card.effect as ResourceEffect;
+                    char resource = e.resourceTypes[0];
+                    int numOfResource = e.resourceTypes.Length == 2 && e.resourceTypes[0] == e.resourceTypes[1] ? 2 : 1;
 
                     if (resource == 'B' && numOfResource + player.brick < maxResourcesRequired ) { gm.buildStructureFromHand(card.name, player.nickname, null, null, null ); return; }
                     else if (resource == 'O' && numOfResource + player.ore < maxResourcesRequired) { gm.buildStructureFromHand(card.name, player.nickname, null, null, null ); return; }

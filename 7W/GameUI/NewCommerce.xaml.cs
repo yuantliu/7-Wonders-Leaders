@@ -67,11 +67,13 @@ namespace SevenWonders
 
             for (int i = 0; i < playerEffectsSplit.Length; ++i)
             {
+                d.add(new ResourceEffect(true, playerEffectsSplit[i]));
+                /*
                 switch (playerEffectsSplit[i].Length)
                 {
                     case 1:
                         {
-                            SimpleEffect e = new SimpleEffect(1, playerEffectsSplit[i][0]);
+                            ResourceEffect e = new ResourceEffect(1, playerEffectsSplit[i][0]);
                             d.add(e);
                         }
                         break;
@@ -101,6 +103,7 @@ namespace SevenWonders
                         }
                         break;
                 }
+                */
             }
         }
 
@@ -301,47 +304,15 @@ namespace SevenWonders
 
             //generate a DAG for self or a neighbor
             //generate the needed amount of stackPanels, each representing a level
-            StackPanel[] levelPanels = new StackPanel[dag.getSimpleStructures().Count + dag.getChoiceStructures(isDagOwnedByPlayer).Count];
+            StackPanel[] levelPanels = new StackPanel[dag.getSimpleStructures(isDagOwnedByPlayer).Count];
+
             //generate the needed amount of buttons
-            b = new Button[dag.getSimpleStructures().Count + dag.getChoiceStructures(isDagOwnedByPlayer).Count, 7];
+            b = new Button[dag.getSimpleStructures(isDagOwnedByPlayer).Count, 7];
 
-            List<SimpleEffect> dagGraphSimple = dag.getSimpleStructures();
-            int i = 0;
-
-            for ( ; i < dagGraphSimple.Count; ++i)
-            {
-                levelPanels[i] = new StackPanel();
-                levelPanels[i].Orientation = Orientation.Horizontal;
-                levelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
-
-                for (int j = 0; j < dagGraphSimple[i].multiplier; j++)
-                {
-                    b[i, j] = new Button();
-                    b[i, j].Content = dagGraphSimple[i];
-
-                    b[i, j].FontSize = 1;
-                    b[i, j].Background = new ImageBrush(GetButtonIcon(dagGraphSimple[i].type));
-                    b[i, j].Width = DAG_BUTTON_WIDTH;
-                    b[i, j].Height = DAG_BUTTON_WIDTH;
-
-                    //set the name of the Button for eventHandler purposes
-                    //Format: L_(level number)
-                    b[i, j].Name = buttonNamePrefix + i;
-
-                    b[i, j].IsEnabled = true;
-
-                    //set action listener and add the button to the appropriate panel
-                    b[i, j].Click += dagResourceButtonPressed;
-                    levelPanels[i].Children.Add(b[i, j]);
-                }
-                p.Children.Add(levelPanels[i]);
-            }
-
-            //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
-            List<ResourceChoiceEffect> dagGraphChoice = dag.getChoiceStructures(isDagOwnedByPlayer);
+            List<ResourceEffect> dagGraphSimple = dag.getSimpleStructures(isDagOwnedByPlayer);
 
             //look at each level of the DAG
-            for ( ; i < dagGraphSimple.Count + dagGraphChoice.Count; i++)
+            for (int i = 0 ; i < dagGraphSimple.Count; i++)
             {
                 //initialise a StackPanels for the current level
                 levelPanels[i] = new StackPanel();
@@ -349,14 +320,14 @@ namespace SevenWonders
                 levelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
 
                 //add to the StackPanels the appropriate buttons
-                for (int j = 0; j < dagGraphChoice[i - dagGraphSimple.Count].strChoiceData.Length; j++)
+                for (int j = 0; j < dagGraphSimple[i].resourceTypes.Length; j++)
                 {
                     b[i, j] = new Button();
-                    b[i, j].Content = dagGraphChoice[i - dagGraphSimple.Count];
+                    b[i, j].Content = dagGraphSimple[i - dagGraphSimple.Count];
                     b[i, j].FontSize = 1;
 
                     //set the Button's image to correspond with the resource
-                    b[i, j].Background = new ImageBrush(GetButtonIcon(dagGraphChoice[i - dagGraphSimple.Count].strChoiceData[j]));
+                    b[i, j].Background = new ImageBrush(GetButtonIcon(dagGraphSimple[i].resourceTypes[j]));
 
                     b[i, j].Width = DAG_BUTTON_WIDTH;
                     b[i, j].Height = DAG_BUTTON_WIDTH;
@@ -408,23 +379,26 @@ namespace SevenWonders
             Effect effect = pressed.Content as Effect;
 
             char resource;
-            int mulitplier = 1;
 
-            if (effect is SimpleEffect)
+            /*
+            if (effect is ResourceEffect)
             {
-                SimpleEffect se = effect as SimpleEffect;
+                ResourceEffect se = effect as SimpleEffect;
 
                 resource = se.type;
                 mulitplier = se.multiplier;
             }
             else
             {
-                ResourceChoiceEffect rce = effect as ResourceChoiceEffect;
+                */
+                ResourceEffect rce = effect as ResourceEffect;
 
                 int resourceStringIndex = Convert.ToInt32(s.Substring(3));
 
-                resource = rce.strChoiceData[resourceStringIndex];
-            }
+                resource = rce.resourceTypes[resourceStringIndex];
+
+            int mulitplier = rce.resourceTypes.Length == 2 && rce.resourceTypes[0] == rce.resourceTypes[1] ? 2 : 1;
+            // }
 
             //remember the current resource obtained amount for comparison with new resource obtained amount later
             int previous = resourcesNeeded;
@@ -484,8 +458,9 @@ namespace SevenWonders
             //disable (make hidden) all buttons on the same level
             if (location == 'L')
             {
+                /*
                 // hmm, simple structures need to consider the multiplier.
-                int c = leftDag.getSimpleStructures().Count;
+                int c = leftDag.getSimpleStructures(false).Count;
 
                 if (level < c)
                 {
@@ -494,15 +469,17 @@ namespace SevenWonders
                 }
                 else
                 {
-                    for (int i = 0; i < leftDag.getChoiceStructures(false)[level - c].strChoiceData.Length; i++)
+                    */
+                    for (int i = 0; i < leftDag.getSimpleStructures(false)[level].resourceTypes.Length; i++)
                     {
                         //hide the buttons
                         leftDagButton[level, i].Visibility = Visibility.Hidden;
                     }
-                }
+                // }
             }
             else if (location == 'M')
             {
+                /*
                 int c = middleDag.getSimpleStructures().Count;
 
                 if (level < c)
@@ -511,15 +488,17 @@ namespace SevenWonders
                 }
                 else
                 {
-                    for (int i = 0; i < middleDag.getChoiceStructures(true)[level - c].strChoiceData.Length; i++)
+                */
+                    for (int i = 0; i < middleDag.getSimpleStructures(true)[level].resourceTypes.Length; i++)
                     {
                         //hide the buttons
                         middleDagButton[level, i].Visibility = Visibility.Hidden;
                     }
-                }
+                // }
             }
             else if (location == 'R')
             {
+                /*
                 int c = rightDag.getSimpleStructures().Count;
 
                 if (level < c)
@@ -528,12 +507,13 @@ namespace SevenWonders
                 }
                 else
                 {
-                    for (int i = 0; i < rightDag.getChoiceStructures(false)[level - c].strChoiceData.Length; i++)
+                */
+                    for (int i = 0; i < rightDag.getSimpleStructures(false)[level].resourceTypes.Length; i++)
                     {
                         //hide the buttons
                         rightDagButton[level, i].Visibility = Visibility.Hidden;
                     }
-                }
+                // }
             }
 
             //refresh the cost panel

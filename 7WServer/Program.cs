@@ -19,11 +19,10 @@ namespace SevenWonders
         {
             gmCoordinator = new GMCoordinator();
 
-            /*
             // TODO: test whether we can use other names, such as "James", "Mike", "Greg", "Ricky", "John", "Kevin"
-            StatusChangedEventArgs cmd = new StatusChangedEventArgs("Host", "");
+            StatusChangedEventArgs cmd = new StatusChangedEventArgs("James", "");
 
-            cmd.message = "JHost"; gmCoordinator.receiveMessage(null, cmd);     // Host joins the table
+            cmd.message = "JJames"; gmCoordinator.receiveMessage(null, cmd);    // James joins the table
             cmd.message = "aa3"; gmCoordinator.receiveMessage(null, cmd);       // Add AI (Prefer military cards)
             cmd.message = "aa4"; gmCoordinator.receiveMessage(null, cmd);       // Add AI (Difficult AI)
             cmd.message = "R"; gmCoordinator.receiveMessage(null, cmd);         // Player is ready.  After all non-AI players send this, the game begins.
@@ -39,7 +38,6 @@ namespace SevenWonders
             cmd.message = "t"; gmCoordinator.receiveMessage(null, cmd);
             cmd.message = "SWest Trading Post"; gmCoordinator.receiveMessage(null, cmd);
             cmd.message = "t"; gmCoordinator.receiveMessage(null, cmd);
-            */
 
             while (true)
             {

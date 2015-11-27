@@ -287,56 +287,61 @@ namespace SevenWonders
             {
                 //category $: deduct a given amount of coins
                 // if (actactions[i][0] == '$')
-                if (act is CostEffect)
+                if (act is CoinEffect)
                 {
-                    coin -= ((CostEffect)act).coins;
+                    // add or subtract coins
+                    coin += ((CoinEffect)act).coins;
+                }
+                else if (act is MilitaryEffect)
+                {
+                    shield += ((MilitaryEffect)act).nShields;
                 }
                 //category 1: give one kind of non-science thing
                 // else if (actions[i][0] == '1')
-                else if (act is SimpleEffect)
+                else if (act is ResourceEffect)
                 {
-                    SimpleEffect e = act as SimpleEffect;
+                    ResourceEffect e = act as ResourceEffect;
                     //increase the appropriate field by num
                     // int num = int.Parse(act[0] + "");
                    //  int num = e.multiplier;
 
-                    switch (e.type)
+                    switch (e.resourceTypes[0])
                     {
-                        case 'M':
-                            shield += e.multiplier;
-                            break;
-                        case 'V':
-                            victoryPoint += e.multiplier;
-                            break;
                         case 'O':
-                            ore += e.multiplier;
+                            ++ore;
+                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'O') ++ore;
                             dag.add(e);
                             break;
                         case 'B':
-                            brick += e.multiplier;
+                            ++brick;
+                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'B') ++brick;
                             dag.add(e);
                             break;
                         case 'S':
-                            stone += e.multiplier;
+                            ++stone;
+                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'S') ++stone;
                             dag.add(e);
                             break;
                         case 'W':
-                            wood += e.multiplier;
+                            ++wood;
+                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'W') ++wood;
                             dag.add(e);
                             break;
                         case '$':
-                            coin += e.multiplier;
+                            throw new Exception();
+                            // money should be transacted via CoinEffect types.
+                            // coin += e.multiplier;
                             break;
                         case 'C':
-                            loom += e.multiplier;
+                            ++loom;
                             dag.add(e);
                             break;
                         case 'P':
-                            papyrus += e.multiplier;
+                            ++papyrus;
                             dag.add(e);
                             break;
                         case 'G':
-                            glass += e.multiplier;
+                            ++glass;
                             dag.add(e);
                             break;
                             /*
@@ -411,7 +416,7 @@ namespace SevenWonders
                 //category 4: gives a choice between different things
                 //Add to the DAG
                 // else if (actions[i][0] == '4')
-                else if (act is ResourceChoiceEffect)
+                else if (act is ResourceEffect)
                 {
                     // dag.add(actions[i].Substring(1));
                     // TODO: there's a bug here: RawMaterial structures can be purchased by neighboring cities

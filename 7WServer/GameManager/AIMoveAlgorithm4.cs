@@ -43,10 +43,13 @@ namespace SevenWonders
                 //look for buildable resource cards that give more than one manufactory resources ...
                 foreach (Card card in player.hand)
                 {
-                    if ((card.structureType == StructureType.Commerce && player.isCardBuildable(card) == Buildable.True) && card.effect is ResourceChoiceEffect)
+                    if ((card.structureType == StructureType.Commerce && player.isCardBuildable(card) == Buildable.True) && card.effect is ResourceEffect)
                     {
                         // char resource = player.hand[i].effect[2];        // hunh?
-                        string resource = ((ResourceChoiceEffect)card.effect).strChoiceData;
+                        string resource = ((ResourceEffect)card.effect).resourceTypes;
+
+                        if (resource.Length < 3)
+                            continue;
 
                         if (resource.Contains("C") && player.loom < maxLPG * 2) { c = card; }
                         else if (resource.Contains("P") && player.papyrus < maxLPG * 2) { c = card; }
@@ -62,9 +65,9 @@ namespace SevenWonders
                 //look for buildable resource cards that give more than one resource ...
                 foreach (Card card in player.hand)
                 {
-                    if ((card.structureType == StructureType.RawMaterial && player.isCardBuildable(card) == Buildable.True) && card.effect is ResourceChoiceEffect)
+                    if ((card.structureType == StructureType.RawMaterial && player.isCardBuildable(card) == Buildable.True) && card.effect is ResourceEffect)
                     {
-                        string resource = ((ResourceChoiceEffect)card.effect).strChoiceData;
+                        string resource = ((ResourceEffect)card.effect).resourceTypes;
 
                         if (player.brick < maxOBW && resource.Contains('B') ) { c = card; }
                         else if (player.ore < maxOBW && resource.Contains('O') ) { c = card; }
@@ -80,10 +83,12 @@ namespace SevenWonders
                 //look for buildable resource cards that only give one and the manufactory resources ..
                 foreach (Card card in player.hand)
                 {
-                    if ((card.structureType == StructureType.RawMaterial || card.structureType == StructureType.Goods) && player.isCardBuildable(card) == Buildable.True && card.effect is SimpleEffect)
+                    if ((card.structureType == StructureType.RawMaterial || card.structureType == StructureType.Goods) && player.isCardBuildable(card) == Buildable.True && card.effect is ResourceEffect)
                     {
-                        char resource = ((SimpleEffect)card.effect).type;
-                        int numOfResource = ((SimpleEffect)card.effect).multiplier;
+                        ResourceEffect e = card.effect as ResourceEffect;
+
+                        char resource = e.resourceTypes[0];
+                        int numOfResource = e.resourceTypes.Length == 2 && e.resourceTypes[0] == e.resourceTypes[1] ? 2 : 1;
 
                         if (resource == 'C' && player.loom < maxLPG) { c = card; }
                         else if (resource == 'G' && player.glass < maxLPG) { c = card; }

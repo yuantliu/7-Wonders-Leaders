@@ -468,20 +468,20 @@ namespace SevenWonders
         {
             board = new Dictionary<Board.Wonder, Board>(14)
             {
-                { Board.Wonder.Alexandria_A, new Board(Board.Wonder.Alexandria_B, "Alexandria (A)", new SimpleEffect(1, 'G'), 3) },
-                { Board.Wonder.Alexandria_B, new Board(Board.Wonder.Alexandria_A, "Alexandria (B)", new SimpleEffect(1, 'G'), 3) },
-                { Board.Wonder.Babylon_A, new Board(Board.Wonder.Babylon_B, "Babylon (A)", new SimpleEffect(1, 'B'), 3) },
-                { Board.Wonder.Babylon_B, new Board(Board.Wonder.Babylon_A, "Babylon (B)", new SimpleEffect(1, 'B'), 3) },
-                { Board.Wonder.Ephesos_A, new Board(Board.Wonder.Ephesos_B, "Ephesos (A)", new SimpleEffect(1, 'P'), 3) },
-                { Board.Wonder.Ephesos_B, new Board(Board.Wonder.Ephesos_A, "Ephesos (B)", new SimpleEffect(1, 'P'), 3) },
-                { Board.Wonder.Giza_A, new Board(Board.Wonder.Giza_B, "Giza (A)", new SimpleEffect(1, 'S'), 3) },
-                { Board.Wonder.Giza_B, new Board(Board.Wonder.Giza_A, "Giza (B)", new SimpleEffect(1, 'S'), 4) },
-                { Board.Wonder.Halikarnassos_A, new Board(Board.Wonder.Halikarnassos_B, "Halikarnassos (A)", new SimpleEffect(1, 'C'), 3) },
-                { Board.Wonder.Halikarnassos_B, new Board(Board.Wonder.Halikarnassos_A, "Halikarnassos (B)", new SimpleEffect(1, 'C'), 3) },
-                { Board.Wonder.Olympia_A, new Board(Board.Wonder.Olympia_B, "Olympia (A)", new SimpleEffect(1, 'W'), 3) },
-                { Board.Wonder.Olympia_B, new Board(Board.Wonder.Olympia_A, "Olympia (B)", new SimpleEffect(1, 'W'), 3) },
-                { Board.Wonder.Rhodos_A, new Board(Board.Wonder.Rhodos_B, "Rhodos (A)", new SimpleEffect(1, 'O'), 3) },
-                { Board.Wonder.Rhodos_B, new Board(Board.Wonder.Rhodos_A, "Rhodos (B)", new SimpleEffect(1, 'O'), 2) },
+                { Board.Wonder.Alexandria_A, new Board(Board.Wonder.Alexandria_B, "Alexandria (A)", new ResourceEffect(true, "G"), 3) },
+                { Board.Wonder.Alexandria_B, new Board(Board.Wonder.Alexandria_A, "Alexandria (B)", new ResourceEffect(true, "G"), 3) },
+                { Board.Wonder.Babylon_A, new Board(Board.Wonder.Babylon_B, "Babylon (A)", new ResourceEffect(true, "B"), 3) },
+                { Board.Wonder.Babylon_B, new Board(Board.Wonder.Babylon_A, "Babylon (B)", new ResourceEffect(true, "B"), 3) },
+                { Board.Wonder.Ephesos_A, new Board(Board.Wonder.Ephesos_B, "Ephesos (A)", new ResourceEffect(true, "P"), 3) },
+                { Board.Wonder.Ephesos_B, new Board(Board.Wonder.Ephesos_A, "Ephesos (B)", new ResourceEffect(true, "P"), 3) },
+                { Board.Wonder.Giza_A, new Board(Board.Wonder.Giza_B, "Giza (A)", new ResourceEffect(true, "S"), 3) },
+                { Board.Wonder.Giza_B, new Board(Board.Wonder.Giza_A, "Giza (B)", new ResourceEffect(true, "S"), 4) },
+                { Board.Wonder.Halikarnassos_A, new Board(Board.Wonder.Halikarnassos_B, "Halikarnassos (A)", new ResourceEffect(true, "C"), 3) },
+                { Board.Wonder.Halikarnassos_B, new Board(Board.Wonder.Halikarnassos_A, "Halikarnassos (B)", new ResourceEffect(true, "C"), 3) },
+                { Board.Wonder.Olympia_A, new Board(Board.Wonder.Olympia_B, "Olympia (A)", new ResourceEffect(true, "W"), 3) },
+                { Board.Wonder.Olympia_B, new Board(Board.Wonder.Olympia_A, "Olympia (B)", new ResourceEffect(true, "W"), 3) },
+                { Board.Wonder.Rhodos_A, new Board(Board.Wonder.Rhodos_B, "Rhodos (A)", new ResourceEffect(true, "O"), 3) },
+                { Board.Wonder.Rhodos_B, new Board(Board.Wonder.Rhodos_A, "Rhodos (B)", new ResourceEffect(true, "O"), 2) },
                 /*
                 { Board.Wonder.Roma_A, new Board("Roma (A)", null, 3) },
                 { Board.Wonder.Roma_B, new Board("Roma (B)", null, 3) },
@@ -610,7 +610,7 @@ namespace SevenWonders
                     // JDF.  Not sure this is correct.  Will need to test it.
                     // p.storeAction("1" + c.cost.Length + "$");
                 }
-                p.storeAction(new SimpleEffect(coins, '$'));
+                p.storeAction(new CoinEffect(coins));
             }
 
             /*
@@ -627,14 +627,14 @@ namespace SevenWonders
 
             if (costInCoins != 0)
             {
-                p.storeAction(new CostEffect(costInCoins));
+                p.storeAction(new CoinEffect(-costInCoins));
             }
 
             if (nLeftCoins != 0)
-                p.leftNeighbour.storeAction(new SimpleEffect(nLeftCoins, '$'));
+                p.leftNeighbour.storeAction(new CoinEffect(nLeftCoins));
 
             if (nRightCoins != 0)
-                p.rightNeighbour.storeAction(new SimpleEffect(nRightCoins, '$'));
+                p.rightNeighbour.storeAction(new CoinEffect(nRightCoins));
 
             //determine if the player should get 2 coins for having those leaders (get 2 coins for playing a yellow and playing a pre-req
             giveCoinFromLeadersOnBuild(p, c);
@@ -801,6 +801,8 @@ namespace SevenWonders
             //check if the Card costs money
             int costInCoins = 0;
 
+            throw new NotImplementedException();
+#if FALSE
             for (int i = 0; i < discardPile.Count; i++)
             {
                 //found the card
@@ -826,9 +828,9 @@ namespace SevenWonders
                     break;
                 }
             }
-
+#endif
             //store the reimbursement
-            p.storeAction(new SimpleEffect(costInCoins, '$'));
+            p.storeAction(new CoinEffect(costInCoins));
 
             //Find the card with the id number
             Card c = discardPile.Find(x => x.name == name);
@@ -893,7 +895,7 @@ namespace SevenWonders
         /// <param name="p"></param>
         public void discardCardForThreeCoins(Card c, Player p)
         {
-            p.storeAction(new SimpleEffect(3, '$'));
+            p.storeAction(new CoinEffect(3));
 
             //Find the card with the id number and find its effects
             p.hand.Remove(c);
@@ -1159,7 +1161,7 @@ namespace SevenWonders
 
             //store the reimbursement
             // p.storeAction("1" + costInCoins + "$");
-            p.storeAction(new SimpleEffect(c.cost.coin, '$'));
+            p.storeAction(new CoinEffect(c.cost.coin));
 
             //build the structure
             buildStructureFromHand(structureName, nickname, null, null, null);
@@ -1282,24 +1284,23 @@ namespace SevenWonders
         {
             string strRet = string.Format("&{0}Resources=", who);
 
-            foreach (Effect e in plyr.dag.getSimpleStructures())
+            foreach (Effect e in plyr.dag.getSimpleStructures(isSelf))
             {
-                SimpleEffect se = e as SimpleEffect;
+                ResourceEffect se = e as ResourceEffect;
 
-                strRet += se.type.ToString();
-
-                if (se.multiplier == 2)
-                    strRet += se.type.ToString();
+                strRet += se.resourceTypes;
 
                 strRet += ",";
             }
 
+            /*
             foreach (ResourceChoiceEffect e in plyr.dag.getChoiceStructures(isSelf))
             {
                 ResourceChoiceEffect rce = e as ResourceChoiceEffect;
 
                 strRet += string.Format("{0},", rce.strChoiceData);
             }
+            */
 
             // remove the trailing comma, if necessary
             if (strRet.EndsWith(","))

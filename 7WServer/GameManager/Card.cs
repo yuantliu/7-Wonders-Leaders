@@ -190,28 +190,51 @@ namespace SevenWonders
     {
         public enum Type
         {
-            //Money,              // Gain or lose coins
-            Simple,             // One of a kind, non-science
-            Science,            // science
-            Commerce,           // Marketplace, Trading Posts
-            ResourceChoice,     // Age 1 either-other resource, Forum, Caravansery
-            CoinsPoints,        // Most guilds, All age 3 commerce, Vineyard, Bazar
+            // Cost,            // Spend coins.  Not used in the card list
+            Military,           // All military cards, no others
+            Resource,           // All browns, greys, plus the Forum, Caravansery, Alexendria wonder effects
+            Science,            // All science cards, not including Scientist's Guild or Babylon wonder
+            Commerce,           // Marketplace, Trading Posts, Olympia B stage 1
+            CoinsPoints,        // All civilian, most guilds, all age 3 commerce, Vineyard, Bazar, 
             SpecialAbility,     // Science guild, Shipowner's guild, some Wonder board stages with unique effects
         };
     };
 
     // formerly category 0 or '$'
-    // Used when losing money
-    public class CostEffect : Effect
+    // Used when gaining (coins parameter is > 0 or losing (coins parameter is < 0) money
+    public class CoinEffect : Effect
     {
         public int coins;
 
-        public CostEffect(int coins)
+        public CoinEffect(int coins)
         {
             this.coins = coins;
         }
     }
 
+    public class MilitaryEffect : Effect
+    {
+        public int nShields { get; }
+
+        public MilitaryEffect(int nShields)
+        {
+            this.nShields = nShields;
+        }
+    }
+
+    public class ResourceEffect : Effect
+    {
+        public bool canBeUsedByNeighbors;
+        public string resourceTypes { get; }
+
+        public ResourceEffect(bool canBeUsedByNeighbors, string resourceTypes)
+        {
+            this.canBeUsedByNeighbors = canBeUsedByNeighbors;
+            this.resourceTypes = resourceTypes;
+        }
+    }
+
+    /*
     // formerly category 1
     public class SimpleEffect : Effect
     {
@@ -224,6 +247,7 @@ namespace SevenWonders
             this.type = type;
         }
     };
+    */
 
     // formerly category 2
     public class ScienceEffect : Effect
@@ -235,11 +259,24 @@ namespace SevenWonders
             Tablet,
         };
 
-        public Symbol symbol;
+        public Symbol symbol {
+            get
+            {
+                switch (chSymbol)
+                {
+                    case 'C': return Symbol.Compass;
+                    case 'G': return Symbol.Gear;
+                    case 'T': return Symbol.Tablet;
+                    default: throw new Exception();
+                }
+            }
+        }
 
-        public ScienceEffect(Symbol s)
+        char chSymbol;
+
+        public ScienceEffect(string symbol)
         {
-            this.symbol = s;
+            this.chSymbol = symbol[0];
         }
     };
 
@@ -259,16 +296,42 @@ namespace SevenWonders
             Goods,
         };
 
-        public AppliesTo appliesTo;
-        public Affects affects;
+        public AppliesTo appliesTo {
+            get
+            {
+                switch (effectString[0])
+                {
+                    case 'L': return CommercialDiscountEffect.AppliesTo.LeftNeighbor;
+                    case 'R': return CommercialDiscountEffect.AppliesTo.RightNeighbor;
+                    case 'B': return CommercialDiscountEffect.AppliesTo.BothNeighbors;
+                    default: throw new Exception();
+                }
+            }
+        }
 
-        public CommercialDiscountEffect(AppliesTo who, Affects productionType)
+        public Affects affects
         {
-            this.appliesTo = who;
-            this.affects = productionType;
+            get
+            {
+                switch (effectString[1])
+                {
+                    case 'R': return CommercialDiscountEffect.Affects.RawMaterial;
+                    case 'G': return CommercialDiscountEffect.Affects.Goods;
+                    default: throw new Exception();
+                }
+
+            }
+        }
+
+        public string effectString { get; }
+
+        public CommercialDiscountEffect(string effectString)
+        {
+            this.effectString = effectString;
         }
     };
 
+    /*
     // formerly category 4
     public class ResourceChoiceEffect : Effect
     {
@@ -282,6 +345,7 @@ namespace SevenWonders
             this.strChoiceData = s;
         }
     };
+    */
 
     // formerly category 5
     public class CoinsAndPointsEffect : Effect
@@ -361,7 +425,7 @@ namespace SevenWonders
             else
             {
                 age = 0;
-                wonderStage = int.Parse(createParams[31]);
+                wonderStage = int.Parse(createParams[30]);
             }
 
             structureType = (StructureType)Enum.Parse(typeof(StructureType), createParams[2]);
@@ -392,78 +456,45 @@ namespace SevenWonders
 
             switch (effectType)
             {
-                case Effect.Type.Simple:
-                    effect = new SimpleEffect(int. Parse(createParams[21]), createParams[22][0]);
+                case Effect.Type.Military:
+                    effect = new MilitaryEffect(int.Parse(createParams[21]));
+                    break;
+
+                case Effect.Type.Resource:
+                    effect = new ResourceEffect(structureType == StructureType.RawMaterial || structureType == StructureType.Goods,
+                        createParams[22]);
                     break;
 
                 case Effect.Type.Science:
-                    switch (createParams[23])
-                    {
-                        case "C": effect = new ScienceEffect(ScienceEffect.Symbol.Compass); break;
-                        case "G": effect = new ScienceEffect(ScienceEffect.Symbol.Gear); break;
-                        case "T": effect = new ScienceEffect(ScienceEffect.Symbol.Tablet); break;
-                    }
+                    effect = new ScienceEffect(createParams[23]);
                     break;
 
                 case Effect.Type.Commerce:
-                    CommercialDiscountEffect.AppliesTo appliesTo = CommercialDiscountEffect.AppliesTo.BothNeighbors;
-                    CommercialDiscountEffect.Affects affects = CommercialDiscountEffect.Affects.RawMaterial;
-
-                    switch (createParams[24][0])
-                    {
-                        case 'L':
-                            appliesTo = CommercialDiscountEffect.AppliesTo.LeftNeighbor;
-                            break;
-
-                        case 'R':
-                            appliesTo = CommercialDiscountEffect.AppliesTo.RightNeighbor;
-                            break;
-
-                        case 'B':
-                            // appliesTo = CommercialDiscountEffect.AppliesTo.BothNeighbors; (defaulted value)
-                            break;
-
-                        default:
-                            throw new Exception();
-                    }
-
-                    switch (createParams[24][1])
-                    {
-                        case 'R':
-                            // affects = CommercialDiscountEffect.Affects.RawMaterial; (defaulted value)
-                            break;
-
-                        case 'G':
-                            affects = CommercialDiscountEffect.Affects.Goods;
-                            break;
-
-                        default:
-                            throw new Exception();
-                    }
-
-                    effect = new CommercialDiscountEffect(appliesTo, affects);
+                    effect = new CommercialDiscountEffect(createParams[24]);
                     break;
 
+                    /*
                 case Effect.Type.ResourceChoice:
                     // player can choose one of the RawMaterials or Goods provided.  Raw Materials or
                     // Goods can be bought by neighbors.  Yellow cards and wonder stages cannot be
                     // used by neighboring cities.
                     effect = new ResourceChoiceEffect(structureType == StructureType.RawMaterial || structureType == StructureType.Goods, createParams[25]);
                     break;
+                    */
 
                 case Effect.Type.CoinsPoints:
                     CoinsAndPointsEffect.CardsConsidered cardsConsidered = (CoinsAndPointsEffect.CardsConsidered)
-                        Enum.Parse(typeof(CoinsAndPointsEffect.CardsConsidered), createParams[26]);
+                        Enum.Parse(typeof(CoinsAndPointsEffect.CardsConsidered), createParams[25]);
 
                     StructureType classConsidered =
-                        (StructureType)Enum.Parse(typeof(StructureType), createParams[27]);
+                        (StructureType)Enum.Parse(typeof(StructureType), createParams[26]);
 
                     effect = new CoinsAndPointsEffect(cardsConsidered, classConsidered,
-                        int.Parse(createParams[28]), int.Parse(createParams[29]));
+                        int.Parse(createParams[27]), int.Parse(createParams[28]));
                     break;
 
                 case Effect.Type.SpecialAbility:
-                    effect = new SpecialAbilityEffect(createParams[30]);
+                    effect = new SpecialAbilityEffect(createParams[29]);
                     break;
             }
         }

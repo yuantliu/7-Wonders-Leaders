@@ -19,10 +19,10 @@ namespace SevenWonders
         // or all 4 raw materials (Forum/Caravansery/Alexandria stages as they are the most flexible).  After those are
         // considered, we look at Bilkis and other leaders who provide a -1 discount on certain structure classes.
         // Also the Secret Warehouse and Black Market are in there somewhere.
-        List<SimpleEffect> simpleResources = new List<SimpleEffect>();
+        List<ResourceEffect> simpleResources = new List<ResourceEffect>();
 
         // choice cards.  Used after simpleResources are exhausted.
-        List<ResourceChoiceEffect> effectChoices = new List<ResourceChoiceEffect>();
+        // List<ResourceChoiceEffect> effectChoices = new List<ResourceChoiceEffect>();
 
         public bool hasTemp = false;
 
@@ -75,13 +75,14 @@ namespace SevenWonders
             else
             */
             {
-                if (s is SimpleEffect)
+                if (s is ResourceEffect)
                 {
-                    simpleResources.Add((SimpleEffect)s);
+                    simpleResources.Add((ResourceEffect)s);
                 }
-                else if (s is ResourceChoiceEffect)
+                else
                 {
-                    effectChoices.Add((ResourceChoiceEffect)s);
+                    throw new Exception();
+                    // effectChoices.Add((ResourceChoiceEffect)s);
                 }
             }
         }
@@ -122,21 +123,31 @@ namespace SevenWonders
         }
         */
 
-        public List<SimpleEffect> getSimpleStructures()
+        public List<ResourceEffect> getSimpleStructures(bool isSelf)
         {
-            return simpleResources;
+            if (isSelf)
+            {
+                return simpleResources;
+            }
+            else
+            {
+                // remove resources that cannot be used by neighbors.
+                return simpleResources.Where(x => x.canBeUsedByNeighbors == true).ToList();
+            }
         }
 
+        /*
         public List<ResourceChoiceEffect> getChoiceStructures(bool isSelf)
         {
             // if isSelf is true, all the resource structures are included in the returned list.
             // If it is false, only the RawMaterial or Goods structures are returned.
             return isSelf ? effectChoices : effectChoices.Where(x => x.canBeUsedByNeighbors).ToList();
         }
+        */
 
-        public void setSimpleStructureList(List<SimpleEffect> graph) { this.simpleResources = graph; }
+        public void setSimpleStructureList(List<ResourceEffect> graph) { this.simpleResources = graph; }
 
-        public void setChoiceStructureList(List<ResourceChoiceEffect> graph) { this.effectChoices = graph; }
+        // public void setChoiceStructureList(List<ResourceChoiceEffect> graph) { this.effectChoices = graph; }
 
         /**
 	     * Remove all letters that appear in B FROM A, then return the newly trimmed A
@@ -228,18 +239,19 @@ namespace SevenWonders
          */
         public static bool canAfford(DAG graph, Cost cost)
         {
-            foreach (SimpleEffect e in graph.simpleResources)
+            foreach (ResourceEffect e in graph.simpleResources)
             {
-                if (eliminate(cost, true, e.multiplier, e.type.ToString()).IsZero())
+                if (eliminate(cost, true, 1, e.resourceTypes).IsZero())
                     return true;
             }
 
+            /*
             foreach (ResourceChoiceEffect e in graph.effectChoices)
             {
                 if (eliminate(cost, true, 1, e.strChoiceData).IsZero())
                     return true;
             }
-            /*
+
             List<string> generated = graph.generateStrings();
 
             for(int i = 0; i < generated.Count; i++)
@@ -289,8 +301,8 @@ namespace SevenWonders
         public static DAG addThreeDAGs(DAG A, DAG B, DAG C)
         {
             DAG megaDAG = new DAG();
-            megaDAG.setSimpleStructureList(A.getSimpleStructures().Concat(B.getSimpleStructures().Concat(C.getSimpleStructures())).ToList());
-            megaDAG.setChoiceStructureList(A.getChoiceStructures(false).Concat(B.getChoiceStructures(true).Concat(C.getChoiceStructures(false))).ToList());
+            megaDAG.setSimpleStructureList(A.getSimpleStructures(false).Concat(B.getSimpleStructures(true).Concat(C.getSimpleStructures(false))).ToList());
+//            megaDAG.setChoiceStructureList(A.getChoiceStructures(false).Concat(B.getChoiceStructures(true).Concat(C.getChoiceStructures(false))).ToList());
             // megaDAG.setGraph(A.getGraph().Concat(B.getGraph()).Concat(C.getGraph()).ToList());
             return megaDAG;
         }
