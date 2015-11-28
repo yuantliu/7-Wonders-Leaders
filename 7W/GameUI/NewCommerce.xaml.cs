@@ -150,6 +150,7 @@ namespace SevenWonders
 
                 for (int i = 0; i < commercialCardList.Length; ++i)
                 {
+                    /*
                     CommercialDiscountEffect cde = cardList.Find(x => x.name == commercialCardList[i]).effect as CommercialDiscountEffect;
 
                     if (cde.appliesTo == CommercialDiscountEffect.AppliesTo.LeftNeighbor || cde.appliesTo == CommercialDiscountEffect.AppliesTo.BothNeighbors)
@@ -163,6 +164,7 @@ namespace SevenWonders
                         rightRawMarket = cde.affects == CommercialDiscountEffect.Affects.RawMaterial;
                         rightManuMarket = cde.affects == CommercialDiscountEffect.Affects.Goods;
                     }
+                    */
                 }
             }
 
@@ -323,7 +325,7 @@ namespace SevenWonders
                 for (int j = 0; j < dagGraphSimple[i].resourceTypes.Length; j++)
                 {
                     b[i, j] = new Button();
-                    b[i, j].Content = dagGraphSimple[i - dagGraphSimple.Count];
+                    b[i, j].Content = dagGraphSimple[i];
                     b[i, j].FontSize = 1;
 
                     //set the Button's image to correspond with the resource

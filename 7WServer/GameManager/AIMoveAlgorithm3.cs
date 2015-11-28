@@ -17,6 +17,16 @@ namespace SevenWonders
             //if not, Discard Red Cards
             //otherwise, discard first card
 
+            string strOutput = string.Format("{0} hand: [ ", player.nickname);
+
+            foreach (Card card in player.hand)
+            {
+                strOutput += card.name;
+                strOutput += " ";
+            }
+
+            strOutput += "]";
+
             //look for buildable Red cards
             Card c = player.hand.Find(x => x.structureType == StructureType.Military && player.isCardBuildable(x) == Buildable.True);
 
@@ -78,7 +88,7 @@ namespace SevenWonders
 
             if (c != null)
             {
-                Console.WriteLine(player.nickname + " Action: Constuct {0}", c.name);
+                Console.WriteLine(player.nickname + " Action: Construct {0}", c.name);
                 gm.buildStructureFromHand(c, player, false);
             }
             else

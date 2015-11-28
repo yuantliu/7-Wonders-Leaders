@@ -283,19 +283,21 @@ namespace SevenWonders
     // formerly category 3
     public class CommercialDiscountEffect : Effect
     {
-        public enum AppliesTo
+        public enum RawMaterials
         {
+            None,
             LeftNeighbor,
             RightNeighbor,
             BothNeighbors,
         };
 
-        public enum Affects
+        public enum Goods
         {
-            RawMaterial,
-            Goods,
+            None,
+            BothNeighbors,
         };
 
+        /*
         public AppliesTo appliesTo {
             get
             {
@@ -322,6 +324,7 @@ namespace SevenWonders
 
             }
         }
+        */
 
         public string effectString { get; }
 

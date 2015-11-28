@@ -94,16 +94,19 @@ namespace SevenWonders
         public Boolean changeNickName {get; set; }
         public String newNickName {get; set; }
 
+        public CommercialDiscountEffect.RawMaterials rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.None;
+        public CommercialDiscountEffect.Goods goodsDiscount = CommercialDiscountEffect.Goods.None;
+
         //market effect
-        public bool leftRaw = false, rightRaw = false, leftManu = false, rightManu = false;
+        //public bool leftRaw = false, rightRaw = false, leftManu = false, rightManu = false;
 
-        public bool GetLeftRaw() { return leftRaw; }
+        //public bool GetLeftRaw() { return leftRaw; }
 
-        public bool GetLeftManu() { return leftManu; }
+        //public bool GetLeftManu() { return leftManu; }
 
-        public bool GetRightRaw() { return rightRaw; }
+        //public bool GetRightRaw() { return rightRaw; }
 
-        public bool GetRightManu() { return rightManu; }
+        //public bool GetRightManu() { return rightManu; }
 
         //Leaders pile. The pile that holds the unplayed leaders cards
         public List<Card> leadersPile = new List<Card>();
@@ -305,27 +308,25 @@ namespace SevenWonders
                     // int num = int.Parse(act[0] + "");
                    //  int num = e.multiplier;
 
+                    // These values are needed by the AI, I believe.  How is this supposed to
+                    // work when there's a choice of 2, 3, or 4 resources?
                     switch (e.resourceTypes[0])
                     {
                         case 'O':
                             ++ore;
                             if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'O') ++ore;
-                            dag.add(e);
                             break;
                         case 'B':
                             ++brick;
                             if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'B') ++brick;
-                            dag.add(e);
                             break;
                         case 'S':
                             ++stone;
                             if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'S') ++stone;
-                            dag.add(e);
                             break;
                         case 'W':
                             ++wood;
                             if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'W') ++wood;
-                            dag.add(e);
                             break;
                         case '$':
                             throw new Exception();
@@ -334,15 +335,12 @@ namespace SevenWonders
                             break;
                         case 'C':
                             ++loom;
-                            dag.add(e);
                             break;
                         case 'P':
                             ++papyrus;
-                            dag.add(e);
                             break;
                         case 'G':
                             ++glass;
-                            dag.add(e);
                             break;
                             /*
                         case 'd':
@@ -352,6 +350,8 @@ namespace SevenWonders
                         default:
                             throw new Exception();
                     }
+
+                    dag.add(e);
                 }
                 //category 2: add one science
                 // else if (actions[i][0] == '2')
@@ -376,6 +376,40 @@ namespace SevenWonders
                 // else if (actions[i][0] == '3')
                 else if (act is CommercialDiscountEffect)
                 {
+                    CommercialDiscountEffect cde = act as CommercialDiscountEffect;
+
+                    // Set discount effects for future transactions.
+                    switch (cde.effectString[1])
+                    {
+                        case 'R':
+                            switch(cde.effectString[0])
+                            {
+                                case 'L':
+                                    if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.None)
+                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.LeftNeighbor;
+                                    else if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.RightNeighbor)
+                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
+                                    break;
+
+                                case 'R':
+                                    if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.None)
+                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.RightNeighbor;
+                                    else if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.LeftNeighbor)
+                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
+                                    break;
+
+                                case 'B':
+                                    rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
+                                    break;
+                            }
+                            break;
+
+                        case 'G':
+                            if (cde.effectString[0] == 'B')
+                                goodsDiscount = CommercialDiscountEffect.Goods.BothNeighbors;
+                            break;
+                    }
+                    /*
                     //set the market effects
                     CommercialDiscountEffect e = act as CommercialDiscountEffect;
                     if (e.affects == CommercialDiscountEffect.Affects.RawMaterial)
@@ -412,10 +446,12 @@ namespace SevenWonders
                                 break;
                         }
                     }
+                    */
                 }
                 //category 4: gives a choice between different things
                 //Add to the DAG
                 // else if (actions[i][0] == '4')
+                /*
                 else if (act is ResourceEffect)
                 {
                     // dag.add(actions[i].Substring(1));
@@ -423,6 +459,7 @@ namespace SevenWonders
                     // but Commercial structures (Forum & Caravansery) cannot.  DAG must account for this difference
                     dag.add(act);
                 }
+                */
                 //category 5: gives some $ and and/or some victory depending on some conditions
                 //these cards are usually yellow
                 // else if (actions[i][0] == '5')
@@ -960,6 +997,7 @@ namespace SevenWonders
             return score;
         }
 
+#if FALSE
         public int doHaveEnoughCoinsToCommerce(String c)
         {
             //retrieve the cost
@@ -1047,6 +1085,8 @@ namespace SevenWonders
 
             return totalCost;
         }
+
+#endif
 
         /// <summary>
         /// AI Player makes a move

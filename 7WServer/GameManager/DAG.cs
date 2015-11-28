@@ -63,7 +63,7 @@ namespace SevenWonders
         */
 
         //Add an OR resource
-        public void add(Effect s)
+        public void add(ResourceEffect s)
         {
             /*
             char[] newInput = s.ToCharArray();
@@ -73,18 +73,52 @@ namespace SevenWonders
                 graph.Insert(0, newInput);
             }
             else
-            */
             {
-                if (s is ResourceEffect)
+            */
+       
+            // resource effect list is ordered.  First are resources which provide a single resource.
+            // Then double resource structures, then either/or with a choice of two, and lastly one of
+            // 3, 4 or 7.
+            int nResources = s.resourceTypes.Length;
+
+            int insertionIndex = -1;
+
+            if (simpleResources.Count != 0)
+            {
+                if (nResources == 2)
                 {
-                    simpleResources.Add((ResourceEffect)s);
+                    // if the card has 2 resources, check whether it's an either/or or a double.
+                    // put double resources ahead of either/or ones.
+                    if (s.resourceTypes[0] == s.resourceTypes[1])
+                    {
+                        insertionIndex = simpleResources.FindLastIndex(x => x.resourceTypes.Length == 2 && x.resourceTypes[0] == x.resourceTypes[1]);
+                    }
+                    else
+                    {
+                        insertionIndex = simpleResources.FindLastIndex(x => x.resourceTypes.Length == nResources);
+                    }
                 }
                 else
                 {
-                    throw new Exception();
-                    // effectChoices.Add((ResourceChoiceEffect)s);
+                    // resource has 1, 3, 4, or 7 possibilities.
+                    insertionIndex = simpleResources.FindLastIndex(x => x.resourceTypes.Length == nResources);
+                }
+
+                while (insertionIndex == -1)
+                {
+                    if (nResources == 0)
+                        throw new Exception();  // what happened here?
+                    // no entries found with this number of resources.  Add the card after the last level 
+                    // where there are some found.
+
+                    --nResources;
+
+                    insertionIndex = simpleResources.FindLastIndex(x => x.resourceTypes.Length == nResources);
                 }
             }
+
+            simpleResources.Insert(insertionIndex+1, s);
+//            }
         }
 
         /*
