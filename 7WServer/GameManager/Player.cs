@@ -479,21 +479,29 @@ namespace SevenWonders
                             coin += e.coinsGrantedAtTimeOfPlayMultiplier * leftNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
                             coin += e.coinsGrantedAtTimeOfPlayMultiplier * rightNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
 
+                            /*
+                            // Removed as wonder stages are included in each players' played structures
+                            // Not sure why this extra check is here, but I'm leaving it in for now
+                            // until I'm confident that there's not some other reason why this case requires
+                            // special treatment.
                             if (e.classConsidered == StructureType.WonderStage)
                             {
                                 coin += leftNeighbour.currentStageOfWonder * e.coinsGrantedAtTimeOfPlayMultiplier;
                                 coin += rightNeighbour.currentStageOfWonder * e.coinsGrantedAtTimeOfPlayMultiplier;
                             }
+                            */
                         }
 
                         if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors || e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
                         {
                             coin += e.coinsGrantedAtTimeOfPlayMultiplier * playedStructure.Where(x => x.structureType == e.classConsidered).Count();
 
+                            /*
                             if (e.classConsidered == StructureType.WonderStage)
                             {
                                 coin += currentStageOfWonder * e.coinsGrantedAtTimeOfPlayMultiplier;
                             }
+                            */
                         }
                     }
 
@@ -600,6 +608,49 @@ namespace SevenWonders
         /// </summary>
         public void executeEndOfGameActions()
         {
+            Console.WriteLine("End of game summary for player {0}", nickname);
+            Console.WriteLine("  Coins at the end of the game: {0} ({1} VP)", coin, coin/3);
+            Console.WriteLine("  Military victories for 1st age: {0}", conflictTokenOne);
+            Console.WriteLine("  Military victories for 2nd age: {0}", conflictTokenTwo);
+            Console.WriteLine("  Military victories for 3rd age: {0}", conflictTokenThree);
+            Console.WriteLine("  Military victories for age 1: {0}", conflictTokenOne);
+            Console.WriteLine("  Military losses: {0}", lossToken);
+            Console.WriteLine("  Military points: {0}", conflictTokenOne + conflictTokenTwo * 3 + conflictTokenThree * 5 - lossToken);
+
+            int totalCivilian = 0;
+            Console.WriteLine("  Civilian structures constructed:");
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Civilian).ToList())
+            {
+                int thisStructurePoints = ((CoinsAndPointsEffect)c.effect).victoryPointsAtEndOfGameMultiplier;
+                Console.WriteLine("    {0} ({1} VP)", c.name, thisStructurePoints);
+                totalCivilian += thisStructurePoints;
+            }
+            Console.WriteLine("  Total Civilian points: {0}", totalCivilian);
+
+            Console.WriteLine("  Commercial structures constructed:");
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Commerce).ToList())
+            {
+                Console.WriteLine("    {0}", c.name);
+            }
+
+            Console.WriteLine("  Scientific structures constructed:");
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Science).ToList())
+            {
+                Console.WriteLine("    {0} ({1})", c.name, ((ScienceEffect)c.effect).symbol);
+            }
+
+            Console.WriteLine("  Wonder stages constructed:");
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage).ToList())
+            {
+                Console.WriteLine("    {0}", c.name);
+            }
+
+            Console.WriteLine("  Guilds constructed:");
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Guild).ToList())
+            {
+                Console.WriteLine("    {0}", c.name);
+            }
+
             foreach (Effect act in endOfGameActions)
             {
                 if (act is CoinsAndPointsEffect)
@@ -624,11 +675,13 @@ namespace SevenWonders
                             victoryPoint += (rightNeighbour.conflictTokenOne + rightNeighbour.conflictTokenTwo + rightNeighbour.conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
                         }
 
+                        /*
                         if (e.classConsidered == StructureType.WonderStage)
                         {
                             victoryPoint += leftNeighbour.currentStageOfWonder* e.victoryPointsAtEndOfGameMultiplier;
                             victoryPoint += rightNeighbour.currentStageOfWonder * e.victoryPointsAtEndOfGameMultiplier;
                         }
+                        */
                     }
 
                     if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors || e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
@@ -645,10 +698,18 @@ namespace SevenWonders
                             victoryPoint += (conflictTokenOne + conflictTokenTwo + conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
                         }
 
+                        /*
                         if (e.classConsidered == StructureType.WonderStage)
                         {
                             victoryPoint += currentStageOfWonder * e.victoryPointsAtEndOfGameMultiplier;
                         }
+                        */
+                    }
+
+                    if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.None)
+                    {
+                        // Civilian structures and wonder stages constructed fall into this category.
+                        victoryPoint += e.victoryPointsAtEndOfGameMultiplier;
                     }
                 }
                 //category 6: special guild cards and leader cards
