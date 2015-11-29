@@ -41,6 +41,17 @@ AI players
 
 Technical stories:
 
+- The SimpleEffect vs. ResourceChoiceEffect is causing a lot of trouble.  Wouldn't it be easier to remove the ResourceChoiceEffect?
+  ResourceChoiceEffect becomes ResourceEffect.  All these have a string of 1,2,3, or 4 resources.  In all cases except for the one
+    where there are two identical resources you can pick one or the other.  When there are two of the same, both can be used.
+    SimpleEffect currently has 3 different classes of cards: single browns, greys, military, and civilian.
+	Civilian becomes coins and points effect where the multiplier is constant VPs and the gold is 0.
+	Military becomes Military Effect (n sheilds)
+	Browns and Greys become ResourceEffect
+	get rid of
+  - Maybe I would make the trading posts & marketplace a SpecialAbilityEffect with type none.  These cards affect commerce
+  - suggested new list of effects:
+    Military
 - The list of players (the datagrid) isn't hooked up at the match-making.
 
 - Need to check all the wonders' special abilities.  Alexandria A's is working properly.

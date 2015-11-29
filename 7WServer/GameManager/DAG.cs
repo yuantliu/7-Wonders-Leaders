@@ -5,11 +5,8 @@ using System.Text;
 
 namespace SevenWonders
 {
-    [Serializable]
     public class DAG
     {
-        // private List<char[]> graph = new List<char[]>();
-
         // this list needs to be sorted in a particular order.  Simplest types at the top so those cards are used up first
         // when calculating whether a structure is affordable.  Those are RawMaterials which do not offer a choice
         // Goods and single-choice Resources come first.  Next come double RawMaterial cards.  They don't offer a
@@ -19,10 +16,7 @@ namespace SevenWonders
         // or all 4 raw materials (Forum/Caravansery/Alexandria stages as they are the most flexible).  After those are
         // considered, we look at Bilkis and other leaders who provide a -1 discount on certain structure classes.
         // Also the Secret Warehouse and Black Market are in there somewhere.
-        List<SimpleEffect> simpleResources = new List<SimpleEffect>();
-
-        // choice cards.  Used after simpleResources are exhausted.
-        List<ResourceChoiceEffect> effectChoices = new List<ResourceChoiceEffect>();
+        List<ResourceEffect> resources = new List<ResourceEffect>();
 
         public bool hasTemp = false;
 
@@ -63,7 +57,7 @@ namespace SevenWonders
         */
 
         //Add an OR resource
-        public void add(Effect s)
+        public void add(ResourceEffect s)
         {
             /*
             char[] newInput = s.ToCharArray();
@@ -73,17 +67,51 @@ namespace SevenWonders
                 graph.Insert(0, newInput);
             }
             else
-            */
             {
-                if (s is SimpleEffect)
+            */
+       
+            // resource effect list is ordered.  First are resources which provide a single resource.
+            // Then double resource structures, then either/or with a choice of two, and lastly one of
+            // 3, 4 or 7.
+            int nResources = s.resourceTypes.Length;
+
+            int insertionIndex = -1;
+
+            if (resources.Count != 0)
+            {
+                if (nResources == 2)
                 {
-                    simpleResources.Add((SimpleEffect)s);
+                    // if the card has 2 resources, check whether it's an either/or or a double.
+                    // put double resources ahead of either/or ones.
+                    if (s.resourceTypes[0] == s.resourceTypes[1])
+                    {
+                        insertionIndex = resources.FindLastIndex(x => x.resourceTypes.Length == 2 && x.resourceTypes[0] == x.resourceTypes[1]);
+                    }
+                    else
+                    {
+                        insertionIndex = resources.FindLastIndex(x => x.resourceTypes.Length == nResources);
+                    }
                 }
-                else if (s is ResourceChoiceEffect)
+                else
                 {
-                    effectChoices.Add((ResourceChoiceEffect)s);
+                    // resource has 1, 3, 4, or 7 possibilities.
+                    insertionIndex = resources.FindLastIndex(x => x.resourceTypes.Length == nResources);
+                }
+
+                while (insertionIndex == -1)
+                {
+                    if (nResources == 0)
+                        throw new Exception();  // what happened here?
+                    // no entries found with this number of resources.  Add the card after the last level 
+                    // where there are some found.
+
+                    --nResources;
+
+                    insertionIndex = resources.FindLastIndex(x => x.resourceTypes.Length == nResources);
                 }
             }
+
+            resources.Insert(insertionIndex+1, s);
         }
 
         /*
@@ -122,23 +150,20 @@ namespace SevenWonders
         }
         */
 
-        public List<SimpleEffect> getSimpleStructures()
+        public List<ResourceEffect> getResourceList(bool isSelf)
         {
-            return simpleResources;
+            if (isSelf)
+            {
+                return resources;
+            }
+            else
+            {
+                // remove resources that cannot be used by neighbors.
+                return resources.Where(x => x.canBeUsedByNeighbors == true).ToList();
+            }
         }
 
-        public List<ResourceChoiceEffect> getChoiceStructures(bool isSelf)
-        {
-            // if isSelf is true, all the resource structures are included in the returned list.
-            // If it is false, only the RawMaterial or Goods structures are returned.
-            return isSelf ? effectChoices : effectChoices.Where(x => x.canBeUsedByNeighbors).ToList();
-        }
-
-        public void setSimpleStructureList(List<SimpleEffect> graph) { this.simpleResources = graph; }
-
-        public void setChoiceStructureList(List<ResourceChoiceEffect> graph) { this.effectChoices = graph; }
-
-        /**
+       /**
 	     * Remove all letters that appear in B FROM A, then return the newly trimmed A
          * The interpretation of this, with respect to this program, is that given a Cost A, and available resources B
          * the return value represents unpaid Costs after using the B resources
@@ -147,7 +172,7 @@ namespace SevenWonders
 	     * @param A = COST
 	     * @param B = RESOURCES
 	     */
-        public static Cost eliminate(Cost structureCost, bool stopAfterAMatchIsFound, int multiplier, string resourceString)
+        public static Cost eliminate(Cost structureCost, bool stopAfterAMatchIsFound, string resourceString)
         {
             // interesting.  structs do not need to be instantiated.  Classes do.  But structs
             // can only be PoD types, they cannot contain functions.
@@ -161,7 +186,7 @@ namespace SevenWonders
                     case 'W':
                         if (c.wood != 0)
                         {
-                            c.wood = Math.Max(c.wood - multiplier, 0);
+                            --c.wood;
                             if (stopAfterAMatchIsFound) return c;
                         }
                         break;
@@ -169,7 +194,7 @@ namespace SevenWonders
                     case 'S':
                         if (c.stone != 0)
                         {
-                            c.stone = Math.Max(c.stone - multiplier, 0);
+                            --c.stone;
                             if (stopAfterAMatchIsFound) return c;
                         }
                         break;
@@ -177,7 +202,7 @@ namespace SevenWonders
                     case 'B':
                         if (c.clay != 0)
                         {
-                            c.clay = Math.Max(c.clay - multiplier, 0);
+                            --c.clay;
                             if (stopAfterAMatchIsFound) return c;
                         }
                         break;
@@ -185,7 +210,7 @@ namespace SevenWonders
                     case 'O':
                         if (c.ore != 0)
                         {
-                            c.ore = Math.Max(c.ore - multiplier, 0);
+                            --c.ore;
                             if (stopAfterAMatchIsFound) return c;
                         }
                         break;
@@ -193,7 +218,7 @@ namespace SevenWonders
                     case 'C':
                         if (c.cloth != 0)
                         {
-                            c.cloth = Math.Max(c.cloth - multiplier, 0);
+                            --c.cloth;
                             if (stopAfterAMatchIsFound) return c;
                         }
                         break;
@@ -201,7 +226,7 @@ namespace SevenWonders
                     case 'G':
                         if (c.glass != 0)
                         {
-                            c.glass = Math.Max(c.glass - multiplier, 0);
+                            --c.glass;
                             if (stopAfterAMatchIsFound) return c;
                         }
                         break;
@@ -209,7 +234,7 @@ namespace SevenWonders
                     case 'P':
                         if (c.papyrus != 0)
                         {
-                            c.papyrus = Math.Max(c.papyrus - multiplier, 0);
+                            --c.papyrus;
                             if (stopAfterAMatchIsFound) return c;
                         }
                         break;
@@ -228,28 +253,11 @@ namespace SevenWonders
          */
         public static bool canAfford(DAG graph, Cost cost)
         {
-            foreach (SimpleEffect e in graph.simpleResources)
+            foreach (ResourceEffect e in graph.resources)
             {
-                if (eliminate(cost, true, e.multiplier, e.type.ToString()).IsZero())
+                if (eliminate(cost, true, e.resourceTypes).IsZero())
                     return true;
             }
-
-            foreach (ResourceChoiceEffect e in graph.effectChoices)
-            {
-                if (eliminate(cost, true, 1, e.strChoiceData).IsZero())
-                    return true;
-            }
-            /*
-            List<string> generated = graph.generateStrings();
-
-            for(int i = 0; i < generated.Count; i++)
-            {
-                if(eliminate(cost, generated[i]).IsZero())
-                {
-                    return true;
-                }
-            }
-            */
 
             return false;
         }
@@ -288,11 +296,63 @@ namespace SevenWonders
         /// <returns>A Mega DAG that consists of A, B, C combined</returns>
         public static DAG addThreeDAGs(DAG A, DAG B, DAG C)
         {
-            DAG megaDAG = new DAG();
-            megaDAG.setSimpleStructureList(A.getSimpleStructures().Concat(B.getSimpleStructures().Concat(C.getSimpleStructures())).ToList());
-            megaDAG.setChoiceStructureList(A.getChoiceStructures(false).Concat(B.getChoiceStructures(true).Concat(C.getChoiceStructures(false))).ToList());
-            // megaDAG.setGraph(A.getGraph().Concat(B.getGraph()).Concat(C.getGraph()).ToList());
-            return megaDAG;
+            DAG returnedList = new DAG();
+
+            List<ResourceEffect> rA = A.getResourceList(false);
+            List<ResourceEffect> rB = B.getResourceList(true);
+            List<ResourceEffect> rC = C.getResourceList(false);
+
+            foreach (ResourceEffect e in rA.Where(x => x.resourceTypes.Length == 1))
+            {
+                returnedList.add(e);
+            }
+
+            foreach (ResourceEffect e in rB.Where(x => x.resourceTypes.Length == 1))
+            {
+                returnedList.add(e);
+            }
+
+            foreach (ResourceEffect e in rC.Where(x => x.resourceTypes.Length == 1))
+            {
+                returnedList.add(e);
+            }
+
+            foreach (ResourceEffect e in rA.Where(x => (x.resourceTypes.Length == 2) && (x.resourceTypes[0] == x.resourceTypes[1])))
+            {
+                returnedList.add(e);
+            }
+
+            foreach (ResourceEffect e in rB.Where(x => (x.resourceTypes.Length == 2) && (x.resourceTypes[0] == x.resourceTypes[1])))
+            {
+                returnedList.add(e);
+            }
+
+            foreach (ResourceEffect e in rC.Where(x => (x.resourceTypes.Length == 2) && (x.resourceTypes[0] == x.resourceTypes[1])))
+            {
+                returnedList.add(e);
+            }
+
+            foreach (ResourceEffect e in rA.Where(x => (x.resourceTypes.Length == 2) && (x.resourceTypes[0] != x.resourceTypes[1])))
+            {
+                returnedList.add(e);
+            }
+
+            foreach (ResourceEffect e in rB.Where(x => (x.resourceTypes.Length == 2) && (x.resourceTypes[0] != x.resourceTypes[1])))
+            {
+                returnedList.add(e);
+            }
+
+            foreach (ResourceEffect e in rC.Where(x => (x.resourceTypes.Length == 2) && (x.resourceTypes[0] != x.resourceTypes[1])))
+            {
+                returnedList.add(e);
+            }
+
+            foreach (ResourceEffect e in rB.Where(x => x.resourceTypes.Length > 2))
+            {
+                returnedList.add(e);
+            }
+
+            return returnedList;
         }
     }
 }

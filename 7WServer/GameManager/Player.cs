@@ -94,16 +94,19 @@ namespace SevenWonders
         public Boolean changeNickName {get; set; }
         public String newNickName {get; set; }
 
+        public CommercialDiscountEffect.RawMaterials rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.None;
+        public CommercialDiscountEffect.Goods goodsDiscount = CommercialDiscountEffect.Goods.None;
+
         //market effect
-        public bool leftRaw = false, rightRaw = false, leftManu = false, rightManu = false;
+        //public bool leftRaw = false, rightRaw = false, leftManu = false, rightManu = false;
 
-        public bool GetLeftRaw() { return leftRaw; }
+        //public bool GetLeftRaw() { return leftRaw; }
 
-        public bool GetLeftManu() { return leftManu; }
+        //public bool GetLeftManu() { return leftManu; }
 
-        public bool GetRightRaw() { return rightRaw; }
+        //public bool GetRightRaw() { return rightRaw; }
 
-        public bool GetRightManu() { return rightManu; }
+        //public bool GetRightManu() { return rightManu; }
 
         //Leaders pile. The pile that holds the unplayed leaders cards
         public List<Card> leadersPile = new List<Card>();
@@ -287,57 +290,57 @@ namespace SevenWonders
             {
                 //category $: deduct a given amount of coins
                 // if (actactions[i][0] == '$')
-                if (act is CostEffect)
+                if (act is CoinEffect)
                 {
-                    coin -= ((CostEffect)act).coins;
+                    // add or subtract coins
+                    coin += ((CoinEffect)act).coins;
+                }
+                else if (act is MilitaryEffect)
+                {
+                    shield += ((MilitaryEffect)act).nShields;
                 }
                 //category 1: give one kind of non-science thing
                 // else if (actions[i][0] == '1')
-                else if (act is SimpleEffect)
+                else if (act is ResourceEffect)
                 {
-                    SimpleEffect e = act as SimpleEffect;
+                    ResourceEffect e = act as ResourceEffect;
                     //increase the appropriate field by num
                     // int num = int.Parse(act[0] + "");
                    //  int num = e.multiplier;
 
-                    switch (e.type)
+                    // These values are needed by the AI, I believe.  How is this supposed to
+                    // work when there's a choice of 2, 3, or 4 resources?
+                    switch (e.resourceTypes[0])
                     {
-                        case 'M':
-                            shield += e.multiplier;
-                            break;
-                        case 'V':
-                            victoryPoint += e.multiplier;
-                            break;
                         case 'O':
-                            ore += e.multiplier;
-                            dag.add(e);
+                            ++ore;
+                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'O') ++ore;
                             break;
                         case 'B':
-                            brick += e.multiplier;
-                            dag.add(e);
+                            ++brick;
+                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'B') ++brick;
                             break;
                         case 'S':
-                            stone += e.multiplier;
-                            dag.add(e);
+                            ++stone;
+                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'S') ++stone;
                             break;
                         case 'W':
-                            wood += e.multiplier;
-                            dag.add(e);
+                            ++wood;
+                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'W') ++wood;
                             break;
                         case '$':
-                            coin += e.multiplier;
+                            throw new Exception();
+                            // money should be transacted via CoinEffect types.
+                            // coin += e.multiplier;
                             break;
                         case 'C':
-                            loom += e.multiplier;
-                            dag.add(e);
+                            ++loom;
                             break;
                         case 'P':
-                            papyrus += e.multiplier;
-                            dag.add(e);
+                            ++papyrus;
                             break;
                         case 'G':
-                            glass += e.multiplier;
-                            dag.add(e);
+                            ++glass;
                             break;
                             /*
                         case 'd':
@@ -347,6 +350,8 @@ namespace SevenWonders
                         default:
                             throw new Exception();
                     }
+
+                    dag.add(e);
                 }
                 //category 2: add one science
                 // else if (actions[i][0] == '2')
@@ -371,6 +376,40 @@ namespace SevenWonders
                 // else if (actions[i][0] == '3')
                 else if (act is CommercialDiscountEffect)
                 {
+                    CommercialDiscountEffect cde = act as CommercialDiscountEffect;
+
+                    // Set discount effects for future transactions.
+                    switch (cde.effectString[1])
+                    {
+                        case 'R':
+                            switch(cde.effectString[0])
+                            {
+                                case 'L':
+                                    if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.None)
+                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.LeftNeighbor;
+                                    else if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.RightNeighbor)
+                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
+                                    break;
+
+                                case 'R':
+                                    if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.None)
+                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.RightNeighbor;
+                                    else if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.LeftNeighbor)
+                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
+                                    break;
+
+                                case 'B':
+                                    rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
+                                    break;
+                            }
+                            break;
+
+                        case 'G':
+                            if (cde.effectString[0] == 'B')
+                                goodsDiscount = CommercialDiscountEffect.Goods.BothNeighbors;
+                            break;
+                    }
+                    /*
                     //set the market effects
                     CommercialDiscountEffect e = act as CommercialDiscountEffect;
                     if (e.affects == CommercialDiscountEffect.Affects.RawMaterial)
@@ -407,17 +446,20 @@ namespace SevenWonders
                                 break;
                         }
                     }
+                    */
                 }
                 //category 4: gives a choice between different things
                 //Add to the DAG
                 // else if (actions[i][0] == '4')
-                else if (act is ResourceChoiceEffect)
+                /*
+                else if (act is ResourceEffect)
                 {
                     // dag.add(actions[i].Substring(1));
                     // TODO: there's a bug here: RawMaterial structures can be purchased by neighboring cities
                     // but Commercial structures (Forum & Caravansery) cannot.  DAG must account for this difference
                     dag.add(act);
                 }
+                */
                 //category 5: gives some $ and and/or some victory depending on some conditions
                 //these cards are usually yellow
                 // else if (actions[i][0] == '5')
@@ -955,6 +997,7 @@ namespace SevenWonders
             return score;
         }
 
+#if FALSE
         public int doHaveEnoughCoinsToCommerce(String c)
         {
             //retrieve the cost
@@ -1042,6 +1085,8 @@ namespace SevenWonders
 
             return totalCost;
         }
+
+#endif
 
         /// <summary>
         /// AI Player makes a move

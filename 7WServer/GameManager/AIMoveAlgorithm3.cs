@@ -17,6 +17,16 @@ namespace SevenWonders
             //if not, Discard Red Cards
             //otherwise, discard first card
 
+            string strOutput = string.Format("{0} hand: [ ", player.nickname);
+
+            foreach (Card card in player.hand)
+            {
+                strOutput += card.name;
+                strOutput += " ";
+            }
+
+            strOutput += "]";
+
             //look for buildable Red cards
             Card c = player.hand.Find(x => x.structureType == StructureType.Military && player.isCardBuildable(x) == Buildable.True);
 
@@ -25,9 +35,12 @@ namespace SevenWonders
                 //look for buildable resource cards that give more than one resource ...
                 foreach (Card card in player.hand)
                 {
-                    if ((card.structureType == StructureType.RawMaterial || card.structureType == StructureType.Goods) && player.isCardBuildable(card) == Buildable.True && card.effect is ResourceChoiceEffect)
+                    if ((card.structureType == StructureType.RawMaterial || card.structureType == StructureType.Goods) && player.isCardBuildable(card) == Buildable.True && card.effect is ResourceEffect)
                     {
-                        string resource = ((ResourceChoiceEffect)card.effect).strChoiceData;
+                        string resource = ((ResourceEffect)card.effect).resourceTypes;
+
+                        if (resource.Length < 3)
+                            continue;
 
                         if (resource.Contains('B') && player.brick < maxOBS) { c = card; return; }
                         else if (resource.Contains('O') && player.ore < maxOBS) { c = card; return; }
@@ -43,12 +56,12 @@ namespace SevenWonders
                 //look for buildable resource cards that only give one ..
                 foreach (Card card in player.hand)
                 {
-                    if ((card.structureType == StructureType.RawMaterial || card.structureType == StructureType.Goods) && player.isCardBuildable(card) == Buildable.True && card.effect is SimpleEffect)
+                    if ((card.structureType == StructureType.RawMaterial || card.structureType == StructureType.Goods) && player.isCardBuildable(card) == Buildable.True && card.effect is ResourceEffect)
                     {
-                        SimpleEffect e = card.effect as SimpleEffect;
+                        ResourceEffect e = card.effect as ResourceEffect;
 
-                        char resource = e.type;
-                        int numOfResource = e.multiplier;
+                        char resource = e.resourceTypes[0];
+                        int numOfResource = e.resourceTypes.Length == 2 && e.resourceTypes[0] == e.resourceTypes[1] ? 2 : 1;
 
                         if (resource == 'B' && numOfResource + player.brick < maxOBS) { c = card; return; }
                         else if (resource == 'O' && numOfResource + player.ore < maxOBS) { c = card; return; }
@@ -75,7 +88,7 @@ namespace SevenWonders
 
             if (c != null)
             {
-                Console.WriteLine(player.nickname + " Action: Constuct {0}", c.name);
+                Console.WriteLine(player.nickname + " Action: Construct {0}", c.name);
                 gm.buildStructureFromHand(c, player, false);
             }
             else
