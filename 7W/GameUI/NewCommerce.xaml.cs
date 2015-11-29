@@ -36,8 +36,8 @@ namespace SevenWonders
         Cost cardCost;
 
         //immutable core card/player information
-        bool hasDiscount;
-        bool leftRawMarket, leftManuMarket, rightRawMarket, rightManuMarket;
+        bool hasDiscount;   // i.e. from a leader such as Leonidas or Archimedes
+        bool leftRawMarket, rightRawMarket, marketplace;
         string leftName, middleName, rightName;
         string structureName;
         // int ID;
@@ -68,42 +68,6 @@ namespace SevenWonders
             for (int i = 0; i < playerEffectsSplit.Length; ++i)
             {
                 d.add(new ResourceEffect(true, playerEffectsSplit[i]));
-                /*
-                switch (playerEffectsSplit[i].Length)
-                {
-                    case 1:
-                        {
-                            ResourceEffect e = new ResourceEffect(1, playerEffectsSplit[i][0]);
-                            d.add(e);
-                        }
-                        break;
-
-                    case 2:
-                        // if they are the same resource, it's two of the same (simple)
-                        if (playerEffectsSplit[i][0] == playerEffectsSplit[i][1])
-                        {
-                            SimpleEffect e = new SimpleEffect(2, playerEffectsSplit[i][0]);
-                            d.add(e);
-                        }
-                        else
-                        {
-                            // choice of two
-                            ResourceChoiceEffect e = new ResourceChoiceEffect(true, playerEffectsSplit[i]);
-                            d.add(e);
-                        }
-                        break;
-
-                    default:
-
-                        {
-                            // The server will filter cards in the neighbor's city we cannnot use.  Therefore it's safe to assume
-                            // that any resource choice card that has more than 2 resources is available as it must belong to the player
-                            ResourceChoiceEffect e = new ResourceChoiceEffect(true, playerEffectsSplit[i]);
-                            d.add(e);
-                        }
-                        break;
-                }
-                */
             }
         }
 
@@ -142,31 +106,26 @@ namespace SevenWonders
             leftRawMarket = false;
             rightRawMarket = false;
 
-            string commercialEffectCardList = qscoll["discountEffects"];
+            CommercialDiscountEffect.RawMaterials rawMaterialsDiscount = (CommercialDiscountEffect.RawMaterials)
+                Enum.Parse(typeof(CommercialDiscountEffect.RawMaterials), qscoll["resourceDiscount"]);
 
-            if (commercialEffectCardList != null)
+            switch (rawMaterialsDiscount)
             {
-                string[] commercialCardList = commercialEffectCardList.Split(',');
+                case CommercialDiscountEffect.RawMaterials.BothNeighbors:
+                    leftRawMarket = rightRawMarket = true;
+                    break;
 
-                for (int i = 0; i < commercialCardList.Length; ++i)
-                {
-                    /*
-                    CommercialDiscountEffect cde = cardList.Find(x => x.name == commercialCardList[i]).effect as CommercialDiscountEffect;
+                case CommercialDiscountEffect.RawMaterials.LeftNeighbor:
+                    leftRawMarket = true;
+                    break;
 
-                    if (cde.appliesTo == CommercialDiscountEffect.AppliesTo.LeftNeighbor || cde.appliesTo == CommercialDiscountEffect.AppliesTo.BothNeighbors)
-                    {
-                        leftRawMarket = cde.affects == CommercialDiscountEffect.Affects.RawMaterial;
-                        leftManuMarket = cde.affects == CommercialDiscountEffect.Affects.Goods;
-                    }
-
-                    if (cde.appliesTo == CommercialDiscountEffect.AppliesTo.RightNeighbor || cde.appliesTo == CommercialDiscountEffect.AppliesTo.BothNeighbors)
-                    {
-                        rightRawMarket = cde.affects == CommercialDiscountEffect.Affects.RawMaterial;
-                        rightManuMarket = cde.affects == CommercialDiscountEffect.Affects.Goods;
-                    }
-                    */
-                }
+                case CommercialDiscountEffect.RawMaterials.RightNeighbor:
+                    rightRawMarket = true;
+                    break;
             }
+
+            marketplace = ((CommercialDiscountEffect.Goods)
+                Enum.Parse(typeof(CommercialDiscountEffect.Goods), qscoll["goodsDiscount"]) == CommercialDiscountEffect.Goods.BothNeighbors);
 
             PLAYER_COIN = int.Parse(qscoll["coin"]);
 
@@ -247,22 +206,12 @@ namespace SevenWonders
             playerCoinsLabel.Content = PLAYER_COIN;
 
             //set the market images
-            if(leftRawMarket == true)
-                leftRawImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/1r.png"));
-            else
-                leftRawImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/2r.png"));
-            if(leftManuMarket == true)
-                leftManuImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/1m.png"));
-            else
-                leftManuImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/2m.png"));
-            if (rightRawMarket == true)
-                rightRawImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/1r.png"));
-            else
-                rightRawImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/2r.png"));
-            if (rightManuMarket == true)
-                rightManuImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/1m.png"));
-            else
-                rightManuImage.Source = new BitmapImage(new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/2m.png"));
+            leftRawImage.Source = new BitmapImage(
+                new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/" + (leftRawMarket ? "1r.png" : "2r.png")));
+            rightRawImage.Source = new BitmapImage(
+                new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/" + (rightRawMarket ? "1r.png" : "2r.png")));
+            leftManuImage.Source = rightManuImage.Source = new BitmapImage(
+                new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/" + (marketplace ? "1m.png" : "2m.png")));
 
             //set the discount label
             if (hasDiscount == true)
@@ -304,14 +253,16 @@ namespace SevenWonders
             //reset all DAG panels
             p.Children.Clear();
 
+            List<ResourceEffect> dagGraphSimple = dag.getResourceList(isDagOwnedByPlayer);
+
             //generate a DAG for self or a neighbor
             //generate the needed amount of stackPanels, each representing a level
-            StackPanel[] levelPanels = new StackPanel[dag.getSimpleStructures(isDagOwnedByPlayer).Count];
+            StackPanel[] levelPanels = new StackPanel[dagGraphSimple.Count];
 
             //generate the needed amount of buttons
-            b = new Button[dag.getSimpleStructures(isDagOwnedByPlayer).Count, 7];
+            b = new Button[dagGraphSimple.Count, 7];
 
-            List<ResourceEffect> dagGraphSimple = dag.getSimpleStructures(isDagOwnedByPlayer);
+
 
             //look at each level of the DAG
             for (int i = 0 ; i < dagGraphSimple.Count; i++)
@@ -373,34 +324,16 @@ namespace SevenWonders
             //determine some information about the pressed button
 
             //level of the resource
-            int level = Convert.ToInt32(s.Substring(2));
+            int level = Convert.ToInt32(s.Substring(2,1));
             //the location of the button (whether left, right, or middle)
             char location = s[0];
 
             //resource obtained
-            Effect effect = pressed.Content as Effect;
+            ResourceEffect rce = pressed.Content as ResourceEffect;
 
-            char resource;
+            int resourceStringIndex = Convert.ToInt32(s.Substring(3));
 
-            /*
-            if (effect is ResourceEffect)
-            {
-                ResourceEffect se = effect as SimpleEffect;
-
-                resource = se.type;
-                mulitplier = se.multiplier;
-            }
-            else
-            {
-                */
-                ResourceEffect rce = effect as ResourceEffect;
-
-                int resourceStringIndex = Convert.ToInt32(s.Substring(3));
-
-                resource = rce.resourceTypes[resourceStringIndex];
-
-            int mulitplier = rce.resourceTypes.Length == 2 && rce.resourceTypes[0] == rce.resourceTypes[1] ? 2 : 1;
-            // }
+            char resource = rce.resourceTypes[resourceStringIndex];
 
             //remember the current resource obtained amount for comparison with new resource obtained amount later
             int previous = resourcesNeeded;
@@ -417,7 +350,7 @@ namespace SevenWonders
                 MessageBox.Show("You have for all necessary resources already");
                 return;
             }
-            else if (DAG.eliminate(cardCost.Copy(), false, mulitplier, strPossibleNewResourceList).Total() == previous)
+            else if (DAG.eliminate(cardCost.Copy(), false, strPossibleNewResourceList).Total() == previous)
             {
                 MessageBox.Show("This resource will not help you pay for your cost");
                 return;
@@ -430,7 +363,7 @@ namespace SevenWonders
             //as well as doing appropriate checks
             if (location == 'L')
             {
-                int coinsRequired = (isResourceRawMaterial && leftRawMarket) || (isResourceGoods && leftManuMarket) ? 1 : 2;
+                int coinsRequired = (isResourceRawMaterial && leftRawMarket) || (isResourceGoods && marketplace) ? 1 : 2;
 
                 if ((PLAYER_COIN - (leftcoin + rightcoin)) < coinsRequired)
                 {
@@ -442,7 +375,7 @@ namespace SevenWonders
             }
             else if (location == 'R')
             {
-                int coinsRequired = (isResourceRawMaterial && rightRawMarket) || (isResourceGoods && rightManuMarket) ? 1 : 2;
+                int coinsRequired = (isResourceRawMaterial && rightRawMarket) || (isResourceGoods && marketplace) ? 1 : 2;
 
                 if ((PLAYER_COIN - (leftcoin + rightcoin)) < coinsRequired)
                 {
@@ -456,6 +389,8 @@ namespace SevenWonders
             // The resource chosen is good: it is required and affordable.
             resourcesNeeded--;
             strCurrentResourcesUsed = strPossibleNewResourceList;
+
+            bool bDblResource = rce.resourceTypes.Length == 2 && rce.resourceTypes[0] == rce.resourceTypes[1];
 
             //disable (make hidden) all buttons on the same level
             if (location == 'L')
@@ -472,12 +407,19 @@ namespace SevenWonders
                 else
                 {
                     */
-                    for (int i = 0; i < leftDag.getSimpleStructures(false)[level].resourceTypes.Length; i++)
+
+                if (bDblResource)
+                {
+                    pressed.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    for (int i = 0; i < leftDag.getResourceList(false)[level].resourceTypes.Length; i++)
                     {
                         //hide the buttons
                         leftDagButton[level, i].Visibility = Visibility.Hidden;
                     }
-                // }
+                }
             }
             else if (location == 'M')
             {
@@ -491,12 +433,18 @@ namespace SevenWonders
                 else
                 {
                 */
-                    for (int i = 0; i < middleDag.getSimpleStructures(true)[level].resourceTypes.Length; i++)
+                if (bDblResource)
+                {
+                    pressed.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    for (int i = 0; i < middleDag.getResourceList(true)[level].resourceTypes.Length; i++)
                     {
                         //hide the buttons
                         middleDagButton[level, i].Visibility = Visibility.Hidden;
                     }
-                // }
+                }
             }
             else if (location == 'R')
             {
@@ -510,12 +458,18 @@ namespace SevenWonders
                 else
                 {
                 */
-                    for (int i = 0; i < rightDag.getSimpleStructures(false)[level].resourceTypes.Length; i++)
+                if (bDblResource)
+                {
+                    pressed.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    for (int i = 0; i < rightDag.getResourceList(false)[level].resourceTypes.Length; i++)
                     {
                         //hide the buttons
                         rightDagButton[level, i].Visibility = Visibility.Hidden;
                     }
-                // }
+                }
             }
 
             //refresh the cost panel
@@ -528,7 +482,7 @@ namespace SevenWonders
         private void generateCostPanel()
         {
             // generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost, currentResource));
-            generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost.Copy(), false, 1, strCurrentResourcesUsed));
+            generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost.Copy(), false, strCurrentResourcesUsed));
         }
 
         /// <summary>

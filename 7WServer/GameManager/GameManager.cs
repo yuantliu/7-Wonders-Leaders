@@ -1284,7 +1284,7 @@ namespace SevenWonders
         {
             string strRet = string.Format("&{0}Resources=", who);
 
-            foreach (Effect e in plyr.dag.getSimpleStructures(isSelf))
+            foreach (Effect e in plyr.dag.getResourceList(isSelf))
             {
                 ResourceEffect se = e as ResourceEffect;
 
@@ -1292,15 +1292,6 @@ namespace SevenWonders
 
                 strRet += ",";
             }
-
-            /*
-            foreach (ResourceChoiceEffect e in plyr.dag.getChoiceStructures(isSelf))
-            {
-                ResourceChoiceEffect rce = e as ResourceChoiceEffect;
-
-                strRet += string.Format("{0},", rce.strChoiceData);
-            }
-            */
 
             // remove the trailing comma, if necessary
             if (strRet.EndsWith(","))
@@ -1331,21 +1322,8 @@ namespace SevenWonders
             string strCommerce = "CommData";
 
             strCommerce += string.Format("&coin={0}", p.coin);
-
-            List<Card> commerceEffectCards = p.playedStructure.Where(x => x.effect is CommercialDiscountEffect).ToList();
-
-            if (commerceEffectCards.Count != 0)
-            {
-                strCommerce += "&discountEffects=";
-
-                foreach(Card c in commerceEffectCards)
-                {
-                    strCommerce += string.Format("{0},", c.name);
-                }
-
-                // remove the trailing comma
-                strCommerce = strCommerce.Remove(strCommerce.Length - 1);
-            }
+            strCommerce += string.Format("&resourceDiscount={0}", p.rawMaterialsDiscount.ToString());
+            strCommerce += string.Format("&goodsDiscount={0}", p.goodsDiscount.ToString());
 
             strCommerce += string.Format("&wonderInfo={0}/{1}", p.currentStageOfWonder, p.playerBoard.name);
 
