@@ -97,14 +97,20 @@ namespace SevenWonders
             var c = Enumerable.Range(0, cardList.Count);
             var shuffledcards = c.OrderBy(a => Guid.NewGuid()).ToArray();
 
+            Console.Write("Shuffled card array: [");
+            Console.Write("{0}, ", string.Join(", ", shuffledcards));
+            Console.WriteLine(" ]");
+
             List<Card> d = new List<Card>(cardList.Count);
 
             for (int i = 0; i < cardList.Count; ++i)
             {
-                d.Add(cardList[i]);
-
+#if TRUE
+                d.Add(cardList[shuffledcards[i]]);
+#else
                 // Make the game deterministic for now.
-                //d.Add(card[shuffledcards[i]]);
+                d.Add(cardList[i]);
+#endif
             }
 
             cardList = d;

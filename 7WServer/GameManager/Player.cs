@@ -694,11 +694,11 @@ namespace SevenWonders
             // for the science cards.
             int nScienceWildCards = playedStructure.Where(x => x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.ScienceWild).Count();
 
-            for (int i = 0; i < nScienceWildCards; ++i)
+            for (int i = 0; i <= nScienceWildCards; ++i)
             {
-                for (int j = 0; j < nScienceWildCards - i; ++j)
+                for (int j = 0; j <= nScienceWildCards - i; ++j)
                 {
-                    for (int k = 0; k < nScienceWildCards - i - j; ++k)
+                    for (int k = 0; k <= nScienceWildCards - i - j; ++k)
                     {
                         int score = CalculateScienceGroupScore(sextant+i, bearTrap+j, tablet+k, scienceGroupMultiplier);
                         if (score > scienceScore)
@@ -717,7 +717,7 @@ namespace SevenWonders
         /// </summary>
         public void executeEndOfGameActions()
         {
-            Console.WriteLine("End of game summary for player {0}", nickname);
+            Console.WriteLine("End of game summary for {0}", playerBoard.name);
 
             int coinPoints = coin / 3;
             Console.WriteLine("  Coins at the end of the game: {0} ({1} VP)", coin, coinPoints);
@@ -799,6 +799,8 @@ namespace SevenWonders
             Console.WriteLine("  Points from guilds: {0}", totalGuildPoints);
 
             victoryPoint = coinPoints + militaryPoints + totalCivilian + totalCommercial + totalWonderPoints + totalSciencePoints + totalGuildPoints;
+
+            Console.WriteLine("Total points for {0}: {1}", playerBoard.name, victoryPoint);
 
 #if FALSE
             foreach (Effect act in endOfGameActions)
