@@ -397,35 +397,35 @@ namespace SevenWonders
         /// </summary>
         protected void endOfSessionActions()
         {
-            int maxScore = 0;
-            String winner = "ERROR";
+            string strFinalScoreMsg = string.Empty;
+            List<Player> playerScores = new List<Player>(numOfPlayers + numOfAI);
 
             //execute the end of game actions for all players
             //find the maximum final score
             foreach (Player p in player.Values)
             {
                 p.executeEndOfGameActions();
-
-                if (maxScore < p.finalScore())
-                {
-                    maxScore = p.finalScore();
-                    winner = p.nickname;
-                }
+                playerScores.Add(p);
             }
+
+            // sort the scores into lowest to highest
+            playerScores.Sort(delegate (Player p1, Player p2)
+            {
+                int victoryPointDiff = p1.victoryPoint - p2.victoryPoint;
+
+                if (victoryPointDiff != 0)
+                    return victoryPointDiff;
+                else
+                    return p1.coin - p2.coin;
+            });
 
             //broadcast the individual scores
-            foreach (Player p in player.Values)
+            foreach (Player p in playerScores)
             {
-                foreach (Player p2 in player.Values)
+                foreach (Player pl in player.Values)
                 {
-                    gmCoordinator.sendMessage(p, "#" + p2.nickname + " scored " + p2.finalScore() + " points.");
+                    gmCoordinator.sendMessage(pl, string.Format("# {0}: {1} points", p.nickname, p.victoryPoint));
                 }
-            }
-
-            //broadcast in chat the winner
-            foreach (Player p in player.Values)
-            {
-                gmCoordinator.sendMessage(p, "#" + winner + " is the winner with " + maxScore + " points!");
             }
         }
 

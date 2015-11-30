@@ -263,6 +263,7 @@ namespace SevenWonders
             return false;
         }
 
+        /*
         /// <summary>
         /// Stored actions to be executed at the end of the game
         /// </summary>
@@ -271,6 +272,7 @@ namespace SevenWonders
         {
             endOfGameActions.Add(s);
         }
+        */
 
         //Execute actions
         //change the Player score information based on the actions
@@ -602,6 +604,113 @@ namespace SevenWonders
             actions.Clear();
         }
 
+        int CountVictoryPoints(CoinsAndPointsEffect cpe)
+        {
+            int sum = 0;
+
+            if (cpe.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors ||
+                cpe.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Neighbors)
+            {
+                sum += cpe.victoryPointsAtEndOfGameMultiplier * leftNeighbour.playedStructure.Where(x => x.structureType == cpe.classConsidered).Count();
+                sum += cpe.victoryPointsAtEndOfGameMultiplier * rightNeighbour.playedStructure.Where(x => x.structureType == cpe.classConsidered).Count();
+
+                if (cpe.classConsidered == StructureType.MilitaryLosses)
+                {
+                    sum += leftNeighbour.lossToken * cpe.victoryPointsAtEndOfGameMultiplier;
+                    sum += rightNeighbour.lossToken * cpe.victoryPointsAtEndOfGameMultiplier;
+                }
+
+                /*
+                // Added for cities.
+                if (cpe.classConsidered == StructureType.MilitaryVictories)
+                {
+                    sum += (leftNeighbour.conflictTokenOne + leftNeighbour.conflictTokenTwo + leftNeighbour.conflictTokenThree) * cpe.victoryPointsAtEndOfGameMultiplier;
+                    sum += (rightNeighbour.conflictTokenOne + rightNeighbour.conflictTokenTwo + rightNeighbour.conflictTokenThree) * cpe.victoryPointsAtEndOfGameMultiplier;
+                }
+                */
+
+                /*
+                if (cpe.classConsidered == StructureType.WonderStage)
+                {
+                    sum += leftNeighbour.currentStageOfWonder* cpe.victoryPointsAtEndOfGameMultiplier;
+                    sum += rightNeighbour.currentStageOfWonder * cpe.victoryPointsAtEndOfGameMultiplier;
+                }
+                */
+            }
+
+            if (cpe.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors || cpe.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
+            {
+                sum += cpe.victoryPointsAtEndOfGameMultiplier * playedStructure.Where(x => x.structureType == cpe.classConsidered).Count();
+
+                if (cpe.classConsidered == StructureType.MilitaryLosses)
+                {
+                    sum += lossToken * cpe.victoryPointsAtEndOfGameMultiplier;
+                }
+
+                /*
+                // Added for cities (Mourner's Guild)
+                if (cpe.classConsidered == StructureType.MilitaryVictories)
+                {
+                    sum += (conflictTokenOne + conflictTokenTwo + conflictTokenThree) * cpe.victoryPointsAtEndOfGameMultiplier;
+                }
+                */
+
+                /*
+                if (cpe.classConsidered == StructureType.WonderStage)
+                {
+                    sum += currentStageOfWonder * cpe.victoryPointsAtEndOfGameMultiplier;
+                }
+                */
+            }
+
+            if (cpe.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.None)
+            {
+                // Civilian structures and wonder stages constructed fall into this category.
+                sum += cpe.victoryPointsAtEndOfGameMultiplier;
+            }
+
+            return sum;
+        }
+
+        int CalculateScienceGroupScore(int nCompass, int nGear, int nTablet, int groupMultiplier)
+        {
+            int score = nCompass * nCompass + nGear * nGear + nTablet * nTablet;
+
+            score += Math.Min(Math.Min(nCompass, nGear), nTablet) * groupMultiplier;
+
+            return score;
+        }
+
+        int CalculateSciencePoints()
+        {
+            int scienceGroupMultiplier = 7;
+
+            // if the Aristotle leader card is in play for this player, change the group multiplier to 10.
+
+            int scienceScore = CalculateScienceGroupScore(sextant, bearTrap, tablet, scienceGroupMultiplier);
+
+            // The player can have up to two science wild cards: Babylon wonder and the Scientists' guild.
+            // Try every possible combination of these cards and select the one that yields the highest score
+            // for the science cards.
+            int nScienceWildCards = playedStructure.Where(x => x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.ScienceWild).Count();
+
+            for (int i = 0; i < nScienceWildCards; ++i)
+            {
+                for (int j = 0; j < nScienceWildCards - i; ++j)
+                {
+                    for (int k = 0; k < nScienceWildCards - i - j; ++k)
+                    {
+                        int score = CalculateScienceGroupScore(sextant+i, bearTrap+j, tablet+k, scienceGroupMultiplier);
+                        if (score > scienceScore)
+                            scienceScore = score;
+                    }
+                }
+            }
+
+            return scienceScore;
+        }
+
+
         /// <summary>
         /// Execute the end of game actions
         /// Most are hardcoded
@@ -609,13 +718,17 @@ namespace SevenWonders
         public void executeEndOfGameActions()
         {
             Console.WriteLine("End of game summary for player {0}", nickname);
-            Console.WriteLine("  Coins at the end of the game: {0} ({1} VP)", coin, coin/3);
+
+            int coinPoints = coin / 3;
+            Console.WriteLine("  Coins at the end of the game: {0} ({1} VP)", coin, coinPoints);
+
             Console.WriteLine("  Military victories for 1st age: {0}", conflictTokenOne);
             Console.WriteLine("  Military victories for 2nd age: {0}", conflictTokenTwo);
             Console.WriteLine("  Military victories for 3rd age: {0}", conflictTokenThree);
-            Console.WriteLine("  Military victories for age 1: {0}", conflictTokenOne);
             Console.WriteLine("  Military losses: {0}", lossToken);
-            Console.WriteLine("  Military points: {0}", conflictTokenOne + conflictTokenTwo * 3 + conflictTokenThree * 5 - lossToken);
+
+            int militaryPoints = conflictTokenOne + conflictTokenTwo * 3 + conflictTokenThree * 5 - lossToken;
+            Console.WriteLine("  Military points: {0}", militaryPoints);
 
             int totalCivilian = 0;
             Console.WriteLine("  Civilian structures constructed:");
@@ -627,11 +740,23 @@ namespace SevenWonders
             }
             Console.WriteLine("  Total Civilian points: {0}", totalCivilian);
 
+            int totalCommercial = 0;
             Console.WriteLine("  Commercial structures constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Commerce).ToList())
             {
                 Console.WriteLine("    {0}", c.name);
+
+                if (c.effect is CoinsAndPointsEffect)
+                    totalCommercial += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
             }
+            Console.WriteLine("  Total Commercial points: {0}", totalCommercial);
+
+            int totalWonderPoints = 0;
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage && x.effect is CoinsAndPointsEffect).ToList())
+            {
+                totalWonderPoints += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
+            }
+            Console.WriteLine("  Points from Wonders: {0}", totalWonderPoints);
 
             Console.WriteLine("  Scientific structures constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Science).ToList())
@@ -639,78 +764,48 @@ namespace SevenWonders
                 Console.WriteLine("    {0} ({1})", c.name, ((ScienceEffect)c.effect).symbol);
             }
 
-            Console.WriteLine("  Wonder stages constructed:");
-            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage).ToList())
-            {
-                Console.WriteLine("    {0}", c.name);
-            }
+            int nScienceWildCards = playedStructure.Where(x => x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.ScienceWild).Count();
+
+            if (nScienceWildCards != 0)
+                Console.WriteLine("  {0} science wild card effect(s)", nScienceWildCards);
+
+            int totalSciencePoints = CalculateSciencePoints();
+
+            Console.WriteLine("  Points from science: {0}", totalSciencePoints);
+
+            int totalGuildPoints = 0;
 
             Console.WriteLine("  Guilds constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Guild).ToList())
             {
                 Console.WriteLine("    {0}", c.name);
-            }
 
+                if (c.effect is CoinsAndPointsEffect)
+                {
+                    // most guilds fall into this category: they count points based on something the neighboring cities.
+                    totalGuildPoints += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
+                }
+                else if (c.effect is SpecialAbilityEffect)
+                {
+                    SpecialAbilityEffect sae = c.effect as SpecialAbilityEffect;
+
+                    if (sae.type == SpecialAbilityEffect.SpecialType.ShipOwnerGuild)
+                    {
+                        // Shipowners guild counts 1 point for each Brown, Grey, and Purple card in the players' city.
+                        totalGuildPoints += playedStructure.Where(x => x.structureType == StructureType.RawMaterial || x.structureType == StructureType.Goods || x.structureType == StructureType.Guild).Count();
+                    }
+                }
+            }
+            Console.WriteLine("  Points from guilds: {0}", totalGuildPoints);
+
+            victoryPoint = coinPoints + militaryPoints + totalCivilian + totalCommercial + totalWonderPoints + totalSciencePoints + totalGuildPoints;
+
+#if FALSE
             foreach (Effect act in endOfGameActions)
             {
                 if (act is CoinsAndPointsEffect)
                 {
                     CoinsAndPointsEffect e = act as CoinsAndPointsEffect;
-
-                    if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors ||
-                        e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Neighbors)
-                    {
-                        victoryPoint += e.victoryPointsAtEndOfGameMultiplier * leftNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
-                        victoryPoint += e.victoryPointsAtEndOfGameMultiplier * rightNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
-
-                        if (e.classConsidered == StructureType.MilitaryLosses)
-                        {
-                            victoryPoint += leftNeighbour.lossToken * e.victoryPointsAtEndOfGameMultiplier;
-                            victoryPoint += rightNeighbour.lossToken * e.victoryPointsAtEndOfGameMultiplier;
-                        }
-
-                        if (e.classConsidered == StructureType.MilitaryVictories)
-                        {
-                            victoryPoint += (leftNeighbour.conflictTokenOne + leftNeighbour.conflictTokenTwo + leftNeighbour.conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
-                            victoryPoint += (rightNeighbour.conflictTokenOne + rightNeighbour.conflictTokenTwo + rightNeighbour.conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
-                        }
-
-                        /*
-                        if (e.classConsidered == StructureType.WonderStage)
-                        {
-                            victoryPoint += leftNeighbour.currentStageOfWonder* e.victoryPointsAtEndOfGameMultiplier;
-                            victoryPoint += rightNeighbour.currentStageOfWonder * e.victoryPointsAtEndOfGameMultiplier;
-                        }
-                        */
-                    }
-
-                    if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors || e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
-                    {
-                        victoryPoint += e.victoryPointsAtEndOfGameMultiplier * playedStructure.Where(x => x.structureType == e.classConsidered).Count();
-
-                        if (e.classConsidered == StructureType.MilitaryLosses)
-                        {
-                            victoryPoint += lossToken * e.victoryPointsAtEndOfGameMultiplier;
-                        }
-
-                        if (e.classConsidered == StructureType.MilitaryVictories)
-                        {
-                            victoryPoint += (conflictTokenOne + conflictTokenTwo + conflictTokenThree) * e.victoryPointsAtEndOfGameMultiplier;
-                        }
-
-                        /*
-                        if (e.classConsidered == StructureType.WonderStage)
-                        {
-                            victoryPoint += currentStageOfWonder * e.victoryPointsAtEndOfGameMultiplier;
-                        }
-                        */
-                    }
-
-                    if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.None)
-                    {
-                        // Civilian structures and wonder stages constructed fall into this category.
-                        victoryPoint += e.victoryPointsAtEndOfGameMultiplier;
-                    }
                 }
                 //category 6: special guild cards and leader cards
                 //6_132 or 6_135
@@ -845,6 +940,7 @@ namespace SevenWonders
                     throw new NotImplementedException();
                 }
             }
+#endif
         }
 
         /// <summary>
@@ -1025,6 +1121,7 @@ namespace SevenWonders
             return Buildable.InsufficientResources;
         }
 
+        /*
         /// <summary>
         /// return the final score
         /// </summary>
@@ -1057,6 +1154,7 @@ namespace SevenWonders
 
             return score;
         }
+        */
 
 #if FALSE
         public int doHaveEnoughCoinsToCommerce(String c)

@@ -178,7 +178,7 @@ namespace SevenWonders
 
         // These cards are not played, but they are used in some effects to determine coins and/or points
         MilitaryLosses,
-        MilitaryVictories,
+        // MilitaryVictories,
         WonderStage,
 
         // Expansions
@@ -392,7 +392,7 @@ namespace SevenWonders
             Rhodos_B_1M4VP4C,
         };
 
-        SpecialType type;
+        public SpecialType type;
 
         public SpecialAbilityEffect(string initStr)
         {
