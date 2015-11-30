@@ -70,7 +70,7 @@ namespace SevenWonders
         
         public bool usedHalicarnassus { get; set; }
 
-        public bool usedBabylon { get; set; }
+//        public bool { get; set; }
 
         //bilkis (0 is nothing, 1 is ore, 2 is stone, 3 is glass, 4 is papyrus, 5 is loom, 6 is wood, 7 is brick
         public byte bilkis;
@@ -80,7 +80,7 @@ namespace SevenWonders
         private List<Effect> actions = new List<Effect>();
 
         //stored actions for the end of the game
-        private List<Effect> endOfGameActions = new List<Effect>();
+        // private List<Effect> endOfGameActions = new List<Effect>();
 
         //Player's left and right neighbours
         public Player leftNeighbour { get; set; }
@@ -144,7 +144,7 @@ namespace SevenWonders
 
             //set used halicarnassus and babylon to true, to make sure its not available
             usedHalicarnassus = true;
-            usedBabylon = true;
+            // usedBabylon = true;
 
             //set bilkis to nothing
             bilkis = 0;
@@ -507,16 +507,52 @@ namespace SevenWonders
                         }
                     }
 
-                    if (e.victoryPointsAtEndOfGameMultiplier != 0)      // JDF: I added this line.  No point in adding Vineyard & Bazar to end of game actions.
+                    //if (e.victoryPointsAtEndOfGameMultiplier != 0)      // JDF: I added this line.  No point in adding Vineyard & Bazar to end of game actions.
                     //for victory points, just copy the effect to endOfGameActions and have executeEndOfGameActions do it later
-                        endOfGameActions.Add(act);
+                      //  endOfGameActions.Add(act);
 
                 }
                 //category 6: special guild cards
                 //put these directly into executeEndOfGameActions array
                 else if (act is SpecialAbilityEffect)
                 {
-                    endOfGameActions.Add(act);
+                    SpecialAbilityEffect sae = act as SpecialAbilityEffect;
+
+                    switch(sae.type)
+                    {
+                        case SpecialAbilityEffect.SpecialType.ShipOwnerGuild:
+                            // nothing to do; this card will be included in the end of game point total
+                            break;
+
+                        case SpecialAbilityEffect.SpecialType.ScienceWild:
+                            // nothing to do; this card will be included in the end of game point total
+                            break;
+
+                        case SpecialAbilityEffect.SpecialType.PlayLastCardInAge:
+                            // Nothing to do here.  This ability is handled in GameManager.turnTaken().
+                            //usedBabylon = false;
+                            break;
+
+                        case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree:
+                            break;
+
+                        case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_2VP:
+                            break;
+
+                        case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_1VP:
+                            break;
+
+                        case SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge:
+                            break;
+
+                        case SpecialAbilityEffect.SpecialType.CopyGuildFromNeighbor:
+                            break;
+
+                        case SpecialAbilityEffect.SpecialType.Rhodos_B_1M3VP3C:
+                            break;
+                        case SpecialAbilityEffect.SpecialType.Rhodos_B_1M4VP4C:
+                            break;
+                    }
                 }
                 /*
                 //category 7: hard coded board powers
