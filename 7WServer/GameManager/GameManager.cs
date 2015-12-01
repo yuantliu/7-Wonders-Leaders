@@ -35,6 +35,7 @@ namespace SevenWonders
         public bool esteban = false;
 
         bool gettingBabylonExtraCard = false;
+        bool playingCardFromDiscardPile = false;
 
         string[] playerNicks;
 
@@ -278,7 +279,7 @@ namespace SevenWonders
                 }
 
                 //always disables Halicarnassus after every age.
-                p.usedHalicarnassus = true;
+                // p.usedHalicarnassus = true;
 
                 //always reactivate Babylon after every age
                 if (p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2)
@@ -518,7 +519,7 @@ namespace SevenWonders
         protected Board popRandomBoard()
         {
             // int index = (new Random()).Next(0, board.Count);
-            int index = 3;
+            int index = 9;
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
@@ -850,47 +851,11 @@ namespace SevenWonders
             giveCoinFromLeadersOnBuild(p, c);
         }
 
-        /// <summary>
-        /// build a stage of wonder, given the Player nickname and the id of the card to be "sacrificed"
-        /// </summary>
-        /// <param name="p"></param>
-        public virtual void buildStageOfWonder(string structureName, string nickname)
-        {
-            throw new Exception();
-
-            /*
-            Player p = player[nickname];
-
-            //Player has less Stage of Wonder built than the max allowed on his board
-            if (p.currentStageOfWonder < p.playerBoard.numOfStages)
-            {
-                //Find the card with the id number
-                Card c = p.hand.Find(x => x.name == structureName);
-                p.hand.Remove(c);
-
-                // Find the corresponding wonder stage and add it to the played CardStructure
-
-                p.addPlayedCardStructure(p.playerBoard.stageCard[p.currentStageOfWonder]);
-                p.storeAction(p.playerBoard.stageCard[p.currentStageOfWonder].effect);
-
-                p.currentStageOfWonder++;
-            }
-            else
-            {
-                //Player is attempting to build a Stage of Wonder when he has already built all of the Wonders. Something is wrong. This should never be reached.
-                Console.WriteLine("GameManager.buildStageOfWonder(Player p) error");
-                throw new System.Exception();
-            }
-            */
-        }
-
         public void discardCardForThreeCoins(string nickname, string name)
         {
             Player p = player[nickname];
 
-            Card c = p.hand.Find(x => x.name == name);
-
-            discardCardForThreeCoins(p, c);
+            discardCardForThreeCoins(p, p.hand.Find(x => x.name == name));
         }
 
         /// <summary>
@@ -1064,36 +1029,50 @@ namespace SevenWonders
                 gmCoordinator.sendMessage(p, "T" + currentTurn);
                 */
 
-                if (!gettingBabylonExtraCard || p.playerBoard.name == "Babylon (B)")
-                {
-                    //send the hand panel (action information) for regular ages (not the Recruitment phase i.e. Age 0)
-                    if (currentAge > 0)
-                    {
-                        // Replaced with sending the name of the last card played for each player. ("CardPlay");
-                        //prepare to send the HandPanel information
-                        string strHand = "SetPlyrH";
+                // Check if we're in a special state - extra turn for Babylon (B)
+                if (gettingBabylonExtraCard && p.playerBoard.name != "Babylon (B)")
+                    continue;
 
+                // Check if we're in a special state - playing a card from the discard pile
+                if (playingCardFromDiscardPile && !p.playCardFromDiscardPile)
+                    continue;
+
+                //send the hand panel (action information) for regular ages (not the Recruitment phase i.e. Age 0)
+                if (currentAge > 0)
+                {
+                    string strHand = "SetPlyrH";
+
+                    if (playingCardFromDiscardPile)
+                    {
+                        foreach (Card card in discardPile)
+                        {
+                            // Do not include structures that have already been built by the players' city.
+                            if (p.isCardBuildable(card) != Buildable.StructureAlreadyBuilt)
+                                strHand += string.Format("&{0}={1}", card.name, Buildable.True.ToString());
+                        }
+                    }
+                    else
+                    {
                         foreach (Card card in p.hand)
                         {
                             strHand += string.Format("&{0}={1}", card.name, p.isCardBuildable(card).ToString());
                         }
-
-                        strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
-                        // String handPanelInformationString = "U" + Marshaller.ObjectToString(new HandPanelInformation(p, currentAge));
-
-                        //send the Card Panel information to that player
-                        gmCoordinator.sendMessage(p, strHand);
                     }
 
-                    //send the timer signal if the current Age is less than 4 (i.e. game is still going)
-                    if (gameConcluded == false)
-                    {
-                        gmCoordinator.sendMessage(p, "t");
-                    }
-                    else
-                    {
-                        gmCoordinator.sendMessage(p, "e");
-                    }
+                    strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
+
+                    //send the Card Panel information to that player
+                    gmCoordinator.sendMessage(p, strHand);
+                }
+
+                //send the timer signal if the current Age is less than 4 (i.e. game is still going)
+                if (gameConcluded == false)
+                {
+                    gmCoordinator.sendMessage(p, "t");
+                }
+                else
+                {
+                    gmCoordinator.sendMessage(p, "e");
                 }
             }
         }
@@ -1404,8 +1383,7 @@ namespace SevenWonders
 
             numOfPlayersThatHaveTakenTheirTurn++;
 
-            //all players have completed their turn
-            if (numOfPlayersThatHaveTakenTheirTurn == numOfPlayers || gettingBabylonExtraCard)
+            if (numOfPlayersThatHaveTakenTheirTurn == numOfPlayers || gettingBabylonExtraCard || playingCardFromDiscardPile)
             {
                 //reset the number of players that have taken their turn
                 numOfPlayersThatHaveTakenTheirTurn = 0;
@@ -1414,14 +1392,37 @@ namespace SevenWonders
                     // any other turn, execute everyone's actions.
                 executeActionsAtEndOfTurn();
 
-                if (currentTurn == 6 && p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2 && !gettingBabylonExtraCard)
-                {
-                    gettingBabylonExtraCard = true;
-                    // sendBabylonInformation(nickname);
-                }
-                else
+                bool isTurnComplete = false;
+
+                if (gettingBabylonExtraCard && currentTurn == 6 && p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2)
                 {
                     gettingBabylonExtraCard = false;
+                }
+                else if (currentTurn == 6 && p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2)
+                {
+                    gettingBabylonExtraCard = true;
+                }
+
+                if (playingCardFromDiscardPile && p.playCardFromDiscardPile)
+                {
+                    playingCardFromDiscardPile = false;
+                    p.playCardFromDiscardPile = false;
+                }
+                else if (p.playCardFromDiscardPile)
+                {
+                    playingCardFromDiscardPile = true;
+                }
+
+                if (!gettingBabylonExtraCard && !playingCardFromDiscardPile)
+                {
+                    isTurnComplete = true;
+                }
+
+                //all players have completed their turn
+                if (isTurnComplete)
+                {
+                    gettingBabylonExtraCard = false;
+                    playingCardFromDiscardPile = false;
 
                     //pass the cards to the neighbour
                     passRemainingCardsToNeighbour();

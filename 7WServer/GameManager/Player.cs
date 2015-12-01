@@ -155,7 +155,9 @@ namespace SevenWonders
         public bool hasOlympia { get; set; }
         public bool olympiaPowerEnabled { get; set; }
         
-        public bool usedHalicarnassus { get; set; }
+        // public bool usedHalicarnassus { get; set; }
+
+        public bool playCardFromDiscardPile = false;
 
 //        public bool usedBabylon { get; set; }
 
@@ -230,7 +232,7 @@ namespace SevenWonders
             newNickName = "";
 
             //set used halicarnassus and babylon to true, to make sure its not available
-            usedHalicarnassus = true;
+            // usedHalicarnassus = true;
             // usedBabylon = true;
 
             //set bilkis to nothing
@@ -430,12 +432,15 @@ namespace SevenWonders
                         break;
 
                     case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree:
+                        playCardFromDiscardPile = true;
                         break;
 
                     case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_2VP:
+                        playCardFromDiscardPile = true;
                         break;
 
                     case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_1VP:
+                        playCardFromDiscardPile = true;
                         break;
 
                     case SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge:
@@ -872,6 +877,36 @@ namespace SevenWonders
             {
                 totalWonderPoints += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
             }
+
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage && x.effect is SpecialAbilityEffect).ToList())
+            {
+                SpecialAbilityEffect spe = c.effect as SpecialAbilityEffect;
+
+                switch(spe.type)
+                {
+                    case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_2VP:
+                        totalWonderPoints += 2;
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_1VP:
+                        totalWonderPoints += 2;
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.CopyGuildFromNeighbor:
+                        // Olympia B 3rd stage
+                        throw new Exception(); // TODO: implement this
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.Rhodos_B_1M3VP3C:
+                        totalWonderPoints += 3;
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.Rhodos_B_1M4VP4C:
+                        totalWonderPoints += 4;
+                        break;
+                }
+            }
+
             Console.WriteLine("  Points from Wonders: {0}", totalWonderPoints);
 
             Console.WriteLine("  Scientific structures constructed:");

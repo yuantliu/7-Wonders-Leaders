@@ -6,10 +6,10 @@ UI problems:
   - Some cards do not have icons.
   - it would be nice if PlayerStatePanels were created dynamically so we maximized our use of space on the Main Window.
     The current behavior is that all 8 panels are created statically and only the ones in use are activated.
-  - Conflict tokens and losses could be presented using icons instead of text labels.
+  - Conflict tokens and losses could be presented using icons instead of text labels, put them on the wonder boards.
+  - I need to create an end-of-game UI window.
 
 Commerce issues:
-	- brown cards that give 2 of a resource don't work
 	- I am not sure that the either/or first age cards are working correctly.  I need to do a detailed analysis of how the resources are walked.  The algorithm should look like:
 		* if the card cost is zero, or the parent was built, the card can be built for free
 		* if not, check the resources of the player.  Starting with the singles or doubles, then the either/or, then the forum/caravansery, the Leader who give a resource-1 cost for that card type.
@@ -18,12 +18,6 @@ Commerce issues:
 		  as every possible combination must be checked before the cost is said to be impossible.  I.e. using the first resource of an either/or might make it not possible
 		  to afford it but choosing the other one could mean the structure _is_ affordable.  So every possible combination must be checked before the isCardAffordable returns
 		  false, and I don't think it's checking every possible combination.
-	- Initial Commerce request from the server should include the card name
-	- response from the server would be:
-		- resouce/commerce/Wonders the player can use (P=Timber Yard,Stone Pit,Caravansery,etc)
-		- data affecting commerce (discounts, leaders that affect commerce)
-		- L=west neighbor's resource cards (L=Clay Pit,Tree Farm,...)
-		- R=east neighbor's resource cards (R=Mine,Quarry,...)
 	- Submit data from client should look like: BldStrct&Structure=<Card Name>&CommerceData=true&Player=W/Clay Pit&Player=S/Quarry&Player=S/Quarry&Left=W/Tree Farm&Right=G/Glassworks
 		- Commerce Data is only required for structures that require it.
 		- The card name can be WonderStagen, n { 1, 2, 3, 4 }
@@ -41,17 +35,8 @@ AI players
 
 Technical stories:
 
-- The SimpleEffect vs. ResourceChoiceEffect is causing a lot of trouble.  Wouldn't it be easier to remove the ResourceChoiceEffect?
-  ResourceChoiceEffect becomes ResourceEffect.  All these have a string of 1,2,3, or 4 resources.  In all cases except for the one
-    where there are two identical resources you can pick one or the other.  When there are two of the same, both can be used.
-    SimpleEffect currently has 3 different classes of cards: single browns, greys, military, and civilian.
-	Civilian becomes coins and points effect where the multiplier is constant VPs and the gold is 0.
-	Military becomes Military Effect (n sheilds)
-	Browns and Greys become ResourceEffect
-	get rid of
-  - Maybe I would make the trading posts & marketplace a SpecialAbilityEffect with type none.  These cards affect commerce
-  - suggested new list of effects:
-    Military
+- Tested Wonders: Alexandria (both sides), Babylon (both sides), Ephesos (both sides)
+
 - The list of players (the datagrid) isn't hooked up at the match-making.
 
 - Need to check all the wonders' special abilities.  Alexandria A's is working properly.
