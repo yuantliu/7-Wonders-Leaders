@@ -156,12 +156,14 @@ namespace SevenWonders
                 case '1':
                     thisAI.AIBehaviour = new AIMoveAlgorithm1();
                     break;
+                    /*
                 case '2':
                     thisAI.AIBehaviour = new AIMoveAlgorithm2();
                     break;
                 case '3':
                     thisAI.AIBehaviour = new AIMoveAlgorithm3();
                     break;
+                    */
                 case '4':
                     thisAI.AIBehaviour = new AIMoveAlgorithm4();
                     break;
@@ -334,7 +336,10 @@ namespace SevenWonders
                     //give 2 coins if so
                     if (p.playedStructure.Exists(x => x.name == "Nero"))
                     {
-                        p.coin += 2;
+                        throw new Exception();
+                        // fix this.  Likely by making the player.GiveConflictToken into a function and
+                        // having that function check whether the current player has Nero.
+                        // p.coin += 2;
                     }
 
                     //check if right neighbour has played card 232: return conflict loss token received
@@ -366,12 +371,14 @@ namespace SevenWonders
                         p.rightNeighbour.conflictTokenThree += 1;
                     }
 
+                    /*
                     //check if player has played card 220: gain 2 coins for every victory point gained
                     //give 2 coins if so
                     if (p.rightNeighbour.playedStructure.Exists(x => x.name == "Nero"))
                     {
                         p.rightNeighbour.coin += 2;
                     }
+                    */
 
                     //check if I have played card 232: return conflict loss token received
                     //if no, receive lossToken
@@ -511,7 +518,7 @@ namespace SevenWonders
         protected Board popRandomBoard()
         {
             // int index = (new Random()).Next(0, board.Count);
-            int index = 1;
+            int index = 3;
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
