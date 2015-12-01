@@ -34,6 +34,8 @@ namespace SevenWonders
 
         public bool esteban = false;
 
+        bool gettingBabylonExtraCard = false;
+
         string[] playerNicks;
 
         public bool gameConcluded { get; set; }
@@ -279,9 +281,9 @@ namespace SevenWonders
                 p.usedHalicarnassus = true;
 
                 //always reactivate Babylon after every age
-                if (p.playerBoard.name == "BB" && p.currentStageOfWonder >= 2)
+                if (p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2)
                 {
-                    p.usedBabylon = false;
+                    // p.usedBabylon = false;
                 }
             }
 
@@ -334,7 +336,10 @@ namespace SevenWonders
                     //give 2 coins if so
                     if (p.playedStructure.Exists(x => x.name == "Nero"))
                     {
-                        p.coin += 2;
+                        throw new Exception();
+                        // fix this.  Likely by making the player.GiveConflictToken into a function and
+                        // having that function check whether the current player has Nero.
+                        // p.coin += 2;
                     }
 
                     //check if right neighbour has played card 232: return conflict loss token received
@@ -366,12 +371,14 @@ namespace SevenWonders
                         p.rightNeighbour.conflictTokenThree += 1;
                     }
 
+                    /*
                     //check if player has played card 220: gain 2 coins for every victory point gained
                     //give 2 coins if so
                     if (p.rightNeighbour.playedStructure.Exists(x => x.name == "Nero"))
                     {
                         p.rightNeighbour.coin += 2;
                     }
+                    */
 
                     //check if I have played card 232: return conflict loss token received
                     //if no, receive lossToken
@@ -511,7 +518,7 @@ namespace SevenWonders
         protected Board popRandomBoard()
         {
             // int index = (new Random()).Next(0, board.Count);
-            int index = 1;
+            int index = 3;
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
@@ -529,12 +536,10 @@ namespace SevenWonders
             return randomBoard.Value;
         }
 
-        public void buildStructureFromHand(string cardName, string playerNickname, string strWonderStage, string strLeftCoins, string strRightCoins)
+        public void buildStructureFromHand(string playerNickname, string cardName, string strWonderStage, string strLeftCoins, string strRightCoins)
         {
-            //Find the Player object given the playerNickname
             Player p = player[playerNickname];
 
-            //Find the card with the id number
             Card c = p.hand.Find(x => x.name == cardName);
 
             if (c == null)
@@ -548,13 +553,13 @@ namespace SevenWonders
             if (strRightCoins != null)
                 nRightCoins = int.Parse(strRightCoins);
 
-            buildStructureFromHand(c, p, strWonderStage == "1", nLeftCoins, nRightCoins);
+            buildStructureFromHand(p, c, strWonderStage == "1", nLeftCoins, nRightCoins);
         }
 
         /// <summary>
         /// build a structure from hand, given the Card id number and the Player
         /// </summary>
-        public void buildStructureFromHand(Card c, Player p, bool wonderStage, int nLeftCoins = 0, int nRightCoins = 0)
+        public void buildStructureFromHand(Player p, Card c, bool wonderStage, int nLeftCoins = 0, int nRightCoins = 0)
         {
             p.hand.Remove(c);
 
@@ -879,13 +884,13 @@ namespace SevenWonders
             */
         }
 
-        public void discardCardForThreeCoins(string name, String nickname)
+        public void discardCardForThreeCoins(string nickname, string name)
         {
             Player p = player[nickname];
 
             Card c = p.hand.Find(x => x.name == name);
 
-            discardCardForThreeCoins(c, p);
+            discardCardForThreeCoins(p, c);
         }
 
         /// <summary>
@@ -893,7 +898,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="id"></param>
         /// <param name="p"></param>
-        public void discardCardForThreeCoins(Card c, Player p)
+        public void discardCardForThreeCoins(Player p, Card c)
         {
             p.storeAction(new CoinEffect(3));
 
@@ -971,8 +976,11 @@ namespace SevenWonders
         /// </summary>
         public void executeActionsAtEndOfTurn()
         {
-            //make AI moves
-            executeAIActions();
+            if (!gettingBabylonExtraCard)
+            {
+                //make AI moves
+                executeAIActions();
+            }
 
             //execute the Actions for each players
             foreach (Player p in player.Values)
@@ -1056,33 +1064,36 @@ namespace SevenWonders
                 gmCoordinator.sendMessage(p, "T" + currentTurn);
                 */
 
-                //send the hand panel (action information) for regular ages (not the Recruitment phase i.e. Age 0)
-                if (currentAge > 0)
+                if (!gettingBabylonExtraCard || p.playerBoard.name == "Babylon (B)")
                 {
-                    // Replaced with sending the name of the last card played for each player. ("CardPlay");
-                    //prepare to send the HandPanel information
-                    string strHand = "SetPlyrH";
-
-                    foreach (Card card in p.hand)
+                    //send the hand panel (action information) for regular ages (not the Recruitment phase i.e. Age 0)
+                    if (currentAge > 0)
                     {
-                        strHand += string.Format("&{0}={1}", card.name, p.isCardBuildable(card).ToString());
+                        // Replaced with sending the name of the last card played for each player. ("CardPlay");
+                        //prepare to send the HandPanel information
+                        string strHand = "SetPlyrH";
+
+                        foreach (Card card in p.hand)
+                        {
+                            strHand += string.Format("&{0}={1}", card.name, p.isCardBuildable(card).ToString());
+                        }
+
+                        strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
+                        // String handPanelInformationString = "U" + Marshaller.ObjectToString(new HandPanelInformation(p, currentAge));
+
+                        //send the Card Panel information to that player
+                        gmCoordinator.sendMessage(p, strHand);
                     }
 
-                    strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
-                    // String handPanelInformationString = "U" + Marshaller.ObjectToString(new HandPanelInformation(p, currentAge));
-
-                    //send the Card Panel information to that player
-                    gmCoordinator.sendMessage(p, strHand);
-                }
-
-                //send the timer signal if the current Age is less than 4 (i.e. game is still going)
-                if (gameConcluded == false)
-                {
-                    gmCoordinator.sendMessage(p, "t");
-                }
-                else
-                {
-                    gmCoordinator.sendMessage(p, "e");
+                    //send the timer signal if the current Age is less than 4 (i.e. game is still going)
+                    if (gameConcluded == false)
+                    {
+                        gmCoordinator.sendMessage(p, "t");
+                    }
+                    else
+                    {
+                        gmCoordinator.sendMessage(p, "e");
+                    }
                 }
             }
         }
@@ -1219,6 +1230,7 @@ namespace SevenWonders
             buildStructureFromDiscardPile(structureName, nickname);
         }
 
+        /*
         /// <summary>
         /// give the UI information for Babylon
         /// </summary>
@@ -1226,6 +1238,8 @@ namespace SevenWonders
         public void sendBabylonInformation(string nickname)
         {
             Player p = player[nickname];
+
+            /*
 
             //information to be sent
             String information = "A";
@@ -1242,11 +1256,18 @@ namespace SevenWonders
             //get if stage is buildable from hand
             information += p.isStageBuildable();
 
+            Card lastCard = p.hand[0];
+
+            string babylonBmsg = "BabylonB";
+
+            babylonBmsg += string.Format("&{0}={1}", lastCard.name, p.isCardBuildable(lastCard).ToString());
+
+            babylonBmsg += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
+
             //send the information
-            gmCoordinator.sendMessage(p, information);
+            gmCoordinator.sendMessage(p, babylonBmsg);
         }
 
-        /*
         Attempting to build the commerce send string from played cards rather than effects.
         string BuildResourceString(string who, Player plyr, bool isSelf)
         {
@@ -1306,7 +1327,7 @@ namespace SevenWonders
         /// <param name="id"></param>
         /// <param name="nickname"></param>
 //        public void updateCommercePanel(string structureName, string nickname, bool isStage)
-        public void updateCommercePanel(string nickname)
+        public void updateCommercePanel(string nickname, string strctureName, string wonderStage)
         {
             Player p = player[nickname];
 
@@ -1327,6 +1348,8 @@ namespace SevenWonders
 
             strCommerce += string.Format("&wonderInfo={0}/{1}", p.currentStageOfWonder, p.playerBoard.name);
 
+            strCommerce += string.Format("&Structure={0}&WonderStage={1}", strctureName, wonderStage);
+
             strCommerce += BuildResourceString("Player", p, true);
             strCommerce += BuildResourceString("Left", p.leftNeighbour, false);
             strCommerce += BuildResourceString("Right", p.rightNeighbour, false);
@@ -1345,8 +1368,9 @@ namespace SevenWonders
         {
             Player p = player[nickname];
 
+            /*
             //if player doesn't even have Halicarnassus or Babylon board, then no more action is required
-            if (p.playerBoard.name != "BB" && p.playerBoard.name[0] != 'H')
+            if (p.playerBoard.name != "Babylon (B)" && p.playerBoard.name.Substring(0, 13) != "Halikarnassos")
             {
                 numOfPlayersThatHaveTakenTheirTurn++;
             }
@@ -1371,49 +1395,62 @@ namespace SevenWonders
 
                 p.usedHalicarnassus = true;
             }
-
             //Halicarnassus/Babylon action has been taken or not activated. Increment turn as normal.
             else if (p.usedHalicarnassus || p.usedBabylon)
             {
                 numOfPlayersThatHaveTakenTheirTurn++;
             }
+            */
+
+            numOfPlayersThatHaveTakenTheirTurn++;
 
             //all players have completed their turn
-            if (numOfPlayersThatHaveTakenTheirTurn == numOfPlayers)
+            if (numOfPlayersThatHaveTakenTheirTurn == numOfPlayers || gettingBabylonExtraCard)
             {
                 //reset the number of players that have taken their turn
                 numOfPlayersThatHaveTakenTheirTurn = 0;
 
                 //execute every player's action
+                    // any other turn, execute everyone's actions.
                 executeActionsAtEndOfTurn();
 
-                //pass the cards to the neighbour
-                passRemainingCardsToNeighbour();
-
-                //increment the turn
-                currentTurn++;
-
-                //if the current turn is last turn of Age, do end of Age calculation
-                if (currentTurn == 7 && currentAge > 0)
+                if (currentTurn == 6 && p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2 && !gettingBabylonExtraCard)
                 {
-                    //perform end of Age actions
-                    endOfAgeActions();
-                    currentAge++;
+                    gettingBabylonExtraCard = true;
+                    // sendBabylonInformation(nickname);
+                }
+                else
+                {
+                    gettingBabylonExtraCard = false;
 
-                    //if game hasn't ended, then deal deck, reset turn
-                    if (currentAge < 4)
+                    //pass the cards to the neighbour
+                    passRemainingCardsToNeighbour();
+
+                    //increment the turn
+                    currentTurn++;
+
+                    //if the current turn is last turn of Age, do end of Age calculation
+                    if (currentTurn == 7 && currentAge > 0)
                     {
-                        dealDeck(currentAge);
-                        currentTurn = 1;
-                    }
-                    //else do end of session actions
-                    else
-                    {
-                        gameConcluded = true;
-                        endOfSessionActions();
+                        //perform end of Age actions
+                        endOfAgeActions();
+                        currentAge++;
+
+                        //if game hasn't ended, then deal deck, reset turn
+                        if (currentAge < 4)
+                        {
+                            dealDeck(currentAge);
+                            currentTurn = 1;
+                        }
+                        //else do end of session actions
+                        else
+                        {
+                            gameConcluded = true;
+                            endOfSessionActions();
+                        }
                     }
                 }
-                
+
                 updateAllGameUI();
             }
         }

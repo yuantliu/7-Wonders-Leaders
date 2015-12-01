@@ -95,48 +95,20 @@ namespace SevenWonders
                     switch (message.Substring(0, 8))
                     {
                         case "BldStrct":
-
                             qscoll = HttpUtility.ParseQueryString(message.Substring(9));
-                            gameManager.buildStructureFromHand(qscoll["Structure"], nickname, qscoll["WonderStage"], qscoll["leftCoins"], qscoll["rightCoins"] );
-
+                            gameManager.buildStructureFromHand(nickname, qscoll["Structure"], qscoll["WonderStage"], qscoll["leftCoins"], qscoll["rightCoins"] );
                             MessageHandled = true;
-
                             break;
 
-                        /*
-                    case "BldStage":
-                        //Tell the GameManager that Player has decided to build stage of wonder with card
-                        // gameManager.buildStageOfWonder(id, nickname);
-                        gameManager.buildStageOfWonder(message.Substring(8), nickname);
-
-                        MessageHandled = true;
-                        break;
-
-                    case "ComerceB":
-                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
-
-                        gameManager.buildStructureFromCommerce(nickname, qscoll[0].Value, int.Parse(qscoll[1].Value), int.Parse(qscoll[2].Value));
-
-                        MessageHandled = true;
-                        break;
-
-                    case "ComerceS":
-                        qscoll = UriExtensions.ParseQueryString(message.Substring(8));
-
-                        // gameManager.buildStageOfWonderFromCommerce(nickname, message.Substring(2));
-                        gameManager.buildStageOfWonderFromCommerce(nickname, qscoll[0].Value, int.Parse(qscoll[1].Value), int.Parse(qscoll[2].Value));
-                        MessageHandled = true;
-
-                        break;
-                        */
                         case "Discards":
                             qscoll = HttpUtility.ParseQueryString(message.Substring(9));
-                            gameManager.discardCardForThreeCoins(qscoll["Structure"], nickname);
+                            gameManager.discardCardForThreeCoins(nickname, qscoll["Structure"]);
                             MessageHandled = true;
                             break;
 
                         case "SendComm":
-                            gameManager.updateCommercePanel(nickname);
+                            qscoll = HttpUtility.ParseQueryString(message.Substring(9));
+                            gameManager.updateCommercePanel(nickname, qscoll["Structure"], qscoll["WonderStage"]);
                             MessageHandled = true;
                             break;
                     }
@@ -164,7 +136,6 @@ namespace SevenWonders
                 //if all players are ready then send the Start signal
                 else if (message[0] == 'R')
                 {
-
                     //server returns an error in the chat if there are not enough players in the game
                     //Sends the signal to re-enable the Ready buttons
                     if (numOfPlayers + numOfAI < 3)
@@ -266,44 +237,6 @@ namespace SevenWonders
                         gameManager.updateAllGameUI();
                     }
                 }
-                //B: player decides to build structure on the card
-                else if (message[0] == 'B')
-                {
-                    throw new Exception();
-                    // This is handled above, now.
-                    //get the id of the card
-                    // int id = int.Parse(message.Substring(1));
-
-                    //Tell the GameManager that Player has decided to build structure with the Card
-                    // gameManager.buildStructureFromHand(id, nickname);
-                    // gameManager.buildStructureFromHand(message.Substring(1), nickname);
-
-                    //Update the Played card panel
-                    // gameManager.updatePlayedCardPanel(nickname);
-                }
-                //S: player decides to build stage of wonder
-                else if (message[0] == 'S')
-                {
-                    throw new Exception();
-                    // this is handled above, now.
-                    //get the id of the card
-                    // int id = int.Parse(message.Substring(1));
-
-                    //Tell the GameManager that Player has decided to build stage of wonder with card
-                    // gameManager.buildStageOfWonder(id, nickname);
-                    // gameManager.buildStageOfWonder(message.Substring(1), nickname);
-                }
-                //D: player decides to discard card for three coins
-                else if (message[0] == 'D')
-                {
-                    throw new Exception();
-                    // handled above, now.
-                    //get the id of the card
-                    // int id = int.Parse(message.Substring(1));
-
-                    //Tell the GM that player has decided to discard the card for 3 coins
-                    // gameManager.discardCardForThreeCoins(id, nickname);
-                }
                 //O: player hits the Olympia power button
                 else if (message[0] == 'O')
                 {
@@ -338,69 +271,14 @@ namespace SevenWonders
                 //b: player asks for babylon information
                 else if (message[0] == 'b')
                 {
-                    gameManager.sendBabylonInformation(nickname);
-                }
-                //C player decides to open the commerce window
-                else if (message[0] == 'C')
-                {
-                    // should not be seeing this any more
-                    throw new Exception();
-                    /*
-                    //b for buildStructure Commerce
-                    if (message[1] == 'b')
-                    {
-                        //get the id of the card
-                        // int id = int.Parse(message.Substring(2));
-                        // gameManager.updateCommercePanel(id, nickname, false);
-                        gameManager.updateCommercePanel(message.Substring(2), nickname, false);
-                    }
-
-                    //s for build Stage Of Wonder Commerce
-                    else if (message[1] == 's')
-                    {
-                        // int id = int.Parse(message.Substring(2));
-                        // gameManager.updateCommercePanel(id, nickname, true);
-                        gameManager.updateCommercePanel(message.Substring(2), nickname, true);
-                    }
-                    */
-
-                    /*
-                    //player built the card from commerce window
-                    else if (message[1] == 'B')
-                    {
-                        throw new Exception();
-
-                        gameManager.buildStructureFromCommerce(nickname, message.Substring(2));
-                        //Update the Played card panel
-                        gameManager.updatePlayedCardPanel(nickname);
-
-                        throw new Exception();
-                    }
-
-                    //player build stage of wonder from commerce window
-                    else if (message[1] == 'S')
-                    {
-                        throw new Exception();
-                        gameManager.buildStageOfWonderFromCommerce(nickname, message.Substring(2));
-
-                    }
-                    */
+                    throw new Exception("Babylon UI is no longer used.");
+                    // gameManager.sendBabylonInformation(nickname);
                 }
                 //t: player has taken an action for the turn
                 else if (message[0] == 't')
                 {
                     gameManager.turnTaken(nickname);
                 }
-                /*
-                // JDF commented-out as the main window now has all the view data and this is therefore no longer needed.
-                //V(player nickname)
-                //return the view detail UI information of a given player's nickname
-                else if (message[0] == 'V')
-                {
-                    gameManager.sendViewDetailInformation(nickname, message.Substring(1));
-                }
-                */
-
                 //"L" for leave a game
                 else if (message[0] == 'L')
                 {

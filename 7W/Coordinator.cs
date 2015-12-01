@@ -34,7 +34,6 @@ namespace SevenWonders
         // JoinTableUI joinTableUI;
         OlympiaUI olympiaUI;
         HalicarnassusUI halicarnassusUI;
-        BabylonUI babylonUI;
 
         //The client that the application will use to interact with the server.
         public Client client { get; private set; }
@@ -344,6 +343,7 @@ namespace SevenWonders
             }));
         }
 
+        /*
         /// <summary>
         /// Invoke the Babylon screen at the end of the Age
         /// </summary>
@@ -357,6 +357,7 @@ namespace SevenWonders
                 babylonUI.ShowDialog();
             }));
         }
+        */
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>
@@ -640,11 +641,14 @@ namespace SevenWonders
             //receive halicarnassus or babylon information
             else if (message[0] == 'H' || message[0] == 'A')
             {
+                throw new Exception();
+                /*
                 if (message[0] == 'A')
                 {
                     receiveBabylon(message);
                 }
                 else
+                */
                 {
                     //No card in the discard pile, therefore Halicarnassus cannot be played
                     //just send back the end turn signal
@@ -738,7 +742,7 @@ namespace SevenWonders
             Application.Current.Dispatcher.Invoke(new Action(delegate
             {
                 //gameUI.showCommerceUI(s);
-                NewCommerce commerce = new NewCommerce(this, fullCardList, gameUI.commerceStructure, gameUI.commerceStage, qscoll);
+                NewCommerce commerce = new NewCommerce(this, fullCardList, qscoll);
 
                 commerce.ShowDialog();
             }));

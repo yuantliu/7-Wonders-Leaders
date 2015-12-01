@@ -133,9 +133,6 @@
     <Compile Include="GameUI\AIStrategy.xaml.cs">
       <DependentUpon>AIStrategy.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GameUI\BabylonUI.xaml.cs">
-      <DependentUpon>BabylonUI.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GameUI\BilkisUI.xaml.cs">
       <DependentUpon>BilkisUI.xaml</DependentUpon>
     </Compile>
@@ -166,10 +163,6 @@
       <DependentUpon>JoinTableUI.xaml</DependentUpon>
     </Compile>
     <Page Include="GameUI\AIStrategy.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GameUI\BabylonUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

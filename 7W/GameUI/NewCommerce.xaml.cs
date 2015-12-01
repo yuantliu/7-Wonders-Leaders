@@ -74,7 +74,7 @@ namespace SevenWonders
         /// <summary>
         /// Set the coordinator and handle CommerceInformation, which contains all necessary UI data, from GameManager
         /// </summary>
-        public NewCommerce(Coordinator coordinator, List<Card> cardList, string cardName, int wonderStage, NameValueCollection qscoll )
+        public NewCommerce(Coordinator coordinator, List<Card> cardList, /*string cardName, int wonderStage,*/ NameValueCollection qscoll)
         {
             //intialise all the UI components in the xaml file (labels, etc.) to avoid null pointer
             InitializeComponent();
@@ -88,9 +88,9 @@ namespace SevenWonders
             middleName = "Player";
             rightName = "Right Neighbor";
 
-            structureName = cardName;
+            structureName = qscoll["Structure"];
 
-            isStage = wonderStage != 0;
+            isStage = qscoll["WonderStage"] != "0";
 
             if (isStage)
             {
@@ -100,7 +100,7 @@ namespace SevenWonders
             }
             else
             {
-                cardCost = cardList.Find(x => x.name == cardName).cost;
+                cardCost = cardList.Find(x => x.name == structureName).cost;
             }
 
             leftRawMarket = false;

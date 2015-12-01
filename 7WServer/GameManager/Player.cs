@@ -12,7 +12,7 @@ namespace SevenWonders
 
         public String nickname { get; set; }
 
-        public String GetNickName() { return nickname; }
+        // public String GetNickName() { return nickname; }
 
         public Board playerBoard { get; set; }
 
@@ -20,35 +20,122 @@ namespace SevenWonders
         public int currentStageOfWonder { get; set; }
 
         //resources
-        public int brick { get; set; }
+        public int brick {
+            get {
+                int n = 0;
 
-        public int ore { get; set; }
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('B')).ToList())
+                {
+                    n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'B');
+                }
 
-        public int stone { get; set; }
+                return n;
+            }
+        }
 
-        public int wood { get; set; }
+        public int ore {
+            get
+            {
+                int n = 0;
 
-        public int glass { get; set; }
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('O')).ToList())
+                {
+                    n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'O');
+                }
 
-        public int loom { get; set; }
+                return n;
+            }
+        }
 
-        public int papyrus { get; set; }
+        public int stone {
+            get
+            {
+                int n = 0;
 
-        public int coin { get; set; }
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('S')).ToList())
+                {
+                    n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'S');
+                }
 
-        public int GetCoin() { return coin; }
+                return n;
+            }
+        }
 
-        //science
-        public int bearTrap { get; set; }
+        public int wood {
+            get
+            {
+                int n = 0;
 
-        public int tablet { get; set; }
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('W')).ToList())
+                {
+                    n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'W');
+                }
 
-        public int sextant { get; set; }
+                return n;
+            }
+        }
+
+        public int glass {
+            get
+            {
+                int n = 0;
+
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('G')).ToList())
+                {
+                    n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'G');
+                }
+
+                return n;
+            }
+        }
+
+        public int loom {
+            get
+            {
+                int n = 0;
+
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('C')).ToList())
+                {
+                    n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'C');
+                }
+
+                return n;
+            }
+        }
+
+        public int papyrus {
+            get
+            {
+                int n = 0;
+
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('P')).ToList())
+                {
+                    n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'P');
+                }
+
+                return n;
+            }
+        }
+
+        public int coin { get; private set; }
 
         //Points and stuff
-        public int victoryPoint { get; set; }
+        public int victoryPoint { get; private set; }
 
-        public int shield { get; set; }
+        public int shield
+        {
+            get
+            {
+                int n = 0;
+
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Military).ToList())
+                {
+                    n += ((MilitaryEffect)c.effect).nShields;
+                }
+
+                return n;
+            }
+        }
 
         public int lossToken { get; set; }
 
@@ -58,7 +145,7 @@ namespace SevenWonders
 
         public int conflictTokenThree { get; set; }
 
-        public int GetNumCardsInHand() { return hand.Count; }
+        // public int GetNumCardsInHand() { return hand.Count; }
 
         public List<Card> hand = new List<Card>(7);
 
@@ -70,7 +157,7 @@ namespace SevenWonders
         
         public bool usedHalicarnassus { get; set; }
 
-//        public bool { get; set; }
+//        public bool usedBabylon { get; set; }
 
         //bilkis (0 is nothing, 1 is ore, 2 is stone, 3 is glass, 4 is papyrus, 5 is loom, 6 is wood, 7 is brick
         public byte bilkis;
@@ -85,11 +172,11 @@ namespace SevenWonders
         //Player's left and right neighbours
         public Player leftNeighbour { get; set; }
 
-        public Player GetLeftNeighbour() { return leftNeighbour; }
+        // public Player GetLeftNeighbour() { return leftNeighbour; }
 
         public Player rightNeighbour { get; set; }
 
-        public Player GetRightNeighbour() { return rightNeighbour; }
+        // public Player GetRightNeighbour() { return rightNeighbour; }
 
         public Boolean changeNickName {get; set; }
         public String newNickName {get; set; }
@@ -109,9 +196,9 @@ namespace SevenWonders
         //public bool GetRightManu() { return rightManu; }
 
         //Leaders pile. The pile that holds the unplayed leaders cards
-        public List<Card> leadersPile = new List<Card>();
+        //public List<Card> leadersPile = new List<Card>();
 
-        public List<Card> GetLeadersPile() { return leadersPile; }
+       // public List<Card> GetLeadersPile() { return leadersPile; }
 
         //interface for vanilla AI
         public AIMoveBehaviour AIBehaviour;
@@ -121,9 +208,9 @@ namespace SevenWonders
         private GameManager gm;
 
         //The Multiple Resource DAG
-        public DAG dag { get; set; }
+        public DAG dag { get; private set; }
 
-        public DAG GetDAG() { return dag; }
+        // public DAG GetDAG() { return dag; }
 
         public bool bUIRequiresUpdating { get; set; }
 
@@ -170,9 +257,20 @@ namespace SevenWonders
         /// Stored actions to be executed at the end of each turn
         /// </summary>
         /// <param name="s"></param>
-        public void storeAction(Effect s)
+        public void storeAction(Effect e)
         {
-            actions.Add(s);
+            if (e is CoinEffect || e is ResourceEffect || e is CoinsAndPointsEffect)
+            {
+                // the effects of these cards do not come into play until the next turn.
+                // put them on the actions queue to be run after all players have turned
+                // in their card.
+                actions.Add(e);
+            }
+            else
+            {
+                // other actions 
+                executeActionNow(e);
+            }
         }
 
         /// <summary>
@@ -273,6 +371,95 @@ namespace SevenWonders
             endOfGameActions.Add(s);
         }
         */
+        public void executeActionNow(Effect effect)
+        {
+            if (effect is CommercialDiscountEffect)
+            {
+                CommercialDiscountEffect cde = effect as CommercialDiscountEffect;
+
+                // Set discount effects for future transactions.
+                switch (cde.effectString[1])
+                {
+                    case 'R':
+                        switch (cde.effectString[0])
+                        {
+                            case 'L':
+                                if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.None)
+                                    rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.LeftNeighbor;
+                                else if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.RightNeighbor)
+                                    rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
+                                break;
+
+                            case 'R':
+                                if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.None)
+                                    rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.RightNeighbor;
+                                else if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.LeftNeighbor)
+                                    rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
+                                break;
+
+                            case 'B':
+                                rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
+                                break;
+                        }
+                        break;
+
+                    case 'G':
+                        if (cde.effectString[0] == 'B')
+                            goodsDiscount = CommercialDiscountEffect.Goods.BothNeighbors;
+                        break;
+                }
+            }
+            else if (effect is SpecialAbilityEffect)
+            {
+                SpecialAbilityEffect sae = effect as SpecialAbilityEffect;
+
+                switch (sae.type)
+                {
+                    case SpecialAbilityEffect.SpecialType.ShipOwnerGuild:
+                        // nothing to do; this card will be included in the end of game point total
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.ScienceWild:
+                        // nothing to do; this card will be included in the end of game point total
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.PlayLastCardInAge:
+                        // enable Babylon's ability to play the last card in the hand rather than
+                        // discarding it.
+                        // usedBabylon = false;
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree:
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_2VP:
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_1VP:
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge:
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.CopyGuildFromNeighbor:
+                        break;
+
+                    case SpecialAbilityEffect.SpecialType.Rhodos_B_1M3VP3C:
+                        break;
+                    case SpecialAbilityEffect.SpecialType.Rhodos_B_1M4VP4C:
+                        break;
+                }
+            }
+            else if (effect is MilitaryEffect || effect is ScienceEffect)
+            {
+                // no action required.  Military cards are used at the end of each age
+                // and Science cards are used at the end of the game.
+            }
+            else
+            {
+                throw new Exception("Unexpected effect type in executeActionNow()");
+            }
+        }
 
         //Execute actions
         //change the Player score information based on the actions
@@ -286,7 +473,6 @@ namespace SevenWonders
                 gm = (LeadersGameManager)gm;
             }
             */
-
             //go through each action and execute the actions stored
             foreach (Effect act in actions)
             {
@@ -297,10 +483,12 @@ namespace SevenWonders
                     // add or subtract coins
                     coin += ((CoinEffect)act).coins;
                 }
+                /*
                 else if (act is MilitaryEffect)
                 {
-                    shield += ((MilitaryEffect)act).nShields;
+                    // shield += ((MilitaryEffect)act).nShields;
                 }
+                */
                 //category 1: give one kind of non-science thing
                 // else if (actions[i][0] == '1')
                 else if (act is ResourceEffect)
@@ -308,74 +496,34 @@ namespace SevenWonders
                     ResourceEffect e = act as ResourceEffect;
                     //increase the appropriate field by num
                     // int num = int.Parse(act[0] + "");
-                   //  int num = e.multiplier;
-
-                    // These values are needed by the AI, I believe.  How is this supposed to
-                    // work when there's a choice of 2, 3, or 4 resources?
-                    switch (e.resourceTypes[0])
-                    {
-                        case 'O':
-                            ++ore;
-                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'O') ++ore;
-                            break;
-                        case 'B':
-                            ++brick;
-                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'B') ++brick;
-                            break;
-                        case 'S':
-                            ++stone;
-                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'S') ++stone;
-                            break;
-                        case 'W':
-                            ++wood;
-                            if (e.resourceTypes.Length == 2 && e.resourceTypes[1] == 'W') ++wood;
-                            break;
-                        case '$':
-                            throw new Exception();
-                            // money should be transacted via CoinEffect types.
-                            // coin += e.multiplier;
-                            break;
-                        case 'C':
-                            ++loom;
-                            break;
-                        case 'P':
-                            ++papyrus;
-                            break;
-                        case 'G':
-                            ++glass;
-                            break;
-                            /*
-                        case 'd':
-                        case 'D':
-                            break;
-                            */
-                        default:
-                            throw new Exception();
-                    }
-
+                    //  int num = e.multiplier;
                     dag.add(e);
                 }
-                //category 2: add one science
-                // else if (actions[i][0] == '2')
-                else if (act is ScienceEffect)
+                /*
+            //category 2: add one science
+            // else if (actions[i][0] == '2')
+            else if (act is ScienceEffect)
+            {
+                switch (((ScienceEffect)act).symbol)
                 {
-                    switch (((ScienceEffect)act).symbol)
-                    {
-                        case ScienceEffect.Symbol.Compass:
-                            sextant++;
-                            break;
-                        case ScienceEffect.Symbol.Gear:
-                            bearTrap++;
-                            break;
-                        case ScienceEffect.Symbol.Tablet:
-                            tablet++;
-                            break;
-                        default:
-                            throw new Exception();
-                    }
+                    case ScienceEffect.Symbol.Compass:
+                        sextant++;
+                        break;
+                    case ScienceEffect.Symbol.Gear:
+                        // bearTrap++;
+                        break;
+                    case ScienceEffect.Symbol.Tablet:
+                        tablet++;
+                        break;
+                    default:
+                        throw new Exception();
                 }
+            }
+                */
                 //category 3: market effect
                 // else if (actions[i][0] == '3')
+                /*
+                // executed when card is played.
                 else if (act is CommercialDiscountEffect)
                 {
                     CommercialDiscountEffect cde = act as CommercialDiscountEffect;
@@ -411,45 +559,8 @@ namespace SevenWonders
                                 goodsDiscount = CommercialDiscountEffect.Goods.BothNeighbors;
                             break;
                     }
-                    /*
-                    //set the market effects
-                    CommercialDiscountEffect e = act as CommercialDiscountEffect;
-                    if (e.affects == CommercialDiscountEffect.Affects.RawMaterial)
-                    {
-                        switch(e.appliesTo)
-                        {
-                            case CommercialDiscountEffect.AppliesTo.LeftNeighbor:
-                                leftRaw = true;
-                                break;
-
-                            case CommercialDiscountEffect.AppliesTo.RightNeighbor:
-                                rightRaw = true;
-                                break;
-
-                            case CommercialDiscountEffect.AppliesTo.BothNeighbors:
-                                leftRaw = true; rightRaw = true;
-                                break;
-                        }
-                    }
-                    else if (e.affects == CommercialDiscountEffect.Affects.Goods)
-                    {
-                        switch (e.appliesTo)
-                        {
-                            case CommercialDiscountEffect.AppliesTo.LeftNeighbor:
-                                leftManu = true;
-                                break;
-
-                            case CommercialDiscountEffect.AppliesTo.RightNeighbor:
-                                rightManu = true;
-                                break;
-
-                            case CommercialDiscountEffect.AppliesTo.BothNeighbors:
-                                leftManu = true; rightManu = true;
-                                break;
-                        }
-                    }
-                    */
                 }
+                */
                 //category 4: gives a choice between different things
                 //Add to the DAG
                 // else if (actions[i][0] == '4')
@@ -513,48 +624,13 @@ namespace SevenWonders
 
                 }
                 //category 6: special guild cards
+                // executed when card is played.
                 //put these directly into executeEndOfGameActions array
+                /*
                 else if (act is SpecialAbilityEffect)
                 {
-                    SpecialAbilityEffect sae = act as SpecialAbilityEffect;
 
-                    switch(sae.type)
-                    {
-                        case SpecialAbilityEffect.SpecialType.ShipOwnerGuild:
-                            // nothing to do; this card will be included in the end of game point total
-                            break;
-
-                        case SpecialAbilityEffect.SpecialType.ScienceWild:
-                            // nothing to do; this card will be included in the end of game point total
-                            break;
-
-                        case SpecialAbilityEffect.SpecialType.PlayLastCardInAge:
-                            // Nothing to do here.  This ability is handled in GameManager.turnTaken().
-                            //usedBabylon = false;
-                            break;
-
-                        case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree:
-                            break;
-
-                        case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_2VP:
-                            break;
-
-                        case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_1VP:
-                            break;
-
-                        case SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge:
-                            break;
-
-                        case SpecialAbilityEffect.SpecialType.CopyGuildFromNeighbor:
-                            break;
-
-                        case SpecialAbilityEffect.SpecialType.Rhodos_B_1M3VP3C:
-                            break;
-                        case SpecialAbilityEffect.SpecialType.Rhodos_B_1M4VP4C:
-                            break;
-                    }
                 }
-                /*
                 //category 7: hard coded board powers
                 // else if (actions[i][0] == '7')
                 else if (act is SpecialBoardEffect)
@@ -720,14 +796,18 @@ namespace SevenWonders
         int CalculateSciencePoints()
         {
             int scienceGroupMultiplier = 7;
-
+            int maxScienceScore = 0;
             // if the Aristotle leader card is in play for this player, change the group multiplier to 10.
 
-            int scienceScore = CalculateScienceGroupScore(sextant, bearTrap, tablet, scienceGroupMultiplier);
+            // int scienceScore = CalculateScienceGroupScore(sextant, bearTrap, tablet, scienceGroupMultiplier);
 
             // The player can have up to two science wild cards: Babylon wonder and the Scientists' guild.
             // Try every possible combination of these cards and select the one that yields the highest score
             // for the science cards.
+            int nCompass = playedStructure.Where(x => x.structureType == StructureType.Science && ((ScienceEffect)x.effect).symbol == ScienceEffect.Symbol.Compass).Count();
+            int nGear = playedStructure.Where(x => x.structureType == StructureType.Science && ((ScienceEffect)x.effect).symbol == ScienceEffect.Symbol.Gear).Count();
+            int nTablet = playedStructure.Where(x => x.structureType == StructureType.Science && ((ScienceEffect)x.effect).symbol == ScienceEffect.Symbol.Tablet).Count();
+
             int nScienceWildCards = playedStructure.Where(x => x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.ScienceWild).Count();
 
             for (int i = 0; i <= nScienceWildCards; ++i)
@@ -736,14 +816,14 @@ namespace SevenWonders
                 {
                     for (int k = 0; k <= nScienceWildCards - i - j; ++k)
                     {
-                        int score = CalculateScienceGroupScore(sextant+i, bearTrap+j, tablet+k, scienceGroupMultiplier);
-                        if (score > scienceScore)
-                            scienceScore = score;
+                        int score = CalculateScienceGroupScore(nCompass + i, nGear + j, nTablet + k, scienceGroupMultiplier);
+                        if (score > maxScienceScore)
+                            maxScienceScore = score;
                     }
                 }
             }
 
-            return scienceScore;
+            return maxScienceScore;
         }
 
 
