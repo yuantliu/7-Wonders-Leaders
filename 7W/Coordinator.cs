@@ -344,6 +344,7 @@ namespace SevenWonders
             }));
         }
 
+        /*
         /// <summary>
         /// Invoke the Babylon screen at the end of the Age
         /// </summary>
@@ -357,6 +358,7 @@ namespace SevenWonders
                 babylonUI.ShowDialog();
             }));
         }
+        */
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>
@@ -428,6 +430,24 @@ namespace SevenWonders
 
                 switch (message.Substring(0, 8))
                 {
+                    case "BabylonB":        // Get player's action for playing the last card in the age.
+                        {
+                            // we cannot use the nicer NameValuePair because there may be two of the same
+                            // card in the hand and these would be duplicate keys.  So we have to use a data
+                            // structure 
+                            IList<KeyValuePair<string, string>> qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+
+                            //open the babylon window
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                babylonUI = new BabylonUI(this, qscoll);
+                                babylonUI.ShowDialog();
+                            }));
+                        }
+
+                        messageHandled = true;
+                        break;
+
                     case "CardPlay":
                         qcoll = HttpUtility.ParseQueryString(message.Substring(9));
 
@@ -640,11 +660,14 @@ namespace SevenWonders
             //receive halicarnassus or babylon information
             else if (message[0] == 'H' || message[0] == 'A')
             {
+                throw new Exception();
+                /*
                 if (message[0] == 'A')
                 {
                     receiveBabylon(message);
                 }
                 else
+                */
                 {
                     //No card in the discard pile, therefore Halicarnassus cannot be played
                     //just send back the end turn signal

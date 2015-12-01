@@ -281,7 +281,7 @@ namespace SevenWonders
                 p.usedHalicarnassus = true;
 
                 //always reactivate Babylon after every age
-                if (p.playerBoard.name == "BB" && p.currentStageOfWonder >= 2)
+                if (p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2)
                 {
                     p.usedBabylon = false;
                 }
@@ -1234,6 +1234,8 @@ namespace SevenWonders
         {
             Player p = player[nickname];
 
+            /*
+
             //information to be sent
             String information = "A";
 
@@ -1248,9 +1250,18 @@ namespace SevenWonders
             information += p.isCardBuildable(lastCard);
             //get if stage is buildable from hand
             information += p.isStageBuildable();
+            */
+
+            Card lastCard = p.hand[0];
+
+            string babylonBmsg = "BabylonB";
+
+            babylonBmsg += string.Format("&{0}={1}", lastCard.name, p.isCardBuildable(lastCard).ToString());
+
+            babylonBmsg += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
 
             //send the information
-            gmCoordinator.sendMessage(p, information);
+            gmCoordinator.sendMessage(p, babylonBmsg);
         }
 
         /*
@@ -1353,7 +1364,7 @@ namespace SevenWonders
             Player p = player[nickname];
 
             //if player doesn't even have Halicarnassus or Babylon board, then no more action is required
-            if (p.playerBoard.name != "BB" && p.playerBoard.name[0] != 'H')
+            if (p.playerBoard.name != "Babylon (B)" && p.playerBoard.name.Substring(0, 13) != "Halikarnassos")
             {
                 numOfPlayersThatHaveTakenTheirTurn++;
             }
@@ -1378,7 +1389,6 @@ namespace SevenWonders
 
                 p.usedHalicarnassus = true;
             }
-
             //Halicarnassus/Babylon action has been taken or not activated. Increment turn as normal.
             else if (p.usedHalicarnassus || p.usedBabylon)
             {

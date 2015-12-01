@@ -19,70 +19,79 @@ namespace SevenWonders
     public partial class BabylonUI : Window
     {
 		Coordinator coordinator;
-		int id;
+		string cardName;
         bool closeButton = true;
-        char build, stage;
-	
-        public BabylonUI(Coordinator c, String information)
+        Buildable isCardBuildable, stageBuildable;
+
+        public BabylonUI(Coordinator c, IList<KeyValuePair<string, string>> qscoll)
         {
 			coordinator = c;
 
             InitializeComponent();
 
+            cardName = qscoll[0].Key;
+
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.Fant);
-
-			//information of the form
-			//A_(id)_TT
-			//get the ID
-            int idlength = 0;
-			for(int i = 2; information[i] != '_'; i++){
-				idlength++;
-			}
-			
-			//currently at the second _
-			id = int.Parse(information.Substring(2, idlength));
-
-            //set the image
-            String currentPath = Environment.CurrentDirectory;
 
             BitmapImage cardImageSource = new BitmapImage();
             cardImageSource.BeginInit();
-            cardImageSource.UriSource = new Uri(currentPath + @"\Resources\cards\" + id + ".jpg");
+            cardImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/cards/" + cardName + ".jpg");
             cardImageSource.EndInit();
+
             image1.Source = cardImageSource;
-			
-			//move 1 array element past the _, grab the build information
-            build = information.Substring(2 + idlength + 1)[0];
-            stage = information.Substring(2 + idlength + 1)[1];
 
-            //do the build structure buttons
-            if (build == 'T')
+            isCardBuildable = (Buildable)Enum.Parse(typeof(Buildable), qscoll[0].Value);
+
+            switch (isCardBuildable)
             {
-                buildStructureButton.Content = "Build Structure";
-            }
-            else if (build == 'C')
-            {
-                buildStructureButton.Content = "Commerce";
-            }
-            else
-            {
-                buildStructureButton.Content = "Build Structure";
-                buildStructureButton.IsEnabled = false;
+                case Buildable.True:
+                    buildStructureButton.Content = "Build this structure";
+                    break;
+
+                case Buildable.CommerceRequired:
+                    buildStructureButton.Content = "Build this structure (commerce required)";
+                    buildStructureButton.IsEnabled = true;
+                    break;
+
+                case Buildable.InsufficientResources:
+                    buildStructureButton.Content = "Resource requirements not met for building this structure.";
+                    buildStructureButton.IsEnabled = false;
+                    break;
+
+                case Buildable.InsufficientCoins:
+                    buildStructureButton.Content = "You don't have enough coins to buy this structure.";
+                    buildStructureButton.IsEnabled = false;
+                    break;
+
+                case Buildable.StructureAlreadyBuilt:
+                    buildStructureButton.Content = "You have already built one of these structures.";
+                    buildStructureButton.IsEnabled = false;
+                    break;
+
             }
 
-            //do the build stage structure buttons
-            if (stage == 'T')
+            stageBuildable = (Buildable)Enum.Parse(typeof(Buildable), qscoll[1].Value);
+
+            switch (stageBuildable)
             {
-                buildStageButton.Content = "Build Stage";
-            }
-            else if (stage == 'C')
-            {
-                buildStageButton.Content = "Commerce";
-            }
-            else
-            {
-                buildStageButton.Content = "Build Stage";
-                buildStageButton.IsEnabled = false;
+                case Buildable.True:
+                    buildStageButton.Content = "Build a wonder stage with this card";
+                    break;
+
+                case Buildable.CommerceRequired:
+                    buildStageButton.Content = "Build a wonder stage with this card (commerce required)";
+                    break;
+
+                case Buildable.InsufficientCoins:
+                case Buildable.InsufficientResources:
+                    buildStageButton.Content = "Resource requirements not met";
+                    buildStageButton.IsEnabled = false;
+                    break;
+
+                case Buildable.StructureAlreadyBuilt:
+                    buildStageButton.Content = "All wonder stages have been built";
+                    buildStageButton.IsEnabled = false;
+                    break;
             }
 
             //do the discard button
@@ -92,21 +101,21 @@ namespace SevenWonders
         private void buildStructureButton_Click(object sender, RoutedEventArgs e)
         {
             //card is buildable
-            if (build == 'T')
+            if (isCardBuildable == Buildable.True)
             {
                 //send the instruction for building the card
                 //B(id)
-                coordinator.sendToHost("B" + id);
+                coordinator.sendToHost(string.Format("BldStrct&WonderStage=0&Structure={0}", cardName));
                 closeButton = false;
                 //end the turn
                 coordinator.endTurn();
                 Close();
             }
-            else if (build == 'C')
+            else if (isCardBuildable == Buildable.CommerceRequired)
             {
                 //use commerce
                 //closeButton = false;
-                coordinator.sendToHost("Cb" + id);
+                coordinator.sendToHost("SendComm");     // the server's response will open the Commerce Dialog box
                 Close();
             }
         }
@@ -116,28 +125,25 @@ namespace SevenWonders
             //send the instruction for building the stage
             //S(id)
             //card is buildable
-            if (build == 'T')
+            if (stageBuildable == Buildable.True)
             {
-                coordinator.sendToHost("S" + id);
+                coordinator.sendToHost(string.Format("BldStrct&WonderStage=1&Structure={0}", cardName));
                 closeButton = false;
                 //end the turn
                 coordinator.endTurn();
                 Close();
             }
-            else if (build == 'C')
+            else if (stageBuildable == Buildable.CommerceRequired)
             {
                 //use commerce
                 //closeButton = false;
-                coordinator.sendToHost("Cs" + id);
+                coordinator.sendToHost("SendComm");     // the server's response will open the Commerce Dialog box
                 Close();
             }
-            
         }
 
         private void discardButton_Click(object sender, RoutedEventArgs e)
         {
-            //send the instruction for discarding the card
-            //D(id)
             Close();
         }
 
@@ -146,13 +152,11 @@ namespace SevenWonders
             if (closeButton)
             {
                 //default action: discard card
-                coordinator.sendToHost("D" + id);
+                coordinator.sendToHost(string.Format("Discards&Structure={0}", cardName));
+                // coordinator.sendToHost("DiscardS" + id);
                 //end the turn
                 coordinator.endTurn();
             }
         }
-
-        
-
     }
 }
