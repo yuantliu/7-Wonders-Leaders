@@ -157,7 +157,7 @@ namespace SevenWonders
         
         public bool usedHalicarnassus { get; set; }
 
-        public bool usedBabylon { get; set; }
+//        public bool usedBabylon { get; set; }
 
         //bilkis (0 is nothing, 1 is ore, 2 is stone, 3 is glass, 4 is papyrus, 5 is loom, 6 is wood, 7 is brick
         public byte bilkis;
@@ -231,7 +231,7 @@ namespace SevenWonders
 
             //set used halicarnassus and babylon to true, to make sure its not available
             usedHalicarnassus = true;
-            usedBabylon = true;
+            // usedBabylon = true;
 
             //set bilkis to nothing
             bilkis = 0;
@@ -426,7 +426,7 @@ namespace SevenWonders
                     case SpecialAbilityEffect.SpecialType.PlayLastCardInAge:
                         // enable Babylon's ability to play the last card in the hand rather than
                         // discarding it.
-                        usedBabylon = false;
+                        // usedBabylon = false;
                         break;
 
                     case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree:

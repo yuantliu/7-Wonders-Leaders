@@ -58,10 +58,10 @@ namespace SevenWonders
 
         // List<Card> fullCardList = new List<Card>();
 
-        public string commerceStructure { get; private set; }
+//        public string commerceStructure { get; private set; }
         // 0 if we're building a structure, 1-4 if we're building a stage
 
-        public int commerceStage { get; private set; }
+//        public int commerceStage { get; private set; }
 
         //constructor: create the UI. create the Coordinator object
         public MainWindow(Coordinator coordinator)
@@ -286,9 +286,7 @@ namespace SevenWonders
                         }
                         else
                         {
-                            commerceStructure = id_buildable[handPanel.SelectedIndex].Item1;
-                            commerceStage = 0;
-                            coordinator.sendToHost("SendComm");     // the server's response will open the Commerce Dialog box
+                            coordinator.sendToHost("SendComm&WonderStage=0&Structure=" + id_buildable[handPanel.SelectedIndex].Item1);     // the server's response will open the Commerce Dialog box
                         }
                         break;
                     case "btnBuildWonderStage":
@@ -302,9 +300,7 @@ namespace SevenWonders
                         }
                         else
                         {
-                            commerceStructure = id_buildable[handPanel.SelectedIndex].Item1;
-                            commerceStage = 1;
-                            coordinator.sendToHost("SendComm");     // the server's response will open the Commerce Dialog box
+                            coordinator.sendToHost("SendComm&WonderStage=1&Structure=" + id_buildable[handPanel.SelectedIndex].Item1);     // the server's response will open the Commerce Dialog box
                         }
                         break;
                     case "btnDiscardStructure":

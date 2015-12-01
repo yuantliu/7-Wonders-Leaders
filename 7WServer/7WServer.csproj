@@ -51,6 +51,8 @@
     <Compile Include="GameManager\AI-LEADERS-BLACKLIST.cs" />
     <Compile Include="GameManager\AIMoveAlgorithm0.cs" />
     <Compile Include="GameManager\AIMoveAlgorithm1.cs" />
+    <Compile Include="GameManager\AIMoveAlgorithm2.cs" />
+    <Compile Include="GameManager\AIMoveAlgorithm3.cs" />
     <Compile Include="GameManager\AIMoveAlgorithm4.cs" />
     <Compile Include="GameManager\AIMoveBehaviour.cs" />
     <Compile Include="GameManager\Board.cs" />
