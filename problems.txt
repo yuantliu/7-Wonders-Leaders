@@ -3,7 +3,6 @@ Added by James Fairweather
 UI problems:
   - UI is too crowded.  Change it to be a scrollable horizontal panel with one player state in each panel that's much larger.  Should be large enough to show complete state of plus both neighbors.
   - Can we use other nicknames?
-  - Some cards do not have icons.
   - it would be nice if PlayerStatePanels were created dynamically so we maximized our use of space on the Main Window.
     The current behavior is that all 8 panels are created statically and only the ones in use are activated.
   - Conflict tokens and losses could be presented using icons instead of text labels, put them on the wonder boards.
