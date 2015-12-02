@@ -144,14 +144,18 @@ namespace SevenWonders
             foreach (KeyValuePair<string, string> kvp in cardsAndStates)
             {
                 if (kvp.Key == "CanDiscard")
-                    canDiscardStructure = (bool)Enum.Parse(typeof(bool), kvp.Value);
-
-                Tuple<string, Buildable> t = new Tuple<string, Buildable>(kvp.Key, (Buildable)Enum.Parse(typeof(Buildable), kvp.Value));
-
-                if (!t.Item1.StartsWith("WonderStage"))
-                    id_buildable[buildableIndexi++] = t;
+                {
+                    canDiscardStructure = kvp.Value == "True";
+                }
                 else
-                    stageBuildable = t.Item2;
+                {
+                    Tuple<string, Buildable> t = new Tuple<string, Buildable>(kvp.Key, (Buildable)Enum.Parse(typeof(Buildable), kvp.Value));
+
+                    if (!t.Item1.StartsWith("WonderStage"))
+                        id_buildable[buildableIndexi++] = t;
+                    else
+                        stageBuildable = t.Item2;
+                }
             }
 
             // should actually subtract the number of wonder stages that were included.  China can build them in any order the player wishes.

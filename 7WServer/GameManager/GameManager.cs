@@ -1063,8 +1063,7 @@ namespace SevenWonders
                         // The free build for Halikarnassos/Solomon requires the card be put in play.
                         // It cannot be used to build a wonder stage, nor can it be discarded for 3
                         // coins.
-                        strHand += string.Format("&WonderStage{0}=0", p.currentStageOfWonder, Buildable.InsufficientResources.ToString());
-                        strHand += string.Format("&CanDiscard={0}", false.ToString());
+                        strHand += string.Format("&WonderStage{0}={1}&CanDiscard=False", p.currentStageOfWonder, Buildable.InsufficientResources.ToString());
                     }
                     else
                     {

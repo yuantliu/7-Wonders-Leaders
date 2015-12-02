@@ -552,6 +552,25 @@
     <Resource Include="Resources\Images\boards\Roma %28A%29.jpg" />
     <Resource Include="Resources\Images\boards\Roma %28B%29.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\arena.png" />
+    <Resource Include="Resources\Images\Icons\Bazar.png" />
+    <Resource Include="Resources\Images\Icons\builders_guild.png" />
+    <Resource Include="Resources\Images\Icons\chamber_of_commerce.png" />
+    <Resource Include="Resources\Images\Icons\craftsmens_guild.png" />
+    <Resource Include="Resources\Images\Icons\Haven.png" />
+    <Resource Include="Resources\Images\Icons\Lighthouse.png" />
+    <Resource Include="Resources\Images\Icons\magistrates_guild.png" />
+    <Resource Include="Resources\Images\Icons\philosophers_guild.png" />
+    <Resource Include="Resources\Images\Icons\scientists_guild.png" />
+    <Resource Include="Resources\Images\Icons\shipowners_guild.png" />
+    <Resource Include="Resources\Images\Icons\spies_guild.png" />
+    <Resource Include="Resources\Images\Icons\strategists_guild.png" />
+    <Resource Include="Resources\Images\Icons\Tavern.png" />
+    <Resource Include="Resources\Images\Icons\traders_guild.png" />
+    <Resource Include="Resources\Images\Icons\Vineyard.png" />
+    <Resource Include="Resources\Images\Icons\workers_guild.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
