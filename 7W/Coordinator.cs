@@ -33,7 +33,6 @@ namespace SevenWonders
         TableUI tableUI;
         // JoinTableUI joinTableUI;
         OlympiaUI olympiaUI;
-        HalicarnassusUI halicarnassusUI;
 
         //The client that the application will use to interact with the server.
         public Client client { get; private set; }
@@ -329,6 +328,7 @@ namespace SevenWonders
             // initGameUI();
         }
 
+        /*
         /// <summary>
         /// Invoke the halicarnassus screen at the end of the Age
         /// </summary>
@@ -343,7 +343,6 @@ namespace SevenWonders
             }));
         }
 
-        /*
         /// <summary>
         /// Invoke the Babylon screen at the end of the Age
         /// </summary>
@@ -445,10 +444,24 @@ namespace SevenWonders
                     case "CommData":        // Commerce data
 
                         qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            //gameUI.showCommerceUI(s);
+                            NewCommerce commerce = new NewCommerce(this, fullCardList, qcoll);
 
-                        ShowCommerceDialog(qcoll);
-
+                            commerce.ShowDialog();
+                        }));
                         messageHandled = true;
+                        break;
+
+                    case "FinalSco":
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            FinalScore fs = new FinalScore();// this, fullCardList, qcoll);
+
+                            fs.ShowDialog();
+                        }));
                         break;
 
                     case "Military":
@@ -648,7 +661,6 @@ namespace SevenWonders
                     receiveBabylon(message);
                 }
                 else
-                */
                 {
                     //No card in the discard pile, therefore Halicarnassus cannot be played
                     //just send back the end turn signal
@@ -661,6 +673,7 @@ namespace SevenWonders
                         receiveHalicarnassus(message);
                     }
                 }
+                */
             }
             //received an unable to join message from the server
             //UC-02 R07
@@ -722,30 +735,6 @@ namespace SevenWonders
                 // recieved a message from the server that the client cannot handle.
                 throw new Exception();
             }
-        }
-
-        /*
-        public void createAndUpdateCommerce(string s)
-        {
-            Application.Current.Dispatcher.Invoke(new Action(delegate
-            {
-                //gameUI.showCommerceUI(s);
-                NewCommerce commerce = new NewCommerce(this, s);
-
-                commerce.ShowDialog();
-            }));
-        }
-        */
-
-        void ShowCommerceDialog(NameValueCollection qscoll)
-        {
-            Application.Current.Dispatcher.Invoke(new Action(delegate
-            {
-                //gameUI.showCommerceUI(s);
-                NewCommerce commerce = new NewCommerce(this, fullCardList, qscoll);
-
-                commerce.ShowDialog();
-            }));
         }
 
         /// <summary>

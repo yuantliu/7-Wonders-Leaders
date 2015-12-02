@@ -143,6 +143,9 @@
     <Compile Include="GameUI\CourtesanUI.xaml.cs">
       <DependentUpon>CourtesanUI.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameUI\FinalScore.xaml.cs">
+      <DependentUpon>FinalScore.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameUI\Help.xaml.cs">
       <DependentUpon>Help.xaml</DependentUpon>
     </Compile>
@@ -172,6 +175,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GameUI\CourtesanUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameUI\FinalScore.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
