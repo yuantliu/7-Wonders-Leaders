@@ -35,6 +35,8 @@ AI players
 
 Technical stories:
 
+- There may still be a bug if both Babylon and Halikarnassos build their extra card on the same turn. 
+
 - Tested Wonders: Alexandria (both sides), Babylon (both sides), Ephesos (both sides)
 
 - The list of players (the datagrid) isn't hooked up at the match-making.

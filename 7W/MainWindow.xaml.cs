@@ -56,12 +56,7 @@ namespace SevenWonders
 
         Buildable stageBuildable;
 
-        // List<Card> fullCardList = new List<Card>();
-
-//        public string commerceStructure { get; private set; }
-        // 0 if we're building a structure, 1-4 if we're building a stage
-
-//        public int commerceStage { get; private set; }
+        bool canDiscardStructure;
 
         //constructor: create the UI. create the Coordinator object
         public MainWindow(Coordinator coordinator)
@@ -143,9 +138,14 @@ namespace SevenWonders
 
             id_buildable = new Tuple<string, Buildable>[cardsAndStates.Count];
 
+            canDiscardStructure = true;
+
             int buildableIndexi = 0;
             foreach (KeyValuePair<string, string> kvp in cardsAndStates)
             {
+                if (kvp.Key == "CanDiscard")
+                    canDiscardStructure = (bool)Enum.Parse(typeof(bool), kvp.Value);
+
                 Tuple<string, Buildable> t = new Tuple<string, Buildable>(kvp.Key, (Buildable)Enum.Parse(typeof(Buildable), kvp.Value));
 
                 if (!t.Item1.StartsWith("WonderStage"))
@@ -257,7 +257,8 @@ namespace SevenWonders
                     break;
             }
 
-            btnDiscardStructure.IsEnabled = true;
+            if (canDiscardStructure)
+                btnDiscardStructure.IsEnabled = true;
         }
 
         /// <summary>
@@ -311,60 +312,8 @@ namespace SevenWonders
                         coordinator.endTurn();
                         break;
                 }
-
-                /*
-                if (s.StartsWith("Build_"))
-                {
-                    playedButton.IsEnabled = false;
-                    playerPlayedHisTurn = true;
-                    // bilkisButton.IsEnabled = false;
-                    coordinator.sendToHost("B" + s.Substring(6));
-                    coordinator.endTurn();
-                }
-                else if (s.StartsWith("Stage_"))
-                {
-                    playedButton.IsEnabled = false;
-                    playerPlayedHisTurn = true;
-                    // bilkisButton.IsEnabled = false;
-                    coordinator.sendToHost("S" + s.Substring(6));
-                    coordinator.endTurn();
-                }
-                else if (s.StartsWith("Discard_"))
-                {
-                    playedButton.IsEnabled = false;
-                    playerPlayedHisTurn = true;
-                    // bilkisButton.IsEnabled = false;
-                    coordinator.sendToHost("D" + s.Substring(8));
-                    coordinator.endTurn();
-                }
-
-                else if (s.StartsWith("BuildCommerce_"))
-                {
-                    coordinator.sendToHost("Cb" + s.Substring(14));
-                }
-
-                else if (s.StartsWith("StageCommerce_"))
-                {
-                    coordinator.sendToHost("Cs" + s.Substring(14));
-                }
-
-                else if (s.StartsWith("Recruit_"))
-                {
-                    playedButton.IsEnabled = false;
-                    playerPlayedHisTurn = true;
-                    // bilkisButton.IsEnabled = false;
-                    coordinator.sendToHost("l" + s.Substring(8));
-                    coordinator.endTurn();
-                }
-                else
-                {
-                    throw new Exception();
-                }
-                */
             }
         }
-
-        
 
         /// <summary>
         /// display the Board, given the String from Coordinator

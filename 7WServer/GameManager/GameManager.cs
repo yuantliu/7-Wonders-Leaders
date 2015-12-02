@@ -36,6 +36,7 @@ namespace SevenWonders
 
         bool gettingBabylonExtraCard = false;
         bool playingCardFromDiscardPile = false;
+        List<Card> savedHandWhenPlayingFromDiscardPile;
 
         string[] playerNicks;
 
@@ -526,6 +527,10 @@ namespace SevenWonders
             while(board[randomBoard.Key].inPlay == true)
             {
                 ++index;
+
+                if (index > 13)
+                    index = 0;
+
                 randomBoard = board.ElementAt(index);
             }
 
@@ -941,7 +946,7 @@ namespace SevenWonders
         /// </summary>
         public void executeActionsAtEndOfTurn()
         {
-            if (!gettingBabylonExtraCard)
+            if (!gettingBabylonExtraCard && !playingCardFromDiscardPile)
             {
                 //make AI moves
                 executeAIActions();
@@ -1034,6 +1039,7 @@ namespace SevenWonders
                     continue;
 
                 // Check if we're in a special state - playing a card from the discard pile
+                // only the player (or players) who are getting the extra turn can proceed here.
                 if (playingCardFromDiscardPile && !p.playCardFromDiscardPile)
                     continue;
 
@@ -1044,12 +1050,21 @@ namespace SevenWonders
 
                     if (playingCardFromDiscardPile)
                     {
+                        savedHandWhenPlayingFromDiscardPile = p.hand;   // save the player's hand
+                        p.hand = discardPile;                           // the player's hand now points to the discard pile.
+
                         foreach (Card card in discardPile)
                         {
-                            // Do not include structures that have already been built by the players' city.
+                            // Filter out structures that have already been built in the players' city.
                             if (p.isCardBuildable(card) != Buildable.StructureAlreadyBuilt)
                                 strHand += string.Format("&{0}={1}", card.name, Buildable.True.ToString());
                         }
+
+                        // The free build for Halikarnassos/Solomon requires the card be put in play.
+                        // It cannot be used to build a wonder stage, nor can it be discarded for 3
+                        // coins.
+                        strHand += string.Format("&WonderStage{0}=0", p.currentStageOfWonder, Buildable.InsufficientResources.ToString());
+                        strHand += string.Format("&CanDiscard={0}", false.ToString());
                     }
                     else
                     {
@@ -1057,9 +1072,9 @@ namespace SevenWonders
                         {
                             strHand += string.Format("&{0}={1}", card.name, p.isCardBuildable(card).ToString());
                         }
-                    }
 
-                    strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
+                        strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
+                    }
 
                     //send the Card Panel information to that player
                     gmCoordinator.sendMessage(p, strHand);
@@ -1383,7 +1398,7 @@ namespace SevenWonders
 
             numOfPlayersThatHaveTakenTheirTurn++;
 
-            if (numOfPlayersThatHaveTakenTheirTurn == numOfPlayers || gettingBabylonExtraCard || playingCardFromDiscardPile)
+            if ((numOfPlayersThatHaveTakenTheirTurn == numOfPlayers) || gettingBabylonExtraCard || playingCardFromDiscardPile)
             {
                 //reset the number of players that have taken their turn
                 numOfPlayersThatHaveTakenTheirTurn = 0;
@@ -1391,8 +1406,6 @@ namespace SevenWonders
                 //execute every player's action
                     // any other turn, execute everyone's actions.
                 executeActionsAtEndOfTurn();
-
-                bool isTurnComplete = false;
 
                 if (gettingBabylonExtraCard && currentTurn == 6 && p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2)
                 {
@@ -1407,22 +1420,21 @@ namespace SevenWonders
                 {
                     playingCardFromDiscardPile = false;
                     p.playCardFromDiscardPile = false;
+
+                    // restore the player's original hand
+                    p.hand = savedHandWhenPlayingFromDiscardPile;
+                    savedHandWhenPlayingFromDiscardPile = null;
                 }
                 else if (p.playCardFromDiscardPile)
                 {
                     playingCardFromDiscardPile = true;
                 }
 
+                //all players have completed their turn
                 if (!gettingBabylonExtraCard && !playingCardFromDiscardPile)
                 {
-                    isTurnComplete = true;
-                }
-
-                //all players have completed their turn
-                if (isTurnComplete)
-                {
-                    gettingBabylonExtraCard = false;
-                    playingCardFromDiscardPile = false;
+                    // gettingBabylonExtraCard = false;
+                    // playingCardFromDiscardPile = false;
 
                     //pass the cards to the neighbour
                     passRemainingCardsToNeighbour();
