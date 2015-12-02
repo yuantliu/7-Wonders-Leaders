@@ -251,7 +251,7 @@ namespace SevenWonders
                     //play the card for free from hand
                     gameManager.playCardForFreeWithOlympia(nickname, message.Substring(1));
                     //Update the Played card panel
-                    gameManager.updatePlayedCardPanel(nickname);
+                    //gameManager.updatePlayedCardPanel(nickname);
                 }
                 //h: player asks for halicarnassus information
                 else if (message[0] == 'h')
@@ -262,11 +262,13 @@ namespace SevenWonders
                 //H: player makes selection in Halicarnassus UI
                 else if (message[0] == 'H')
                 {
+                    /*
                     //H(id)
                     //play the card for free from discard pile
                     gameManager.playCardForFreeWithHalicarnassus(nickname, message.Substring(1));
                     //Update the Played card panel
                     gameManager.updatePlayedCardPanel(nickname);
+                    */
                 }
                 //b: player asks for babylon information
                 else if (message[0] == 'b')
@@ -363,14 +365,14 @@ namespace SevenWonders
                 else if (message[0] == 'M')
                 {
                     gameManager.playLeaderForFreeWithRome(nickname, message.Substring(1));
-                    gameManager.updatePlayedCardPanel(nickname);
+                    // gameManager.updatePlayedCardPanel(nickname);
                 }
 
                 //Courtesan's guild
                 else if (message[0] == 'c')
                 {
                     gameManager.playCourtesansGuild(nickname, message.Substring(1));
-                    gameManager.updatePlayedCardPanel(nickname);
+                    // gameManager.updatePlayedCardPanel(nickname);
                 }
                 else
                 {

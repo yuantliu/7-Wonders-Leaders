@@ -520,7 +520,7 @@ namespace SevenWonders
         protected Board popRandomBoard()
         {
             // int index = (new Random()).Next(0, board.Count);
-            int index = 9;
+            int index = 10;
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
@@ -796,7 +796,6 @@ namespace SevenWonders
             }
             */
         }
-#endif
 
         /// <summary>
         /// build a structure from a card in discard pile, given the Card id number and the Player
@@ -813,7 +812,7 @@ namespace SevenWonders
             int costInCoins = 0;
 
             throw new NotImplementedException();
-#if FALSE
+
             for (int i = 0; i < discardPile.Count; i++)
             {
                 //found the card
@@ -839,7 +838,7 @@ namespace SevenWonders
                     break;
                 }
             }
-#endif
+
             //store the reimbursement
             p.storeAction(new CoinEffect(costInCoins));
 
@@ -855,7 +854,7 @@ namespace SevenWonders
             //determine if the player should get 2 coins for having those leaders (get 2 coins for playing a yellow and playing a pre-req
             giveCoinFromLeadersOnBuild(p, c);
         }
-
+#endif
         public void discardCardForThreeCoins(string nickname, string name)
         {
             Player p = player[nickname];
@@ -917,29 +916,6 @@ namespace SevenWonders
 
         /////////////////////////////////////////////////////////////////////////////////////////////
         //Utility functions
-
-        /*
-    /// <summary>
-    /// Return the Player object given the nickname
-    /// </summary>
-    /// <param name="nickname"></param>
-    /// <returns></returns>
-    public Player playerFromNickname(String nickname)
-    {
-        /*
-        for (int i = 0; i < numOfPlayers + numOfAI; i++)
-        {
-            if (player[i].nickname == nickname)
-            {
-                return player[i];
-            }
-        }
-
-        throw new Exception();
-    }
-    */
-
-        /////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>
         /// Execute the Action of All players
@@ -1016,13 +992,14 @@ namespace SevenWonders
                 //send the current stage of wonder information and tell it to start up the timer
                 // gmCoordinator.sendMessage(p, "s" + p.currentStageOfWonder);
 
-                /*
                 //if player has Olympia power, send the message to enable the Olympia button
                 if(p.olympiaPowerEnabled)
                 {
                     //EO = "Enable Olympia"
                     gmCoordinator.sendMessage(p, "EO");
                 }
+
+                /*
                 //if player has Bilkis AND has at least 1 coin, then send the message to enable Bilkis button
                 if (p.hasBilkis && p.coin > 0)
                 {
@@ -1091,19 +1068,7 @@ namespace SevenWonders
             }
         }
 
-        /*
-        /// <summary>
-        /// Function to call for updating all player's UIs
-        /// </summary>
-        public virtual void updateAllGameUI()
-        {
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
-            {
-                updateGameUI(player[i]);
-            }
-        }
-        */
-
+#if FALSE
         /// <summary>
         /// Whenever a card becomes "Played", UpdatePlayedCardPanel should be called
         /// Sends a message to the client so that a newly played card will show up in the PlayedCardPanel
@@ -1112,7 +1077,7 @@ namespace SevenWonders
         {
             
             // bUIRequiresUpdating = true;
-#if FALSE
+
             for (int i = 0; i < numOfPlayers + numOfAI; i++)
             {
                 Player p = player[i];
@@ -1124,14 +1089,14 @@ namespace SevenWonders
                     gmCoordinator.sendMessage(p, lastPlayedCardInformationString);
                 }
             }
+    }
 #endif
-        }
 
-            /// <summary>
-            /// Player hits the Olympia power button
-            /// give the UI information.
-            /// </summary>
-            /// <param name="p"></param>
+        /// <summary>
+        /// Player hits the Olympia power button
+        /// give the UI information.
+        /// </summary>
+        /// <param name="p"></param>
         public void sendOlympiaInformation(String nickname)
         {
             /*
@@ -1212,6 +1177,7 @@ namespace SevenWonders
             gmCoordinator.sendMessage(p, information);
         }
 
+        /*
         /// <summary>
         /// play the card for free from discard pile with Halicarnassus
         /// </summary>
@@ -1223,7 +1189,6 @@ namespace SevenWonders
             buildStructureFromDiscardPile(structureName, nickname);
         }
 
-        /*
         /// <summary>
         /// give the UI information for Babylon
         /// </summary>

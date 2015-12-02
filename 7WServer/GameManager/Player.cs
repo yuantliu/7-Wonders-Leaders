@@ -444,13 +444,18 @@ namespace SevenWonders
                         break;
 
                     case SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge:
+                        olympiaPowerEnabled = true;
                         break;
 
                     case SpecialAbilityEffect.SpecialType.CopyGuildFromNeighbor:
+                        // Will be resolved in the endOfGame actions.
                         break;
 
                     case SpecialAbilityEffect.SpecialType.Rhodos_B_1M3VP3C:
+                        // Add the 3 coins immediately.  The 3 victory points will be included in total for wonders
+                        // The Military will also need to be included in the shield calculation.
                         break;
+
                     case SpecialAbilityEffect.SpecialType.Rhodos_B_1M4VP4C:
                         break;
                 }
