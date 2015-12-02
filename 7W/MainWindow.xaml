@@ -22,11 +22,16 @@
                 </Grid.RowDefinitions>
                 <ListBox Grid.Row="0" Name="handPanel" SelectionChanged="handPanel_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
 
-                <StackPanel Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom">
-                    <Button Name="btnBuildStructure" Content="Build this structure" Click="cardActionButtonPressed"></Button>
-                    <Button Name="btnBuildWonderStage" Content="Build a wonder stage with this card" Click="cardActionButtonPressed"></Button>
-                    <Button Name="btnDiscardStructure" Content="Discard this structure" Click="cardActionButtonPressed"></Button>
-                </StackPanel>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Button Name="btnBuildStructure" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="cardActionButtonPressed"></Button>
+                    <Button Name="btnBuildWonderStage" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="cardActionButtonPressed"></Button>
+                    <Button Name="btnDiscardStructure" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="cardActionButtonPressed"></Button>
+                </Grid>
             </Grid>
         </Grid>
 

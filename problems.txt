@@ -17,6 +17,7 @@ Commerce issues:
 		  as every possible combination must be checked before the cost is said to be impossible.  I.e. using the first resource of an either/or might make it not possible
 		  to afford it but choosing the other one could mean the structure _is_ affordable.  So every possible combination must be checked before the isCardAffordable returns
 		  false, and I don't think it's checking every possible combination.
+	- If you have a double-resource card, the DAG code isn't accounting for that correctly.  I had a Caravansery and a Quarry, but it said a 3-stone structure wasn't buildable without commerce.
 	- Submit data from client should look like: BldStrct&Structure=<Card Name>&CommerceData=true&Player=W/Clay Pit&Player=S/Quarry&Player=S/Quarry&Left=W/Tree Farm&Right=G/Glassworks
 		- Commerce Data is only required for structures that require it.
 		- The card name can be WonderStagen, n { 1, 2, 3, 4 }
@@ -34,7 +35,8 @@ AI players
 
 Technical stories:
 
-- There may still be a bug if both Babylon and Halikarnassos build their extra card on the same turn. 
+- There may still be a bug if both Babylon and Halikarnassos build their extra card on the same turn.
+- Halikarnassos extra build needs to happen _after_ all players have discarded their final card.  Right now it's happening before, which is wrong.
 
 - Tested Wonders: Alexandria (both sides), Babylon (both sides), Ephesos (both sides)
 

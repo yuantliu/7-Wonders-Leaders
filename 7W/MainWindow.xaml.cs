@@ -52,7 +52,7 @@ namespace SevenWonders
 
         public bool playerPlayedHisTurn = false;
 
-        Tuple<string, Buildable>[] id_buildable;
+        List<KeyValuePair<string, Buildable>> hand = new List<KeyValuePair<string, Buildable>>();
 
         Buildable stageBuildable;
 
@@ -136,11 +136,10 @@ namespace SevenWonders
             //Therefore set playerPlayedHisturn to false
             playerPlayedHisTurn = false;
 
-            id_buildable = new Tuple<string, Buildable>[cardsAndStates.Count];
-
             canDiscardStructure = true;
 
-            int buildableIndexi = 0;
+            hand.Clear();
+
             foreach (KeyValuePair<string, string> kvp in cardsAndStates)
             {
                 if (kvp.Key == "CanDiscard")
@@ -149,37 +148,43 @@ namespace SevenWonders
                 }
                 else
                 {
-                    Tuple<string, Buildable> t = new Tuple<string, Buildable>(kvp.Key, (Buildable)Enum.Parse(typeof(Buildable), kvp.Value));
+                    KeyValuePair<string, Buildable> cardStatus = new KeyValuePair<string, Buildable>(kvp.Key, (Buildable)Enum.Parse(typeof(Buildable), kvp.Value));
 
+                    if (cardStatus.Key.StartsWith("WonderStage"))
+                        stageBuildable = cardStatus.Value;
+                    else
+                        hand.Add(cardStatus);
+                    /*
                     if (!t.Item1.StartsWith("WonderStage"))
                         id_buildable[buildableIndexi++] = t;
                     else
                         stageBuildable = t.Item2;
+                    */
                 }
             }
 
             // should actually subtract the number of wonder stages that were included.  China can build them in any order the player wishes.
-            int numberOfCards = id_buildable.Length - 1;
+            int numberOfCards = hand.Count;
 
             handPanel.Items.Clear();
 
-            for (int i = 0; i < numberOfCards; ++i)
+            foreach (KeyValuePair<string, Buildable> kvp in hand)
             {
                 BitmapImage bmpImg = new BitmapImage();
                 bmpImg.BeginInit();
                 //Item1 of the id_buildable array of Tuples represents the id image
-                bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/cards/" + id_buildable[i].Item1 + ".jpg");
+                bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/cards/" + kvp.Key + ".jpg");
                 bmpImg.EndInit();
 
                 Image img = new Image();
                 img.Source = bmpImg;
 
                 ListBoxItem entry = new ListBoxItem();
-                entry.Name = id_buildable[i].Item2.ToString();
+                entry.Name = kvp.Value.ToString();
                 entry.Content = img;
                 entry.BorderThickness = new Thickness(3);
 
-                switch (id_buildable[i].Item2)
+                switch (kvp.Value)
                 {
                     case Buildable.True:
                         entry.BorderBrush = new SolidColorBrush(Colors.Green);
@@ -201,68 +206,157 @@ namespace SevenWonders
             btnBuildStructure.IsEnabled = false;
             btnBuildWonderStage.IsEnabled = false;
             btnDiscardStructure.IsEnabled = false;
+            btnBuildStructure.Content = null;
+
+            if (canDiscardStructure)
+            {
+                btnBuildWonderStage.Content = null;
+                btnDiscardStructure.Content = null;
+            }
+            else
+            {
+                btnBuildWonderStage.Content = new TextBlock()
+                {
+                    Text = "A free build card cannot be used to constructed a wonder stage",
+                            TextAlignment = TextAlignment.Center,
+                            TextWrapping = TextWrapping.Wrap
+                };
+                btnDiscardStructure.Content = new TextBlock()
+                {
+                    Text = string.Format("A free build card cannot be discarded"),
+                    TextAlignment = TextAlignment.Center,
+                    TextWrapping = TextWrapping.Wrap
+                };
+            }
         }
 
         private void handPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (handPanel.SelectedItem == null)
+            if (handPanel.SelectedIndex < 0)
+            {
+                btnBuildStructure.IsEnabled = false;
+                btnBuildWonderStage.IsEnabled = false;
+                btnDiscardStructure.IsEnabled = false;
+
+                btnBuildStructure.Content = null;
+
+                if (canDiscardStructure)
+                {
+                    btnBuildWonderStage.Content = null;
+                    btnDiscardStructure.Content = null;
+                }
+
                 return;
+            }
 
             // Update the status of the build buttons when a card is selected.
-            switch ((Buildable)Enum.Parse(typeof(Buildable), ((ListBoxItem)handPanel.SelectedItem).Name))
+            switch (hand[handPanel.SelectedIndex].Value)
             {
                 case Buildable.True:
-                    btnBuildStructure.Content = "Build this structure";
+                    btnBuildStructure.Content = new TextBlock()
+                    {
+                        Text = string.Format("Build the {0}", hand[handPanel.SelectedIndex].Key),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
                     btnBuildStructure.IsEnabled = true;
                     break;
 
                 case Buildable.CommerceRequired:
-                    btnBuildStructure.Content = "Build this structure (commerce required)";
+                    btnBuildStructure.Content = new TextBlock()
+                    {
+                        Text = string.Format("Build the {0} (commerce required)", hand[handPanel.SelectedIndex].Key),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
                     btnBuildStructure.IsEnabled = true;
                     break;
 
                 case Buildable.InsufficientResources:
-                    btnBuildStructure.Content = "Resource requirements not met for building this structure.";
+                    btnBuildStructure.Content = new TextBlock()
+                    {
+                        Text = string.Format("You do not have enough resources to build the {0}", hand[handPanel.SelectedIndex].Key),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
                     btnBuildStructure.IsEnabled = false;
                     break;
 
                 case Buildable.InsufficientCoins:
-                    btnBuildStructure.Content = "You don't have enough coins to buy this structure.";
+                    btnBuildStructure.Content = new TextBlock()
+                    {
+                        Text = string.Format("You don't have enough coins to buy the {0}", hand[handPanel.SelectedIndex].Key),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
                     btnBuildStructure.IsEnabled = false;
                     break;
 
                 case Buildable.StructureAlreadyBuilt:
-                    btnBuildStructure.Content = "You have already built one of these structures.";
+                    btnBuildStructure.Content = new TextBlock()
+                    {
+                        Text = string.Format("You have already built the {0}", hand[handPanel.SelectedIndex].Key),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
                     btnBuildStructure.IsEnabled = false;
                     break;
             }
+
+            if (!canDiscardStructure)
+                return;
 
             switch (stageBuildable)
             {
                 case Buildable.True:
-                    btnBuildWonderStage.Content = "Build a wonder stage with this card";
+                    //                    btnBuildWonderStage.Content = new TextBlock() { new Run(string.Format("Build a wonder stage with the {0}", hand[handPanel.SelectedIndex].Key)));
+                    btnBuildWonderStage.Content = new TextBlock()
+                    {
+                        Text = string.Format("Build a wonder stage with the {0}", hand[handPanel.SelectedIndex].Key),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
                     btnBuildWonderStage.IsEnabled = true;
                     break;
 
                 case Buildable.CommerceRequired:
-                    btnBuildWonderStage.Content = "Build a wonder stage with this card (commerce required)";
+                    btnBuildWonderStage.Content = new TextBlock() {
+                        Text = string.Format("Build a wonder stage with the {0} (commerce required)", hand[handPanel.SelectedIndex].Key),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
                     btnBuildWonderStage.IsEnabled = true;
                     break;
 
                 case Buildable.InsufficientCoins:
                 case Buildable.InsufficientResources:
-                    btnBuildWonderStage.Content = "Resource requirements not met";
+                    btnBuildWonderStage.Content = new TextBlock()
+                    {
+                        Text = "Insufficient resources available to build the next wonder stage",
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
                     btnBuildWonderStage.IsEnabled = false;
                     break;
 
                 case Buildable.StructureAlreadyBuilt:
-                    btnBuildWonderStage.Content = "All wonder stages have been built";
+                    btnBuildWonderStage.Content = new TextBlock()
+                    {
+                        Text = "All wonder stages have been built",
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
                     btnBuildWonderStage.IsEnabled = false;
                     break;
             }
 
-            if (canDiscardStructure)
-                btnDiscardStructure.IsEnabled = true;
+            btnDiscardStructure.IsEnabled = true;
+            btnDiscardStructure.Content = new TextBlock()
+            {
+                Text = string.Format("Discard the {0}", hand[handPanel.SelectedIndex].Key),
+                TextAlignment = TextAlignment.Center,
+                TextWrapping = TextWrapping.Wrap
+            };
         }
 
         /// <summary>
@@ -281,17 +375,17 @@ namespace SevenWonders
                 switch (playedButton.Name)
                 {
                     case "btnBuildStructure":
-                        if (id_buildable[handPanel.SelectedIndex].Item2 == Buildable.True)
+                        if (hand[handPanel.SelectedIndex].Value == Buildable.True)
                         {
                             playedButton.IsEnabled = false;
                             playerPlayedHisTurn = true;
                             // bilkisButton.IsEnabled = false;
-                            coordinator.sendToHost(string.Format("BldStrct&WonderStage=0&Structure={0}", id_buildable[handPanel.SelectedIndex].Item1));
+                            coordinator.sendToHost(string.Format("BldStrct&WonderStage=0&Structure={0}", hand[handPanel.SelectedIndex].Key));
                             coordinator.endTurn();
                         }
                         else
                         {
-                            coordinator.sendToHost("SendComm&WonderStage=0&Structure=" + id_buildable[handPanel.SelectedIndex].Item1);     // the server's response will open the Commerce Dialog box
+                            coordinator.sendToHost("SendComm&WonderStage=0&Structure=" + hand[handPanel.SelectedIndex].Key);     // the server's response will open the Commerce Dialog box
                         }
                         break;
                     case "btnBuildWonderStage":
@@ -300,19 +394,19 @@ namespace SevenWonders
                             playedButton.IsEnabled = false;
                             playerPlayedHisTurn = true;
                             // bilkisButton.IsEnabled = false;
-                            coordinator.sendToHost(string.Format("BldStrct&WonderStage=1&Structure={0}", id_buildable[handPanel.SelectedIndex].Item1));
+                            coordinator.sendToHost(string.Format("BldStrct&WonderStage=1&Structure={0}", hand[handPanel.SelectedIndex].Key));
                             coordinator.endTurn();
                         }
                         else
                         {
-                            coordinator.sendToHost("SendComm&WonderStage=1&Structure=" + id_buildable[handPanel.SelectedIndex].Item1);     // the server's response will open the Commerce Dialog box
+                            coordinator.sendToHost("SendComm&WonderStage=1&Structure=" + hand[handPanel.SelectedIndex].Key);     // the server's response will open the Commerce Dialog box
                         }
                         break;
                     case "btnDiscardStructure":
                         playedButton.IsEnabled = false;
                         playerPlayedHisTurn = true;
                         // bilkisButton.IsEnabled = false;
-                        coordinator.sendToHost(string.Format("Discards&Structure={0}", id_buildable[handPanel.SelectedIndex].Item1));
+                        coordinator.sendToHost(string.Format("Discards&Structure={0}", hand[handPanel.SelectedIndex].Key));
                         coordinator.endTurn();
                         break;
                 }

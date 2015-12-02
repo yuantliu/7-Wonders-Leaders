@@ -889,7 +889,7 @@ namespace SevenWonders
                         break;
 
                     case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_1VP:
-                        totalWonderPoints += 2;
+                        totalWonderPoints += 1;
                         break;
 
                     case SpecialAbilityEffect.SpecialType.CopyGuildFromNeighbor:
