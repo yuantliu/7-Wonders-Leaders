@@ -29,8 +29,14 @@ namespace SevenWonders
 
             Console.WriteLine(strOutput);
 
-            //look for buildable blue cards at the third age ..
-            Card c = player.hand.Find(x => x.structureType == StructureType.Civilian && player.isCardBuildable(x) == Buildable.True && x.age == 3);
+            // Build Guild cards in the 3rd age
+            Card c = player.hand.Find(x => x.structureType == StructureType.Guild && player.isCardBuildable(x) == Buildable.True);
+
+            if (c == null)
+            {
+                //look for buildable blue cards at the third age ..
+                c = player.hand.Find(x => x.structureType == StructureType.Civilian && player.isCardBuildable(x) == Buildable.True && x.age == 3);
+            }
 
             if (c == null)
             {

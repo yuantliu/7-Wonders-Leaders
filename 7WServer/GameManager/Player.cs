@@ -821,13 +821,11 @@ namespace SevenWonders
             return score;
         }
 
-        int CalculateSciencePoints()
+        int CalculateSciencePoints(int nScienceWildCards)
         {
             int scienceGroupMultiplier = 7;
             int maxScienceScore = 0;
             // if the Aristotle leader card is in play for this player, change the group multiplier to 10.
-
-            // int scienceScore = CalculateScienceGroupScore(sextant, bearTrap, tablet, scienceGroupMultiplier);
 
             // The player can have up to two science wild cards: Babylon wonder and the Scientists' guild.
             // Try every possible combination of these cards and select the one that yields the highest score
@@ -835,8 +833,6 @@ namespace SevenWonders
             int nCompass = playedStructure.Where(x => x.structureType == StructureType.Science && ((ScienceEffect)x.effect).symbol == ScienceEffect.Symbol.Compass).Count();
             int nGear = playedStructure.Where(x => x.structureType == StructureType.Science && ((ScienceEffect)x.effect).symbol == ScienceEffect.Symbol.Gear).Count();
             int nTablet = playedStructure.Where(x => x.structureType == StructureType.Science && ((ScienceEffect)x.effect).symbol == ScienceEffect.Symbol.Tablet).Count();
-
-            int nScienceWildCards = playedStructure.Where(x => x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.ScienceWild).Count();
 
             for (int i = 0; i <= nScienceWildCards; ++i)
             {
@@ -895,6 +891,21 @@ namespace SevenWonders
             }
             Console.WriteLine("  Total Commercial points: {0}", totalCommercial);
 
+            Console.WriteLine("  Scientific structures constructed:");
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Science).ToList())
+            {
+                Console.WriteLine("    {0} ({1})", c.name, ((ScienceEffect)c.effect).symbol);
+            }
+
+            int nScienceWildCards = playedStructure.Where(x => x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.ScienceWild).Count();
+
+            if (nScienceWildCards != 0)
+                Console.WriteLine("  {0} science wild card effect(s)", nScienceWildCards);
+
+            int totalSciencePoints = CalculateSciencePoints(nScienceWildCards);
+
+            Console.WriteLine("  Points from science: {0}", totalSciencePoints);
+
             int totalWonderPoints = 0;
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage && x.effect is CoinsAndPointsEffect).ToList())
             {
@@ -917,7 +928,56 @@ namespace SevenWonders
 
                     case SpecialAbilityEffect.SpecialType.CopyGuildFromNeighbor:
                         // Olympia B 3rd stage
-                        throw new Exception(); // TODO: implement this
+                        {
+                            // check each guild card built by neighboring cities and pick the one that yields the most number of points
+                            int maxPoints = 0;
+                            string copiedGuild = string.Empty;
+
+                            IEnumerable<Card> neighborsGuilds = leftNeighbour.playedStructure.Where(x => x.structureType == StructureType.Guild).Concat(
+                                rightNeighbour.playedStructure.Where(x => x.structureType == StructureType.Guild));
+
+                            foreach (Card card in neighborsGuilds)
+                            {
+                                int pointsForThisGuild = 0;
+
+                                if (card.effect is CoinsAndPointsEffect)
+                                {
+                                    pointsForThisGuild = CountVictoryPoints(card.effect as CoinsAndPointsEffect);
+                                }
+                                else if (card.effect is SpecialAbilityEffect)
+                                {
+                                    SpecialAbilityEffect sae = card.effect as SpecialAbilityEffect;
+
+                                    switch (sae.type)
+                                    {
+                                        case SpecialAbilityEffect.SpecialType.ShipOwnerGuild:
+                                            pointsForThisGuild = playedStructure.Where(x => x.structureType == StructureType.RawMaterial || x.structureType == StructureType.Goods || x.structureType == StructureType.Guild).Count();
+                                            break;
+
+                                        case SpecialAbilityEffect.SpecialType.ScienceWild:
+                                            pointsForThisGuild = CalculateSciencePoints(nScienceWildCards + 1) - totalSciencePoints;
+                                            break;
+                                    }
+                                }
+
+                                if (pointsForThisGuild > maxPoints)
+                                {
+                                    maxPoints = pointsForThisGuild;
+                                    copiedGuild = card.name;
+                                }
+                            }
+
+                            if (maxPoints != 0)
+                            {
+                                Console.WriteLine("Olympia B's 3rd wonder has a maximum value of {0} points.  Guild copied: {1}", maxPoints, copiedGuild);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Neither of Olympia's neighbors built any guilds that were worth any value to Olympia.  0 points scored for this wonder stage.");
+                            }
+
+                            totalWonderPoints += maxPoints;
+                        }
                         break;
 
                     case SpecialAbilityEffect.SpecialType.Rhodos_B_1M3VP3C:
@@ -931,21 +991,6 @@ namespace SevenWonders
             }
 
             Console.WriteLine("  Points from Wonders: {0}", totalWonderPoints);
-
-            Console.WriteLine("  Scientific structures constructed:");
-            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Science).ToList())
-            {
-                Console.WriteLine("    {0} ({1})", c.name, ((ScienceEffect)c.effect).symbol);
-            }
-
-            int nScienceWildCards = playedStructure.Where(x => x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.ScienceWild).Count();
-
-            if (nScienceWildCards != 0)
-                Console.WriteLine("  {0} science wild card effect(s)", nScienceWildCards);
-
-            int totalSciencePoints = CalculateSciencePoints();
-
-            Console.WriteLine("  Points from science: {0}", totalSciencePoints);
 
             int totalGuildPoints = 0;
 
