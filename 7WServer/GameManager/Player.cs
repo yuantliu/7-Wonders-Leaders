@@ -448,9 +448,6 @@ namespace SevenWonders
 
                     case SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge:
                         throw new Exception("This ability needs to be dealt with on the end-of-turn action queue.");
-                        // olympiaPowerEnabled = true;
-                        // olympiaPowerAvailable = true;
-                        // olympiaPowerButtonUIUpdate = true;
                         break;
 
                     case SpecialAbilityEffect.SpecialType.CopyGuildFromNeighbor:
