@@ -269,29 +269,37 @@ namespace SevenWonders
                 gmCoordinator.sendMessage(p, strUpdateMilitaryTokens);
             }
 
-            //reenable Olympia and Babylon
-            //disable Halicarnassus
-            foreach (Player p in player.Values)
+            /*
+        //reenable Olympia and Babylon
+        //disable Halicarnassus
+        foreach (Player p in player.Values)
+        {
+            //Olympia always reactivate after every age.
+            if (p.playerBoard.name == "OA" && p.currentStageOfWonder >= 2)
             {
-                //Olympia always reactivate after every age.
-                if (p.playerBoard.name == "OA" && p.currentStageOfWonder >= 2)
-                {
-                    p.olympiaPowerEnabled = true;
-                }
-
-                //always disables Halicarnassus after every age.
-                // p.usedHalicarnassus = true;
-
-                //always reactivate Babylon after every age
-                if (p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2)
-                {
-                    // p.usedBabylon = false;
-                }
+                p.olympiaPowerEnabled = true;
             }
+
+            //always disables Halicarnassus after every age.
+            // p.usedHalicarnassus = true;
+
+            //always reactivate Babylon after every age
+            if (p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2)
+            {
+                // p.usedBabylon = false;
+            }
+        }
+            */
 
             // take all player's remaining cards, deposit it to the discard pile
             foreach (Player p in player.Values)
             {
+                if (p.olympiaPowerEnabled)
+                {
+                    p.olympiaPowerAvailable = true;
+                    gmCoordinator.sendMessage(p, "EnableFB&Olympia=true");
+                }
+
                 //if they still have a card
                 if (p.hand.Count >= 1)
                 {
@@ -542,7 +550,7 @@ namespace SevenWonders
             return randomBoard.Value;
         }
 
-        public void buildStructureFromHand(string playerNickname, string cardName, string strWonderStage, string strLeftCoins, string strRightCoins)
+        public void buildStructureFromHand(string playerNickname, string cardName, string strWonderStage, string strFreeBuild, string strLeftCoins, string strRightCoins)
         {
             Player p = player[playerNickname];
 
@@ -559,13 +567,15 @@ namespace SevenWonders
             if (strRightCoins != null)
                 nRightCoins = int.Parse(strRightCoins);
 
-            buildStructureFromHand(p, c, strWonderStage == "1", nLeftCoins, nRightCoins);
+            bool freeBuild = strFreeBuild != null && strFreeBuild == "True";
+
+            buildStructureFromHand(p, c, strWonderStage == "1", freeBuild, nLeftCoins, nRightCoins);
         }
 
         /// <summary>
         /// build a structure from hand, given the Card id number and the Player
         /// </summary>
-        public void buildStructureFromHand(Player p, Card c, bool wonderStage, int nLeftCoins = 0, int nRightCoins = 0)
+        public void buildStructureFromHand(Player p, Card c, bool wonderStage, bool freeBuild = false, int nLeftCoins = 0, int nRightCoins = 0)
         {
             p.hand.Remove(c);
 
@@ -585,6 +595,20 @@ namespace SevenWonders
             p.addPlayedCardStructure(c);
             //store the card's action
             p.storeAction(c.effect);
+
+            if (freeBuild)
+            {
+                // check that the player
+                if (p.olympiaPowerAvailable)
+                {
+                    p.olympiaPowerAvailable = false;
+                }
+                else
+                {
+                    // the player is cheating
+                    throw new Exception("You do not have the ability to build a free structure");
+                }
+            }
 
             //if the structure played costs money, deduct it
             //check if the Card costs money and add the coins paid to the neighbors for their resources
@@ -992,12 +1016,6 @@ namespace SevenWonders
                 //send the current stage of wonder information and tell it to start up the timer
                 // gmCoordinator.sendMessage(p, "s" + p.currentStageOfWonder);
 
-                if(p.olympiaPowerEnabled)
-                {
-                    //if player has Olympia power, send the message to enable the Olympia button
-                    gmCoordinator.sendMessage(p, "EnableFB&Olympia=true");
-                }
-
                 /*
                 //if player has Bilkis AND has at least 1 coin, then send the message to enable Bilkis button
                 if (p.hasBilkis && p.coin > 0)
@@ -1089,7 +1107,7 @@ namespace SevenWonders
                 }
             }
     }
-#endif
+
 
         /// <summary>
         /// Player hits the Olympia power button
@@ -1132,7 +1150,7 @@ namespace SevenWonders
             p.storeAction(new CoinEffect(c.cost.coin));
 
             //build the structure
-            buildStructureFromHand(structureName, nickname, null, null, null);
+            buildStructureFromHand(structureName, nickname, null, null, null, null);
 
             //disable Olympia
             p.olympiaPowerEnabled = false;
@@ -1175,7 +1193,7 @@ namespace SevenWonders
             //send the information
             gmCoordinator.sendMessage(p, information);
         }
-
+#endif
         /*
         /// <summary>
         /// play the card for free from discard pile with Halicarnassus

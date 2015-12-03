@@ -51,6 +51,7 @@ namespace SevenWonders
         Dictionary<string, PlayerState> playerState = new Dictionary<string, PlayerState>();
 
         public bool playerPlayedHisTurn = false;
+        public bool btnBuildStructureForFree_isEnabled = false;
 
         List<KeyValuePair<string, Buildable>> hand = new List<KeyValuePair<string, Buildable>>();
 
@@ -206,7 +207,10 @@ namespace SevenWonders
             btnBuildStructure.IsEnabled = false;
             btnBuildWonderStage.IsEnabled = false;
             btnDiscardStructure.IsEnabled = false;
+            btnBuildStructureForFree.IsEnabled = false;
+
             btnBuildStructure.Content = null;
+            btnBuildStructureForFree.Content = null;
 
             if (canDiscardStructure)
             {
@@ -237,8 +241,10 @@ namespace SevenWonders
                 btnBuildStructure.IsEnabled = false;
                 btnBuildWonderStage.IsEnabled = false;
                 btnDiscardStructure.IsEnabled = false;
+                btnBuildStructureForFree.IsEnabled = false;
 
                 btnBuildStructure.Content = null;
+                btnBuildStructureForFree.Content = null;
 
                 if (canDiscardStructure)
                 {
@@ -247,6 +253,32 @@ namespace SevenWonders
                 }
 
                 return;
+            }
+
+            if (btnBuildStructureForFree_isEnabled)
+            {
+                if (hand[handPanel.SelectedIndex].Value != Buildable.StructureAlreadyBuilt)
+                {
+                    btnBuildStructureForFree.Content = new TextBlock()
+                    {
+                        Text = string.Format("Build this structure for free."),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    btnBuildStructureForFree.IsEnabled = true;
+                }
+                else
+                {
+                    btnBuildStructureForFree.Content = new TextBlock()
+                    {
+                        Text = string.Format("You have already built the {0}", hand[handPanel.SelectedIndex].Key),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    btnBuildStructureForFree.IsEnabled = false;
+                }
             }
 
             // Update the status of the build buttons when a card is selected.
@@ -370,9 +402,10 @@ namespace SevenWonders
                 return;
 
             ((Button)sender).IsEnabled = false;
+            btnBuildStructureForFree_isEnabled = false;
             playerPlayedHisTurn = true;
             // bilkisButton.IsEnabled = false;
-            coordinator.sendToHost(string.Format("BldStrct&WonderStage=0&FreeBuild=true&Structure={0}", hand[handPanel.SelectedIndex].Key));
+            coordinator.sendToHost(string.Format("BldStrct&WonderStage=0&FreeBuild=True&Structure={0}", hand[handPanel.SelectedIndex].Key));
             coordinator.endTurn();
 
         }

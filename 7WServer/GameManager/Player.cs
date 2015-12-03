@@ -154,7 +154,9 @@ namespace SevenWonders
         //can activate wonder power?
         public bool hasOlympia { get; set; }
         public bool olympiaPowerEnabled { get; set; }
-        
+
+        public bool olympiaPowerAvailable { get; set; }
+
         // public bool usedHalicarnassus { get; set; }
 
         public bool playCardFromDiscardPile = false;
@@ -261,11 +263,12 @@ namespace SevenWonders
         /// <param name="s"></param>
         public void storeAction(Effect e)
         {
-            if (e is CoinEffect || e is ResourceEffect || e is CoinsAndPointsEffect)
+            if (e is CoinEffect || e is ResourceEffect || e is CoinsAndPointsEffect || (e is SpecialAbilityEffect && ((SpecialAbilityEffect)e).type == SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge))
             {
                 // the effects of these cards do not come into play until the next turn.
                 // put them on the actions queue to be run after all players have turned
-                // in their card.
+                // in their card.  Any actions that require UI updates must go on here
+                // (e.g. enabling the Olympia button)
                 actions.Add(e);
             }
             else
@@ -444,7 +447,10 @@ namespace SevenWonders
                         break;
 
                     case SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge:
-                        olympiaPowerEnabled = true;
+                        throw new Exception("This ability needs to be dealt with on the end-of-turn action queue.");
+                        // olympiaPowerEnabled = true;
+                        // olympiaPowerAvailable = true;
+                        // olympiaPowerButtonUIUpdate = true;
                         break;
 
                     case SpecialAbilityEffect.SpecialType.CopyGuildFromNeighbor:
@@ -631,6 +637,21 @@ namespace SevenWonders
                     //if (e.victoryPointsAtEndOfGameMultiplier != 0)      // JDF: I added this line.  No point in adding Vineyard & Bazar to end of game actions.
                     //for victory points, just copy the effect to endOfGameActions and have executeEndOfGameActions do it later
                       //  endOfGameActions.Add(act);
+
+                }
+                else if (act is SpecialAbilityEffect)
+                {
+                    SpecialAbilityEffect spe = act as SpecialAbilityEffect;
+
+                    if (spe.type != SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge)
+                    {
+                        throw new Exception("The only type of special ability effect that should be handled in the end-of-turn actions is enabling the PlayACardForFreeOncePerAge effect.");
+                    }
+
+                    olympiaPowerEnabled = true;
+                    olympiaPowerAvailable = true;
+                    gm.gmCoordinator.sendMessage(this, "EnableFB&Olympia=true");
+                    // olympiaPowerButtonUIUpdate = true;
 
                 }
                 //category 6: special guild cards

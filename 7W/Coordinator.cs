@@ -460,14 +460,9 @@ namespace SevenWonders
                         Application.Current.Dispatcher.Invoke(new Action(delegate
                         {
                             gameUI.btnBuildStructureForFree.Visibility = Visibility.Visible;
-                            gameUI.btnBuildStructureForFree.IsEnabled = true;
-                            gameUI.btnBuildStructureForFree.Content = new TextBlock()
-                            {
-                                Text = string.Format("Build this structure without paying the cost.  This ability may be used once in each age once it's been activated."),
-                                TextAlignment = TextAlignment.Center,
-                                TextWrapping = TextWrapping.Wrap
-                            };
+                            gameUI.btnBuildStructureForFree_isEnabled = true;
                         }));
+                        messageHandled = true;
                         break;
 
                     case "FinalSco":
@@ -478,6 +473,7 @@ namespace SevenWonders
 
                             fs.ShowDialog();
                         }));
+                        messageHandled = true;
                         break;
 
                     case "Military":

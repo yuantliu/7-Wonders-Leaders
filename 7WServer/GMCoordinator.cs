@@ -96,7 +96,7 @@ namespace SevenWonders
                     {
                         case "BldStrct":
                             qscoll = HttpUtility.ParseQueryString(message.Substring(9));
-                            gameManager.buildStructureFromHand(nickname, qscoll["Structure"], qscoll["WonderStage"], qscoll["leftCoins"], qscoll["rightCoins"] );
+                            gameManager.buildStructureFromHand(nickname, qscoll["Structure"], qscoll["WonderStage"], qscoll["FreeBuild"], qscoll["leftCoins"], qscoll["rightCoins"] );
                             MessageHandled = true;
                             break;
 
@@ -240,28 +240,32 @@ namespace SevenWonders
                 //O: player hits the Olympia power button
                 else if (message[0] == 'O')
                 {
+                    throw new Exception();
                     //handle the Olympia button
                     //prepare to send Olympia UI information to the player
-                    gameManager.sendOlympiaInformation(nickname);
+                    // gameManager.sendOlympiaInformation(nickname);
                 }
                 //o: player makes a selection in the Olympia UI
                 else if (message[0] == 'o')
                 {
+                    throw new Exception();
                     //o(id)
                     //play the card for free from hand
-                    gameManager.playCardForFreeWithOlympia(nickname, message.Substring(1));
+                    // gameManager.playCardForFreeWithOlympia(nickname, message.Substring(1));
                     //Update the Played card panel
                     //gameManager.updatePlayedCardPanel(nickname);
                 }
                 //h: player asks for halicarnassus information
                 else if (message[0] == 'h')
                 {
+                    throw new Exception();
                     //get the halicarnassus information and send it to the player
-                    gameManager.sendHalicarnassusInformation(nickname);
+                    // gameManager.sendHalicarnassusInformation(nickname);
                 }
                 //H: player makes selection in Halicarnassus UI
                 else if (message[0] == 'H')
                 {
+                    throw new Exception();
                     /*
                     //H(id)
                     //play the card for free from discard pile
