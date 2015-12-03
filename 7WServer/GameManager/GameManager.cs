@@ -528,7 +528,7 @@ namespace SevenWonders
         protected Board popRandomBoard()
         {
             // int index = (new Random()).Next(0, board.Count);
-            int index = 11;
+            int index = 13;
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 

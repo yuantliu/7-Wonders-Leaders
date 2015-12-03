@@ -44,7 +44,6 @@
     <Compile Include="DAG.cs" />
     <Compile Include="ParseParams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="7 Wonders Card list.csv" />

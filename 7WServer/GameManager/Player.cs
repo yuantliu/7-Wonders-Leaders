@@ -128,10 +128,20 @@ namespace SevenWonders
             {
                 int n = 0;
 
-                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Military))
+                foreach (Card c in playedStructure.Where(x => x.effect is MilitaryEffect))
                 {
                     n += ((MilitaryEffect)c.effect).nShields;
                 }
+
+                Card card = playedStructure.Find(x => (x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.Rhodos_B_1M3VP3C));
+
+                if (card != null)
+                    n += 1;
+
+                card = playedStructure.Find(x => (x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.Rhodos_B_1M4VP4C));
+
+                if (card != null)
+                    n += 1;
 
                 return n;
             }
