@@ -24,7 +24,7 @@ namespace SevenWonders
             get {
                 int n = 0;
 
-                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('B')).ToList())
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('B')))
                 {
                     n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'B');
                 }
@@ -38,7 +38,7 @@ namespace SevenWonders
             {
                 int n = 0;
 
-                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('O')).ToList())
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('O')))
                 {
                     n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'O');
                 }
@@ -52,7 +52,7 @@ namespace SevenWonders
             {
                 int n = 0;
 
-                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('S')).ToList())
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('S')))
                 {
                     n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'S');
                 }
@@ -66,7 +66,7 @@ namespace SevenWonders
             {
                 int n = 0;
 
-                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('W')).ToList())
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('W')))
                 {
                     n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'W');
                 }
@@ -80,7 +80,7 @@ namespace SevenWonders
             {
                 int n = 0;
 
-                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('G')).ToList())
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('G')))
                 {
                     n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'G');
                 }
@@ -94,7 +94,7 @@ namespace SevenWonders
             {
                 int n = 0;
 
-                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('C')).ToList())
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('C')))
                 {
                     n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'C');
                 }
@@ -108,7 +108,7 @@ namespace SevenWonders
             {
                 int n = 0;
 
-                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('P')).ToList())
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.RawMaterial && ((ResourceEffect)x.effect).resourceTypes.Contains('P')))
                 {
                     n += ((ResourceEffect)c.effect).resourceTypes.Count(x => x == 'P');
                 }
@@ -128,7 +128,7 @@ namespace SevenWonders
             {
                 int n = 0;
 
-                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Military).ToList())
+                foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Military))
                 {
                     n += ((MilitaryEffect)c.effect).nShields;
                 }
@@ -872,7 +872,7 @@ namespace SevenWonders
 
             int totalCivilian = 0;
             Console.WriteLine("  Civilian structures constructed:");
-            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Civilian).ToList())
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Civilian))
             {
                 int thisStructurePoints = ((CoinsAndPointsEffect)c.effect).victoryPointsAtEndOfGameMultiplier;
                 Console.WriteLine("    {0} ({1} VP)", c.name, thisStructurePoints);
@@ -882,7 +882,7 @@ namespace SevenWonders
 
             int totalCommercial = 0;
             Console.WriteLine("  Commercial structures constructed:");
-            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Commerce).ToList())
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Commerce))
             {
                 Console.WriteLine("    {0}", c.name);
 
@@ -892,7 +892,7 @@ namespace SevenWonders
             Console.WriteLine("  Total Commercial points: {0}", totalCommercial);
 
             Console.WriteLine("  Scientific structures constructed:");
-            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Science).ToList())
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Science))
             {
                 Console.WriteLine("    {0} ({1})", c.name, ((ScienceEffect)c.effect).symbol);
             }
@@ -907,12 +907,12 @@ namespace SevenWonders
             Console.WriteLine("  Points from science: {0}", totalSciencePoints);
 
             int totalWonderPoints = 0;
-            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage && x.effect is CoinsAndPointsEffect).ToList())
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage && x.effect is CoinsAndPointsEffect))
             {
                 totalWonderPoints += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
             }
 
-            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage && x.effect is SpecialAbilityEffect).ToList())
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage && x.effect is SpecialAbilityEffect))
             {
                 SpecialAbilityEffect spe = c.effect as SpecialAbilityEffect;
 
@@ -995,7 +995,7 @@ namespace SevenWonders
             int totalGuildPoints = 0;
 
             Console.WriteLine("  Guilds constructed:");
-            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Guild).ToList())
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Guild))
             {
                 Console.WriteLine("    {0}", c.name);
 

@@ -150,7 +150,7 @@ namespace SevenWonders
         }
         */
 
-        public List<ResourceEffect> getResourceList(bool isSelf)
+        public IEnumerable<ResourceEffect> getResourceList(bool isSelf)
         {
             if (isSelf)
             {
@@ -159,7 +159,7 @@ namespace SevenWonders
             else
             {
                 // remove resources that cannot be used by neighbors.
-                return resources.Where(x => x.canBeUsedByNeighbors == true).ToList();
+                return resources.Where(x => x.canBeUsedByNeighbors == true);
             }
         }
 
@@ -298,9 +298,9 @@ namespace SevenWonders
         {
             DAG returnedList = new DAG();
 
-            List<ResourceEffect> rA = A.getResourceList(false);
-            List<ResourceEffect> rB = B.getResourceList(true);
-            List<ResourceEffect> rC = C.getResourceList(false);
+            IEnumerable<ResourceEffect> rA = A.getResourceList(false);
+            IEnumerable<ResourceEffect> rB = B.getResourceList(true);
+            IEnumerable<ResourceEffect> rC = C.getResourceList(false);
 
             foreach (ResourceEffect e in rA.Where(x => x.resourceTypes.Length == 1))
             {

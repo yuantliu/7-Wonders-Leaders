@@ -40,8 +40,7 @@ Technical stories:
 - There may still be a bug if both Babylon and Halikarnassos build their extra card on the same turn.
 - Halikarnassos extra build needs to happen _after_ all players have discarded their final card.  Right now it's happening before, which is wrong.
 
-- Tested Wonders: Alexandria (both sides), Babylon (both sides), Ephesos (both sides), Giza.  Currently working on Olympia A's
-  ability to play a card without paying its cost (this is mostly UI with a bit of improved messaging)
+- Tested Wonders: Alexandria (both sides), Babylon (both sides), Ephesos (both sides), Giza, Olympia (both sides).  Still need to do Rhodos
 
 - the game doesn't terminate nicely when it's shut down.  Must kill it.
 

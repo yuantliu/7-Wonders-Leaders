@@ -253,7 +253,7 @@ namespace SevenWonders
             //reset all DAG panels
             p.Children.Clear();
 
-            List<ResourceEffect> dagGraphSimple = dag.getResourceList(isDagOwnedByPlayer);
+            List<ResourceEffect> dagGraphSimple = dag.getResourceList(isDagOwnedByPlayer).ToList();
 
             //generate a DAG for self or a neighbor
             //generate the needed amount of stackPanels, each representing a level
@@ -414,7 +414,7 @@ namespace SevenWonders
                 }
                 else
                 {
-                    for (int i = 0; i < leftDag.getResourceList(false)[level].resourceTypes.Length; i++)
+                    for (int i = 0; i < leftDag.getResourceList(false).ToList()[level].resourceTypes.Length; i++)
                     {
                         //hide the buttons
                         leftDagButton[level, i].Visibility = Visibility.Hidden;
@@ -439,7 +439,7 @@ namespace SevenWonders
                 }
                 else
                 {
-                    for (int i = 0; i < middleDag.getResourceList(true)[level].resourceTypes.Length; i++)
+                    for (int i = 0; i < middleDag.getResourceList(true).ToList()[level].resourceTypes.Length; i++)
                     {
                         //hide the buttons
                         middleDagButton[level, i].Visibility = Visibility.Hidden;
@@ -464,7 +464,7 @@ namespace SevenWonders
                 }
                 else
                 {
-                    for (int i = 0; i < rightDag.getResourceList(false)[level].resourceTypes.Length; i++)
+                    for (int i = 0; i < rightDag.getResourceList(false).ToList()[level].resourceTypes.Length; i++)
                     {
                         //hide the buttons
                         rightDagButton[level, i].Visibility = Visibility.Hidden;
