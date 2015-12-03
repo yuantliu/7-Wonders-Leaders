@@ -992,11 +992,10 @@ namespace SevenWonders
                 //send the current stage of wonder information and tell it to start up the timer
                 // gmCoordinator.sendMessage(p, "s" + p.currentStageOfWonder);
 
-                //if player has Olympia power, send the message to enable the Olympia button
                 if(p.olympiaPowerEnabled)
                 {
-                    //EO = "Enable Olympia"
-                    gmCoordinator.sendMessage(p, "EO");
+                    //if player has Olympia power, send the message to enable the Olympia button
+                    gmCoordinator.sendMessage(p, "EnableFB&Olympia=true");
                 }
 
                 /*

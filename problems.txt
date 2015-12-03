@@ -6,7 +6,9 @@ UI problems:
   - it would be nice if PlayerStatePanels were created dynamically so we maximized our use of space on the Main Window.
     The current behavior is that all 8 panels are created statically and only the ones in use are activated.
   - Conflict tokens and losses could be presented using icons instead of text labels, put them on the wonder boards.
-  - I need to create an end-of-game UI window.
+  - I need to create an end-of-game UI window with the scoring summary.
+  - The UI doesn't make it clear what's going on when playing Babylon's last card or Halikarnassos' free build.  I should include
+    a message on the main window with instructions.
 
 Commerce issues:
 	- I am not sure that the either/or first age cards are working correctly.  I need to do a detailed analysis of how the resources are walked.  The algorithm should look like:
@@ -38,19 +40,14 @@ Technical stories:
 - There may still be a bug if both Babylon and Halikarnassos build their extra card on the same turn.
 - Halikarnassos extra build needs to happen _after_ all players have discarded their final card.  Right now it's happening before, which is wrong.
 
-- Tested Wonders: Alexandria (both sides), Babylon (both sides), Ephesos (both sides)
+- Tested Wonders: Alexandria (both sides), Babylon (both sides), Ephesos (both sides), Giza.  Currently working on Olympia A's
+  ability to play a card without paying its cost (this is mostly UI with a bit of improved messaging)
+
+- the game doesn't terminate nicely when it's shut down.  Must kill it.
 
 - The list of players (the datagrid) isn't hooked up at the match-making.
 
-- Need to check all the wonders' special abilities.  Alexandria A's is working properly.
-
-- The protocol for the client/server communication is quite a lot more verbose than it needs to be.  Surely the server should wait for each client to make his choice, then broadcast the card each player played to every
-  other player.  Instead, it sends the whole game state to every player after each turn.
-	- stil working on this.
-
 - it would be nice to use data binding, if I can figure it out.
-
-- the game doesn't terminate nicely when it's shut down.  Must kill it.
 
 Original text below:
 

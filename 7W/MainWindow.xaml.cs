@@ -364,53 +364,67 @@ namespace SevenWonders
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void cardActionButtonPressed(object sender, RoutedEventArgs e)
+        private void btnBuildStructureForFree_Click(object sender, RoutedEventArgs e)
         {
-            if (!playerPlayedHisTurn)
-            {
-                Button playedButton = sender as Button;
-                String s = playedButton.Name;
+            if (playerPlayedHisTurn)
+                return;
 
-                //send to the server the Action selected
-                switch (playedButton.Name)
-                {
-                    case "btnBuildStructure":
-                        if (hand[handPanel.SelectedIndex].Value == Buildable.True)
-                        {
-                            playedButton.IsEnabled = false;
-                            playerPlayedHisTurn = true;
-                            // bilkisButton.IsEnabled = false;
-                            coordinator.sendToHost(string.Format("BldStrct&WonderStage=0&Structure={0}", hand[handPanel.SelectedIndex].Key));
-                            coordinator.endTurn();
-                        }
-                        else
-                        {
-                            coordinator.sendToHost("SendComm&WonderStage=0&Structure=" + hand[handPanel.SelectedIndex].Key);     // the server's response will open the Commerce Dialog box
-                        }
-                        break;
-                    case "btnBuildWonderStage":
-                        if (stageBuildable == Buildable.True)
-                        {
-                            playedButton.IsEnabled = false;
-                            playerPlayedHisTurn = true;
-                            // bilkisButton.IsEnabled = false;
-                            coordinator.sendToHost(string.Format("BldStrct&WonderStage=1&Structure={0}", hand[handPanel.SelectedIndex].Key));
-                            coordinator.endTurn();
-                        }
-                        else
-                        {
-                            coordinator.sendToHost("SendComm&WonderStage=1&Structure=" + hand[handPanel.SelectedIndex].Key);     // the server's response will open the Commerce Dialog box
-                        }
-                        break;
-                    case "btnDiscardStructure":
-                        playedButton.IsEnabled = false;
-                        playerPlayedHisTurn = true;
-                        // bilkisButton.IsEnabled = false;
-                        coordinator.sendToHost(string.Format("Discards&Structure={0}", hand[handPanel.SelectedIndex].Key));
-                        coordinator.endTurn();
-                        break;
-                }
+            ((Button)sender).IsEnabled = false;
+            playerPlayedHisTurn = true;
+            // bilkisButton.IsEnabled = false;
+            coordinator.sendToHost(string.Format("BldStrct&WonderStage=0&FreeBuild=true&Structure={0}", hand[handPanel.SelectedIndex].Key));
+            coordinator.endTurn();
+
+        }
+
+        private void btnBuildStructure_Click(object sender, RoutedEventArgs e)
+        {
+            if (playerPlayedHisTurn)
+                return;
+
+            if (hand[handPanel.SelectedIndex].Value == Buildable.True)
+            {
+                ((Button)sender).IsEnabled = false;
+                playerPlayedHisTurn = true;
+                // bilkisButton.IsEnabled = false;
+                coordinator.sendToHost(string.Format("BldStrct&WonderStage=0&Structure={0}", hand[handPanel.SelectedIndex].Key));
+                coordinator.endTurn();
             }
+            else
+            {
+                coordinator.sendToHost("SendComm&WonderStage=0&Structure=" + hand[handPanel.SelectedIndex].Key);     // the server's response will open the Commerce Dialog box
+            }
+        }
+
+        private void btnBuildWonderStage_Click(object sender, RoutedEventArgs e)
+        {
+            if (playerPlayedHisTurn)
+                return;
+
+            if (stageBuildable == Buildable.True)
+            {
+                ((Button)sender).IsEnabled = false;
+                playerPlayedHisTurn = true;
+                // bilkisButton.IsEnabled = false;
+                coordinator.sendToHost(string.Format("BldStrct&WonderStage=1&Structure={0}", hand[handPanel.SelectedIndex].Key));
+                coordinator.endTurn();
+            }
+            else
+            {
+                coordinator.sendToHost("SendComm&WonderStage=1&Structure=" + hand[handPanel.SelectedIndex].Key);     // the server's response will open the Commerce Dialog box
+            }
+        }
+
+        private void btnDiscardStructure_Click(object sender, RoutedEventArgs e)
+        {
+            if (playerPlayedHisTurn)
+                return;
+
+            ((Button)sender).IsEnabled = false;
+            playerPlayedHisTurn = true;
+            // bilkisButton.IsEnabled = false;
+            coordinator.sendToHost(string.Format("Discards&Structure={0}", hand[handPanel.SelectedIndex].Key));
+            coordinator.endTurn();
         }
 
         /// <summary>

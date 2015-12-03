@@ -17,7 +17,7 @@
         <Grid Grid.Column="0">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="6*"/>
+                    <RowDefinition Height="5*"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <ListBox Grid.Row="0" Name="handPanel" SelectionChanged="handPanel_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
@@ -27,10 +27,12 @@
                         <RowDefinition Height="1*"></RowDefinition>
                         <RowDefinition Height="1*"></RowDefinition>
                         <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Button Name="btnBuildStructure" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="cardActionButtonPressed"></Button>
-                    <Button Name="btnBuildWonderStage" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="cardActionButtonPressed"></Button>
-                    <Button Name="btnDiscardStructure" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="cardActionButtonPressed"></Button>
+                    <Button Name="btnBuildStructureForFree" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildStructureForFree_Click" Visibility="Hidden" IsEnabled="False"></Button>
+                    <Button Name="btnBuildStructure" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildStructure_Click"></Button>
+                    <Button Name="btnBuildWonderStage" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildWonderStage_Click"></Button>
+                    <Button Name="btnDiscardStructure" Grid.Row="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnDiscardStructure_Click"></Button>
                 </Grid>
             </Grid>
         </Grid>

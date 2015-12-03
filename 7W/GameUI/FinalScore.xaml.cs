@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace SevenWonders
     /// </summary>
     public partial class FinalScore : Window
     {
-        public FinalScore()
+        public FinalScore(NameValueCollection parms)
         {
             InitializeComponent();
         }

@@ -454,11 +454,27 @@ namespace SevenWonders
                         messageHandled = true;
                         break;
 
+                    case "EnableFB":
+
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            gameUI.btnBuildStructureForFree.Visibility = Visibility.Visible;
+                            gameUI.btnBuildStructureForFree.IsEnabled = true;
+                            gameUI.btnBuildStructureForFree.Content = new TextBlock()
+                            {
+                                Text = string.Format("Build this structure without paying the cost.  This ability may be used once in each age once it's been activated."),
+                                TextAlignment = TextAlignment.Center,
+                                TextWrapping = TextWrapping.Wrap
+                            };
+                        }));
+                        break;
+
                     case "FinalSco":
                         qcoll = HttpUtility.ParseQueryString(message.Substring(9));
                         Application.Current.Dispatcher.Invoke(new Action(delegate
                         {
-                            FinalScore fs = new FinalScore();// this, fullCardList, qcoll);
+                            FinalScore fs = new FinalScore(qcoll);
 
                             fs.ShowDialog();
                         }));
