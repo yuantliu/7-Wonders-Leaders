@@ -37,8 +37,9 @@ AI players
 
 Technical stories:
 
-- There may still be a bug if both Babylon and Halikarnassos build their extra card on the same turn.
-- Halikarnassos extra build needs to happen _after_ all players have discarded their final card.  Right now it's happening before, which is wrong.
+- There is a problem when Babylon B's power is activated and Halikarnassos builds a free build wonder stage
+  with their 6th card.  Babylon B must play first, then Halikarnassos can play.  Will need to use a 2nd client
+  to run through this logic.
 
 - All special wonder effects have been tested at this point.
 

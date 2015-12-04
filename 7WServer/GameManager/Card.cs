@@ -195,8 +195,21 @@ namespace SevenWonders
             Resource,           // All browns, greys, plus the Forum, Caravansery, Alexendria wonder effects
             Science,            // All science cards, not including Scientist's Guild or Babylon wonder
             Commerce,           // Marketplace, Trading Posts, Olympia B stage 1
-            CoinsPoints,        // All civilian, most guilds, all age 3 commerce, Vineyard, Bazar, 
-            SpecialAbility,     // Science guild, Shipowner's guild, some Wonder board stages with unique effects
+            CoinsPoints,        // All civilian, most guilds, all age 3 commerce, Vineyard, Bazar, most wonder stages
+
+            // These cards don't fit into one of the above categories
+            ShipOwnersGuild,                // ShipOwners Guild
+            ScienceWild,                    // Science wild card
+
+            // Special wonder stages
+            PlayLastCardInAge,              // Babylon (B) 2nd stage
+            PlayDiscardedCardForFree,       // Halikarnassos (A) 2nd stage
+            PlayDiscardedCardForFree_1VP,   // Halikarnassos (B) 2nd stage
+            PlayDiscardedCardForFree_2VP,   // Halikarnassos (B) 1st stage
+            PlayACardForFreeOncePerAge,     // Olympia (A) 2nd stage
+            CopyGuildFromNeighbor,          // Olympia (B) 3rd stage
+            Rhodos_B_Stage1,                // Rhodos (B) 1st stage
+            Rhodos_B_Stage2,                // Rhodos (B) 2nd stage
         };
     };
 
@@ -233,21 +246,6 @@ namespace SevenWonders
             this.resourceTypes = resourceTypes;
         }
     }
-
-    /*
-    // formerly category 1
-    public class SimpleEffect : Effect
-    {
-        public int multiplier;
-        public char type;                                                   // Make this an enum! Coins/Wood/Stone/Clay/Ore/Cloth/Glass/Papyrus
-
-        public SimpleEffect(int multiplier, char type)
-        {
-            this.multiplier = multiplier;
-            this.type = type;
-        }
-    };
-    */
 
     // formerly category 2
     public class ScienceEffect : Effect
@@ -297,35 +295,6 @@ namespace SevenWonders
             BothNeighbors,
         };
 
-        /*
-        public AppliesTo appliesTo {
-            get
-            {
-                switch (effectString[0])
-                {
-                    case 'L': return CommercialDiscountEffect.AppliesTo.LeftNeighbor;
-                    case 'R': return CommercialDiscountEffect.AppliesTo.RightNeighbor;
-                    case 'B': return CommercialDiscountEffect.AppliesTo.BothNeighbors;
-                    default: throw new Exception();
-                }
-            }
-        }
-
-        public Affects affects
-        {
-            get
-            {
-                switch (effectString[1])
-                {
-                    case 'R': return CommercialDiscountEffect.Affects.RawMaterial;
-                    case 'G': return CommercialDiscountEffect.Affects.Goods;
-                    default: throw new Exception();
-                }
-
-            }
-        }
-        */
-
         public string effectString { get; }
 
         public CommercialDiscountEffect(string effectString)
@@ -333,22 +302,6 @@ namespace SevenWonders
             this.effectString = effectString;
         }
     };
-
-    /*
-    // formerly category 4
-    public class ResourceChoiceEffect : Effect
-    {
-        public string strChoiceData;
-
-        public bool canBeUsedByNeighbors;
-
-        public ResourceChoiceEffect(bool canBeUsedByNeighbors, string s)
-        {
-            this.canBeUsedByNeighbors = canBeUsedByNeighbors;
-            this.strChoiceData = s;
-        }
-    };
-    */
 
     // formerly category 5
     public class CoinsAndPointsEffect : Effect
@@ -375,29 +328,44 @@ namespace SevenWonders
         }
     };
 
-    // formerly category 6
-    public class SpecialAbilityEffect : Effect
+    public class ShipOwnersGuildEffect : Effect
     {
-        public enum SpecialType
-        {
-            ShipOwnerGuild,
-            ScienceWild,
-            PlayLastCardInAge,
-            PlayDiscardedCardForFree,
-            PlayDiscardedCardForFree_2VP,
-            PlayDiscardedCardForFree_1VP,
-            PlayACardForFreeOncePerAge,
-            CopyGuildFromNeighbor,
-            Rhodos_B_1M3VP3C,
-            Rhodos_B_1M4VP4C,
-        };
+    }
 
-        public SpecialType type;
+    public class ScienceWildEffect : Effect
+    {
+    }
 
-        public SpecialAbilityEffect(string initStr)
-        {
-            type = (SpecialType)Enum.Parse(typeof(SpecialType), initStr);
-        }
+    public class PlayLastCardInAgeEffect : Effect
+    {
+    }
+
+    public class PlayDiscardedCardForFreeEffect : Effect
+    {
+    }
+
+    public class PlayDiscardedCardForFree_1VPEffect : Effect
+    {
+    }
+
+    public class PlayDiscardedCardForFree_2VPEffect : Effect
+    {
+    }
+
+    public class PlayACardForFreeOncePerAgeEffect : Effect
+    {
+    }
+
+    public class CopyGuildFromNeighborEffect : Effect
+    {
+    }
+
+    public class Rhodos_B_Stage1Effect : Effect
+    {
+    }
+
+    public class Rhodos_B_Stage2Effect : Effect
+    {
     }
 
     public class Card
@@ -428,7 +396,7 @@ namespace SevenWonders
             else
             {
                 age = 0;
-                wonderStage = int.Parse(createParams[30]);
+                wonderStage = int.Parse(createParams[29]);
             }
 
             structureType = (StructureType)Enum.Parse(typeof(StructureType), createParams[2]);
@@ -496,8 +464,41 @@ namespace SevenWonders
                         int.Parse(createParams[27]), int.Parse(createParams[28]));
                     break;
 
-                case Effect.Type.SpecialAbility:
-                    effect = new SpecialAbilityEffect(createParams[29]);
+                case Effect.Type.ShipOwnersGuild:
+                    effect = new ShipOwnersGuildEffect();
+                    break;
+
+                case Effect.Type.ScienceWild:
+                    effect = new ScienceWildEffect();
+                    break;
+
+                case Effect.Type.PlayLastCardInAge:
+                    effect = new PlayLastCardInAgeEffect();
+                    break;
+
+                case Effect.Type.PlayDiscardedCardForFree:
+                    effect = new PlayDiscardedCardForFreeEffect();
+                    break;
+
+                case Effect.Type.PlayDiscardedCardForFree_1VP:
+                    effect = new PlayDiscardedCardForFree_1VPEffect();
+                    break;
+
+                case Effect.Type.PlayDiscardedCardForFree_2VP:
+                    effect = new PlayDiscardedCardForFree_2VPEffect();
+                    break;
+
+                case Effect.Type.PlayACardForFreeOncePerAge:
+                    effect = new PlayACardForFreeOncePerAgeEffect();
+                    break;
+                case Effect.Type.CopyGuildFromNeighbor:
+                    effect = new CopyGuildFromNeighborEffect();
+                    break;
+                case Effect.Type.Rhodos_B_Stage1:
+                    effect = new Rhodos_B_Stage1Effect();
+                    break;
+                case Effect.Type.Rhodos_B_Stage2:
+                    effect = new Rhodos_B_Stage2Effect();
                     break;
             }
         }

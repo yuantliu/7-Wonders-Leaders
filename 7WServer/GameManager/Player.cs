@@ -133,12 +133,12 @@ namespace SevenWonders
                     n += ((MilitaryEffect)c.effect).nShields;
                 }
 
-                Card card = playedStructure.Find(x => (x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.Rhodos_B_1M3VP3C));
+                Card card = playedStructure.Find(x => x.effect is Rhodos_B_Stage1Effect);
 
                 if (card != null)
                     n += 1;
 
-                card = playedStructure.Find(x => (x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.Rhodos_B_1M4VP4C));
+                card = playedStructure.Find(x => x.effect is Rhodos_B_Stage2Effect);
 
                 if (card != null)
                     n += 1;
@@ -273,7 +273,7 @@ namespace SevenWonders
         /// <param name="s"></param>
         public void storeAction(Effect e)
         {
-            if (e is CoinEffect || e is ResourceEffect || e is CoinsAndPointsEffect || (e is SpecialAbilityEffect && ((SpecialAbilityEffect)e).type == SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge))
+            if (e is CoinEffect || e is ResourceEffect || e is CoinsAndPointsEffect || e is PlayACardForFreeOncePerAgeEffect)
             {
                 // the effects of these cards do not come into play until the next turn.
                 // put them on the actions queue to be run after all players have turned
@@ -424,56 +424,41 @@ namespace SevenWonders
                         break;
                 }
             }
-            else if (effect is SpecialAbilityEffect)
+            else if (effect is ShipOwnersGuildEffect)
             {
-                SpecialAbilityEffect sae = effect as SpecialAbilityEffect;
-
-                switch (sae.type)
-                {
-                    case SpecialAbilityEffect.SpecialType.ShipOwnerGuild:
-                        // nothing to do; this card will be included in the end of game point total
-                        break;
-
-                    case SpecialAbilityEffect.SpecialType.ScienceWild:
-                        // nothing to do; this card will be included in the end of game point total
-                        break;
-
-                    case SpecialAbilityEffect.SpecialType.PlayLastCardInAge:
-                        // enable Babylon's ability to play the last card in the hand rather than
-                        // discarding it.
-                        // usedBabylon = false;
-                        break;
-
-                    case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree:
-                        playCardFromDiscardPile = true;
-                        break;
-
-                    case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_2VP:
-                        playCardFromDiscardPile = true;
-                        break;
-
-                    case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_1VP:
-                        playCardFromDiscardPile = true;
-                        break;
-
-                    case SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge:
-                        throw new Exception("This ability needs to be dealt with on the end-of-turn action queue.");
-                        break;
-
-                    case SpecialAbilityEffect.SpecialType.CopyGuildFromNeighbor:
-                        // Will be resolved in the endOfGame actions.
-                        break;
-
-                    case SpecialAbilityEffect.SpecialType.Rhodos_B_1M3VP3C:
-                        // Add the 3 coins immediately.  The 3 victory points will be included in total for wonders
-                        // The Military will also need to be included in the shield calculation.
-                        storeAction(new CoinEffect(3));
-                        break;
-
-                    case SpecialAbilityEffect.SpecialType.Rhodos_B_1M4VP4C:
-                        storeAction(new CoinEffect(4));
-                        break;
-                }
+                // nothing to do; this card will be included in the end of game point total
+            }
+            else if (effect is ScienceWildEffect)
+            {
+                // nothing to do; this card will be included in the end of game point total
+            }
+            else if (effect is PlayLastCardInAgeEffect)
+            {
+                // enable Babylon's ability to play the last card in the hand rather than
+                // discarding it.
+                // usedBabylon = false;
+            }
+            else if (effect is PlayDiscardedCardForFreeEffect || effect is PlayDiscardedCardForFree_1VPEffect || effect is PlayDiscardedCardForFree_2VPEffect)
+            {
+                playCardFromDiscardPile = true;
+            }
+            else if (effect is PlayACardForFreeOncePerAgeEffect)
+            {
+                throw new Exception("This ability needs to be dealt with on the end-of-turn action queue.");
+            }
+            else if (effect is CopyGuildFromNeighborEffect)
+            {
+                // Will be resolved in the endOfGame actions.
+            }
+            else if (effect is Rhodos_B_Stage1Effect)
+            {
+                // Add the 3 coins immediately.  The 3 victory points will be included in total for wonders
+                // The Military will also need to be included in the shield calculation.
+                storeAction(new CoinEffect(3));
+            }
+            else if (effect is Rhodos_B_Stage2Effect)
+            {
+                storeAction(new CoinEffect(4));
             }
             else if (effect is MilitaryEffect || effect is ScienceEffect)
             {
@@ -648,15 +633,8 @@ namespace SevenWonders
                       //  endOfGameActions.Add(act);
 
                 }
-                else if (act is SpecialAbilityEffect)
+                else if (act is PlayACardForFreeOncePerAgeEffect)
                 {
-                    SpecialAbilityEffect spe = act as SpecialAbilityEffect;
-
-                    if (spe.type != SpecialAbilityEffect.SpecialType.PlayACardForFreeOncePerAge)
-                    {
-                        throw new Exception("The only type of special ability effect that should be handled in the end-of-turn actions is enabling the PlayACardForFreeOncePerAge effect.");
-                    }
-
                     olympiaPowerEnabled = true;
                     olympiaPowerAvailable = true;
                     gm.gmCoordinator.sendMessage(this, "EnableFB&Olympia=true");
@@ -909,7 +887,7 @@ namespace SevenWonders
                 Console.WriteLine("    {0} ({1})", c.name, ((ScienceEffect)c.effect).symbol);
             }
 
-            int nScienceWildCards = playedStructure.Where(x => x.effect is SpecialAbilityEffect && ((SpecialAbilityEffect)x.effect).type == SpecialAbilityEffect.SpecialType.ScienceWild).Count();
+            int nScienceWildCards = playedStructure.Where(x => x.effect is ScienceWildEffect).Count();
 
             if (nScienceWildCards != 0)
                 Console.WriteLine("  {0} science wild card effect(s)", nScienceWildCards);
@@ -919,86 +897,72 @@ namespace SevenWonders
             Console.WriteLine("  Points from science: {0}", totalSciencePoints);
 
             int totalWonderPoints = 0;
-            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage && x.effect is CoinsAndPointsEffect))
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage))
             {
-                totalWonderPoints += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
-            }
-
-            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage && x.effect is SpecialAbilityEffect))
-            {
-                SpecialAbilityEffect spe = c.effect as SpecialAbilityEffect;
-
-                switch(spe.type)
+                if (c.effect is CoinsAndPointsEffect)
                 {
-                    case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_2VP:
-                        totalWonderPoints += 2;
-                        break;
+                    totalWonderPoints += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
+                }
+                else if (c.effect is PlayDiscardedCardForFree_2VPEffect)
+                {
+                    totalWonderPoints += 2;
+                }
+                else if (c.effect is PlayDiscardedCardForFree_1VPEffect)
+                {
+                    totalWonderPoints += 1;
+                }
+                else if (c.effect is CopyGuildFromNeighborEffect)
+                {
+                    // Olympia B 3rd stage.  Check each guild card built by neighboring cities
+                    // and pick the one that yields the most number of points to copy.
+                    int maxPoints = 0;
+                    string copiedGuild = string.Empty;
 
-                    case SpecialAbilityEffect.SpecialType.PlayDiscardedCardForFree_1VP:
-                        totalWonderPoints += 1;
-                        break;
+                    IEnumerable<Card> neighborsGuilds = leftNeighbour.playedStructure.Where(x => x.structureType == StructureType.Guild).Concat(
+                        rightNeighbour.playedStructure.Where(x => x.structureType == StructureType.Guild));
 
-                    case SpecialAbilityEffect.SpecialType.CopyGuildFromNeighbor:
-                        // Olympia B 3rd stage
+                    foreach (Card card in neighborsGuilds)
+                    {
+                        int pointsForThisGuild = 0;
+
+                        if (card.effect is CoinsAndPointsEffect)
                         {
-                            // check each guild card built by neighboring cities and pick the one that yields the most number of points
-                            int maxPoints = 0;
-                            string copiedGuild = string.Empty;
-
-                            IEnumerable<Card> neighborsGuilds = leftNeighbour.playedStructure.Where(x => x.structureType == StructureType.Guild).Concat(
-                                rightNeighbour.playedStructure.Where(x => x.structureType == StructureType.Guild));
-
-                            foreach (Card card in neighborsGuilds)
-                            {
-                                int pointsForThisGuild = 0;
-
-                                if (card.effect is CoinsAndPointsEffect)
-                                {
-                                    pointsForThisGuild = CountVictoryPoints(card.effect as CoinsAndPointsEffect);
-                                }
-                                else if (card.effect is SpecialAbilityEffect)
-                                {
-                                    SpecialAbilityEffect sae = card.effect as SpecialAbilityEffect;
-
-                                    switch (sae.type)
-                                    {
-                                        case SpecialAbilityEffect.SpecialType.ShipOwnerGuild:
-                                            pointsForThisGuild = playedStructure.Where(x => x.structureType == StructureType.RawMaterial || x.structureType == StructureType.Goods || x.structureType == StructureType.Guild).Count();
-                                            break;
-
-                                        case SpecialAbilityEffect.SpecialType.ScienceWild:
-                                            pointsForThisGuild = CalculateSciencePoints(nScienceWildCards + 1) - totalSciencePoints;
-                                            break;
-                                    }
-                                }
-
-                                if (pointsForThisGuild > maxPoints)
-                                {
-                                    maxPoints = pointsForThisGuild;
-                                    copiedGuild = card.name;
-                                }
-                            }
-
-                            if (maxPoints != 0)
-                            {
-                                Console.WriteLine("Olympia B's 3rd wonder has a maximum value of {0} points.  Guild copied: {1}", maxPoints, copiedGuild);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Neither of Olympia's neighbors built any guilds that were worth any value to Olympia.  0 points scored for this wonder stage.");
-                            }
-
-                            totalWonderPoints += maxPoints;
+                            pointsForThisGuild = CountVictoryPoints(card.effect as CoinsAndPointsEffect);
                         }
-                        break;
+                        else if (card.effect is ShipOwnersGuildEffect)
+                        {
+                            pointsForThisGuild = playedStructure.Where(x => x.structureType == StructureType.RawMaterial || x.structureType == StructureType.Goods || x.structureType == StructureType.Guild).Count();
+                        }
+                        else if (card.effect is ScienceWildEffect)
+                        {
+                            pointsForThisGuild = CalculateSciencePoints(nScienceWildCards + 1) - totalSciencePoints;
+                        }
 
-                    case SpecialAbilityEffect.SpecialType.Rhodos_B_1M3VP3C:
-                        totalWonderPoints += 3;
-                        break;
+                        if (pointsForThisGuild > maxPoints)
+                        {
+                            maxPoints = pointsForThisGuild;
+                            copiedGuild = card.name;
+                        }
+                    }
 
-                    case SpecialAbilityEffect.SpecialType.Rhodos_B_1M4VP4C:
-                        totalWonderPoints += 4;
-                        break;
+                    if (maxPoints != 0)
+                    {
+                        Console.WriteLine("Olympia B's 3rd wonder has a maximum value of {0} points.  Guild copied: {1}", maxPoints, copiedGuild);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Neither of Olympia's neighbors built any guilds that were worth any value to Olympia.  0 points scored for this wonder stage.");
+                    }
+
+                    totalWonderPoints += maxPoints;
+                }
+                else if (c.effect is Rhodos_B_Stage1Effect)
+                {
+                    totalWonderPoints += 3;
+                }
+                else if (c.effect is Rhodos_B_Stage2Effect)
+                {
+                    totalWonderPoints += 4;
                 }
             }
 
@@ -1016,15 +980,10 @@ namespace SevenWonders
                     // most guilds fall into this category: they count points based on something the neighboring cities.
                     totalGuildPoints += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
                 }
-                else if (c.effect is SpecialAbilityEffect)
+                else if (c.effect is ShipOwnersGuildEffect)
                 {
-                    SpecialAbilityEffect sae = c.effect as SpecialAbilityEffect;
-
-                    if (sae.type == SpecialAbilityEffect.SpecialType.ShipOwnerGuild)
-                    {
-                        // Shipowners guild counts 1 point for each Brown, Grey, and Purple card in the players' city.
-                        totalGuildPoints += playedStructure.Where(x => x.structureType == StructureType.RawMaterial || x.structureType == StructureType.Goods || x.structureType == StructureType.Guild).Count();
-                    }
+                    // Shipowners guild counts 1 point for each Brown, Grey, and Purple card in the players' city.
+                    totalGuildPoints += playedStructure.Where(x => x.structureType == StructureType.RawMaterial || x.structureType == StructureType.Goods || x.structureType == StructureType.Guild).Count();
                 }
             }
             Console.WriteLine("  Points from guilds: {0}", totalGuildPoints);
