@@ -528,7 +528,7 @@ namespace SevenWonders
         protected Board popRandomBoard()
         {
             // int index = (new Random()).Next(0, board.Count);
-            int index = 13;
+            int index = 9;
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
@@ -578,6 +578,16 @@ namespace SevenWonders
         public void buildStructureFromHand(Player p, Card c, bool wonderStage, bool freeBuild = false, int nLeftCoins = 0, int nRightCoins = 0)
         {
             p.hand.Remove(c);
+
+            if (p.hand.Count == 1)
+            {
+                // discard the unplayed card, unless the player is Babylon (B) and their Power is enabled (the 2nd wonder stage)
+                if (p.playerBoard.name != "Babylon (B)" || p.currentStageOfWonder < 2)
+                {
+                    discardPile.Add(p.hand.First());
+                    p.hand.Clear();
+                }
+            }
 
             if (wonderStage)
             {
@@ -900,9 +910,19 @@ namespace SevenWonders
 
             //add the card to the discard pile
             discardPile.Add(c);
+
+            if (p.hand.Count == 1)
+            {
+                // discard the unplayed card, unless the player is Babylon (B) and their Power is enabled (the 2nd wonder stage)
+                if (p.playerBoard.name != "Babylon (B)" || p.currentStageOfWonder < 2)
+                {
+                    discardPile.Add(p.hand.First());
+                    p.hand.Clear();
+                }
+            }
         }
 
-        
+
 
         /// <summary>
         /// Pass remaining cards to neighbour
@@ -1397,6 +1417,10 @@ namespace SevenWonders
                     gettingBabylonExtraCard = true;
                 }
 
+                // I will need to go through this logic carefully.  Babylon (B) must play or discard their last
+                // card _before_ Halikarnassos looks at the discard pile.  Will need to connect a 2nd client first,
+                // though.  Basically the GameManager has to get Babylon's choice before Halikarnassos can choose
+                // a card from the discard pile.
                 if (playingCardFromDiscardPile && p.playCardFromDiscardPile)
                 {
                     playingCardFromDiscardPile = false;
