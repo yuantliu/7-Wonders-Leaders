@@ -467,9 +467,11 @@ namespace SevenWonders
                     case SpecialAbilityEffect.SpecialType.Rhodos_B_1M3VP3C:
                         // Add the 3 coins immediately.  The 3 victory points will be included in total for wonders
                         // The Military will also need to be included in the shield calculation.
+                        storeAction(new CoinEffect(3));
                         break;
 
                     case SpecialAbilityEffect.SpecialType.Rhodos_B_1M4VP4C:
+                        storeAction(new CoinEffect(4));
                         break;
                 }
             }
