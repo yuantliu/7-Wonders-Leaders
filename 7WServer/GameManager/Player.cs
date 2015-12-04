@@ -161,13 +161,14 @@ namespace SevenWonders
 
         public List<Card> playedStructure = new List<Card>();
 
-        //can activate wonder power?
-        public bool hasOlympia { get; set; }
+        // After the player builds the 2nd stage of Babylon B's wonder, this will be true.
+        public bool babylonPowerEnabled { get; set; }
+
+        // After the player builds the 2nd stage of Olympia A's wonder, this will be true.
         public bool olympiaPowerEnabled { get; set; }
 
+        // if Olympia's Power (play a card for free) has not been used, this is true
         public bool olympiaPowerAvailable { get; set; }
-
-        // public bool usedHalicarnassus { get; set; }
 
         public bool playCardFromDiscardPile = false;
 

@@ -34,8 +34,12 @@ namespace SevenWonders
 
         public bool esteban = false;
 
+        // is true for the extra turn awarded when a player is playing the last card in his hand
         bool gettingBabylonExtraCard = false;
+
+        // is true for the extra turn awarded when a player is playing a card from the discard pile.
         bool playingCardFromDiscardPile = false;
+
         List<Card> savedHandWhenPlayingFromDiscardPile;
 
         string[] playerNicks;
@@ -269,29 +273,8 @@ namespace SevenWonders
                 gmCoordinator.sendMessage(p, strUpdateMilitaryTokens);
             }
 
-            /*
-        //reenable Olympia and Babylon
-        //disable Halicarnassus
-        foreach (Player p in player.Values)
-        {
-            //Olympia always reactivate after every age.
-            if (p.playerBoard.name == "OA" && p.currentStageOfWonder >= 2)
-            {
-                p.olympiaPowerEnabled = true;
-            }
-
-            //always disables Halicarnassus after every age.
-            // p.usedHalicarnassus = true;
-
-            //always reactivate Babylon after every age
-            if (p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2)
-            {
-                // p.usedBabylon = false;
-            }
-        }
-            */
-
-            // take all player's remaining cards, deposit it to the discard pile
+            // check that all players' hands are empty, and re-enable Olympia's Power (build a card for free, once per age),
+            // if it has been activated.
             foreach (Player p in player.Values)
             {
                 if (p.olympiaPowerEnabled)
@@ -300,14 +283,12 @@ namespace SevenWonders
                     gmCoordinator.sendMessage(p, "EnableFB&Olympia=true");
                 }
 
-                //if they still have a card
-                if (p.hand.Count >= 1)
+                // Check that the players' hand is empty as they should be discarding their last card on the 6th
+                // turn of the age.
+                if (p.hand.Count != 0)
                 {
-                    //put it in the bin
-                    discardPile.Add(p.hand[0]);
+                    throw new Exception("Bug!  This player still has one or more cards in his hand at the end of the age.  Logic screwup.");
                 }
-
-                p.hand.Clear();
             }
         }
 
@@ -528,7 +509,7 @@ namespace SevenWonders
         protected Board popRandomBoard()
         {
             // int index = (new Random()).Next(0, board.Count);
-            int index = 9;
+            int index = 3;
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
@@ -579,16 +560,6 @@ namespace SevenWonders
         {
             p.hand.Remove(c);
 
-            if (p.hand.Count == 1)
-            {
-                // discard the unplayed card, unless the player is Babylon (B) and their Power is enabled (the 2nd wonder stage)
-                if (p.playerBoard.name != "Babylon (B)" || p.currentStageOfWonder < 2)
-                {
-                    discardPile.Add(p.hand.First());
-                    p.hand.Clear();
-                }
-            }
-
             if (wonderStage)
             {
                 if (p.currentStageOfWonder >= p.playerBoard.numOfStages)
@@ -599,10 +570,22 @@ namespace SevenWonders
 
                 c = p.playerBoard.stageCard[p.currentStageOfWonder];
                 p.currentStageOfWonder++;
+
+                // if they just built the 2nd stage of Babylon B's wonder, update the player state.
+                if (p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder == 2)
+                    p.babylonPowerEnabled = true;
+            }
+
+            if (p.hand.Count == 1 && !p.babylonPowerEnabled)
+            {
+                // discard the last card in the hand, unless the player is Babylon (B) and their Power is enabled (the 2nd wonder stage)
+                discardPile.Add(p.hand.First());
+                p.hand.Clear();
             }
 
             //add the card to played card structure
             p.addPlayedCardStructure(c);
+
             //store the card's action
             p.storeAction(c.effect);
 
@@ -914,7 +897,7 @@ namespace SevenWonders
             if (p.hand.Count == 1)
             {
                 // discard the unplayed card, unless the player is Babylon (B) and their Power is enabled (the 2nd wonder stage)
-                if (p.playerBoard.name != "Babylon (B)" || p.currentStageOfWonder < 2)
+                if (!p.babylonPowerEnabled)
                 {
                     discardPile.Add(p.hand.First());
                     p.hand.Clear();
@@ -1049,7 +1032,7 @@ namespace SevenWonders
                 */
 
                 // Check if we're in a special state - extra turn for Babylon (B)
-                if (gettingBabylonExtraCard && p.playerBoard.name != "Babylon (B)")
+                if (gettingBabylonExtraCard && !p.babylonPowerEnabled)
                     continue;
 
                 // Check if we're in a special state - playing a card from the discard pile
@@ -1363,40 +1346,6 @@ namespace SevenWonders
         {
             Player p = player[nickname];
 
-            /*
-            //if player doesn't even have Halicarnassus or Babylon board, then no more action is required
-            if (p.playerBoard.name != "Babylon (B)" && p.playerBoard.name.Substring(0, 13) != "Halikarnassos")
-            {
-                numOfPlayersThatHaveTakenTheirTurn++;
-            }
-            //if current turn isn't 6, then no more action is required
-            else if (currentTurn < 6)
-            {
-                numOfPlayersThatHaveTakenTheirTurn++;
-            }
-            //player has the Babylon board and has Babylon power built. Send the babylon information if it is currently the last turn of the Age.
-            else if (p.usedBabylon == false)
-            {
-                //send babylon information here.
-                sendBabylonInformation(nickname);
-
-                p.usedBabylon = true;
-            }
-            //Player has the Halicarnassus board and has built the Halicarnassus power. Send the Halicarnassus information.
-            else if (p.usedHalicarnassus == false)
-            {
-                //send halicarnassus information here.
-                sendHalicarnassusInformation(nickname);
-
-                p.usedHalicarnassus = true;
-            }
-            //Halicarnassus/Babylon action has been taken or not activated. Increment turn as normal.
-            else if (p.usedHalicarnassus || p.usedBabylon)
-            {
-                numOfPlayersThatHaveTakenTheirTurn++;
-            }
-            */
-
             numOfPlayersThatHaveTakenTheirTurn++;
 
             if ((numOfPlayersThatHaveTakenTheirTurn == numOfPlayers) || gettingBabylonExtraCard || playingCardFromDiscardPile)
@@ -1408,11 +1357,11 @@ namespace SevenWonders
                     // any other turn, execute everyone's actions.
                 executeActionsAtEndOfTurn();
 
-                if (gettingBabylonExtraCard && currentTurn == 6 && p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2)
+                if (gettingBabylonExtraCard && currentTurn == 6 && p.babylonPowerEnabled)
                 {
                     gettingBabylonExtraCard = false;
                 }
-                else if (currentTurn == 6 && p.playerBoard.name == "Babylon (B)" && p.currentStageOfWonder >= 2)
+                else if (currentTurn == 6 && p.babylonPowerEnabled)
                 {
                     gettingBabylonExtraCard = true;
                 }
@@ -1420,7 +1369,10 @@ namespace SevenWonders
                 // I will need to go through this logic carefully.  Babylon (B) must play or discard their last
                 // card _before_ Halikarnassos looks at the discard pile.  Will need to connect a 2nd client first,
                 // though.  Basically the GameManager has to get Babylon's choice before Halikarnassos can choose
-                // a card from the discard pile.
+                // a card from the discard pile.  Note.  I _think_ I may be able to just add an "else" before the
+                // "if" here.  That way the game manager will do the Babylon extra card first, and only after that's
+                // done, do Halikarnassos.  Or maybe I'll need to add a game manager state to control this, rather
+                // than using booleans to control the logic.
                 if (playingCardFromDiscardPile && p.playCardFromDiscardPile)
                 {
                     playingCardFromDiscardPile = false;
