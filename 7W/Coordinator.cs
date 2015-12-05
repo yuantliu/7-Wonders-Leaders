@@ -470,8 +470,7 @@ namespace SevenWonders
                         Application.Current.Dispatcher.Invoke(new Action(delegate
                         {
                             FinalScore fs = new FinalScore(qcoll);
-
-                            fs.ShowDialog();
+                            fs.Show();
                         }));
                         messageHandled = true;
                         break;

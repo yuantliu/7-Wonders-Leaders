@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Data;
 using System.Linq;
@@ -37,6 +38,21 @@ namespace SevenWonders
             // turn causes MainWindow.ShowDialog() to return before it's closed.  To prevent this , we change
             // the ShutdownMode to OnExpliciShutdown (its default value is OnMainWindowClose).
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+            /*
+            NameValueCollection nv = new NameValueCollection();
+
+            nv.Add("Player1", "5,6,13,15,12,15,15,0,105");
+            nv.Add("Player2", "2,0,1,11,14,0,5,0,60");
+            nv.Add("Player3", "2,0,1,11,14,0,5,0,60");
+            nv.Add("Player4", "2,0,1,11,14,0,5,0,60");
+            nv.Add("Player5", "2,0,1,11,14,0,5,0,60");
+            nv.Add("Player6", "2,0,1,11,14,0,5,0,60");
+            nv.Add("Player7", "2,0,1,11,14,0,5,0,60");
+
+            FinalScore fs = new FinalScore(nv);
+            fs.ShowDialog();
+            */
 
             gameCoordinator = new Coordinator();
             gameCoordinator.createGame();

@@ -20,9 +20,56 @@ namespace SevenWonders
     /// </summary>
     public partial class FinalScore : Window
     {
-        public FinalScore(NameValueCollection parms)
+        public FinalScore(NameValueCollection scores)
         {
             InitializeComponent();
+
+            Width = 75 + (scores.Count) * 63;
+
+            int column = 1;
+            foreach (string s in scores.AllKeys)
+            {
+                ScoreGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+                FontFamily ourFont = new FontFamily("Lucida Handwriting");
+
+                TextBlock nameElement = new TextBlock()
+                {
+                    Text = s,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    FontFamily = ourFont,
+                    FontSize = 10,
+                };
+
+                Grid.SetRow(nameElement, 0);
+                Grid.SetColumn(nameElement, column);
+                ScoreGrid.Children.Add(nameElement);
+
+                string[] st = scores[s].Split(',');
+
+                int row = 1;
+                foreach (string str in scores[s].Split(','))
+                {
+                    TextBlock v = new TextBlock()
+                    {
+                        Text = str,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        FontFamily = ourFont,
+                        FontSize = 24,
+                    };
+
+                    Grid.SetRow(v, row);
+                    Grid.SetColumn(v, column);
+
+                    ScoreGrid.Children.Add(v);
+
+                    ++row;
+                }
+
+                ++column;
+            }
         }
     }
 }

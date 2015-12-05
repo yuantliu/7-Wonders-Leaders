@@ -120,7 +120,7 @@ namespace SevenWonders
         public int coin { get; private set; }
 
         //Points and stuff
-        public int victoryPoint { get; private set; }
+        // public int victoryPoint { get; private set; }
 
         public int shield
         {
@@ -841,46 +841,42 @@ namespace SevenWonders
             return maxScienceScore;
         }
 
-
         /// <summary>
         /// Execute the end of game actions
         /// Most are hardcoded
         /// </summary>
-        public void executeEndOfGameActions()
+        public Score executeEndOfGameActions()
         {
+            Score score = new Score();
+
             Console.WriteLine("End of game summary for {0}", playerBoard.name);
 
-            int coinPoints = coin / 3;
-            Console.WriteLine("  Coins at the end of the game: {0} ({1} VP)", coin, coinPoints);
+            score.coins = coin / 3;
+            Console.WriteLine("  Coins at the end of the game: {0}", coin);
 
             Console.WriteLine("  Military victories for 1st age: {0}", conflictTokenOne);
             Console.WriteLine("  Military victories for 2nd age: {0}", conflictTokenTwo);
             Console.WriteLine("  Military victories for 3rd age: {0}", conflictTokenThree);
             Console.WriteLine("  Military losses: {0}", lossToken);
 
-            int militaryPoints = conflictTokenOne + conflictTokenTwo * 3 + conflictTokenThree * 5 - lossToken;
-            Console.WriteLine("  Military points: {0}", militaryPoints);
+            score.military = conflictTokenOne + conflictTokenTwo * 3 + conflictTokenThree * 5 - lossToken;
 
-            int totalCivilian = 0;
             Console.WriteLine("  Civilian structures constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Civilian))
             {
                 int thisStructurePoints = ((CoinsAndPointsEffect)c.effect).victoryPointsAtEndOfGameMultiplier;
                 Console.WriteLine("    {0} ({1} VP)", c.name, thisStructurePoints);
-                totalCivilian += thisStructurePoints;
+                score.civilian += thisStructurePoints;
             }
-            Console.WriteLine("  Total Civilian points: {0}", totalCivilian);
 
-            int totalCommercial = 0;
             Console.WriteLine("  Commercial structures constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Commerce))
             {
                 Console.WriteLine("    {0}", c.name);
 
                 if (c.effect is CoinsAndPointsEffect)
-                    totalCommercial += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
+                    score.commerce += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
             }
-            Console.WriteLine("  Total Commercial points: {0}", totalCommercial);
 
             Console.WriteLine("  Scientific structures constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Science))
@@ -893,24 +889,21 @@ namespace SevenWonders
             if (nScienceWildCards != 0)
                 Console.WriteLine("  {0} science wild card effect(s)", nScienceWildCards);
 
-            int totalSciencePoints = CalculateSciencePoints(nScienceWildCards);
+            score.science = CalculateSciencePoints(nScienceWildCards);
 
-            Console.WriteLine("  Points from science: {0}", totalSciencePoints);
-
-            int totalWonderPoints = 0;
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage))
             {
                 if (c.effect is CoinsAndPointsEffect)
                 {
-                    totalWonderPoints += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
+                    score.wonders += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
                 }
                 else if (c.effect is PlayDiscardedCardForFree_2VPEffect)
                 {
-                    totalWonderPoints += 2;
+                    score.wonders += 2;
                 }
                 else if (c.effect is PlayDiscardedCardForFree_1VPEffect)
                 {
-                    totalWonderPoints += 1;
+                    score.science += 1;
                 }
                 else if (c.effect is CopyGuildFromNeighborEffect)
                 {
@@ -936,7 +929,7 @@ namespace SevenWonders
                         }
                         else if (card.effect is ScienceWildEffect)
                         {
-                            pointsForThisGuild = CalculateSciencePoints(nScienceWildCards + 1) - totalSciencePoints;
+                            pointsForThisGuild = CalculateSciencePoints(nScienceWildCards + 1) - score.science;
                         }
 
                         if (pointsForThisGuild > maxPoints)
@@ -955,21 +948,17 @@ namespace SevenWonders
                         Console.WriteLine("Neither of Olympia's neighbors built any guilds that were worth any value to Olympia.  0 points scored for this wonder stage.");
                     }
 
-                    totalWonderPoints += maxPoints;
+                    score.wonders += maxPoints;
                 }
                 else if (c.effect is Rhodos_B_Stage1Effect)
                 {
-                    totalWonderPoints += 3;
+                    score.wonders += 3;
                 }
                 else if (c.effect is Rhodos_B_Stage2Effect)
                 {
-                    totalWonderPoints += 4;
+                    score.wonders += 4;
                 }
             }
-
-            Console.WriteLine("  Points from Wonders: {0}", totalWonderPoints);
-
-            int totalGuildPoints = 0;
 
             Console.WriteLine("  Guilds constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Guild))
@@ -979,19 +968,14 @@ namespace SevenWonders
                 if (c.effect is CoinsAndPointsEffect)
                 {
                     // most guilds fall into this category: they count points based on something the neighboring cities.
-                    totalGuildPoints += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
+                    score.guilds += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
                 }
                 else if (c.effect is ShipOwnersGuildEffect)
                 {
                     // Shipowners guild counts 1 point for each Brown, Grey, and Purple card in the players' city.
-                    totalGuildPoints += playedStructure.Where(x => x.structureType == StructureType.RawMaterial || x.structureType == StructureType.Goods || x.structureType == StructureType.Guild).Count();
+                    score.guilds += playedStructure.Where(x => x.structureType == StructureType.RawMaterial || x.structureType == StructureType.Goods || x.structureType == StructureType.Guild).Count();
                 }
             }
-            Console.WriteLine("  Points from guilds: {0}", totalGuildPoints);
-
-            victoryPoint = coinPoints + militaryPoints + totalCivilian + totalCommercial + totalWonderPoints + totalSciencePoints + totalGuildPoints;
-
-            Console.WriteLine("Total points for {0}: {1}", playerBoard.name, victoryPoint);
 
 #if FALSE
             foreach (Effect act in endOfGameActions)
@@ -1134,6 +1118,7 @@ namespace SevenWonders
                 }
             }
 #endif
+            return score;
         }
 
         /// <summary>

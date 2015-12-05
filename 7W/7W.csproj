@@ -571,6 +571,9 @@
     <Resource Include="Resources\Images\Icons\Vineyard.png" />
     <Resource Include="Resources\Images\Icons\workers_guild.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\ScoreSheet.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -396,34 +396,41 @@ namespace SevenWonders
         protected void endOfSessionActions()
         {
             string strFinalScoreMsg = string.Empty;
-            List<Player> playerScores = new List<Player>(numOfPlayers + numOfAI);
+            List<KeyValuePair<string, Score>> playerScores = new List<KeyValuePair<string, Score>>(numOfPlayers + numOfAI);
 
             //execute the end of game actions for all players
             //find the maximum final score
             foreach (Player p in player.Values)
             {
-                p.executeEndOfGameActions();
-                playerScores.Add(p);
+                Score sc = p.executeEndOfGameActions();
+                playerScores.Add(new KeyValuePair<string, Score>(p.nickname, sc));
             }
 
             // sort the scores into lowest to highest
-            playerScores.Sort(delegate (Player p1, Player p2)
+            playerScores.Sort(delegate (KeyValuePair<string, Score> p1, KeyValuePair<string, Score> p2)
             {
-                int victoryPointDiff = p1.victoryPoint - p2.victoryPoint;
+                int victoryPointDiff = p2.Value.Total() - p1.Value.Total();
 
                 if (victoryPointDiff != 0)
                     return victoryPointDiff;
                 else
-                    return p1.coin - p2.coin;
+                    return p2.Value.coins - p1.Value.coins;
             });
 
+            string strFinalScore = "FinalSco";
+
             //broadcast the individual scores
-            foreach (Player p in playerScores)
+            foreach (KeyValuePair<string, Score> s in playerScores)
             {
-                foreach (Player pl in player.Values)
-                {
-                    gmCoordinator.sendMessage(pl, string.Format("# {0}: {1} points", p.nickname, p.victoryPoint));
-                }
+                Score sc = s.Value;
+
+                strFinalScore += string.Format("&{0}={1},{2},{3},{4},{5},{6},{7},{8},{9}",
+                    s.Key, sc.military, sc.coins, sc.wonders, sc.civilian, sc.commerce, sc.guilds, sc.science, sc.leaders, sc.Total());
+            }
+
+            foreach (Player p in player.Values)
+            {
+                gmCoordinator.sendMessage(p, strFinalScore);
             }
         }
 
@@ -508,8 +515,8 @@ namespace SevenWonders
         /// <returns></returns>
         protected Board popRandomBoard()
         {
-            // int index = (new Random()).Next(0, board.Count);
-            int index = 3;
+            int index = (new Random()).Next(0, board.Count);
+            // int index = 3;
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
@@ -517,7 +524,7 @@ namespace SevenWonders
             {
                 ++index;
 
-                if (index > 13)
+                if (index >= board.Count)
                     index = 0;
 
                 randomBoard = board.ElementAt(index);
@@ -1086,6 +1093,8 @@ namespace SevenWonders
                     gmCoordinator.sendMessage(p, "e");
                 }
             }
+
+            endOfSessionActions();
         }
 
 #if FALSE
@@ -1416,7 +1425,6 @@ namespace SevenWonders
                         else
                         {
                             gameConcluded = true;
-                            endOfSessionActions();
                         }
                     }
                 }

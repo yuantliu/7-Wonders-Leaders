@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SevenWonders"
         mc:Ignorable="d"
-        Title="FinalScore" Height="300" Width="300">
-    <Grid>
+        Title="Game Over! Total Scores" Height="410" Width="258" Icon="Resources/Images/stage.png">
+    <Grid Name="ScoreGrid">
+        <Grid.Background>
+            <ImageBrush ImageSource="../Resources/Images/ScoreSheet.jpg" Stretch="None" AlignmentX="Left"  />
+        </Grid.Background>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -22,19 +24,6 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">Military</Label>
-        <Label Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">Coins</Label>
-        <Label Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center">Wonders</Label>
-        <Label Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Center">Civilian</Label>
-        <Label Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center">Commcerial</Label>
-        <Label Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Center">Guilds</Label>
-        <Label Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Center">Science</Label>
-        <Label Grid.Row="8" VerticalAlignment="Center" HorizontalAlignment="Center">Leaders</Label>
-        <Label Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center">Cities</Label>
-        <Label Grid.Row="10" VerticalAlignment="Center" HorizontalAlignment="Center">Total</Label>
     </Grid>
 </Window>
