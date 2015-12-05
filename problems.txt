@@ -5,8 +5,6 @@ UI problems:
   - Can we use other nicknames?
   - it would be nice if PlayerStatePanels were created dynamically so we maximized our use of space on the Main Window.
     The current behavior is that all 8 panels are created statically and only the ones in use are activated.
-  - The UI doesn't make it clear what's going on when playing Babylon's last card or Halikarnassos' free build.  I should include
-    a message on the main window with instructions.
 
 Commerce issues:
 	- I am not sure that the either/or first age cards are working correctly.  I need to do a detailed analysis of how the resources are walked.  The algorithm should look like:

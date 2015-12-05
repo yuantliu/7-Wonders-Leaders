@@ -9,6 +9,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Effects;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
@@ -17,7 +18,7 @@ namespace SevenWonders
     public class PlayerState
     {
         public Dictionary<StructureType, StackPanel> structuresBuilt = new Dictionary<StructureType, StackPanel>(7);
-        public Label lastCardPlayed;
+        public Image lastCardPlayed;
 
         public PlayerStateWindow state;
 
@@ -45,7 +46,7 @@ namespace SevenWonders
     public partial class MainWindow : Window
     {
         //dimensions for the icons at the Player bars
-        const int ICON_HEIGHT = 25;
+        const int ICON_HEIGHT = 30;
 
         //Client's coordinator
         Coordinator coordinator;
@@ -529,7 +530,10 @@ namespace SevenWonders
             else if (cardName == "Discarded")
             {
                 if (playerState[playerName].lastCardPlayed != null)
-                    playerState[playerName].lastCardPlayed.Background = null;
+                {
+                    playerState[playerName].lastCardPlayed.Effect = null;
+                    playerState[playerName].lastCardPlayed = null;
+                }
             }
             else
             {
@@ -537,36 +541,28 @@ namespace SevenWonders
 
                 StructureType colour = lastPlayedCard.structureType;
 
-                Label cardLabel = new Label();
-                cardLabel.Background = new SolidColorBrush(Colors.LightGray);
-                cardLabel.Background.Opacity = 0.5;
-                cardLabel.Content = lastPlayedCard.name;
-
                 if (playerState[playerName].lastCardPlayed != null)
-                    playerState[playerName].lastCardPlayed.Background = null;
+                    playerState[playerName].lastCardPlayed.Effect = null;
 
-                playerState[playerName].lastCardPlayed = cardLabel;
+                // Create a halo around the last card each player played to make it obvious.
+                DropShadowEffect be = new DropShadowEffect();
+                be.ShadowDepth = 0;
+                be.BlurRadius = 25;
+                be.Color = Colors.Blue;
 
-                // This is how to get a control's DesiredSize:
-                // cardLabel.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                BitmapImage bmi = new BitmapImage();
+                bmi.BeginInit();
+                bmi.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/Icons/" + lastPlayedCard.iconName + ".png");
+                bmi.EndInit();
+                Image iconImage = new Image();
+                iconImage.Source = bmi;
+                iconImage.Height = ICON_HEIGHT;                 // limit the height of each card icon to 30 pixels.
+                iconImage.ToolTip = lastPlayedCard.name;
+                iconImage.Margin = new Thickness(1, 1, 1, 1);   // keep a 1-pixel margin around each card icon.
+                iconImage.Effect = be;
 
-                StackPanel cardData = new StackPanel();
-                cardData.Orientation = Orientation.Horizontal;
-                cardData.Children.Add(cardLabel);
-
-                if (lastPlayedCard.iconName != string.Empty)
-                {
-                    BitmapImage bmi = new BitmapImage();
-                    bmi.BeginInit();
-                    bmi.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/Icons/" + lastPlayedCard.iconName + ".png");
-                    bmi.EndInit();
-                    Image iconImage = new Image();
-                    iconImage.Source = bmi;
-                    iconImage.Height = ICON_HEIGHT;
-                    cardData.Children.Add(iconImage);
-                }
-
-                playerState[playerName].structuresBuilt[lastPlayedCard.structureType].Children.Add(cardData);
+                playerState[playerName].lastCardPlayed = iconImage;
+                playerState[playerName].structuresBuilt[lastPlayedCard.structureType].Children.Add(iconImage);
             }
         }
 
