@@ -33,7 +33,9 @@ namespace SevenWonders
             structuresBuilt[StructureType.Civilian] = plyr.CivilianStructures;
             structuresBuilt[StructureType.Guild] = plyr.GuildStructures;
 
-            plyr.PlayerName.Content = "Name: " + name;
+            plyr.CoinsImage.Visibility = Visibility.Visible;
+
+            plyr.PlayerName.Content = name;
         }
     };
 
@@ -124,7 +126,17 @@ namespace SevenWonders
         /// <param name="playerBarPanelInformation"></param>
         public void showPlayerBarPanel(string playerName, string strCoins)
         {
-            playerState[playerName].state.Coins.Content = string.Format("Coins: {0}", strCoins);
+            TextBlock tb = new TextBlock()
+            {
+                Text = "x " + strCoins,
+                TextAlignment = TextAlignment.Center,
+                TextWrapping = TextWrapping.Wrap,
+                FontFamily = new FontFamily("Lucida Handwriting"),
+                FontSize = 18,
+                Foreground = new SolidColorBrush(Colors.White),
+            };
+
+            playerState[playerName].state.CoinsLabel.Content = tb;
         }
 
         /// <summary>
@@ -155,12 +167,6 @@ namespace SevenWonders
                         stageBuildable = cardStatus.Value;
                     else
                         hand.Add(cardStatus);
-                    /*
-                    if (!t.Item1.StartsWith("WonderStage"))
-                        id_buildable[buildableIndexi++] = t;
-                    else
-                        stageBuildable = t.Item2;
-                    */
                 }
             }
 
@@ -565,58 +571,75 @@ namespace SevenWonders
 
             int age = int.Parse(s[0]);
             int victoriesInThisAge = int.Parse(s[1]);
-            int totalLosses = int.Parse(s[2]);
+            int totalLossTokens = int.Parse(s[2]);
+            BitmapImage conflictImageSource = new BitmapImage();
 
-            switch (age)
+            if (victoriesInThisAge != 0)
             {
-                case 1:
-                    playerState[playerName].state.Age1ConflictTokens.Content = string.Format("Age {0} Victories: {1}", age, victoriesInThisAge);
-                    break;
+                switch (age)
+                {
+                    case 1:
+                        conflictImageSource.BeginInit();
+                        conflictImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/ConflictAge1.png");
+                        conflictImageSource.EndInit();
 
-                case 2:
-                    playerState[playerName].state.Age2ConflictTokens.Content = string.Format("Age {0} Conflicts: {1}", age, victoriesInThisAge);
-                    break;
+                        for (int i = 0; i < victoriesInThisAge; ++i)
+                        {
+                            Image image = new Image();
+                            image.Source = conflictImageSource;
+                            image.Height = 25;
+                            playerState[playerName].state.ConflictTokens.Children.Add(image);
+                        }
+                        break;
 
-                case 3:
-                    playerState[playerName].state.Age3ConflictTokens.Content = string.Format("Age {0} Conflicts: {1}", age, victoriesInThisAge);
-                    break;
+                    case 2:
+                        conflictImageSource.BeginInit();
+                        conflictImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/ConflictAge2.png");
+                        conflictImageSource.EndInit();
+
+                        for (int i = 0; i < victoriesInThisAge; ++i)
+                        {
+                            Image image = new Image();
+                            image.Source = conflictImageSource;
+                            image.Height = 30;
+                            playerState[playerName].state.ConflictTokens.Children.Add(image);
+                        }
+                        break;
+
+                    case 3:
+                        conflictImageSource.BeginInit();
+                        conflictImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/ConflictAge3.png");
+                        conflictImageSource.EndInit();
+
+                        for (int i = 0; i < victoriesInThisAge; ++i)
+                        {
+                            Image image = new Image();
+                            image.Source = conflictImageSource;
+                            image.Height = 35;
+                            playerState[playerName].state.ConflictTokens.Children.Add(image);
+                        }
+                        break;
+                }
             }
 
-            playerState[playerName].state.LossTokens.Content = string.Format("Loss tokens: {0}", totalLosses);
-        }
+            if (totalLossTokens != playerState[playerName].state.MilitaryLosses.Children.Count)
+            {
+                BitmapImage lossImageSource = new BitmapImage();
 
-        /// <summary>
-        /// Send a chat message to the Coordinator
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void sendButton_Click(object sender, RoutedEventArgs e)
-        {
-            coordinator.sendChat();
-        }
+                lossImageSource.BeginInit();
+                lossImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/ConflictLoss.png");
+                lossImageSource.EndInit();
 
-        /// <summary>
-        /// Handle the Olympia power button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void olympiaButton_Click(object sender, RoutedEventArgs e)
-        {
-            coordinator.olympiaButtonClicked();
-        }
+                for (int i = playerState[playerName].state.MilitaryLosses.Children.Count; i < totalLossTokens; ++i)
+                {
+                    Image image = new Image();
+                    image.Source = lossImageSource;
+                    image.Height = 30;
 
-#if FALSE
-        public void discardCommerce()
-        {
-            playerPlayedHisTurn = false;
-            playedButton.IsEnabled = true;
+                    playerState[playerName].state.MilitaryLosses.Children.Add(image);
+                }
+            }
         }
-
-        private void image8_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            coordinator.createGame();
-        }
-#endif
 
         private void chatTextField_PreviewKeyDown(object sender, KeyEventArgs e)
         {

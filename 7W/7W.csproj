@@ -152,9 +152,6 @@
     <Compile Include="GameUI\NewCommerce.xaml.cs">
       <DependentUpon>NewCommerce.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GameUI\OlympiaUI.xaml.cs">
-      <DependentUpon>OlympiaUI.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Client.cs" />
     <Compile Include="GameUI\TableUI.xaml.cs">
       <DependentUpon>TableUI.xaml</DependentUpon>
@@ -187,10 +184,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="GameUI\NewCommerce.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GameUI\OlympiaUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -321,12 +314,6 @@
     <Resource Include="Resources\Images\papyrus.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\bearTrap.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\sextant.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\victory.png" />
   </ItemGroup>
   <ItemGroup>
@@ -413,12 +400,6 @@
     <Resource Include="Resources\Images\Commerce\1r.png" />
     <Resource Include="Resources\Images\Commerce\2m.png" />
     <Resource Include="Resources\Images\Commerce\2r.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\shield.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\tablet.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Icons\2VP.png" />
@@ -573,6 +554,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\ScoreSheet.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\coin-2.png" />
+    <Resource Include="Resources\Images\ConflictAge1.png" />
+    <Resource Include="Resources\Images\ConflictAge2.png" />
+    <Resource Include="Resources\Images\ConflictAge3.png" />
+    <Resource Include="Resources\Images\ConflictLoss.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

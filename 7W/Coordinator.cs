@@ -32,7 +32,6 @@ namespace SevenWonders
         public MainWindow gameUI;
         TableUI tableUI;
         // JoinTableUI joinTableUI;
-        OlympiaUI olympiaUI;
 
         //The client that the application will use to interact with the server.
         public Client client { get; private set; }
@@ -174,12 +173,6 @@ namespace SevenWonders
         {
             // timer.Stop();
             sendToHost("t");
-        }
-
-        public void olympiaButtonClicked()
-        {
-            //send the request for Olympia power
-            sendToHost("O");
         }
 
         /// <summary>
@@ -327,36 +320,6 @@ namespace SevenWonders
             // now the number of players is known
             // initGameUI();
         }
-
-        /*
-        /// <summary>
-        /// Invoke the halicarnassus screen at the end of the Age
-        /// </summary>
-        /// <param name="information"></param>
-        private void receiveHalicarnassus(string information)
-        {
-            //open the halicarnssus window
-            Application.Current.Dispatcher.Invoke(new Action(delegate
-            {
-                halicarnassusUI = new HalicarnassusUI(this, information);
-                halicarnassusUI.ShowDialog();
-            }));
-        }
-
-        /// <summary>
-        /// Invoke the Babylon screen at the end of the Age
-        /// </summary>
-        /// <param name="information"></param>
-        private void receiveBabylon(string information)
-        {
-            //open the babylon window
-            Application.Current.Dispatcher.Invoke(new Action(delegate
-            {
-                babylonUI = new BabylonUI(this, information);
-                babylonUI.ShowDialog();
-            }));
-        }
-        */
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>
@@ -629,62 +592,13 @@ namespace SevenWonders
             {
                 // startTimer();
             }
-            //create the commerce if necessary 
-            else if (message[0] == 'C')
-            {
-                throw new Exception("Client should not get a 'C' message from the server any more");
-                // createAndUpdateCommerce(message.Substring(1));
-            }
-            //enable the Olympia button
-            else if (message == "EO")
-            {
-                /*
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    gameUI.olympiaButton.IsEnabled = true;
-                }));
-                */
-            }
             //enable Olympia power OR Rome power
             //activate the Olympia UI
-            else if (message[0] == 'O')
-            {
-                //create new Olympia UI
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    olympiaUI = new OlympiaUI(this, message.Substring(1));
-                }));
-            }
             //receive the information on the current turn
             else if (message[0] == 'T')
             {
                 //get the current turn information
                 currentTurn = int.Parse(message[1] + "");
-            }
-
-            //receive halicarnassus or babylon information
-            else if (message[0] == 'H' || message[0] == 'A')
-            {
-                throw new Exception();
-                /*
-                if (message[0] == 'A')
-                {
-                    receiveBabylon(message);
-                }
-                else
-                {
-                    //No card in the discard pile, therefore Halicarnassus cannot be played
-                    //just send back the end turn signal
-                    if (message == "H0")
-                    {
-                        endTurn();
-                    }
-                    else
-                    {
-                        receiveHalicarnassus(message);
-                    }
-                }
-                */
             }
             //received an unable to join message from the server
             //UC-02 R07

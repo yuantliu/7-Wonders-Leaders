@@ -5,8 +5,6 @@ UI problems:
   - Can we use other nicknames?
   - it would be nice if PlayerStatePanels were created dynamically so we maximized our use of space on the Main Window.
     The current behavior is that all 8 panels are created statically and only the ones in use are activated.
-  - Conflict tokens and losses could be presented using icons instead of text labels, put them on the wonder boards.
-  - I need to create an end-of-game UI window with the scoring summary.
   - The UI doesn't make it clear what's going on when playing Babylon's last card or Halikarnassos' free build.  I should include
     a message on the main window with instructions.
 
@@ -40,8 +38,6 @@ Technical stories:
 - There is a problem when Babylon B's power is activated and Halikarnassos builds a free build wonder stage
   with their 6th card.  Babylon B must play first, then Halikarnassos can play.  Will need to use a 2nd client
   to run through this logic.
-
-- All special wonder effects have been tested at this point.
 
 - the game doesn't terminate nicely when it's shut down.  Must kill it.
 

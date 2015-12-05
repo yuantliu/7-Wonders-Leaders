@@ -24,14 +24,14 @@ namespace SevenWonders
         {
             InitializeComponent();
 
+            FontFamily ourFont = new FontFamily("Lucida Handwriting");
+
             Width = 75 + (scores.Count) * 63;
 
             int column = 1;
             foreach (string s in scores.AllKeys)
             {
                 ScoreGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-                FontFamily ourFont = new FontFamily("Lucida Handwriting");
 
                 TextBlock nameElement = new TextBlock()
                 {
