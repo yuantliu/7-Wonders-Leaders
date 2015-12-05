@@ -344,9 +344,6 @@
     <Resource Include="Resources\Images\leader.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\olympiapowerbutton.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\estebanpowerbutton.png" />
   </ItemGroup>
   <ItemGroup>
