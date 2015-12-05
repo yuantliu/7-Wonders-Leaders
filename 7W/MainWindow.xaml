@@ -17,12 +17,13 @@
         <Grid Grid.Column="0">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="5*"/>
                     <RowDefinition Height="1*"/>
+                    <RowDefinition Height="8*"/>
+                    <RowDefinition Height="2*"/>
                 </Grid.RowDefinitions>
-                <ListBox Grid.Row="0" Name="handPanel" SelectionChanged="handPanel_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
-
-                <Grid Grid.Row="1">
+                <Label Grid.Row="0" x:Name="lblPlayMessage"/>
+                <ListBox Grid.Row="1" Name="handPanel" SelectionChanged="handPanel_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                <Grid Grid.Row="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"></RowDefinition>
                         <RowDefinition Height="1*"></RowDefinition>

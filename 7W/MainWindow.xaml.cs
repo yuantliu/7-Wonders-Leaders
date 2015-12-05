@@ -159,6 +159,15 @@ namespace SevenWonders
                 {
                     canDiscardStructure = kvp.Value == "True";
                 }
+                if (kvp.Key == "Instructions")
+                {
+                    lblPlayMessage.Content = new TextBlock()
+                    {
+                        Text = kvp.Value,
+                        TextWrapping = TextWrapping.Wrap,
+                        FontSize = 14,
+                    };
+                }
                 else
                 {
                     KeyValuePair<string, Buildable> cardStatus = new KeyValuePair<string, Buildable>(kvp.Key, (Buildable)Enum.Parse(typeof(Buildable), kvp.Value));

@@ -1067,7 +1067,7 @@ namespace SevenWonders
                         // The free build for Halikarnassos/Solomon requires the card be put in play.
                         // It cannot be used to build a wonder stage, nor can it be discarded for 3
                         // coins.
-                        strHand += string.Format("&WonderStage{0}={1}&CanDiscard=False", p.currentStageOfWonder, Buildable.InsufficientResources.ToString());
+                        strHand += string.Format("&WonderStage{0}={1}&Instructions=Choose a card to play for free from the discard pile&CanDiscard=False", p.currentStageOfWonder, Buildable.InsufficientResources.ToString());
                     }
                     else
                     {
@@ -1077,6 +1077,15 @@ namespace SevenWonders
                         }
 
                         strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
+
+                        if (gettingBabylonExtraCard)
+                        {
+                            strHand += "&Instructions=Babylon: you may build the last card in your hand or discard it for 3 coins";
+                        }
+                        else
+                        {
+                            strHand += "&Instructions=Choose a card from the list below to play, build a wonder stage with, or discard";
+                        }
                     }
 
                     //send the Card Panel information to that player
