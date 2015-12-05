@@ -1094,7 +1094,8 @@ namespace SevenWonders
                 }
             }
 
-            endOfSessionActions();
+            if (gameConcluded)
+                endOfSessionActions();
         }
 
 #if FALSE
