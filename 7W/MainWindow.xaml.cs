@@ -156,32 +156,34 @@ namespace SevenWonders
 
             foreach (KeyValuePair<string, string> kvp in cardsAndStates)
             {
-                if (kvp.Key == "CanDiscard")
+                switch (kvp.Key)
                 {
-                    canDiscardStructure = kvp.Value == "True";
-                }
-                if (kvp.Key == "Instructions")
-                {
-                    lblPlayMessage.Content = new TextBlock()
-                    {
-                        Text = kvp.Value,
-                        TextWrapping = TextWrapping.Wrap,
-                        FontSize = 14,
-                    };
-                }
-                else
-                {
-                    KeyValuePair<string, Buildable> cardStatus = new KeyValuePair<string, Buildable>(kvp.Key, (Buildable)Enum.Parse(typeof(Buildable), kvp.Value));
+                    case "CanDiscard":
+                        canDiscardStructure = kvp.Value == "True";
+                        break;
 
-                    if (cardStatus.Key.StartsWith("WonderStage"))
-                        stageBuildable = cardStatus.Value;
-                    else
-                        hand.Add(cardStatus);
+                    case "Instructions":
+                        lblPlayMessage.Content = new TextBlock()
+                        {
+                            Text = kvp.Value,
+                            TextWrapping = TextWrapping.Wrap,
+                            FontSize = 14,
+                        };
+                        break;
+
+                    default:
+                        {
+                            // Any other parameters are card names
+                            KeyValuePair<string, Buildable> cardStatus = new KeyValuePair<string, Buildable>(kvp.Key, (Buildable)Enum.Parse(typeof(Buildable), kvp.Value));
+
+                            if (cardStatus.Key.StartsWith("WonderStage"))
+                                stageBuildable = cardStatus.Value;
+                            else
+                                hand.Add(cardStatus);
+                        }
+                        break;
                 }
             }
-
-            // should actually subtract the number of wonder stages that were included.  China can build them in any order the player wishes.
-            int numberOfCards = hand.Count;
 
             handPanel.Items.Clear();
 
@@ -199,7 +201,7 @@ namespace SevenWonders
                 ListBoxItem entry = new ListBoxItem();
                 entry.Name = kvp.Value.ToString();
                 entry.Content = img;
-                entry.BorderThickness = new Thickness(3);
+                entry.BorderThickness = new Thickness(6);
 
                 switch (kvp.Value)
                 {
@@ -212,7 +214,7 @@ namespace SevenWonders
                         break;
 
                     default:
-                        entry.BorderBrush = new SolidColorBrush(Colors.Gray);
+                        entry.BorderBrush = new SolidColorBrush(Colors.Red);
                         break;
                 }
 
@@ -253,23 +255,7 @@ namespace SevenWonders
         private void handPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (handPanel.SelectedIndex < 0)
-            {
-                btnBuildStructure.IsEnabled = false;
-                btnBuildWonderStage.IsEnabled = false;
-                btnDiscardStructure.IsEnabled = false;
-                btnBuildStructureForFree.IsEnabled = false;
-
-                btnBuildStructure.Content = null;
-                btnBuildStructureForFree.Content = null;
-
-                if (canDiscardStructure)
-                {
-                    btnBuildWonderStage.Content = null;
-                    btnDiscardStructure.Content = null;
-                }
-
                 return;
-            }
 
             if (btnBuildStructureForFree_isEnabled)
             {
@@ -296,6 +282,13 @@ namespace SevenWonders
                     btnBuildStructureForFree.IsEnabled = false;
                 }
             }
+
+            lblDescription.Content = new TextBlock()
+            {
+                Text = coordinator.FindCard(hand[handPanel.SelectedIndex].Key).description,
+                TextAlignment = TextAlignment.Center,
+                TextWrapping = TextWrapping.Wrap
+            };
 
             // Update the status of the build buttons when a card is selected.
             switch (hand[handPanel.SelectedIndex].Value)

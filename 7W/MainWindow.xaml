@@ -44,8 +44,10 @@
                 <RowDefinition Height="2*"></RowDefinition>
                 <RowDefinition Height="1*"></RowDefinition>
             </Grid.RowDefinitions>
-            
+
             <local:PlayerStateWindow Grid.Row="1" x:Name="SeatC"/>
+
+            <Label x:Name="lblDescription" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>

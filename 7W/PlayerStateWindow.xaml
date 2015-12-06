@@ -19,15 +19,43 @@
                         <ColumnDefinition Width="1*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
-                        <StackPanel x:Name="CommerceStructures" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        <StackPanel x:Name="GoodsStructures" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        <StackPanel x:Name="ResourceStructures" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel x:Name="CommerceStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
+                            <StackPanel.Background>
+                                <SolidColorBrush Color="Yellow" Opacity="0.5"/>
+                            </StackPanel.Background>
+                        </StackPanel>
+                        <StackPanel x:Name="GoodsStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
+                            <StackPanel.Background>
+                                <SolidColorBrush Color="Gray" Opacity="0.5"/>
+                            </StackPanel.Background>
+                        </StackPanel>
+                        <StackPanel x:Name="ResourceStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
+                            <StackPanel.Background>
+                                <SolidColorBrush Color="Brown" Opacity="0.5"/>
+                            </StackPanel.Background>
+                        </StackPanel>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
-                        <StackPanel x:Name="GuildStructures" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        <StackPanel x:Name="ScienceStructures" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        <StackPanel x:Name="MilitaryStructures" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
-                        <StackPanel x:Name="CivilianStructures" Orientation="Vertical" VerticalAlignment="Bottom"></StackPanel>
+                        <StackPanel x:Name="GuildStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
+                            <StackPanel.Background>
+                                <SolidColorBrush Color="Purple" Opacity="0.5"/>
+                            </StackPanel.Background>
+                        </StackPanel>
+                        <StackPanel x:Name="ScienceStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
+                            <StackPanel.Background>
+                                <SolidColorBrush Color="Green" Opacity="0.5"/>
+                            </StackPanel.Background>
+                        </StackPanel>
+                        <StackPanel x:Name="MilitaryStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
+                            <StackPanel.Background>
+                                <SolidColorBrush Color="Red" Opacity="0.5"/>
+                            </StackPanel.Background>
+                        </StackPanel>
+                        <StackPanel x:Name="CivilianStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
+                            <StackPanel.Background>
+                                <SolidColorBrush Color="Blue" Opacity="0.5"/>
+                            </StackPanel.Background>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </Grid>
