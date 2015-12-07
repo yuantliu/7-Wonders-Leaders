@@ -54,8 +54,10 @@ namespace SevenWonders
 
         List<Card> fullCardList = new List<Card>();
 
-        public Coordinator()
+        public Coordinator(MainWindow gameUI)
         {
+            this.gameUI = gameUI;
+
             nickname = "";
 
             hasGame = false;
@@ -81,11 +83,6 @@ namespace SevenWonders
                     line = file.ReadLine();
                 }
             }
-        }
-
-        public void SetMainWindow(MainWindow mw)
-        {
-            gameUI = mw;
         }
 
         /*
@@ -165,6 +162,12 @@ namespace SevenWonders
         /// </summary>
         public void quit()
         {
+            //If the client is not a server, then send to the host the close connection signal.
+            //if (gmCoordinator != null)
+            {
+                sendToHost("L");
+                client.CloseConnection();
+            }
 
             //If the client is a server, send the 
         }
@@ -315,10 +318,6 @@ namespace SevenWonders
 
             sendToHost("J" + nickname);
             tableUI.ShowDialog();
-
-            // after the tableUI has closed, the number of players is known.
-            // now the number of players is known
-            // initGameUI();
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////

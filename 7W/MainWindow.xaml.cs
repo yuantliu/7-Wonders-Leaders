@@ -63,10 +63,8 @@ namespace SevenWonders
         bool canDiscardStructure;
 
         //constructor: create the UI. create the Coordinator object
-        public MainWindow(Coordinator coordinator)
+        public MainWindow()
         {
-            InitializeComponent();
-
             PlayerStateWindow[,] seatMap = new PlayerStateWindow[,] {
                 { SeatA, SeatF, SeatD, null, null, null, null, null },      // 3 players
                 { SeatA, SeatG, SeatE, SeatC, null, null, null, null },     // 4 players
@@ -76,12 +74,19 @@ namespace SevenWonders
                 { SeatA, SeatH, SeatG, SeatF, SeatE, SeatD, SeatC, SeatB }, // 8 players
            };
 
-            this.coordinator = coordinator;
+            //create the coordinator
+            coordinator = new Coordinator(this);
+
+            InitializeComponent();
+
+            coordinator.createGame();
 
             for (int i = 0; i < coordinator.playerNames.Length; ++i)
             {
                 playerState.Add(coordinator.playerNames[i], new PlayerState(seatMap[coordinator.playerNames.Length - 3, i], coordinator.playerNames[i]));
             }
+
+            coordinator.sendToHost("U");
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////

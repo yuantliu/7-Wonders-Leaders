@@ -28,17 +28,8 @@ namespace SevenWonders
     /// </summary>
     public partial class App : Application
     {
-        Coordinator gameCoordinator;
-
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            // As it is currently written, this application creates a startup window
-            // which needs to be closed before the Main Table dialog box is shown.  This puts a message on
-            // the dispatch queue to terminate the application after the first window is closed, which in
-            // turn causes MainWindow.ShowDialog() to return before it's closed.  To prevent this , we change
-            // the ShutdownMode to OnExpliciShutdown (its default value is OnMainWindowClose).
-            ShutdownMode = ShutdownMode.OnExplicitShutdown;
-
             /*
             NameValueCollection nv = new NameValueCollection();
 
@@ -53,27 +44,6 @@ namespace SevenWonders
             FinalScore fs = new FinalScore(nv);
             fs.ShowDialog();
             */
-
-            gameCoordinator = new Coordinator();
-            gameCoordinator.createGame();
-
-            // after createGame we know how many players and therefore how many player panels are required.
-
-            // Create the startup window.  Needs gameCoordinator so it knows how many players to create.
-            MainWindow wnd = new MainWindow(gameCoordinator);
-
-            this.MainWindow = wnd;
-
-            //make graphics better
-            RenderOptions.SetBitmapScalingMode(MainWindow, BitmapScalingMode.Fant);
-
-            gameCoordinator.SetMainWindow(wnd);
-
-            // tell the server to start sending game state data now that the Main Window is ready
-            gameCoordinator.sendToHost("U");
-
-            // Show the window
-            wnd.ShowDialog();
         }
     }
 }

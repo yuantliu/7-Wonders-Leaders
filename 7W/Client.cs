@@ -94,8 +94,8 @@ namespace SevenWonders
             // While we are successfully connected, read incoming lines from the server and pass it to coordinator
             while (Connected) 
             {
-                //try
-               // {
+                try
+                {
                     messageReceived = srReceiver.ReadLine();
                     if (Connected == false)
                     {
@@ -111,11 +111,11 @@ namespace SevenWonders
                     {
                         break;
                     }
-                //}
-                //catch (Exception)
-               /// {
-                //    Connected = false;
-               // }
+                }
+                catch (Exception)
+                {
+                    Connected = false;
+                }
             }
         }
 
