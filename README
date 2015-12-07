@@ -1,17 +1,33 @@
-Yuan Liu
-100869883
-Carleton University
+James Fairweather
+https://www.linkedin.com/in/james-fairweather-444b2231
+mailto:james.d.fairweather@gmail.com
 
-This is my honours project. It is the continuation of the 7 Wonders project made in Comp 3007.
-My supervisor is JP Corriveau.
+Dec 7, 2015
 
-This project's aim is to use the existing codebase ("legacy code") for a 7 Wonders application and expand it to support the 7 Wonders Leaders expansion features.
+This is a project I'm using to learn Windows Presentation Foundation and improve my C#
+skill.  It was forked from https://github.com/yuantliu/7-Wonders-Leaders on November 8, 2015.
 
-This project has successfully implemented major features of the new expansion, including all new cards, Leaders and Recruitment phase, and both sides of the new Rome board, as well as a suite of expansion compatible AIs, of which each utilize different strategies.
+As of Dec 7, 2015, the following significant changes have been made from Yuan's branch:
 
-Although major gameplay features have been implemented, many other improvements are possible with this application, including:
+* the server has been separated from the client so it's a separate applicaion
+* The client UI has been almost completely redone
+* the client-server communication has been changed from using serialization to URL parameters.  The eventual intention is to use HTTP
+* the leaders expansion has been disabled, but I'll be re-enabling it over the next couple of weeks, I hope.
+* the chat window has been removed.  There are plenty of 3rd-party text or voice chat applications that could be used if you want to have a more interactive experience.
 
-- making the UI scale (UI elements are currently fixed)
-- fixing non-game UI elements, such as making the player/AI list in the TableUI work (currently not being used)
-- support restarting a game during or after a played game without having to restart the entire application
-- fixing stability issues
+
+Major features still on the list.
+* I am currently working on getting the server to support starting a new game session without having to be restarted.
+* change the commerce information so the client sends back what resources were used from each neighbor rather than a
+  number of coins to send to each neighbor.  The amount of coins to be exchanged would be done by the server while verifying
+  the transaction details.
+* test multiple clients
+* re-enable support for Leaders, which is currently disabled until the base game is completely working.
+* there are a still a few bugs (see problems.txt)
+* support the Cities expansion pack
+* improve the AI, which is currently quite primitive.
+* use HTTP
+
+Lots of improvements to the UI still could be made, such as:
+* using drag and drop for the cards
+* scaling the main window with the number of players
