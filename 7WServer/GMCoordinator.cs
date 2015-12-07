@@ -292,6 +292,8 @@ namespace SevenWonders
                     host.sendMessageToAll("#" + nickname + " has left the table.");
                     host.sendMessageToAll("#Game has stopped.");
                     host.sendMessageToAll("e");
+
+                    // TODO: reset the game state so another game can be played without having to restart the server.
                     // host.stopListening();
                 }
                 //"a": AI management

@@ -65,19 +65,13 @@ namespace SevenWonders
         //constructor: create the UI. create the Coordinator object
         public MainWindow()
         {
-            PlayerStateWindow[,] seatMap = new PlayerStateWindow[,] {
-                { SeatA, SeatF, SeatD, null, null, null, null, null },      // 3 players
-                { SeatA, SeatG, SeatE, SeatC, null, null, null, null },     // 4 players
-                { SeatA, SeatG, SeatF, SeatD, SeatC, null, null, null },    // 5 players
-                { SeatA, SeatH, SeatF, SeatE, SeatD, SeatB, null, null },   // 6 players
-                { SeatA, SeatH, SeatG, SeatF, SeatD, SeatC, SeatB, null},   // 7 players
-                { SeatA, SeatH, SeatG, SeatF, SeatE, SeatD, SeatC, SeatB }, // 8 players
-           };
-
             //create the coordinator
             coordinator = new Coordinator(this);
 
             InitializeComponent();
+
+            //make graphics better
+            RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.Fant);
 
             coordinator.createGame();
 
@@ -86,6 +80,15 @@ namespace SevenWonders
                 Close();
                 return;
             }
+
+            PlayerStateWindow[,] seatMap = new PlayerStateWindow[,] {
+                { SeatA, SeatF, SeatD, null, null, null, null, null },      // 3 players
+                { SeatA, SeatG, SeatE, SeatC, null, null, null, null },     // 4 players
+                { SeatA, SeatG, SeatF, SeatD, SeatC, null, null, null },    // 5 players
+                { SeatA, SeatH, SeatF, SeatE, SeatD, SeatB, null, null },   // 6 players
+                { SeatA, SeatH, SeatG, SeatF, SeatD, SeatC, SeatB, null},   // 7 players
+                { SeatA, SeatH, SeatG, SeatF, SeatE, SeatD, SeatC, SeatB }, // 8 players
+           };
 
             for (int i = 0; i < coordinator.playerNames.Length; ++i)
             {
