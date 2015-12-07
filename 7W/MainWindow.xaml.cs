@@ -550,7 +550,17 @@ namespace SevenWonders
                 Image iconImage = new Image();
                 iconImage.Source = bmi;
                 iconImage.Height = ICON_HEIGHT;                 // limit the height of each card icon to 30 pixels.
-                iconImage.ToolTip = lastPlayedCard.name;
+                string strToolTip = string.Format("{0}: {1}", lastPlayedCard.name, lastPlayedCard.description);
+                if (lastPlayedCard.chain[0] != string.Empty)
+                {
+                    strToolTip += "  Chains to: " + lastPlayedCard.chain[0];
+                    if (lastPlayedCard.chain[1] != string.Empty)
+                    {
+                        strToolTip += ", " + lastPlayedCard.chain[1];
+                    }
+                }
+
+                iconImage.ToolTip = strToolTip;
                 iconImage.Margin = new Thickness(1, 1, 1, 1);   // keep a 1-pixel margin around each card icon.
                 iconImage.Effect = be;
 
