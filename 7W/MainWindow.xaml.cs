@@ -81,6 +81,12 @@ namespace SevenWonders
 
             coordinator.createGame();
 
+            if (!coordinator.client.Connected)
+            {
+                Close();
+                return;
+            }
+
             for (int i = 0; i < coordinator.playerNames.Length; ++i)
             {
                 playerState.Add(coordinator.playerNames[i], new PlayerState(seatMap[coordinator.playerNames.Length - 3, i], coordinator.playerNames[i]));

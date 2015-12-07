@@ -311,6 +311,9 @@ namespace SevenWonders
 
             client.InitializeConnection(myIP);
 
+            if (!client.Connected)
+                return;
+
             //display the TableUI
             tableUI = new TableUI(this);
             //join the game as a player
@@ -364,7 +367,7 @@ namespace SevenWonders
         /// <param name="s"></param>
         public void sendToHost(string s)
         {
-            if (client != null)
+            if (client != null && client.Connected)
                 client.SendMessageToServer(s);
         }
 
