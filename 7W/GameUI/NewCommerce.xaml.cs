@@ -363,50 +363,50 @@ namespace SevenWonders
             resourcesNeeded--;
             strCurrentResourcesUsed = strPossibleNewResourceList;
 
-            bool bDblResource = rce.resourceTypes.Length == 2 && rce.resourceTypes[0] == rce.resourceTypes[1];
-
-            //disable (make hidden) all buttons on the same level
             if (location == 'L')
             {
-                if (bDblResource)
+                if (rce.IsDoubleResource())
                 {
+                    // Only hide the pressed button
                     pressed.Visibility = Visibility.Hidden;
                 }
                 else
                 {
+                    // Hide the other buttons on the same level 
                     for (int i = 0; i < leftDag.getResourceList(false).ToList()[level].resourceTypes.Length; i++)
                     {
-                        //hide the buttons
                         leftDagButton[level, i].Visibility = Visibility.Hidden;
                     }
                 }
             }
             else if (location == 'M')
             {
-                if (bDblResource)
+                if (rce.IsDoubleResource())
                 {
+                    // Only hide the pressed button
                     pressed.Visibility = Visibility.Hidden;
                 }
                 else
                 {
                     for (int i = 0; i < middleDag.getResourceList(true).ToList()[level].resourceTypes.Length; i++)
                     {
-                        //hide the buttons
+                        // Hide the other buttons on the same level 
                         middleDagButton[level, i].Visibility = Visibility.Hidden;
                     }
                 }
             }
             else if (location == 'R')
             {
-                if (bDblResource)
+                if (rce.IsDoubleResource())
                 {
+                    // Only hide the pressed button
                     pressed.Visibility = Visibility.Hidden;
                 }
                 else
                 {
                     for (int i = 0; i < rightDag.getResourceList(false).ToList()[level].resourceTypes.Length; i++)
                     {
-                        //hide the buttons
+                        // Hide the other buttons on the same level 
                         rightDagButton[level, i].Visibility = Visibility.Hidden;
                     }
                 }
@@ -421,7 +421,6 @@ namespace SevenWonders
         /// </summary>
         private void generateCostPanel()
         {
-            // generateCostPanelAndUpdateSubtotal(ResourceManager.eliminate(cardCost.Copy(), false, strCurrentResourcesUsed));
             generateCostPanelAndUpdateSubtotal(middleDag.eliminate(cardCost.Copy(), false, strCurrentResourcesUsed));
         }
 

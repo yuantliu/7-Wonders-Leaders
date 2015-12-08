@@ -110,7 +110,7 @@ Halikarnassos (B),,WonderStage,,,,,,,,,,,3,,,,,,,PlayDiscardedCardForFree_1VP,,,
 Halikarnassos (B),,WonderStage,,,,,,,,,,,,,1,1,1,,,PlayDiscardedCardForFree,,,,,,,,,3
 Olympia (A),,WonderStage,,,,,,,,,2,,,,,,,,,CoinsPoints,,,,,None,Constant,0,3,1
 Olympia (A),,WonderStage,,,,,,,,,,2,,,,,,,,PlayACardForFreeOncePerAge,,,,,,,,,2
-Olympia (A),,WonderStage,,,,,,,,,,,,2,,,,,,CoinsPoints,,,,,None,Constant,0,3,3
+Olympia (A),,WonderStage,,,,,,,,,,,,2,,,,,,CoinsPoints,,,,,None,Constant,0,7,3
 Olympia (B),,WonderStage,,,,,,,,,2,,,,,,,,,Commerce,,,,BR,,,,,1
 Olympia (B),,WonderStage,,,,,,,,,,2,,,,,,,,CoinsPoints,,,,,None,Constant,0,5,2
 Olympia (B),,WonderStage,,,,,,,,,,,,2,1,,,,,CopyGuildFromNeighbor,,,,,,,,,3

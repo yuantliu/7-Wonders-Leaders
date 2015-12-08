@@ -245,6 +245,11 @@ namespace SevenWonders
             this.canBeUsedByNeighbors = canBeUsedByNeighbors;
             this.resourceTypes = resourceTypes;
         }
+
+        public bool IsDoubleResource()
+        {
+            return resourceTypes.Length == 2 && resourceTypes[0] == resourceTypes[1];
+        }
     }
 
     // formerly category 2

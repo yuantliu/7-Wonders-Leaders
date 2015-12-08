@@ -1041,7 +1041,7 @@ namespace SevenWonders
             cost.coin = 0;
 
             //can I afford the cost with resources in my DAG?
-            if (dag.canAfford(dag, cost)) return Buildable.True;
+            if (dag.canAfford(cost)) return Buildable.True;
 
             return Buildable.InsufficientResources;
         }
@@ -1061,7 +1061,7 @@ namespace SevenWonders
             ResourceManager combinedDAG = ResourceManager.addThreeDAGs(leftNeighbour.dag, dag, rightNeighbour.dag);
 
             //determine if the combined DAG can afford the cost
-            if (dag.canAfford(combinedDAG, cost)) return Buildable.CommerceRequired;
+            if (combinedDAG.canAfford(cost)) return Buildable.CommerceRequired;
 
             return Buildable.InsufficientResources;
         }

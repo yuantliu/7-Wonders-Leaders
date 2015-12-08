@@ -85,7 +85,7 @@ namespace SevenWonders
                     // put double resources ahead of either/or ones.
                     if (s.resourceTypes[0] == s.resourceTypes[1])
                     {
-                        insertionIndex = resources.FindLastIndex(x => x.resourceTypes.Length == 2 && x.resourceTypes[0] == x.resourceTypes[1]);
+                        insertionIndex = resources.FindLastIndex(x => x.IsDoubleResource());
                     }
                     else
                     {
@@ -251,12 +251,21 @@ namespace SevenWonders
          * Given a resource DAG graph, determine if a cost is affordable
          * @return
          */
-        public bool canAfford(ResourceManager graph, Cost cost)
+        public bool canAfford(Cost cost)
         {
-            foreach (ResourceEffect e in graph.resources)
+            foreach (ResourceEffect e in resources)
             {
                 if (eliminate(cost, true, e.resourceTypes).IsZero())
                     return true;
+
+                if (e.IsDoubleResource())
+                {
+                    // this is a double-resource card (i.e. Sawmill/Quarry/Brickyard/Foundry).
+                    // See if there's another cost entry that can be eliminated with the 2nd resource.
+                    // All other ResourceEffect cards can only be used once.
+                    if (eliminate(cost, true, e.resourceTypes).IsZero())
+                        return true;
+                }
             }
 
             return false;
@@ -317,17 +326,17 @@ namespace SevenWonders
                 returnedList.add(e);
             }
 
-            foreach (ResourceEffect e in rA.Where(x => (x.resourceTypes.Length == 2) && (x.resourceTypes[0] == x.resourceTypes[1])))
+            foreach (ResourceEffect e in rA.Where(x => (x.IsDoubleResource())))
             {
                 returnedList.add(e);
             }
 
-            foreach (ResourceEffect e in rB.Where(x => (x.resourceTypes.Length == 2) && (x.resourceTypes[0] == x.resourceTypes[1])))
+            foreach (ResourceEffect e in rB.Where(x => (x.IsDoubleResource())))
             {
                 returnedList.add(e);
             }
 
-            foreach (ResourceEffect e in rC.Where(x => (x.resourceTypes.Length == 2) && (x.resourceTypes[0] == x.resourceTypes[1])))
+            foreach (ResourceEffect e in rC.Where(x => (x.IsDoubleResource())))
             {
                 returnedList.add(e);
             }

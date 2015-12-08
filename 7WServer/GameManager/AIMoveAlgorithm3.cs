@@ -61,7 +61,7 @@ namespace SevenWonders
                         ResourceEffect e = card.effect as ResourceEffect;
 
                         char resource = e.resourceTypes[0];
-                        int numOfResource = e.resourceTypes.Length == 2 && e.resourceTypes[0] == e.resourceTypes[1] ? 2 : 1;
+                        int numOfResource = e.IsDoubleResource() ? 2 : 1;
 
                         if (resource == 'B' && numOfResource + player.brick < maxOBS) { c = card; return; }
                         else if (resource == 'O' && numOfResource + player.ore < maxOBS) { c = card; return; }
