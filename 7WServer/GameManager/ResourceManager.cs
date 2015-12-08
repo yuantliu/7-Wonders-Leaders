@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SevenWonders
 {
-    public class DAG
+    public class ResourceManager
     {
         // this list needs to be sorted in a particular order.  Simplest types at the top so those cards are used up first
         // when calculating whether a structure is affordable.  Those are RawMaterials which do not offer a choice
@@ -251,7 +251,7 @@ namespace SevenWonders
          * Given a resource DAG graph, determine if a cost is affordable
          * @return
          */
-        public static bool canAfford(DAG graph, Cost cost)
+        public static bool canAfford(ResourceManager graph, Cost cost)
         {
             foreach (ResourceEffect e in graph.resources)
             {
@@ -268,7 +268,7 @@ namespace SevenWonders
         /// <param name="graph">Player's DAG</param>
         /// <param name="cost">Card cost</param>
         /// <returns>Whether the DAG can afford the given card cost</returns>
-        public static bool canAffordOffByOne(DAG graph, Cost cost)
+        public static bool canAffordOffByOne(ResourceManager graph, Cost cost)
         {
             throw new NotImplementedException();
 
@@ -294,9 +294,9 @@ namespace SevenWonders
         /// <param name="B">Centre DAG</param>
         /// <param name="C">Right DAG</param>
         /// <returns>A Mega DAG that consists of A, B, C combined</returns>
-        public static DAG addThreeDAGs(DAG A, DAG B, DAG C)
+        public static ResourceManager addThreeDAGs(ResourceManager A, ResourceManager B, ResourceManager C)
         {
-            DAG returnedList = new DAG();
+            ResourceManager returnedList = new ResourceManager();
 
             IEnumerable<ResourceEffect> rA = A.getResourceList(false);
             IEnumerable<ResourceEffect> rB = B.getResourceList(true);

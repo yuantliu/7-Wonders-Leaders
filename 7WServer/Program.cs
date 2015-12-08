@@ -47,6 +47,10 @@ namespace SevenWonders
             cmd.message = "t"; gmCoordinator.receiveMessage(null, cmd);
             */
 
+            ResourceManager testResMag = new ResourceManager();
+
+
+
             while (true)
             {
                 Thread.Sleep(1000);

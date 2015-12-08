@@ -223,7 +223,7 @@ namespace SevenWonders
         private GameManager gm;
 
         //The Multiple Resource DAG
-        public DAG dag { get; private set; }
+        public ResourceManager dag { get; private set; }
 
         // public DAG GetDAG() { return dag; }
 
@@ -234,7 +234,7 @@ namespace SevenWonders
         /// </summary>
         public Player(String nickname, bool isAI, GameManager gm)
         {
-            dag = new DAG();
+            dag = new ResourceManager();
 
             this.nickname = nickname;
 
@@ -1241,7 +1241,7 @@ namespace SevenWonders
             cost.coin = 0;
 
             //can I afford the cost with resources in my DAG?
-            if (DAG.canAfford(dag, cost)) return Buildable.True;
+            if (ResourceManager.canAfford(dag, cost)) return Buildable.True;
 
             return Buildable.InsufficientResources;
         }
@@ -1258,10 +1258,10 @@ namespace SevenWonders
             cost.coin = 0;
 
             //combine the left, centre, and right DAG
-            DAG combinedDAG = DAG.addThreeDAGs(leftNeighbour.dag, dag, rightNeighbour.dag);
+            ResourceManager combinedDAG = ResourceManager.addThreeDAGs(leftNeighbour.dag, dag, rightNeighbour.dag);
 
             //determine if the combined DAG can afford the cost
-            if (DAG.canAfford(combinedDAG, cost)) return Buildable.CommerceRequired;
+            if (ResourceManager.canAfford(combinedDAG, cost)) return Buildable.CommerceRequired;
 
             return Buildable.InsufficientResources;
         }
@@ -1283,7 +1283,7 @@ namespace SevenWonders
             //check for the stage discount card (Imhotep)
             if (playedStructure.Exists(x => x.name == "Imhotep") == true)
             {
-                bool newCostResult = DAG.canAffordOffByOne(dag, cost);
+                bool newCostResult = ResourceManager.canAffordOffByOne(dag, cost);
 
                 if (newCostResult == true) return Buildable.True;
             }

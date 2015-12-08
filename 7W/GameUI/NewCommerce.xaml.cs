@@ -51,7 +51,7 @@ namespace SevenWonders
         int resourcesNeeded;
 
         //DAGs
-        DAG leftDag = new DAG(), middleDag = new DAG(), rightDag = new DAG();
+        ResourceManager leftDag = new ResourceManager(), middleDag = new ResourceManager(), rightDag = new ResourceManager();
 
         //DAG buttons. [level][number]
         //e.g. For a DAG that has only 1 level, consisting of WBO, to get O, use [0][2]
@@ -61,7 +61,7 @@ namespace SevenWonders
         //Order: BOTW-GLP
         BitmapImage[] resourceIcons = new BitmapImage[7];
 
-        void CreateDag(DAG d, string sourceStr)
+        void CreateDag(ResourceManager d, string sourceStr)
         {
             string[] playerEffectsSplit = sourceStr.Split(',');
 
@@ -248,7 +248,7 @@ namespace SevenWonders
         /// <summary>
         /// Use the 3 DAGs in the object to generate the necessary Buttons in the UI and add EventHandlers for these newly added Buttons
         /// </summary>
-        private void generateOneDAG(StackPanel p, out Button[,] b, DAG dag, string buttonNamePrefix, bool isDagOwnedByPlayer)
+        private void generateOneDAG(StackPanel p, out Button[,] b, ResourceManager dag, string buttonNamePrefix, bool isDagOwnedByPlayer)
         {
             //reset all DAG panels
             p.Children.Clear();
@@ -350,7 +350,7 @@ namespace SevenWonders
                 MessageBox.Show("You have for all necessary resources already");
                 return;
             }
-            else if (DAG.eliminate(cardCost.Copy(), false, strPossibleNewResourceList).Total() == previous)
+            else if (ResourceManager.eliminate(cardCost.Copy(), false, strPossibleNewResourceList).Total() == previous)
             {
                 MessageBox.Show("This resource will not help you pay for your cost");
                 return;
@@ -482,7 +482,7 @@ namespace SevenWonders
         private void generateCostPanel()
         {
             // generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost, currentResource));
-            generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost.Copy(), false, strCurrentResourcesUsed));
+            generateCostPanelAndUpdateSubtotal(ResourceManager.eliminate(cardCost.Copy(), false, strCurrentResourcesUsed));
         }
 
         /// <summary>
