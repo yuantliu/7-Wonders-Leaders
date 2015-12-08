@@ -143,6 +143,11 @@ namespace SevenWonders
                 htUsers.Remove(htConnections[tcpUser]);
                 htConnections.Remove(tcpUser);
             }
+
+            if (htConnections.Count == 0)
+            {
+                acceptClient = true;
+            }
         }
 
         /// <summary>

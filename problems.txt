@@ -37,9 +37,6 @@ Technical stories:
   with their 6th card.  Babylon B must play first, then Halikarnassos can play.  Will need to use a 2nd client
   to run through this logic.
 
-- The client shuts down nicely but the server needs to reset itself for another game.  Right now the server needs to be
-  restarted before another game can be played.
-
 - Need to implement a way to join a server on another machine (IP address).
 
 - There's a bug with Halikarnassos not counting its B side wonder points properly.  Also check that the UI is updated

@@ -19,7 +19,7 @@ namespace SevenWonders
         int numOfCountdownsFinished;
         int numOfReadyPlayers;
 
-        String[] playerNicks = new String[7];
+        string[] playerNicks = new string[7];
         char[] AIStrats = new char[6];
 
         int numOfPlayersThatHaveTakenTheirTurn { get; set; }
@@ -40,13 +40,32 @@ namespace SevenWonders
             host.StartServer();
             host.StatusChanged += new StatusChangedEventHandler(receiveMessage);
 
+            ResetGMCoordinator();
+        }
+
+        public void ResetGMCoordinator()
+        {
             //keep track of information at table UI
             numOfAI = 0;
             numOfPlayers = 0;
             numOfReadyPlayers = 0;
+            numOfCountdownsFinished = 0;
+            numOfPlayersThatHaveTakenTheirTurn = 0;
 
-            //default mode is Vanilla
-            currentMode = GameMode.Vanilla;
+             //default mode is Vanilla
+             currentMode = GameMode.Vanilla;
+
+            gameManager = null;
+
+            for (int i = 0; i < AIStrats.Length; ++i)
+            {
+                AIStrats[i] = '\0';
+            }
+
+            for (int i = 0; i < playerNicks.Length; ++i)
+            {
+                playerNicks[i] = null;
+            }
         }
 
 
@@ -288,6 +307,7 @@ namespace SevenWonders
                 //"L" for leave a game
                 else if (message[0] == 'L')
                 {
+                    ResetGMCoordinator();
                     //Server.sendMessageToAll("#" + nickname + " has left the table.");
                     host.sendMessageToAll("#" + nickname + " has left the table.");
                     host.sendMessageToAll("#Game has stopped.");
