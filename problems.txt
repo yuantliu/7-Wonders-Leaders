@@ -36,7 +36,8 @@ Technical stories:
   with their 6th card.  Babylon B must play first, then Halikarnassos can play.  Will need to use a 2nd client
   to run through this logic.
 
-- Need to implement a way to join a server on another machine (IP address).
+- Should probably have a way to distinguish between the table host (creates the game and may add AI players) vs.
+  non-hosts - cannot add AI players.
 
 - There's a bug with Halikarnassos not counting its B side wonder points properly.  Also check that the UI is updated
   before the player needs to select his card.

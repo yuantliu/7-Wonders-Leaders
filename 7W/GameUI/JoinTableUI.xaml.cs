@@ -34,31 +34,30 @@ namespace SevenWonders
          * Parse the information in the Table UI
          * UC-02 R03
          */
-        public void button1_Click(object sender, RoutedEventArgs e)
+        public void btnJoin_Click(object sender, RoutedEventArgs e)
         {
-            IPAddress ip;
-
             //attempt to parse the IP address in field
+            IPAddress ip;
             if (IPAddress.TryParse(ipAddressText.Text, out ip))
             {
-                ip = IPAddress.Parse(ipAddressText.Text);
+                // Close the dialog window
+                Close();
             }
             else
             {
-                MessageBox.Show("Invalid IP");
+                MessageBox.Show("That IP address is not valid");
                 return;
             }
-
-            //tell the coordinator to join the game
-            // coordinator.joinGame(textUser.Text, IPAddress.Parse(ipAddressText.Text));
-
-            //close the Join Button window
-            Close();
         }
 
-        private void button2_Click(object sender, RoutedEventArgs e)
+        /*
+        private void buttonbtnCancel_Click2btnCancel_Click_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
+        */
+        public string userName { get { return textUser.Text; } }
+
+        public string ipAddressAsText{ get { return ipAddressText.Text; } }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -73,7 +74,14 @@ namespace SevenWonders
             //make graphics better
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.Fant);
 
-            coordinator.createGame();
+            JoinTableUI joinGameDlg = new JoinTableUI(coordinator);
+            joinGameDlg.ShowDialog();
+
+            // Maybe I should have the ability to choose between Joining and Creating?
+            // Original code allowed the creator to add AI and select the leaders.
+            coordinator.joinGame(joinGameDlg.userName, IPAddress.Parse(joinGameDlg.ipAddressAsText));
+
+            // coordinator.createGame();
 
             if (!coordinator.client.Connected)
             {

@@ -31,7 +31,7 @@ namespace SevenWonders
         //The various UI that Coordinator keeps track of
         public MainWindow gameUI;
         TableUI tableUI;
-        // JoinTableUI joinTableUI;
+        JoinTableUI joinTableUI;
 
         //The client that the application will use to interact with the server.
         public Client client { get; private set; }
@@ -247,7 +247,7 @@ namespace SevenWonders
             }));
         }
 
-#if FALSE
+#if TRUE
         /*
          * Send the Join Game request to the Server.
          */
@@ -268,9 +268,12 @@ namespace SevenWonders
             //UC-02 R06
 
             tableUI = new TableUI(this);
+            /*
+            I commented these lines out.  Previously, they were only enabled if you were the creator.  Which kind of makes sense.
             tableUI.addAIButton.IsEnabled = false;
             tableUI.removeAIButton.IsEnabled = false;
             tableUI.leaders_Checkbox.IsEnabled = false;
+            */
             tableUI.ShowDialog();
         }
 
@@ -332,7 +335,7 @@ namespace SevenWonders
 
         private IPAddress myIPAddress()
         {
-            /*
+#if TRUE
             IPAddress localIP = null;
             IPHostEntry host;
 
@@ -347,9 +350,9 @@ namespace SevenWonders
             }
 
             return localIP;
-             */
-
+#else
             return IPAddress.Loopback;
+#endif
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
