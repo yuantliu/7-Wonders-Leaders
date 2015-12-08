@@ -172,8 +172,6 @@ namespace SevenWonders
 
         public bool playCardFromDiscardPile = false;
 
-//        public bool usedBabylon { get; set; }
-
         //bilkis (0 is nothing, 1 is ore, 2 is stone, 3 is glass, 4 is papyrus, 5 is loom, 6 is wood, 7 is brick
         public byte bilkis;
         public bool hasBilkis;
@@ -187,28 +185,13 @@ namespace SevenWonders
         //Player's left and right neighbours
         public Player leftNeighbour { get; set; }
 
-        // public Player GetLeftNeighbour() { return leftNeighbour; }
-
         public Player rightNeighbour { get; set; }
-
-        // public Player GetRightNeighbour() { return rightNeighbour; }
 
         public Boolean changeNickName {get; set; }
         public String newNickName {get; set; }
 
         public CommercialDiscountEffect.RawMaterials rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.None;
         public CommercialDiscountEffect.Goods goodsDiscount = CommercialDiscountEffect.Goods.None;
-
-        //market effect
-        //public bool leftRaw = false, rightRaw = false, leftManu = false, rightManu = false;
-
-        //public bool GetLeftRaw() { return leftRaw; }
-
-        //public bool GetLeftManu() { return leftManu; }
-
-        //public bool GetRightRaw() { return rightRaw; }
-
-        //public bool GetRightManu() { return rightManu; }
 
         //Leaders pile. The pile that holds the unplayed leaders cards
         //public List<Card> leadersPile = new List<Card>();
@@ -222,10 +205,7 @@ namespace SevenWonders
 
         private GameManager gm;
 
-        //The Multiple Resource DAG
         public ResourceManager dag { get; private set; }
-
-        // public DAG GetDAG() { return dag; }
 
         public bool bUIRequiresUpdating { get; set; }
 
@@ -243,10 +223,6 @@ namespace SevenWonders
             currentStageOfWonder = 0;
             changeNickName = false;
             newNickName = "";
-
-            //set used halicarnassus and babylon to true, to make sure its not available
-            // usedHalicarnassus = true;
-            // usedBabylon = true;
 
             //set bilkis to nothing
             bilkis = 0;
@@ -425,31 +401,21 @@ namespace SevenWonders
                         break;
                 }
             }
-            else if (effect is ShipOwnersGuildEffect)
+            else if (
+                effect is ShipOwnersGuildEffect ||
+                effect is ScienceWildEffect || 
+                effect is PlayLastCardInAgeEffect ||
+                effect is CopyGuildFromNeighborEffect ||
+                effect is MilitaryEffect ||
+                effect is ScienceEffect)
             {
-                // nothing to do; this card will be included in the end of game point total
-            }
-            else if (effect is ScienceWildEffect)
-            {
-                // nothing to do; this card will be included in the end of game point total
-            }
-            else if (effect is PlayLastCardInAgeEffect)
-            {
-                // enable Babylon's ability to play the last card in the hand rather than
-                // discarding it.
-                // usedBabylon = false;
+                // nothing to do; this card will be included in the end of game point total, or
+                // - Military cards are used at the end of each age to resolve conflicts
+                // - Science cards are used at the end of the game.
             }
             else if (effect is PlayDiscardedCardForFreeEffect || effect is PlayDiscardedCardForFree_1VPEffect || effect is PlayDiscardedCardForFree_2VPEffect)
             {
                 playCardFromDiscardPile = true;
-            }
-            else if (effect is PlayACardForFreeOncePerAgeEffect)
-            {
-                throw new Exception("This ability needs to be dealt with on the end-of-turn action queue.");
-            }
-            else if (effect is CopyGuildFromNeighborEffect)
-            {
-                // Will be resolved in the endOfGame actions.
             }
             else if (effect is Rhodos_B_Stage1Effect)
             {
@@ -461,10 +427,9 @@ namespace SevenWonders
             {
                 storeAction(new CoinEffect(4));
             }
-            else if (effect is MilitaryEffect || effect is ScienceEffect)
+            else if (effect is PlayACardForFreeOncePerAgeEffect)
             {
-                // no action required.  Military cards are used at the end of each age
-                // and Science cards are used at the end of the game.
+                throw new Exception("This ability needs to be dealt with on the end-of-turn action queue.");
             }
             else
             {
@@ -510,83 +475,6 @@ namespace SevenWonders
                     //  int num = e.multiplier;
                     dag.add(e);
                 }
-                /*
-            //category 2: add one science
-            // else if (actions[i][0] == '2')
-            else if (act is ScienceEffect)
-            {
-                switch (((ScienceEffect)act).symbol)
-                {
-                    case ScienceEffect.Symbol.Compass:
-                        sextant++;
-                        break;
-                    case ScienceEffect.Symbol.Gear:
-                        // bearTrap++;
-                        break;
-                    case ScienceEffect.Symbol.Tablet:
-                        tablet++;
-                        break;
-                    default:
-                        throw new Exception();
-                }
-            }
-                */
-                //category 3: market effect
-                // else if (actions[i][0] == '3')
-                /*
-                // executed when card is played.
-                else if (act is CommercialDiscountEffect)
-                {
-                    CommercialDiscountEffect cde = act as CommercialDiscountEffect;
-
-                    // Set discount effects for future transactions.
-                    switch (cde.effectString[1])
-                    {
-                        case 'R':
-                            switch(cde.effectString[0])
-                            {
-                                case 'L':
-                                    if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.None)
-                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.LeftNeighbor;
-                                    else if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.RightNeighbor)
-                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
-                                    break;
-
-                                case 'R':
-                                    if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.None)
-                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.RightNeighbor;
-                                    else if (rawMaterialsDiscount == CommercialDiscountEffect.RawMaterials.LeftNeighbor)
-                                        rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
-                                    break;
-
-                                case 'B':
-                                    rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.BothNeighbors;
-                                    break;
-                            }
-                            break;
-
-                        case 'G':
-                            if (cde.effectString[0] == 'B')
-                                goodsDiscount = CommercialDiscountEffect.Goods.BothNeighbors;
-                            break;
-                    }
-                }
-                */
-                //category 4: gives a choice between different things
-                //Add to the DAG
-                // else if (actions[i][0] == '4')
-                /*
-                else if (act is ResourceEffect)
-                {
-                    // dag.add(actions[i].Substring(1));
-                    // TODO: there's a bug here: RawMaterial structures can be purchased by neighboring cities
-                    // but Commercial structures (Forum & Caravansery) cannot.  DAG must account for this difference
-                    dag.add(act);
-                }
-                */
-                //category 5: gives some $ and and/or some victory depending on some conditions
-                //these cards are usually yellow
-                // else if (actions[i][0] == '5')
                 else if (act is CoinsAndPointsEffect)
                 {
                     CoinsAndPointsEffect e = act as CoinsAndPointsEffect;
@@ -602,114 +490,22 @@ namespace SevenWonders
                         {
                             coin += e.coinsGrantedAtTimeOfPlayMultiplier * leftNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
                             coin += e.coinsGrantedAtTimeOfPlayMultiplier * rightNeighbour.playedStructure.Where(x => x.structureType == e.classConsidered).Count();
-
-                            /*
-                            // Removed as wonder stages are included in each players' played structures
-                            // Not sure why this extra check is here, but I'm leaving it in for now
-                            // until I'm confident that there's not some other reason why this case requires
-                            // special treatment.
-                            if (e.classConsidered == StructureType.WonderStage)
-                            {
-                                coin += leftNeighbour.currentStageOfWonder * e.coinsGrantedAtTimeOfPlayMultiplier;
-                                coin += rightNeighbour.currentStageOfWonder * e.coinsGrantedAtTimeOfPlayMultiplier;
-                            }
-                            */
                         }
 
                         if (e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.PlayerAndNeighbors || e.cardsConsidered == CoinsAndPointsEffect.CardsConsidered.Player)
                         {
                             coin += e.coinsGrantedAtTimeOfPlayMultiplier * playedStructure.Where(x => x.structureType == e.classConsidered).Count();
-
-                            /*
-                            if (e.classConsidered == StructureType.WonderStage)
-                            {
-                                coin += currentStageOfWonder * e.coinsGrantedAtTimeOfPlayMultiplier;
-                            }
-                            */
                         }
                     }
-
-                    //if (e.victoryPointsAtEndOfGameMultiplier != 0)      // JDF: I added this line.  No point in adding Vineyard & Bazar to end of game actions.
-                    //for victory points, just copy the effect to endOfGameActions and have executeEndOfGameActions do it later
-                      //  endOfGameActions.Add(act);
-
                 }
                 else if (act is PlayACardForFreeOncePerAgeEffect)
                 {
                     olympiaPowerEnabled = true;
                     olympiaPowerAvailable = true;
                     gm.gmCoordinator.sendMessage(this, "EnableFB&Olympia=true");
-                    // olympiaPowerButtonUIUpdate = true;
-
                 }
-                //category 6: special guild cards
-                // executed when card is played.
-                //put these directly into executeEndOfGameActions array
+
                 /*
-                else if (act is SpecialAbilityEffect)
-                {
-
-                }
-                //category 7: hard coded board powers
-                // else if (actions[i][0] == '7')
-                else if (act is SpecialBoardEffect)
-                {
-                    TODO: Fill this in after the board data is updated like the card one.
-                    //format: 7(board name)
-
-                    //BB: enable babylon power
-                    if (act.Substring(0, 2) == "BB") usedBabylon = false;
-
-                    //EB: (num of vic)(num of coins)
-                    //7EB24
-                    if (act.Substring(0, 2) == "EB")
-                    {
-                        victoryPoint += int.Parse(act[2] + "");
-                        coin += int.Parse(act[3] + "");
-                    }
-
-                    //HA: (num of vic)
-                    //enable halicarnassus for the turn
-                    //7HA2
-                    if (act.Substring(0, 2) == "HA")
-                    {
-                        victoryPoint += int.Parse(act[2] + "");
-                        usedHalicarnassus = false;
-                    }
-
-                    //OA
-                    //enable olympia power
-                    if (act.Substring(0, 2) == "OA")
-                    {
-                        olympiaPowerEnabled = true;
-                        hasOlympia = true;
-                    }
-                    //OB
-                    //copy a purple card from a neighbour. Pass this off to the end of game stuff
-                    if (act.Substring(0, 2) == "OB") endOfGameActions[numOfEndOfGameActions++] = actions[i];
-
-                    //RB: (num of shields)(num of vic)(num of coins)
-                    //7RB133
-                    if (act.Substring(0, 2) == "RB")
-                    {
-                        shield++;
-                        victoryPoint += int.Parse(act[3] + "");
-                        coin += int.Parse(act[4] + "");
-                    }
-                    //LB1: Player gains 5 coins and 4 random new Leader cards
-                    //LB2: player plays a leader for free, and 3 VPs
-                    if (act.Substring(0, 2) == "LB")
-                    {
-                        if (act[2] == '1')
-                        {
-                            coin += 5;
-                        }
-                        else if (act[2] == '2')
-                        {
-                            victoryPoint += 3;
-                        }
-                    }
-                }
                 //Esteban and Bilkis
                 // else if(actions[i][0] == '8')
                 else if(act is SpecialLeaderEffect)
@@ -849,19 +645,19 @@ namespace SevenWonders
         {
             Score score = new Score();
 
-            Console.WriteLine("End of game summary for {0}", playerBoard.name);
+            // Console.WriteLine("End of game summary for {0}", playerBoard.name);
 
             score.coins = coin / 3;
-            Console.WriteLine("  Coins at the end of the game: {0}", coin);
+            // Console.WriteLine("  Coins at the end of the game: {0}", coin);
 
-            Console.WriteLine("  Military victories for 1st age: {0}", conflictTokenOne);
-            Console.WriteLine("  Military victories for 2nd age: {0}", conflictTokenTwo);
-            Console.WriteLine("  Military victories for 3rd age: {0}", conflictTokenThree);
-            Console.WriteLine("  Military losses: {0}", lossToken);
+            // Console.WriteLine("  Military victories for 1st age: {0}", conflictTokenOne);
+            // Console.WriteLine("  Military victories for 2nd age: {0}", conflictTokenTwo);
+            // Console.WriteLine("  Military victories for 3rd age: {0}", conflictTokenThree);
+            // Console.WriteLine("  Military losses: {0}", lossToken);
 
             score.military = conflictTokenOne + conflictTokenTwo * 3 + conflictTokenThree * 5 - lossToken;
 
-            Console.WriteLine("  Civilian structures constructed:");
+            // Console.WriteLine("  Civilian structures constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Civilian))
             {
                 int thisStructurePoints = ((CoinsAndPointsEffect)c.effect).victoryPointsAtEndOfGameMultiplier;
@@ -869,25 +665,27 @@ namespace SevenWonders
                 score.civilian += thisStructurePoints;
             }
 
-            Console.WriteLine("  Commercial structures constructed:");
+            // Console.WriteLine("  Commercial structures constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Commerce))
             {
-                Console.WriteLine("    {0}", c.name);
+                // Console.WriteLine("    {0}", c.name);
 
                 if (c.effect is CoinsAndPointsEffect)
                     score.commerce += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
             }
 
+            /*
             Console.WriteLine("  Scientific structures constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Science))
             {
                 Console.WriteLine("    {0} ({1})", c.name, ((ScienceEffect)c.effect).symbol);
             }
+            */
 
             int nScienceWildCards = playedStructure.Where(x => x.effect is ScienceWildEffect).Count();
 
-            if (nScienceWildCards != 0)
-                Console.WriteLine("  {0} science wild card effect(s)", nScienceWildCards);
+            // if (nScienceWildCards != 0)
+            //    Console.WriteLine("  {0} science wild card effect(s)", nScienceWildCards);
 
             score.science = CalculateSciencePoints(nScienceWildCards);
 
@@ -939,6 +737,7 @@ namespace SevenWonders
                         }
                     }
 
+                    /*
                     if (maxPoints != 0)
                     {
                         Console.WriteLine("Olympia B's 3rd wonder has a maximum value of {0} points.  Guild copied: {1}", maxPoints, copiedGuild);
@@ -947,6 +746,7 @@ namespace SevenWonders
                     {
                         Console.WriteLine("Neither of Olympia's neighbors built any guilds that were worth any value to Olympia.  0 points scored for this wonder stage.");
                     }
+                    */
 
                     score.wonders += maxPoints;
                 }
@@ -960,7 +760,7 @@ namespace SevenWonders
                 }
             }
 
-            Console.WriteLine("  Guilds constructed:");
+            // Console.WriteLine("  Guilds constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Guild))
             {
                 Console.WriteLine("    {0}", c.name);
@@ -1241,7 +1041,7 @@ namespace SevenWonders
             cost.coin = 0;
 
             //can I afford the cost with resources in my DAG?
-            if (ResourceManager.canAfford(dag, cost)) return Buildable.True;
+            if (dag.canAfford(dag, cost)) return Buildable.True;
 
             return Buildable.InsufficientResources;
         }
@@ -1261,7 +1061,7 @@ namespace SevenWonders
             ResourceManager combinedDAG = ResourceManager.addThreeDAGs(leftNeighbour.dag, dag, rightNeighbour.dag);
 
             //determine if the combined DAG can afford the cost
-            if (ResourceManager.canAfford(combinedDAG, cost)) return Buildable.CommerceRequired;
+            if (dag.canAfford(combinedDAG, cost)) return Buildable.CommerceRequired;
 
             return Buildable.InsufficientResources;
         }
@@ -1283,7 +1083,7 @@ namespace SevenWonders
             //check for the stage discount card (Imhotep)
             if (playedStructure.Exists(x => x.name == "Imhotep") == true)
             {
-                bool newCostResult = ResourceManager.canAffordOffByOne(dag, cost);
+                bool newCostResult = dag.canAffordOffByOne(dag, cost);
 
                 if (newCostResult == true) return Buildable.True;
             }

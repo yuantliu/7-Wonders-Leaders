@@ -7,7 +7,7 @@
     <ProjectGuid>{2D92B5EC-8819-4B05-AE22-ABC4DCA8F146}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_7WServer</RootNamespace>
+    <RootNamespace>SevenWonders</RootNamespace>
     <AssemblyName>7WServer</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

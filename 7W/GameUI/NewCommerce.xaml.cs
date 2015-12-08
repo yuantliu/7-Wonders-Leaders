@@ -50,7 +50,7 @@ namespace SevenWonders
         //how many resources are still needed. 0 means no more resources are needed
         int resourcesNeeded;
 
-        //DAGs
+        // Resource Managers
         ResourceManager leftDag = new ResourceManager(), middleDag = new ResourceManager(), rightDag = new ResourceManager();
 
         //DAG buttons. [level][number]
@@ -132,34 +132,6 @@ namespace SevenWonders
             CreateDag(middleDag, qscoll["PlayerResources"]);
             CreateDag(leftDag, qscoll["LeftResources"]);
             CreateDag(rightDag, qscoll["RightResources"]);
-
-            /*
-            CommerceInformation commerceData = (CommerceInformation)Marshaller.StringToObject(data);
-
-            //gather necessary UI information
-            this.cardCost = commerceData.cardCost;
-            this.hasDiscount = commerceData.hasDiscount;
-            this.leftRawMarket = commerceData.leftRawMarket;
-            this.rightRawMarket = commerceData.rightRawMarket;
-            this.leftManuMarket = commerceData.leftManuMarket;
-            this.rightManuMarket = commerceData.rightManuMarket;
-            this.leftName = commerceData.playerCommerceInfo[0].name;
-            this.middleName = commerceData.playerCommerceInfo[1].name;
-            this.rightName = commerceData.playerCommerceInfo[2].name;
-
-            this.PLAYER_COIN = commerceData.playerCoins;
-
-            // this.ID = commerceData.id;
-            this.structureName = commerceData.structureName;
-            this.isStage = commerceData.isStage;
-
-            leftDag = commerceData.playerCommerceInfo[0].dag;
-            middleDag = commerceData.playerCommerceInfo[1].dag;
-            rightDag = commerceData.playerCommerceInfo[2].dag;
-            */
-            //all necessary UI information gathered
-
-            //construct the UI
 
             //initialise images
             for (int i = 0; i < 7; i++)
@@ -350,7 +322,8 @@ namespace SevenWonders
                 MessageBox.Show("You have for all necessary resources already");
                 return;
             }
-            else if (ResourceManager.eliminate(cardCost.Copy(), false, strPossibleNewResourceList).Total() == previous)
+            // else if (ResourceManager.eliminate(cardCost.Copy(), false, strPossibleNewResourceList).Total() == previous)
+            else if (middleDag.eliminate(cardCost.Copy(), false, strPossibleNewResourceList).Total() == previous)
             {
                 MessageBox.Show("This resource will not help you pay for your cost");
                 return;
@@ -395,19 +368,6 @@ namespace SevenWonders
             //disable (make hidden) all buttons on the same level
             if (location == 'L')
             {
-                /*
-                // hmm, simple structures need to consider the multiplier.
-                int c = leftDag.getSimpleStructures(false).Count;
-
-                if (level < c)
-                {
-                    //hide the buttons
-                    leftDagButton[level, 0].Visibility = Visibility.Hidden;
-                }
-                else
-                {
-                    */
-
                 if (bDblResource)
                 {
                     pressed.Visibility = Visibility.Hidden;
@@ -423,16 +383,6 @@ namespace SevenWonders
             }
             else if (location == 'M')
             {
-                /*
-                int c = middleDag.getSimpleStructures().Count;
-
-                if (level < c)
-                {
-                    middleDagButton[level, 0].Visibility = Visibility.Hidden;
-                }
-                else
-                {
-                */
                 if (bDblResource)
                 {
                     pressed.Visibility = Visibility.Hidden;
@@ -448,16 +398,6 @@ namespace SevenWonders
             }
             else if (location == 'R')
             {
-                /*
-                int c = rightDag.getSimpleStructures().Count;
-
-                if (level < c)
-                {
-                    rightDagButton[level, 0].Visibility = Visibility.Hidden;
-                }
-                else
-                {
-                */
                 if (bDblResource)
                 {
                     pressed.Visibility = Visibility.Hidden;
@@ -481,8 +421,8 @@ namespace SevenWonders
         /// </summary>
         private void generateCostPanel()
         {
-            // generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost, currentResource));
-            generateCostPanelAndUpdateSubtotal(ResourceManager.eliminate(cardCost.Copy(), false, strCurrentResourcesUsed));
+            // generateCostPanelAndUpdateSubtotal(ResourceManager.eliminate(cardCost.Copy(), false, strCurrentResourcesUsed));
+            generateCostPanelAndUpdateSubtotal(middleDag.eliminate(cardCost.Copy(), false, strCurrentResourcesUsed));
         }
 
         /// <summary>

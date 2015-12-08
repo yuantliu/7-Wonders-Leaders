@@ -172,7 +172,7 @@ namespace SevenWonders
 	     * @param A = COST
 	     * @param B = RESOURCES
 	     */
-        public static Cost eliminate(Cost structureCost, bool stopAfterAMatchIsFound, string resourceString)
+        public Cost eliminate(Cost structureCost, bool stopAfterAMatchIsFound, string resourceString)
         {
             // interesting.  structs do not need to be instantiated.  Classes do.  But structs
             // can only be PoD types, they cannot contain functions.
@@ -251,7 +251,7 @@ namespace SevenWonders
          * Given a resource DAG graph, determine if a cost is affordable
          * @return
          */
-        public static bool canAfford(ResourceManager graph, Cost cost)
+        public bool canAfford(ResourceManager graph, Cost cost)
         {
             foreach (ResourceEffect e in graph.resources)
             {
@@ -268,7 +268,7 @@ namespace SevenWonders
         /// <param name="graph">Player's DAG</param>
         /// <param name="cost">Card cost</param>
         /// <returns>Whether the DAG can afford the given card cost</returns>
-        public static bool canAffordOffByOne(ResourceManager graph, Cost cost)
+        public bool canAffordOffByOne(ResourceManager graph, Cost cost)
         {
             throw new NotImplementedException();
 

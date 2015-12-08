@@ -47,7 +47,13 @@ namespace SevenWonders
             cmd.message = "t"; gmCoordinator.receiveMessage(null, cmd);
             */
 
-            ResourceManager testResMag = new ResourceManager();
+            ResourceEffect wood1 = new ResourceEffect(true, "W");
+
+            ResourceManager testResMan = new ResourceManager();
+
+            testResMan.add(wood1);
+
+            
 
 
 
