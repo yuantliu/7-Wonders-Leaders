@@ -31,6 +31,8 @@ namespace SevenWonders
             Roma_B,
         };
 
+        public ExpansionSet expansionSet;
+
         public Wonder otherSide;
 
         public string name { get; private set; }
@@ -52,8 +54,9 @@ namespace SevenWonders
         /// <param name="name">Name of the active side of the Wonder (e.g. "Giza (B)")</param>
         /// <param name="effect">This is the starting resource or effect that the Wonder Board provides</param>
         /// <param name="nStages">The number of stages this wonder has (1, 2, 3, 4)</param>
-        public Board(Wonder otherside, string name, Effect boardEffect, int nStages)
+        public Board(ExpansionSet e, Wonder otherside, string name, Effect boardEffect, int nStages)
         {
+            this.expansionSet = e;
             this.otherSide = otherside;
             this.name = name;
             this.freeResource = boardEffect;

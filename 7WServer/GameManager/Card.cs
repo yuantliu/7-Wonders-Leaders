@@ -410,6 +410,16 @@ namespace SevenWonders
     {
     }
 
+    public class FreeLeadersEffect : Effect
+    {
+        // Roma (A) board effect, Maecenas
+    }
+
+    public class RomaBBoardEffect : Effect
+    {
+        // Roma (B) board effect
+    }
+
     public class Card
     {
         public ExpansionSet expansion;

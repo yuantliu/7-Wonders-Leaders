@@ -141,7 +141,7 @@ Leaders,Hypatia,Leader,,Hypatia is worth 1 victory point per green card present 
 Leaders,Imhotep,Leader,,Future wonder stages can be built for for one resource less than their written cost.,,,,,,,3,,,,,,,,,,StructureDiscount,,,,,,,,,,WonderStage
 Leaders,Justinian,Leader,,Justinian is worth 3 victory points for each set of  3 Age cards (Military + Scientific + Civilian) in the player's city. ,,,,,,,3,,,,,,,,,,Justinian,,,,,,,,,,
 Leaders,Leonidas,Leader,,Leonidas allows the player to build red Structures for one resource less than their written cost (for future cards).,,,,,,,2,,,,,,,,,,StructureDiscount,,,,,,,,,,Military
-Leaders,Maecenas,Leader,,The controlling player can recruit all of his or her  future Leaders for free during the Recruitment Phase.,,,,,,,1,,,,,,,,,,Maecenas,,,,,,,,,,
+Leaders,Maecenas,Leader,,The controlling player can recruit all of his or her  future Leaders for free during the Recruitment Phase.,,,,,,,1,,,,,,,,,,FreeLeaders,,,,,,,,,,
 Leaders,Midas,Leader,,Midas is worth 1 victory point per every 3 coins  in the player's treasury at the end of the game.,,,,,,,3,,,,,,,,,,CoinsPoints,,,,,Player,ThreeCoins,,1,,
 Leaders,Nebuchadnezzar,Leader,,Nebuchadnezzar is worth 1 victory point per blue card present in the player's city.,,,,,,,4,,,,,,,,,,CoinsPoints,,,,,Player,Civilian,,1,,
 Leaders,Nefertiti,Leader,,Nefertiti is worth 4 victory points at the end of the game.,,,,,,,3,,,,,,,,,,CoinsPoints,,,,,None,Constant,,4,,

@@ -63,50 +63,8 @@ namespace SevenWonders
             //set the game to not finished, since we are just starting
             gameConcluded = false;
 
-            //Vanilla only Initialisation tasks
-            //check if the current class is LeadersGameManager or not
-            //if not, then load the other vanilla only initilisation tasks
-            // if (this is LeadersGameManager == false)
-            // {
-                vanillaGameManagerInitialisation(AIStrats);
-            // }
-        }
-
-        /// <summary>
-        /// Set up the neighbours of each players
-        /// </summary>
-        /// <param name="numOfPlayers"></param>
-        /// <param name="numOfAI"></param>
-        protected void setPlayerPosition(int numOfPlayers, int numOfAI)
-        {
-            //set each Player's left and right neighbours
-            //this determines player positioning
-            //UC-19: R1
-            //assign player positions
-            for (int i = 0; i < player.Count; i++)
-            {
-                if (i == 0)
-                {
-                    player[playerNicks[i]].setNeighbours(player[playerNicks[numOfPlayers + numOfAI - 1]], player[playerNicks[i + 1]]);
-                }
-                else if (i == numOfPlayers + numOfAI - 1)
-                {
-                    player[playerNicks[i]].setNeighbours(player[playerNicks[i - 1]], player[playerNicks[0]]);
-                }
-                else
-                {
-                    player[playerNicks[i]].setNeighbours(player[playerNicks[i - 1]], player[playerNicks[i + 1]]);
-                }
-            }
-        }
-
-        /*
-         * intialisation tasks for the vanilla manager
-         */
-        private void vanillaGameManagerInitialisation(char[] AIStrats)
-        {
-            //vanilla starts at age 1. It does not have the Leaders recruitment phase, which is age 0
-            currentAge = 1;
+            // If the Leaders expansion pack is enabled, start with turn 0.
+            currentAge = gmCoordinator.leadersEnabled ? 0 : 1;
             currentTurn = 1;
 
             //AI initialisation
@@ -133,22 +91,44 @@ namespace SevenWonders
                     line = file.ReadLine();
                 }
 
-                fullCardList.RemoveAll(x => x.expansion != ExpansionSet.Original);
             }
+
+            if (!gmCoordinator.citiesEnabled)
+                fullCardList.RemoveAll(x => x.expansion == ExpansionSet.Cities);
+
+            if (!gmCoordinator.leadersEnabled)
+                fullCardList.RemoveAll(x => x.expansion == ExpansionSet.Leaders);
 
             //initialize the vanilla boards objects
             //does not assign the boards to players yet
             createBoards();
 
-            //creating the vanilla AIs
+            // create the AIs
             for (int i = numOfPlayers; i < numOfAI + numOfPlayers; i++)
             {
                 playerNicks[i] = "AI" + (i + 1);
                 player.Add(playerNicks[i], createAI(playerNicks[i], AIStrats[i-numOfPlayers]));
             }
 
-            //set up the player positions
-            setPlayerPosition(numOfPlayers, numOfAI);
+            //set each Player's left and right neighbours
+            //this determines player positioning
+            //UC-19: R1
+            //assign player positions
+            for (int i = 0; i < player.Count; i++)
+            {
+                if (i == 0)
+                {
+                    player[playerNicks[i]].setNeighbours(player[playerNicks[numOfPlayers + numOfAI - 1]], player[playerNicks[i + 1]]);
+                }
+                else if (i == numOfPlayers + numOfAI - 1)
+                {
+                    player[playerNicks[i]].setNeighbours(player[playerNicks[i - 1]], player[playerNicks[0]]);
+                }
+                else
+                {
+                    player[playerNicks[i]].setNeighbours(player[playerNicks[i - 1]], player[playerNicks[i + 1]]);
+                }
+            }
         }
 
         /// <summary>
@@ -475,30 +455,34 @@ namespace SevenWonders
         {
             board = new Dictionary<Board.Wonder, Board>(14)
             {
-                { Board.Wonder.Alexandria_A, new Board(Board.Wonder.Alexandria_B, "Alexandria (A)", new ResourceEffect(true, "G"), 3) },
-                { Board.Wonder.Alexandria_B, new Board(Board.Wonder.Alexandria_A, "Alexandria (B)", new ResourceEffect(true, "G"), 3) },
-                { Board.Wonder.Babylon_A, new Board(Board.Wonder.Babylon_B, "Babylon (A)", new ResourceEffect(true, "B"), 3) },
-                { Board.Wonder.Babylon_B, new Board(Board.Wonder.Babylon_A, "Babylon (B)", new ResourceEffect(true, "B"), 3) },
-                { Board.Wonder.Ephesos_A, new Board(Board.Wonder.Ephesos_B, "Ephesos (A)", new ResourceEffect(true, "P"), 3) },
-                { Board.Wonder.Ephesos_B, new Board(Board.Wonder.Ephesos_A, "Ephesos (B)", new ResourceEffect(true, "P"), 3) },
-                { Board.Wonder.Giza_A, new Board(Board.Wonder.Giza_B, "Giza (A)", new ResourceEffect(true, "S"), 3) },
-                { Board.Wonder.Giza_B, new Board(Board.Wonder.Giza_A, "Giza (B)", new ResourceEffect(true, "S"), 4) },
-                { Board.Wonder.Halikarnassos_A, new Board(Board.Wonder.Halikarnassos_B, "Halikarnassos (A)", new ResourceEffect(true, "C"), 3) },
-                { Board.Wonder.Halikarnassos_B, new Board(Board.Wonder.Halikarnassos_A, "Halikarnassos (B)", new ResourceEffect(true, "C"), 3) },
-                { Board.Wonder.Olympia_A, new Board(Board.Wonder.Olympia_B, "Olympia (A)", new ResourceEffect(true, "W"), 3) },
-                { Board.Wonder.Olympia_B, new Board(Board.Wonder.Olympia_A, "Olympia (B)", new ResourceEffect(true, "W"), 3) },
-                { Board.Wonder.Rhodos_A, new Board(Board.Wonder.Rhodos_B, "Rhodos (A)", new ResourceEffect(true, "O"), 3) },
-                { Board.Wonder.Rhodos_B, new Board(Board.Wonder.Rhodos_A, "Rhodos (B)", new ResourceEffect(true, "O"), 2) },
-                /*
-                { Board.Wonder.Roma_A, new Board("Roma (A)", null, 3) },
-                { Board.Wonder.Roma_B, new Board("Roma (B)", null, 3) },
-                */
+                { Board.Wonder.Alexandria_A, new Board(ExpansionSet.Original, Board.Wonder.Alexandria_B, "Alexandria (A)", new ResourceEffect(true, "G"), 3) },
+                { Board.Wonder.Alexandria_B, new Board(ExpansionSet.Original, Board.Wonder.Alexandria_A, "Alexandria (B)", new ResourceEffect(true, "G"), 3) },
+                { Board.Wonder.Babylon_A, new Board(ExpansionSet.Original, Board.Wonder.Babylon_B, "Babylon (A)", new ResourceEffect(true, "B"), 3) },
+                { Board.Wonder.Babylon_B, new Board(ExpansionSet.Original, Board.Wonder.Babylon_A, "Babylon (B)", new ResourceEffect(true, "B"), 3) },
+                { Board.Wonder.Ephesos_A, new Board(ExpansionSet.Original, Board.Wonder.Ephesos_B, "Ephesos (A)", new ResourceEffect(true, "P"), 3) },
+                { Board.Wonder.Ephesos_B, new Board(ExpansionSet.Original, Board.Wonder.Ephesos_A, "Ephesos (B)", new ResourceEffect(true, "P"), 3) },
+                { Board.Wonder.Giza_A, new Board(ExpansionSet.Original, Board.Wonder.Giza_B, "Giza (A)", new ResourceEffect(true, "S"), 3) },
+                { Board.Wonder.Giza_B, new Board(ExpansionSet.Original, Board.Wonder.Giza_A, "Giza (B)", new ResourceEffect(true, "S"), 4) },
+                { Board.Wonder.Halikarnassos_A, new Board(ExpansionSet.Original, Board.Wonder.Halikarnassos_B, "Halikarnassos (A)", new ResourceEffect(true, "C"), 3) },
+                { Board.Wonder.Halikarnassos_B, new Board(ExpansionSet.Original, Board.Wonder.Halikarnassos_A, "Halikarnassos (B)", new ResourceEffect(true, "C"), 3) },
+                { Board.Wonder.Olympia_A, new Board(ExpansionSet.Original, Board.Wonder.Olympia_B, "Olympia (A)", new ResourceEffect(true, "W"), 3) },
+                { Board.Wonder.Olympia_B, new Board(ExpansionSet.Original, Board.Wonder.Olympia_A, "Olympia (B)", new ResourceEffect(true, "W"), 3) },
+                { Board.Wonder.Rhodos_A, new Board(ExpansionSet.Original, Board.Wonder.Rhodos_B, "Rhodos (A)", new ResourceEffect(true, "O"), 3) },
+                { Board.Wonder.Rhodos_B, new Board(ExpansionSet.Original, Board.Wonder.Rhodos_A, "Rhodos (B)", new ResourceEffect(true, "O"), 2) },
+                { Board.Wonder.Roma_A, new Board(ExpansionSet.Leaders, Board.Wonder.Roma_B, "Roma (A)", new FreeLeadersEffect(), 2) },
+                { Board.Wonder.Roma_B, new Board(ExpansionSet.Leaders, Board.Wonder.Roma_A, "Roma (B)", new RomaBBoardEffect(), 3) },
             };
 
             // Take the board effects from the card list.
 
             foreach (Board b in board.Values)
             {
+                if (b.expansionSet == ExpansionSet.Leaders && !gmCoordinator.leadersEnabled)
+                    continue;
+
+                if (b.expansionSet == ExpansionSet.Cities && !gmCoordinator.citiesEnabled)
+                    continue;
+
                 b.stageCard = new List<Card>(b.numOfStages);
 
                 for (int i = 0; i < b.numOfStages; ++i)

@@ -24,16 +24,18 @@ namespace SevenWonders
 
         int numOfPlayersThatHaveTakenTheirTurn { get; set; }
 
-        //private enum Expansions { Basic, Leaders, Cities }
-
         ExpansionSet currentMode = ExpansionSet.Original;
+
+        public bool leadersEnabled { get { return currentMode == ExpansionSet.Leaders || currentMode == ExpansionSet.Cities; } }
+
+        public bool citiesEnabled { get { return currentMode == ExpansionSet.Cities; } }
 
         /// <summary>
         /// Create a new server.
         /// Have the server start listening for requests.
         /// Part of UC-01 R01
         /// </summary>
-        public GMCoordinator()
+            public GMCoordinator()
         {
             //create server
             host = new Server();
@@ -178,6 +180,7 @@ namespace SevenWonders
 
                             Console.WriteLine("All players have hit Ready.  Game is starting now with {0} AI players", numOfAI);
 
+#if FALSE
                             if (currentMode == ExpansionSet.Leaders)
                             {
                                 throw new NotImplementedException();
@@ -193,6 +196,8 @@ namespace SevenWonders
                                 gameManager = new GameManager(this, numOfPlayers, playerNicks, numOfAI, AIStrats);
                             }
                             else throw new NotImplementedException();
+#endif
+                            gameManager = new GameManager(this, numOfPlayers, playerNicks, numOfAI, AIStrats);
 
                             //S[n], n = number of players in this game
 
