@@ -286,10 +286,6 @@
     <Resource Include="Resources\Images\cards\236.jpg" />
     <Resource Include="Resources\Images\cards\237.jpg" />
     <Resource Include="Resources\Images\cards\238.jpg" />
-    <Resource Include="Resources\Images\cards\300.jpg" />
-    <Resource Include="Resources\Images\cards\301.jpg" />
-    <Resource Include="Resources\Images\cards\302.jpg" />
-    <Resource Include="Resources\Images\cards\303.jpg" />
     <Resource Include="Resources\Images\HelpSlides\right.png" />
   </ItemGroup>
   <ItemGroup>
@@ -561,6 +557,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\indexbg4x3.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\cards\Architects Guild.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\cards\Courtesans Guild.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\cards\Diplomats Guild.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\cards\Gamers Guild.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

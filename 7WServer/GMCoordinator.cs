@@ -24,9 +24,9 @@ namespace SevenWonders
 
         int numOfPlayersThatHaveTakenTheirTurn { get; set; }
 
-        private enum GameMode { Vanilla, Leaders }
+        //private enum Expansions { Basic, Leaders, Cities }
 
-        GameMode currentMode;
+        ExpansionSet currentMode = ExpansionSet.Original;
 
         /// <summary>
         /// Create a new server.
@@ -52,8 +52,8 @@ namespace SevenWonders
             numOfCountdownsFinished = 0;
             numOfPlayersThatHaveTakenTheirTurn = 0;
 
-             //default mode is Vanilla
-             currentMode = GameMode.Vanilla;
+            // default mode is no expansion packs
+            currentMode = ExpansionSet.Original;
 
             gameManager = null;
 
@@ -178,7 +178,7 @@ namespace SevenWonders
 
                             Console.WriteLine("All players have hit Ready.  Game is starting now with {0} AI players", numOfAI);
 
-                            if (currentMode == GameMode.Leaders)
+                            if (currentMode == ExpansionSet.Leaders)
                             {
                                 throw new NotImplementedException();
                                 /*
@@ -188,7 +188,7 @@ namespace SevenWonders
                                 gameManager = (LeadersGameManager)gameManager;
                                 */
                             }
-                            else if (currentMode == GameMode.Vanilla)
+                            else if (currentMode == ExpansionSet.Original)
                             {
                                 gameManager = new GameManager(this, numOfPlayers, playerNicks, numOfAI, AIStrats);
                             }
@@ -232,13 +232,13 @@ namespace SevenWonders
 
                     if (message[1] == 'L')
                     {
-                        host.sendMessageToAll("#Host changed game mode to Leaders.");
-                        currentMode = GameMode.Leaders;
+                        host.sendMessageToAll("#Leaders expansion pack enabled.");
+                        currentMode = ExpansionSet.Leaders;
                     }
                     else if (message[1] == 'V')
                     {
-                        host.sendMessageToAll("#Host changed game mode to Vanilla.");
-                        currentMode = GameMode.Vanilla;
+                        host.sendMessageToAll("#All expansion packs are disabled.");
+                        currentMode = ExpansionSet.Original;
                     }
 
                     host.sendMessageToAll("#All AIs from previous mode cleared.");

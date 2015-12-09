@@ -132,6 +132,8 @@ namespace SevenWonders
                     fullCardList.Add(new Card(line.Split(',')));
                     line = file.ReadLine();
                 }
+
+                fullCardList.RemoveAll(x => x.expansion != ExpansionSet.Original);
             }
 
             //initialize the vanilla boards objects
