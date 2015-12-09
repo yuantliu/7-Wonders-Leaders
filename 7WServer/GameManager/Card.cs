@@ -162,6 +162,13 @@ namespace SevenWonders
         StructureAlreadyBuilt,      // for Wonder stages, this means all wonders stages have been built already.
     };
 
+    public enum ExpansionSet
+    {
+        Original,
+        Leaders,
+        Cities,
+    };
+
     public enum StructureType
     {
         // Basic cards
@@ -178,12 +185,15 @@ namespace SevenWonders
 
         // These cards are not played, but they are used in some effects to determine coins and/or points
         MilitaryLosses,
-        // MilitaryVictories,
         WonderStage,
 
         // Expansions
         Leader,
         City,
+
+        // Tokens or classes that are considered for some cards in the expansion sets
+        ConflictToken,
+        ThreeCoins,
     };
 
     public abstract class Effect
@@ -210,11 +220,41 @@ namespace SevenWonders
             CopyGuildFromNeighbor,          // Olympia (B) 3rd stage
             Rhodos_B_Stage1,                // Rhodos (B) 1st stage
             Rhodos_B_Stage2,                // Rhodos (B) 2nd stage
+
+            // From the Leaders expansion pack
+            DraftFourNewLeaders_5VP,
+            PlayALeaderForFree,
+            StructureDiscount,
+            Aristotle,
+            Bilkis,
+            Hatshepsut,
+            Justinian,
+            Maecenas,
+            Plato,
+            Ramses,
+            Tomyris,
+            Vitruvius,
+            Courtesan,
+
+            // From the Cities expansion pack
+            CopyScienceSymbolFromNeighbor,
+            CoinsLossPoints,
+            Diplomacy,
+            Gambling_Den,
+            Clandestine_Dock_West,
+            Clandestine_Dock_East,
+            Secret_Warehouse,
+            Gambling_House,
+            Black_Market,
+            CoinsLossPerMilitaryPoints,
+            Architect_Cabinet,
+            Builders_Union,
+            Bernice,
+            PlayABlackCardForFreeOncePerAge,
+            Semiramis,
         };
     };
 
-    // formerly category 0 or '$'
-    // Used when gaining (coins parameter is > 0 or losing (coins parameter is < 0) money
     public class CoinEffect : Effect
     {
         public int coins;
@@ -252,7 +292,6 @@ namespace SevenWonders
         }
     }
 
-    // formerly category 2
     public class ScienceEffect : Effect
     {
         public enum Symbol
@@ -283,7 +322,6 @@ namespace SevenWonders
         }
     };
 
-    // formerly category 3
     public class CommercialDiscountEffect : Effect
     {
         public enum RawMaterials
@@ -308,7 +346,6 @@ namespace SevenWonders
         }
     };
 
-    // formerly category 5
     public class CoinsAndPointsEffect : Effect
     {
         public enum CardsConsidered
@@ -375,14 +412,18 @@ namespace SevenWonders
 
     public class Card
     {
-         // Name Age Type Description Icon	3 players	4 players	5 players	6 players	7 players Cost(coins)    Cost(wood) Cost(stone)    Cost(clay) Cost(ore)  Cost(cloth)    Cost(glass)    Cost(papyrus)  Chains to(1)   Chains to(2)   Effect Category Category 1 multiplier Category 1 effect Catgory 2 symbol Category 3 effect Category 4 effect Category 5: Multiplier(P = player, N = neighbours, B = both player & neighbours)   Category 5: Card/token type Category 5: coins given when card enters play multiplier Category 5: End of game VP granted
+        public ExpansionSet expansion;
+
+        // Name Age Type Description Icon	3 players	4 players	5 players	6 players	7 players Cost(coins)    Cost(wood) Cost(stone)    Cost(clay) Cost(ore)  Cost(cloth)    Cost(glass)    Cost(papyrus)  Chains to(1)   Chains to(2)   Effect Category Category 1 multiplier Category 1 effect Catgory 2 symbol Category 3 effect Category 4 effect Category 5: Multiplier(P = player, N = neighbours, B = both player & neighbours)   Category 5: Card/token type Category 5: coins given when card enters play multiplier Category 5: End of game VP granted
+
         public string name { get; private set; }    // TODO: make this an enum
+
+        public StructureType structureType { get; private set; }
 
         public int age;
 
         public int wonderStage;
 
-        public StructureType structureType { get;  private set; }
         public string description { get; private set; }
         public string iconName { get; private set; }
         int[] numAvailableByNumPlayers = new int[5];
@@ -392,81 +433,86 @@ namespace SevenWonders
 
         public Card(string[] createParams)
         {
-            name = createParams[0];
-            if (createParams[1] != string.Empty)
-            {
-                age = int.Parse(createParams[1]);
-                wonderStage = 0;
-            }
-            else
-            {
-                age = 0;
-                wonderStage = int.Parse(createParams[29]);
-            }
-
+            expansion = (ExpansionSet)Enum.Parse(typeof(ExpansionSet), createParams[0]);
+            name = createParams[1];
             structureType = (StructureType)Enum.Parse(typeof(StructureType), createParams[2]);
-            description = createParams[3];
-            iconName = createParams[4];
 
-            if (structureType != StructureType.WonderStage)
+            switch (structureType)
             {
-                for (int i = 0, j = 5; i < numAvailableByNumPlayers.Length;  ++i, ++j)
+                case StructureType.Leader:
+                    age = 0;
+                    wonderStage = 0;
+                    break;
+
+                case StructureType.WonderStage:
+                    age = 0;
+                    wonderStage = int.Parse(createParams[30]);
+                    break;
+
+                default:
+                    age = int.Parse(createParams[3]);
+                    wonderStage = 0;
+                    break;
+            }
+
+            description = createParams[4];
+            iconName = createParams[5];
+
+            if (structureType != StructureType.WonderStage && structureType != StructureType.Leader && structureType != StructureType.City)
+            {
+                for (int i = 0, j = 6; i < numAvailableByNumPlayers.Length;  ++i, ++j)
                     numAvailableByNumPlayers[i] = int.Parse(createParams[j]);
             }
 
             // Structure cost
-            int.TryParse(createParams[10], out cost.coin);
-            int.TryParse(createParams[11], out cost.wood);
-            int.TryParse(createParams[12], out cost.stone);
-            int.TryParse(createParams[13], out cost.clay);
-            int.TryParse(createParams[14], out cost.ore);
-            int.TryParse(createParams[15], out cost.cloth);
-            int.TryParse(createParams[16], out cost.glass);
-            int.TryParse(createParams[17], out cost.papyrus);
+            int.TryParse(createParams[11], out cost.coin);
+            int.TryParse(createParams[12], out cost.wood);
+            int.TryParse(createParams[13], out cost.stone);
+            int.TryParse(createParams[14], out cost.clay);
+            int.TryParse(createParams[15], out cost.ore);
+            int.TryParse(createParams[16], out cost.cloth);
+            int.TryParse(createParams[17], out cost.glass);
+            int.TryParse(createParams[18], out cost.papyrus);
 
             // build chains (Cards that can be built for free in the following age)
-            chain[0] = createParams[18];
-            chain[1] = createParams[19];
+            chain[0] = createParams[19];
+            chain[1] = createParams[20];
 
-            var effectType = (Effect.Type)Enum.Parse(typeof(Effect.Type), createParams[20]);
+            var effectType = (Effect.Type)Enum.Parse(typeof(Effect.Type), createParams[21]);
 
             switch (effectType)
             {
                 case Effect.Type.Military:
-                    effect = new MilitaryEffect(int.Parse(createParams[21]));
+                    effect = new MilitaryEffect(int.Parse(createParams[22]));
                     break;
 
                 case Effect.Type.Resource:
                     effect = new ResourceEffect(structureType == StructureType.RawMaterial || structureType == StructureType.Goods,
-                        createParams[22]);
+                        createParams[23]);
                     break;
 
                 case Effect.Type.Science:
-                    effect = new ScienceEffect(createParams[23]);
+                    effect = new ScienceEffect(createParams[24]);
                     break;
 
                 case Effect.Type.Commerce:
-                    effect = new CommercialDiscountEffect(createParams[24]);
+                    effect = new CommercialDiscountEffect(createParams[25]);
                     break;
-
-                    /*
-                case Effect.Type.ResourceChoice:
-                    // player can choose one of the RawMaterials or Goods provided.  Raw Materials or
-                    // Goods can be bought by neighbors.  Yellow cards and wonder stages cannot be
-                    // used by neighboring cities.
-                    effect = new ResourceChoiceEffect(structureType == StructureType.RawMaterial || structureType == StructureType.Goods, createParams[25]);
-                    break;
-                    */
 
                 case Effect.Type.CoinsPoints:
                     CoinsAndPointsEffect.CardsConsidered cardsConsidered = (CoinsAndPointsEffect.CardsConsidered)
-                        Enum.Parse(typeof(CoinsAndPointsEffect.CardsConsidered), createParams[25]);
+                        Enum.Parse(typeof(CoinsAndPointsEffect.CardsConsidered), createParams[26]);
 
                     StructureType classConsidered =
-                        (StructureType)Enum.Parse(typeof(StructureType), createParams[26]);
+                        (StructureType)Enum.Parse(typeof(StructureType), createParams[27]);
 
-                    effect = new CoinsAndPointsEffect(cardsConsidered, classConsidered,
-                        int.Parse(createParams[27]), int.Parse(createParams[28]));
+                    int coinsGranted = 0;
+                    int.TryParse(createParams[28], out coinsGranted);
+
+                    int pointsAwarded = 0;
+                    int.TryParse(createParams[29], out pointsAwarded);
+
+                    effect = new CoinsAndPointsEffect(cardsConsidered, classConsidered, coinsGranted, pointsAwarded);
                     break;
 
                 case Effect.Type.ShipOwnersGuild:
@@ -496,12 +542,15 @@ namespace SevenWonders
                 case Effect.Type.PlayACardForFreeOncePerAge:
                     effect = new PlayACardForFreeOncePerAgeEffect();
                     break;
+
                 case Effect.Type.CopyGuildFromNeighbor:
                     effect = new CopyGuildFromNeighborEffect();
                     break;
+
                 case Effect.Type.Rhodos_B_Stage1:
                     effect = new Rhodos_B_Stage1Effect();
                     break;
+
                 case Effect.Type.Rhodos_B_Stage2:
                     effect = new Rhodos_B_Stage2Effect();
                     break;
