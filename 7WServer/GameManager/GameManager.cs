@@ -201,7 +201,7 @@ namespace SevenWonders
                 p.storeAction(p.playerBoard.freeResource);
             }
 
-            for (int i = currentAge /* currentAge == 0 if leaders is enabled; otherwise it is 1 */; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 //deck[1] is age 1. deck[2] is age 2 ....
                 deckList.Add(new Deck(fullCardList, i, numOfAI + numOfPlayers));
@@ -446,7 +446,7 @@ namespace SevenWonders
         /// </summary>
         protected void createBoards()
         {
-            board = new Dictionary<Board.Wonder, Board>(14)
+            board = new Dictionary<Board.Wonder, Board>(16)
             {
                 { Board.Wonder.Alexandria_A, new Board(ExpansionSet.Original, Board.Wonder.Alexandria_B, "Alexandria (A)", new ResourceEffect(true, "G"), 3) },
                 { Board.Wonder.Alexandria_B, new Board(ExpansionSet.Original, Board.Wonder.Alexandria_A, "Alexandria (B)", new ResourceEffect(true, "G"), 3) },
@@ -462,9 +462,13 @@ namespace SevenWonders
                 { Board.Wonder.Olympia_B, new Board(ExpansionSet.Original, Board.Wonder.Olympia_A, "Olympia (B)", new ResourceEffect(true, "W"), 3) },
                 { Board.Wonder.Rhodos_A, new Board(ExpansionSet.Original, Board.Wonder.Rhodos_B, "Rhodos (A)", new ResourceEffect(true, "O"), 3) },
                 { Board.Wonder.Rhodos_B, new Board(ExpansionSet.Original, Board.Wonder.Rhodos_A, "Rhodos (B)", new ResourceEffect(true, "O"), 2) },
-                { Board.Wonder.Roma_A, new Board(ExpansionSet.Leaders, Board.Wonder.Roma_B, "Roma (A)", new FreeLeadersEffect(), 2) },
-                { Board.Wonder.Roma_B, new Board(ExpansionSet.Leaders, Board.Wonder.Roma_A, "Roma (B)", new RomaBBoardEffect(), 3) },
             };
+
+            if (gmCoordinator.leadersEnabled)
+            {
+                board.Add(Board.Wonder.Roma_A, new Board(ExpansionSet.Leaders, Board.Wonder.Roma_B, "Roma (A)", new FreeLeadersEffect(), 2));
+                board.Add(Board.Wonder.Roma_B, new Board(ExpansionSet.Leaders, Board.Wonder.Roma_A, "Roma (B)", new RomaBBoardEffect(), 3));
+            }
 
             // Take the board effects from the card list.
 
