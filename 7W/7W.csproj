@@ -247,45 +247,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\cards\200.jpg" />
-    <Resource Include="Resources\Images\cards\201.jpg" />
-    <Resource Include="Resources\Images\cards\202.jpg" />
-    <Resource Include="Resources\Images\cards\203.jpg" />
-    <Resource Include="Resources\Images\cards\204.jpg" />
-    <Resource Include="Resources\Images\cards\205.jpg" />
-    <Resource Include="Resources\Images\cards\206.jpg" />
-    <Resource Include="Resources\Images\cards\207.jpg" />
-    <Resource Include="Resources\Images\cards\208.jpg" />
-    <Resource Include="Resources\Images\cards\209.jpg" />
-    <Resource Include="Resources\Images\cards\210.jpg" />
-    <Resource Include="Resources\Images\cards\211.jpg" />
-    <Resource Include="Resources\Images\cards\212.jpg" />
-    <Resource Include="Resources\Images\cards\213.jpg" />
-    <Resource Include="Resources\Images\cards\214.jpg" />
-    <Resource Include="Resources\Images\cards\215.jpg" />
-    <Resource Include="Resources\Images\cards\216.jpg" />
-    <Resource Include="Resources\Images\cards\217.jpg" />
-    <Resource Include="Resources\Images\cards\218.jpg" />
-    <Resource Include="Resources\Images\cards\219.jpg" />
-    <Resource Include="Resources\Images\cards\220.jpg" />
-    <Resource Include="Resources\Images\cards\221.jpg" />
-    <Resource Include="Resources\Images\cards\222.jpg" />
-    <Resource Include="Resources\Images\cards\223.jpg" />
-    <Resource Include="Resources\Images\cards\224.jpg" />
-    <Resource Include="Resources\Images\cards\225.jpg" />
-    <Resource Include="Resources\Images\cards\226.jpg" />
-    <Resource Include="Resources\Images\cards\227.jpg" />
-    <Resource Include="Resources\Images\cards\228.jpg" />
-    <Resource Include="Resources\Images\cards\229.jpg" />
-    <Resource Include="Resources\Images\cards\230.jpg" />
-    <Resource Include="Resources\Images\cards\231.jpg" />
-    <Resource Include="Resources\Images\cards\232.jpg" />
-    <Resource Include="Resources\Images\cards\233.jpg" />
-    <Resource Include="Resources\Images\cards\234.jpg" />
-    <Resource Include="Resources\Images\cards\235.jpg" />
-    <Resource Include="Resources\Images\cards\236.jpg" />
-    <Resource Include="Resources\Images\cards\237.jpg" />
-    <Resource Include="Resources\Images\cards\238.jpg" />
     <Resource Include="Resources\Images\HelpSlides\right.png" />
   </ItemGroup>
   <ItemGroup>
@@ -569,6 +530,44 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\cards\Gamers Guild.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\cards\Alexander.jpg" />
+    <Resource Include="Resources\Images\cards\Amytis.jpg" />
+    <Resource Include="Resources\Images\cards\Archimedes.jpg" />
+    <Resource Include="Resources\Images\cards\Aristotle.jpg" />
+    <Resource Include="Resources\Images\cards\Bilkis.jpg" />
+    <Resource Include="Resources\Images\cards\Caesar.jpg" />
+    <Resource Include="Resources\Images\cards\Cleopatra.jpg" />
+    <Resource Include="Resources\Images\cards\Croeseus.jpg" />
+    <Resource Include="Resources\Images\cards\Euclid.jpg" />
+    <Resource Include="Resources\Images\cards\Hammurabi.jpg" />
+    <Resource Include="Resources\Images\cards\Hannibal.jpg" />
+    <Resource Include="Resources\Images\cards\Hatshepsut.jpg" />
+    <Resource Include="Resources\Images\cards\Hiram.jpg" />
+    <Resource Include="Resources\Images\cards\Hypatia.jpg" />
+    <Resource Include="Resources\Images\cards\Imhotep.jpg" />
+    <Resource Include="Resources\Images\cards\Justinian.jpg" />
+    <Resource Include="Resources\Images\cards\Leonidas.jpg" />
+    <Resource Include="Resources\Images\cards\Maecenas.jpg" />
+    <Resource Include="Resources\Images\cards\Midas.jpg" />
+    <Resource Include="Resources\Images\cards\Nebuchadnezzar.jpg" />
+    <Resource Include="Resources\Images\cards\Nefertiti.jpg" />
+    <Resource Include="Resources\Images\cards\Nero.jpg" />
+    <Resource Include="Resources\Images\cards\Pericles.jpg" />
+    <Resource Include="Resources\Images\cards\Phidias.jpg" />
+    <Resource Include="Resources\Images\cards\Plato.jpg" />
+    <Resource Include="Resources\Images\cards\Praxiteles.jpg" />
+    <Resource Include="Resources\Images\cards\Ptolemy.jpg" />
+    <Resource Include="Resources\Images\cards\Pythagoras.jpg" />
+    <Resource Include="Resources\Images\cards\Ramses.jpg" />
+    <Resource Include="Resources\Images\cards\Sappho.jpg" />
+    <Resource Include="Resources\Images\cards\Solomon.jpg" />
+    <Resource Include="Resources\Images\cards\Tomyris.jpg" />
+    <Resource Include="Resources\Images\cards\Varro.jpg" />
+    <Resource Include="Resources\Images\cards\Vitruvius.jpg" />
+    <Resource Include="Resources\Images\cards\Xenophon.jpg" />
+    <Resource Include="Resources\Images\cards\Zenobia.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
