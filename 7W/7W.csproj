@@ -569,6 +569,44 @@
     <Resource Include="Resources\Images\cards\Xenophon.jpg" />
     <Resource Include="Resources\Images\cards\Zenobia.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\Alexander.png" />
+    <Resource Include="Resources\Images\Icons\Amytis.png" />
+    <Resource Include="Resources\Images\Icons\Archimedes.png" />
+    <Resource Include="Resources\Images\Icons\architects_guild.png" />
+    <Resource Include="Resources\Images\Icons\Aristotle.png" />
+    <Resource Include="Resources\Images\Icons\Bilkis.png" />
+    <Resource Include="Resources\Images\Icons\Bilkis2.png" />
+    <Resource Include="Resources\Images\Icons\Cleopatra.png" />
+    <Resource Include="Resources\Images\Icons\courtesans_guild.png" />
+    <Resource Include="Resources\Images\Icons\Croeseus.png" />
+    <Resource Include="Resources\Images\Icons\diplomats_guild.png" />
+    <Resource Include="Resources\Images\Icons\gamers_guild.png" />
+    <Resource Include="Resources\Images\Icons\Hammurabi.png" />
+    <Resource Include="Resources\Images\Icons\Hatshepsut.png" />
+    <Resource Include="Resources\Images\Icons\Hiram.png" />
+    <Resource Include="Resources\Images\Icons\Hypatia.png" />
+    <Resource Include="Resources\Images\Icons\Imhotep.png" />
+    <Resource Include="Resources\Images\Icons\Justinian.png" />
+    <Resource Include="Resources\Images\Icons\Leonidas.png" />
+    <Resource Include="Resources\Images\Icons\Maecenas.png" />
+    <Resource Include="Resources\Images\Icons\Midas.png" />
+    <Resource Include="Resources\Images\Icons\Nebuchadnezzar.png" />
+    <Resource Include="Resources\Images\Icons\Nefertiti.png" />
+    <Resource Include="Resources\Images\Icons\Nero.png" />
+    <Resource Include="Resources\Images\Icons\Pericles.png" />
+    <Resource Include="Resources\Images\Icons\Phidias.png" />
+    <Resource Include="Resources\Images\Icons\Plato.png" />
+    <Resource Include="Resources\Images\Icons\Praxiteles.png" />
+    <Resource Include="Resources\Images\Icons\Ramses.png" />
+    <Resource Include="Resources\Images\Icons\Sappho.png" />
+    <Resource Include="Resources\Images\Icons\Solomon.png" />
+    <Resource Include="Resources\Images\Icons\Tomyris.png" />
+    <Resource Include="Resources\Images\Icons\Varro.png" />
+    <Resource Include="Resources\Images\Icons\Vitruvius.png" />
+    <Resource Include="Resources\Images\Icons\Xenophon.png" />
+    <Resource Include="Resources\Images\Icons\Zenobia.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
