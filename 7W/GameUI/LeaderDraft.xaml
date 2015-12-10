@@ -16,9 +16,9 @@
             <ColumnDefinition Width="4*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0" Grid.Column="0">
-            <Label>Choose a leader to draft</Label>
-            <Button>Draft</Button>
-            <Label Name="LeaderDescription"></Label>
+            <TextBlock Margin="10" TextWrapping="Wrap" FontSize="14">Select a leader to draft</TextBlock>
+            <Button>Draft this leader</Button>
+            <TextBlock Name="LeaderDescription"></TextBlock>
         </StackPanel>
         <ListBox Grid.Row="0" Grid.Column="1" Name="hand">
             <ListBox.ItemsPanel>
@@ -27,7 +27,7 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
-        <Label Grid.Row="1" Grid.Column="0">Drafted leaders</Label>
+        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" FontSize="14">Drafted leaders</TextBlock>
         <ListBox Grid.Row="1" Grid.Column="1" Name="RecruitedLeaders">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
