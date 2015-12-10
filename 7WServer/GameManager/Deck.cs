@@ -23,72 +23,38 @@ namespace SevenWonders
         {
             this.age = age;
 
-            // Create the card list for this age & number of players
-            foreach (Card c in cardList)
+            if (age == 0)
             {
-                int nToAdd = c.GetNumCardsAvailble(age, numOfPlayers);
-
-                for (int i = 0; i < nToAdd; ++i)
+                // for the leaders, make all the cards available in deck
+                this.cardList = cardList.Where(x => x.age == age).ToList();
+            }
+            else
+            {
+                // Create the card list for this age & number of players
+                foreach (Card c in cardList.Where(x => x.age == age))
                 {
-                    this.cardList.Add(c);
+                    for (int i = 0; i < c.GetNumCardsAvailable(numOfPlayers); ++i)
+                    {
+                        this.cardList.Add(c);
+                    }
                 }
             }
         }
 
         //find and remove all unused cards Guild cards
-        public void removeAge3Guilds(int nPlayers)
+        public void removeAge3Guilds(int nCardsToRemove)
         {
             //shuffle first to randomize the locations of the guild cards in the deck
             shuffle();
 
-            //find and remove the appropriate amount of guild cards, based on how many players there are
-            // int numOfPurpleCardsToRemove = 7 - numPlayers;
-            int nGuildsToRemove = 8 - nPlayers;      // should be *8* - numPlayers, no?  Old code wasn't removing enough Guild structures.
-
-            for (int i = cardList.Count - 1; i >= 0 && nGuildsToRemove > 0; --i)
+            for (int i = cardList.Count - 1; i >= 0 && nCardsToRemove > 0; --i)
             {
                 if (cardList[i].structureType == StructureType.Guild)
                 {
                     cardList.RemoveAt(i);
-                    --nGuildsToRemove;
+                    --nCardsToRemove;
                 }
             }
-
-            /*
-            // card.RemoveAll(item => item.structureType == Card.StructureType.Guild);
-
-            // a forward-iterator doesn't work
-            foreach (Card c in card)
-            {
-                if (c.structureType == Card.StructureType.Guild)
-                {
-                    card.Remove(c);
-                    numRemoved++;
-                    if (numRemoved == numOfPurpleCardsToRemove)
-                    {
-                        return;
-                    }
-                }
-            }
-
-            for (int i = 0; i < card.Count; i++)
-            {
-                if (card[i].structureType == Card.StructureType.Guild)
-                {
-                    card.RemoveAt(i);
-                    numRemoved++;
-                    if (numRemoved == numOfPurpleCardsToRemove)
-                    {
-                        return;
-                    }
-                }
-            }
-            */
-        }
-
-        public int numOfCards()
-        {
-            return cardList.Count;
         }
 
         //shuffle the cards in the deck
@@ -114,44 +80,7 @@ namespace SevenWonders
             }
 
             cardList = d;
-            /*
-            JDF - old code
-            Random random = new Random();
-
-            //swap the position of 2 random cards 300 times
-            for (int i = 0; i < 300; i++)
-            {
-                int random1 = random.Next(0, card.Count);
-                int random2 = random.Next(0, card.Count);
-                Card temp = card[random1];
-                card[random1] = card[random2];
-                card[random2] = temp;
-            }
-            */
         }
-
-        /*
-        /// <summary>
-        /// pop a Random card from the Card array
-        /// </summary>
-        /// <returns></returns>
-        public Card popRandomCard()
-        {
-            Random random = new Random();
-
-            //get a random number
-            int randomNum = random.Next(0, card.Count);
-
-            //get the random card
-            Card randomCard = card[randomNum];
-
-            //remove the random card
-            card.RemoveAt(randomNum);
-
-            //return the random card
-            return randomCard;
-        }
-        */
 
         public Card GetTopCard()
         {

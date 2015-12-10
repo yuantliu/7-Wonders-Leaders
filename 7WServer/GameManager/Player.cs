@@ -155,8 +155,6 @@ namespace SevenWonders
 
         public int conflictTokenThree { get; set; }
 
-        // public int GetNumCardsInHand() { return hand.Count; }
-
         public List<Card> hand = new List<Card>(7);
 
         public List<Card> playedStructure = new List<Card>();
@@ -179,9 +177,6 @@ namespace SevenWonders
         //stored actions for the turn
         private List<Effect> actions = new List<Effect>();
 
-        //stored actions for the end of the game
-        // private List<Effect> endOfGameActions = new List<Effect>();
-
         //Player's left and right neighbours
         public Player leftNeighbour { get; set; }
 
@@ -193,15 +188,7 @@ namespace SevenWonders
         public CommercialDiscountEffect.RawMaterials rawMaterialsDiscount = CommercialDiscountEffect.RawMaterials.None;
         public CommercialDiscountEffect.Goods goodsDiscount = CommercialDiscountEffect.Goods.None;
 
-        //Leaders pile. The pile that holds the unplayed leaders cards
-        //public List<Card> leadersPile = new List<Card>();
-
-       // public List<Card> GetLeadersPile() { return leadersPile; }
-
-        //interface for vanilla AI
         public AIMoveBehaviour AIBehaviour;
-        //interface for Leaders AI
-        // public LeadersAIMoveBehaviour LeadersAIBehaviour;
 
         private GameManager gm;
 
@@ -407,11 +394,13 @@ namespace SevenWonders
                 effect is PlayLastCardInAgeEffect ||
                 effect is CopyGuildFromNeighborEffect ||
                 effect is MilitaryEffect ||
-                effect is ScienceEffect)
+                effect is ScienceEffect ||
+                effect is FreeLeadersEffect )
             {
                 // nothing to do; this card will be included in the end of game point total, or
                 // - Military cards are used at the end of each age to resolve conflicts
                 // - Science cards are used at the end of the game.
+                // - Free Leaders effects are captured when the cards are put into play
             }
             else if (effect is PlayDiscardedCardForFreeEffect || effect is PlayDiscardedCardForFree_1VPEffect || effect is PlayDiscardedCardForFree_2VPEffect)
             {

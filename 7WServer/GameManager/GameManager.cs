@@ -195,26 +195,19 @@ namespace SevenWonders
             foreach (Player p in player.Values)
             {
                 p.playerBoard = popRandomBoard();
-                // gmCoordinator.sendMessage(player[i], "b" + player[i].playerBoard.name);
-                // player[i].storeAction("13$");
-                p.storeAction(new CoinsAndPointsEffect(CoinsAndPointsEffect.CardsConsidered.None, StructureType.Constant, 3, 0));
-                // player[i].storeAction("11" + player[i].playerBoard.freeResource);
+                int startingCoins = gmCoordinator.leadersEnabled ? 6 : 3;
+                p.storeAction(new CoinsAndPointsEffect(
+                    CoinsAndPointsEffect.CardsConsidered.None, StructureType.Constant, startingCoins, 0));
                 p.storeAction(p.playerBoard.freeResource);
-
-                // deferred until the client is ready to accept UI information
-                // player[i].executeAction(this);
             }
 
-            //initialize, load, and remove unused cards
-            //there are 3 decks, but load 4, deck 0 (leader phase) will not be used.
-            //Read the textfile information and initialize the decks according to the information
-            for (int i = 1; i < 4; i++)
+            for (int i = currentAge /* currentAge == 0 if leaders is enabled; otherwise it is 1 */; i < 4; i++)
             {
                 //deck[1] is age 1. deck[2] is age 2 ....
                 deckList.Add(new Deck(fullCardList, i, numOfAI + numOfPlayers));
             }
 
-            deckList.Find(x => x.age == 3).removeAge3Guilds(numOfAI + numOfPlayers);
+            deckList[3].removeAge3Guilds(fullCardList.Where(x => x.structureType == StructureType.Guild).Count() - (numOfPlayers + numOfAI + 2));
 
             //deal the cards for the first age to the players
             //currentAge not incremented?
@@ -501,8 +494,9 @@ namespace SevenWonders
         /// <returns></returns>
         protected Board popRandomBoard()
         {
-            int index = (new Random()).Next(0, board.Count);
-            // int index = 3;
+            // int index = (new Random()).Next(0, board.Count);
+            int index = 14;     // Roma (A)
+            // int index = 15;     // Roma (B)
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
@@ -1034,49 +1028,46 @@ namespace SevenWonders
                     continue;
 
                 //send the hand panel (action information) for regular ages (not the Recruitment phase i.e. Age 0)
-                if (currentAge > 0)
+                string strHand = "SetPlyrH";
+
+                if (playingCardFromDiscardPile)
                 {
-                    string strHand = "SetPlyrH";
+                    savedHandWhenPlayingFromDiscardPile = p.hand;   // save the player's hand
+                    p.hand = discardPile;                           // the player's hand now points to the discard pile.
 
-                    if (playingCardFromDiscardPile)
+                    foreach (Card card in discardPile)
                     {
-                        savedHandWhenPlayingFromDiscardPile = p.hand;   // save the player's hand
-                        p.hand = discardPile;                           // the player's hand now points to the discard pile.
+                        // Filter out structures that have already been built in the players' city.
+                        if (p.isCardBuildable(card) != Buildable.StructureAlreadyBuilt)
+                            strHand += string.Format("&{0}={1}", card.name, Buildable.True.ToString());
+                    }
 
-                        foreach (Card card in discardPile)
-                        {
-                            // Filter out structures that have already been built in the players' city.
-                            if (p.isCardBuildable(card) != Buildable.StructureAlreadyBuilt)
-                                strHand += string.Format("&{0}={1}", card.name, Buildable.True.ToString());
-                        }
+                    // The free build for Halikarnassos/Solomon requires the card be put in play.
+                    // It cannot be used to build a wonder stage, nor can it be discarded for 3
+                    // coins.
+                    strHand += string.Format("&WonderStage{0}={1}&Instructions=Choose a card to play for free from the discard pile&CanDiscard=False", p.currentStageOfWonder, Buildable.InsufficientResources.ToString());
+                }
+                else
+                {
+                    foreach (Card card in p.hand)
+                    {
+                        strHand += string.Format("&{0}={1}", card.name, p.isCardBuildable(card).ToString());
+                    }
 
-                        // The free build for Halikarnassos/Solomon requires the card be put in play.
-                        // It cannot be used to build a wonder stage, nor can it be discarded for 3
-                        // coins.
-                        strHand += string.Format("&WonderStage{0}={1}&Instructions=Choose a card to play for free from the discard pile&CanDiscard=False", p.currentStageOfWonder, Buildable.InsufficientResources.ToString());
+                    strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
+
+                    if (gettingBabylonExtraCard)
+                    {
+                        strHand += "&Instructions=Babylon: you may build the last card in your hand or discard it for 3 coins";
                     }
                     else
                     {
-                        foreach (Card card in p.hand)
-                        {
-                            strHand += string.Format("&{0}={1}", card.name, p.isCardBuildable(card).ToString());
-                        }
-
-                        strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
-
-                        if (gettingBabylonExtraCard)
-                        {
-                            strHand += "&Instructions=Babylon: you may build the last card in your hand or discard it for 3 coins";
-                        }
-                        else
-                        {
-                            strHand += "&Instructions=Choose a card from the list below to play, build a wonder stage with, or discard";
-                        }
+                        strHand += "&Instructions=Choose a card from the list below to play, build a wonder stage with, or discard";
                     }
-
-                    //send the Card Panel information to that player
-                    gmCoordinator.sendMessage(p, strHand);
                 }
+
+                //send the Card Panel information to that player
+                gmCoordinator.sendMessage(p, strHand);
 
                 //send the timer signal if the current Age is less than 4 (i.e. game is still going)
                 if (gameConcluded == false)

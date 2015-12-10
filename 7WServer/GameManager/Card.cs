@@ -222,6 +222,7 @@ namespace SevenWonders
             Rhodos_B_Stage2,                // Rhodos (B) 2nd stage
 
             // From the Leaders expansion pack
+            FreeLeaders,                    // Roma (A) board effect, Maecenas effect
             DraftFourNewLeaders_5VP,
             PlayALeaderForFree,
             StructureDiscount,
@@ -229,7 +230,6 @@ namespace SevenWonders
             Bilkis,
             Hatshepsut,
             Justinian,
-            Maecenas,
             Plato,
             Ramses,
             Tomyris,
@@ -417,7 +417,116 @@ namespace SevenWonders
 
     public class RomaBBoardEffect : Effect
     {
-        // Roma (B) board effect
+        // Roma (B) board effect (leaders cost is reduced by 2 for the player, and 1 for the players' neighbors.
+    }
+
+    public class DraftFourNewLeaders_5VPEffect : Effect
+    {
+    }
+
+    public class PlayALeaderForFreeEffect : Effect
+    {
+    }
+
+    public class StructureDiscountEffect : Effect
+    {
+    }
+
+    public class AristotleEffect : Effect
+    {
+    }
+
+    public class BilkisEffect : Effect
+    {
+    }
+
+    public class HatshepsutEffect : Effect
+    {
+    }
+
+    public class JustinianEffect : Effect
+    {
+    }
+
+    public class PlatoEffect : Effect
+    {
+    }
+
+    public class RamsesEffect : Effect
+    {
+    }
+
+    public class TomyrisEffect : Effect
+    {
+    }
+
+    public class VitruviusEffect : Effect
+    {
+    }
+
+    public class CourtesanEffect : Effect
+    {
+    }
+
+    // From the Cities expansion pack
+    public class CopyScienceSymbolFromNeighborEffect : Effect
+    {
+    }
+
+    public class CoinsLossPointsEffect : Effect
+    {
+    }
+
+    public class DiplomacyEffect : Effect
+    {
+    }
+
+    public class Gambling_DenEffect : Effect
+    {
+    }
+
+    public class Clandestine_Dock_WestEffect : Effect
+    {
+    }
+
+    public class Clandestine_Dock_EastEffect : Effect
+    {
+    }
+
+    public class Secret_WarehouseEffect : Effect
+    {
+    }
+
+    public class Gambling_HouseEffect : Effect
+    {
+    }
+
+    public class Black_MarketEffect : Effect
+    {
+    }
+
+    public class CoinsLossPerMilitaryPointsEffect : Effect
+    {
+    }
+
+    public class Architect_CabinetEffect : Effect
+    {
+    }
+
+    public class Builders_UnionEffect : Effect
+    {
+    }
+
+    public class BerniceEffect : Effect
+    {
+    }
+
+    public class PlayABlackCardForFreeOncePerAgeEffect : Effect
+    {
+    }
+
+    public class SemiramisEffect : Effect
+    {
     }
 
     public class Card
@@ -564,14 +673,128 @@ namespace SevenWonders
                 case Effect.Type.Rhodos_B_Stage2:
                     effect = new Rhodos_B_Stage2Effect();
                     break;
+
+                // From the Leaders expansion pack
+                case Effect.Type.FreeLeaders:                    // Roma (A) board effect: Maecenas effect
+                    effect = new FreeLeadersEffect();
+                    break;
+
+                case Effect.Type.DraftFourNewLeaders_5VP:
+                    effect = new DraftFourNewLeaders_5VPEffect();
+                    break;
+
+                case Effect.Type.PlayALeaderForFree:
+                    effect = new PlayALeaderForFreeEffect();
+                    break;
+
+                case Effect.Type.StructureDiscount:
+                    effect = new StructureDiscountEffect();
+                    break;
+
+                case Effect.Type.Aristotle:
+                    effect = new AristotleEffect();
+                    break;
+
+                case Effect.Type.Bilkis:
+                    effect = new BilkisEffect();
+                    break;
+
+                case Effect.Type.Hatshepsut:
+                    effect = new HatshepsutEffect();
+                    break;
+
+                case Effect.Type.Justinian:
+                    effect = new JustinianEffect();
+                    break;
+
+                case Effect.Type.Plato:
+                    effect = new PlatoEffect();
+                    break;
+
+                case Effect.Type.Ramses:
+                    effect = new RamsesEffect();
+                    break;
+
+                case Effect.Type.Tomyris:
+                    effect = new TomyrisEffect();
+                    break;
+
+                case Effect.Type.Vitruvius:
+                    effect = new VitruviusEffect();
+                    break;
+
+                case Effect.Type.Courtesan:
+                    effect = new CourtesanEffect();
+                    break;
+
+                // From the Cities expansion pack
+                case Effect.Type.CopyScienceSymbolFromNeighbor:
+                    effect = new CopyScienceSymbolFromNeighborEffect();
+                    break;
+
+                case Effect.Type.CoinsLossPoints:
+                    effect = new CoinsLossPointsEffect();
+                    break;
+
+                case Effect.Type.Diplomacy:
+                    effect = new DiplomacyEffect();
+                    break;
+
+                case Effect.Type.Gambling_Den:
+                    effect = new Gambling_DenEffect();
+                    break;
+
+                case Effect.Type.Clandestine_Dock_West:
+                    effect = new Clandestine_Dock_WestEffect();
+                    break;
+
+                case Effect.Type.Clandestine_Dock_East:
+                    effect = new Clandestine_Dock_EastEffect();
+                    break;
+
+                case Effect.Type.Secret_Warehouse:
+                    effect = new Secret_WarehouseEffect();
+                    break;
+
+                case Effect.Type.Gambling_House:
+                    effect = new Gambling_HouseEffect();
+                    break;
+
+                case Effect.Type.Black_Market:
+                    effect = new Black_MarketEffect();
+                    break;
+
+                case Effect.Type.CoinsLossPerMilitaryPoints:
+                    effect = new CoinsLossPerMilitaryPointsEffect();
+                    break;
+
+                case Effect.Type.Architect_Cabinet:
+                    effect = new Architect_CabinetEffect();
+                    break;
+
+                case Effect.Type.Builders_Union:
+                    effect = new Builders_UnionEffect();
+                    break;
+
+                case Effect.Type.Bernice:
+                    effect = new BerniceEffect();
+                    break;
+
+                case Effect.Type.PlayABlackCardForFreeOncePerAge:
+                    effect = new PlayABlackCardForFreeOncePerAgeEffect();
+                    break;
+
+                case Effect.Type.Semiramis:
+                    effect = new SemiramisEffect();
+                    break;
+
+                default:
+                    throw new Exception(string.Format("No effect class for this effect: {0}", effectType.ToString()));
             }
         }
 
-        public int GetNumCardsAvailble(int age, int numPlayers)
+        public int GetNumCardsAvailable(int numPlayers)
         {
-            if (age != this.age)
-                return 0;
-
             return numAvailableByNumPlayers[numPlayers - 3];
         }
     }
