@@ -149,6 +149,9 @@
     <Compile Include="GameUI\Help.xaml.cs">
       <DependentUpon>Help.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameUI\LeaderDraft.xaml.cs">
+      <DependentUpon>LeaderDraft.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameUI\NewCommerce.xaml.cs">
       <DependentUpon>NewCommerce.xaml</DependentUpon>
     </Compile>
@@ -182,6 +185,10 @@
     <Page Include="GameUI\Help.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GameUI\LeaderDraft.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GameUI\NewCommerce.xaml">
       <SubType>Designer</SubType>

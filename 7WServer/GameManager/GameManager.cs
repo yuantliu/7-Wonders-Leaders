@@ -7,6 +7,19 @@ namespace SevenWonders
 {
     public class GameManager
     {
+        enum GamePhase
+        {
+            // WaitingForPlayers,   // not used presently
+            // Start,               // not used presently
+            LeaderDraft,            // drafting leaders (i.e. before Age 1)
+            LeaderRecruitment,      // playing a leader card at the start of each Age
+            Playing,                // normal turn
+            Babylon,                // Waiting for Babylon to play its last card in the age.
+            Halikarnassos,          // Waiting for Halikarnassos to play from the discard pile.
+            Solomon,                // Waiting for Solomon to play from the discard pile (can coincide with Halikarnassos if Rome B builds its 2nd or 3rd wonder stage and the player plays Solomon)
+            End,
+        };
+
         public int numOfPlayers { get; set; }
         public int numOfAI { get; set; }
 
@@ -45,6 +58,8 @@ namespace SevenWonders
         string[] playerNicks;
 
         public bool gameConcluded { get; set; }
+
+        GamePhase phase;
 
         /// <summary>
         /// Shared constructor for GameManager and LeadersGameManager
@@ -90,7 +105,6 @@ namespace SevenWonders
                     fullCardList.Add(new Card(line.Split(',')));
                     line = file.ReadLine();
                 }
-
             }
 
             if (!gmCoordinator.citiesEnabled)
@@ -110,10 +124,8 @@ namespace SevenWonders
                 player.Add(playerNicks[i], createAI(playerNicks[i], AIStrats[i-numOfPlayers]));
             }
 
-            //set each Player's left and right neighbours
-            //this determines player positioning
-            //UC-19: R1
-            //assign player positions
+            // set each Player's left and right neighbours
+            // this determines player positioning
             for (int i = 0; i < player.Count; i++)
             {
                 if (i == 0)
@@ -129,6 +141,8 @@ namespace SevenWonders
                     player[playerNicks[i]].setNeighbours(player[playerNicks[i - 1]], player[playerNicks[i + 1]]);
                 }
             }
+
+            phase = gmCoordinator.leadersEnabled ? GamePhase.LeaderDraft : GamePhase.Playing;
         }
 
         /// <summary>
@@ -1058,15 +1072,24 @@ namespace SevenWonders
                         strHand += string.Format("&{0}={1}", card.name, p.isCardBuildable(card).ToString());
                     }
 
-                    strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
-
-                    if (gettingBabylonExtraCard)
+                    if (phase == GamePhase.LeaderDraft)
                     {
-                        strHand += "&Instructions=Babylon: you may build the last card in your hand or discard it for 3 coins";
+                        strHand += "&Instructions=Choose a Leader from the hand below to add to your drafted leaders";
+                        strHand += "&CanDiscard=False";
                     }
                     else
                     {
-                        strHand += "&Instructions=Choose a card from the list below to play, build a wonder stage with, or discard";
+                        strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
+
+                        if (gettingBabylonExtraCard)
+                        // if (phase == GamePhase.Babylon)
+                        {
+                            strHand += "&Instructions=Babylon: you may build the last card in your hand or discard it for 3 coins";
+                        }
+                        else
+                        {
+                            strHand += "&Instructions=Choose a card from the list below to play, build a wonder stage with, or discard";
+                        }
                     }
                 }
 

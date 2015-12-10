@@ -993,8 +993,7 @@ namespace SevenWonders
 
             if (coin < cost.coin)
             {
-                // if the card has a coin cost and we don't have enough money, bail out and
-                // return not buildable.
+                // if the card has a coin cost and we don't have enough money, the card is not buildable.
                 return Buildable.InsufficientCoins;
             }
 
@@ -1026,8 +1025,14 @@ namespace SevenWonders
 
             //get rid of the coins from the cost, and see if DAG can afford the cost (already checked for coins at previous step)
             //this is relevant for the Black cards in the Cities expansion
-            // cost = cost.Replace("$", "");
             cost.coin = 0;
+
+            if (cost.IsZero())
+            {
+                // The card only costs money (no resources), so it's affordable.
+                // If it was not affordable, the 
+                return Buildable.True;
+            }
 
             //can I afford the cost with resources in my DAG?
             if (dag.canAfford(cost)) return Buildable.True;
