@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -25,8 +26,9 @@ namespace SevenWonders
     /// </summary>
     public partial class TableUI : Window
     {
-
         Coordinator coordinator;
+
+        private ObservableCollection<string> players = new ObservableCollection<string>();
 
         /// <summary>
         /// Initialise the Table UI
@@ -44,6 +46,8 @@ namespace SevenWonders
 
             //empty the chatTextBox
             chatTextBox.Text = "";
+
+            playerList.ItemsSource = players;
         }
 
         /// <summary>
@@ -114,6 +118,8 @@ namespace SevenWonders
         {
             // Add "difficult" AI
             coordinator.sendToHost("aa4");
+
+            players.Add("aslkjasdf");
             /*
             JDF commented out in the interests of speeding up the game start.
             //Add a Leaders AI
@@ -199,6 +205,20 @@ namespace SevenWonders
             */
 
             return IPAddress.Loopback.ToString();
+        }
+
+        private void leaders_Checkbox_Click(object sender, RoutedEventArgs e)
+        {
+            if ((bool)leaders_Checkbox.IsChecked)
+            {
+                coordinator.expansionSet = ExpansionSet.Leaders;
+                coordinator.sendToHost("mL");       // mode Leaders
+            }
+            else
+            {
+                coordinator.expansionSet = ExpansionSet.Original;
+                coordinator.sendToHost("mV");       // mode Vanilla
+            }
         }
     }
 }

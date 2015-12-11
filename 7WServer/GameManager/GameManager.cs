@@ -1014,9 +1014,6 @@ namespace SevenWonders
 
             foreach (Player p in player.Values)
             {
-                gmCoordinator.sendMessage(p, strCardsPlayed);
-                gmCoordinator.sendMessage(p, strUpdateCoinsMessage);
-
                 //Update the Player Bar Panel
                 //send the playerBarPanel information
                 // Replaced with "SetCoins" message
@@ -1036,49 +1033,59 @@ namespace SevenWonders
                 gmCoordinator.sendMessage(p, "T" + currentTurn);
                 */
 
-                // Check if we're in a special state - extra turn for Babylon (B)
-                if (gettingBabylonExtraCard && !p.babylonPowerEnabled)
-                    continue;
-
-                // Check if we're in a special state - playing a card from the discard pile
-                // only the player (or players) who are getting the extra turn can proceed here.
-                if (playingCardFromDiscardPile && !p.playCardFromDiscardPile)
-                    continue;
-
-                //send the hand panel (action information) for regular ages (not the Recruitment phase i.e. Age 0)
-                string strHand = "SetPlyrH";
-
-                if (playingCardFromDiscardPile)
+                if (phase == GamePhase.LeaderDraft)
                 {
-                    savedHandWhenPlayingFromDiscardPile = p.hand;   // save the player's hand
-                    p.hand = discardPile;                           // the player's hand now points to the discard pile.
+                    string strLeaderHand = "LdrDraft";
 
-                    foreach (Card card in discardPile)
+                    foreach (Card card in p.hand)
                     {
-                        // Filter out structures that have already been built in the players' city.
-                        if (p.isCardBuildable(card) != Buildable.StructureAlreadyBuilt)
-                            strHand += string.Format("&{0}={1}", card.name, Buildable.True.ToString());
+                        strLeaderHand += string.Format("&{0}=", card.name);
                     }
 
-                    // The free build for Halikarnassos/Solomon requires the card be put in play.
-                    // It cannot be used to build a wonder stage, nor can it be discarded for 3
-                    // coins.
-                    strHand += string.Format("&WonderStage{0}={1}&Instructions=Choose a card to play for free from the discard pile&CanDiscard=False", p.currentStageOfWonder, Buildable.InsufficientResources.ToString());
+                    // send the list of cards to the player
+                    gmCoordinator.sendMessage(p, strLeaderHand);
                 }
                 else
                 {
-                    foreach (Card card in p.hand)
-                    {
-                        strHand += string.Format("&{0}={1}", card.name, p.isCardBuildable(card).ToString());
-                    }
+                    gmCoordinator.sendMessage(p, strCardsPlayed);
+                    gmCoordinator.sendMessage(p, strUpdateCoinsMessage);
 
-                    if (phase == GamePhase.LeaderDraft)
+                    // Check if we're in a special state - extra turn for Babylon (B)
+                    if (gettingBabylonExtraCard && !p.babylonPowerEnabled)
+                        continue;
+
+                    // Check if we're in a special state - playing a card from the discard pile
+                    // only the player (or players) who are getting the extra turn can proceed here.
+                    if (playingCardFromDiscardPile && !p.playCardFromDiscardPile)
+                        continue;
+
+                    //send the hand panel (action information) for regular ages (not the Recruitment phase i.e. Age 0)
+                    string strHand = "SetPlyrH";
+
+                    if (playingCardFromDiscardPile)
                     {
-                        strHand += "&Instructions=Choose a Leader from the hand below to add to your drafted leaders";
-                        strHand += "&CanDiscard=False";
+                        savedHandWhenPlayingFromDiscardPile = p.hand;   // save the player's hand
+                        p.hand = discardPile;                           // the player's hand now points to the discard pile.
+
+                        foreach (Card card in discardPile)
+                        {
+                            // Filter out structures that have already been built in the players' city.
+                            if (p.isCardBuildable(card) != Buildable.StructureAlreadyBuilt)
+                                strHand += string.Format("&{0}={1}", card.name, Buildable.True.ToString());
+                        }
+
+                        // The free build for Halikarnassos/Solomon requires the card be put in play.
+                        // It cannot be used to build a wonder stage, nor can it be discarded for 3
+                        // coins.
+                        strHand += string.Format("&WonderStage{0}={1}&Instructions=Choose a card to play for free from the discard pile&CanDiscard=False", p.currentStageOfWonder, Buildable.InsufficientResources.ToString());
                     }
                     else
                     {
+                        foreach (Card card in p.hand)
+                        {
+                            strHand += string.Format("&{0}={1}", card.name, p.isCardBuildable(card).ToString());
+                        }
+
                         strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
 
                         if (gettingBabylonExtraCard)
@@ -1091,10 +1098,10 @@ namespace SevenWonders
                             strHand += "&Instructions=Choose a card from the list below to play, build a wonder stage with, or discard";
                         }
                     }
-                }
 
-                //send the Card Panel information to that player
-                gmCoordinator.sendMessage(p, strHand);
+                    //send the Card Panel information to that player
+                    gmCoordinator.sendMessage(p, strHand);
+                }
 
                 //send the timer signal if the current Age is less than 4 (i.e. game is still going)
                 if (gameConcluded == false)

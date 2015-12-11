@@ -113,8 +113,9 @@ namespace SevenWonders
                         break;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    System.Diagnostics.Debug.WriteLine(ex.ToString());
                     Connected = false;
                 }
             }

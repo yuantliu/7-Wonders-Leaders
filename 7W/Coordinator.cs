@@ -31,7 +31,8 @@ namespace SevenWonders
         //The various UI that Coordinator keeps track of
         public MainWindow gameUI;
         TableUI tableUI;
-        JoinTableUI joinTableUI;
+        //JoinTableUI joinTableUI;
+        LeaderDraft leaderDraftWindow;
 
         //The client that the application will use to interact with the server.
         public Client client { get; private set; }
@@ -40,6 +41,8 @@ namespace SevenWonders
         public string nickname;
 
         public string[] playerNames;
+
+        public ExpansionSet expansionSet = ExpansionSet.Original;
 
         //Timer
         // int timeElapsed;
@@ -275,17 +278,22 @@ namespace SevenWonders
             tableUI.leaders_Checkbox.IsEnabled = false;
             */
             tableUI.ShowDialog();
+
+            if (expansionSet == ExpansionSet.Leaders)
+                leaderDraftWindow = new LeaderDraft(this);
         }
 
         /*
          * Display the join table UI
          * UC-02 R02
          */
-        public void displayJoinGameUI()
-        {
-            joinTableUI = new JoinTableUI(this);
-            joinTableUI.ShowDialog();
-        }
+        /*
+       public void displayJoinGameUI()
+       {
+           joinTableUI = new JoinTableUI(this);
+           joinTableUI.ShowDialog();
+       }
+       */
 #endif
 
         /**
@@ -439,6 +447,16 @@ namespace SevenWonders
                         {
                             FinalScore fs = new FinalScore(qcoll);
                             fs.Show();
+                        }));
+                        messageHandled = true;
+                        break;
+
+                    case "LdrDraft":
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            leaderDraftWindow.UpdateUI(qcoll);
+                            leaderDraftWindow.Show();
                         }));
                         messageHandled = true;
                         break;
