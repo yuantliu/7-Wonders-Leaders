@@ -31,8 +31,42 @@ namespace SevenWonders
 
             if (player.hand[0].structureType == StructureType.Leader)
             {
-                string [] favouredLeaders = { 216, 220, 222, 232, 200, 208, 205, 221, 214, 236, 213 };
-                // we're in the leader draft phase.  Find a leader to draft
+                // int[] favouredLeaders = { 216, 220, 222, 232, 200, 208, 205, 221, 214, 236, 213 };
+                string [] favouredLeaders = { "Leonidas", "Nero", "Pericles", "Tomyris", "Alexander", "Hannibal", "Caesar", "Nefertiti", "Cleopatra", "Zenobia", "Justinian" };
+
+                Card bestLeader = null;
+
+                //try to find the highest rated card in hand
+                //start looking for the highest rated card, then go down to the next highest, etc.
+                foreach (string leaderName in favouredLeaders)
+                {
+                    bestLeader = player.hand.Find(x => x.name == leaderName);
+
+                    if (bestLeader != null)
+                    {
+                        break;
+                    }
+                }
+
+                if (bestLeader == null && gm.phase == GameManager.GamePhase.LeaderDraft)
+                {
+                    // In the leaders draft, we cannot disthis hand didn't contain a favoured leader, so just grab the first one in the list.
+                    bestLeader = player.hand[0];
+                }
+
+                if (bestLeader != null)
+                {
+                    Console.WriteLine(player.nickname + "Drafted leader: {0}", bestLeader.name);
+                    gm.buildStructureFromHand(player, bestLeader, false, false, 0, 0);
+
+                }
+                else
+                {
+                    Console.WriteLine(player.nickname + " Action: Discard {0}", player.hand[0].name);
+                    gm.discardCardForThreeCoins(player, player.hand[0]);
+                }
+
+                return;
             }
 
             // Build Guild cards in the 3rd age

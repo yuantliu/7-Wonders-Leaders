@@ -158,6 +158,7 @@ namespace SevenWonders
         public List<Card> hand = new List<Card>(7);
 
         public List<Card> playedStructure = new List<Card>();
+        public List<Card> draftedLeaders = new List<Card>(4);
 
         // After the player builds the 2nd stage of Babylon B's wonder, this will be true.
         public bool babylonPowerEnabled { get; set; }
@@ -352,6 +353,8 @@ namespace SevenWonders
         */
         public void executeActionNow(Effect effect)
         {
+            // I think the only effects that really need to be dealt with NOW are those
+            // that affect game state (e.g. Babylon B, Play a discarded card.)
             if (effect is CommercialDiscountEffect)
             {
                 CommercialDiscountEffect cde = effect as CommercialDiscountEffect;
@@ -388,20 +391,6 @@ namespace SevenWonders
                         break;
                 }
             }
-            else if (
-                effect is ShipOwnersGuildEffect ||
-                effect is ScienceWildEffect || 
-                effect is PlayLastCardInAgeEffect ||
-                effect is CopyGuildFromNeighborEffect ||
-                effect is MilitaryEffect ||
-                effect is ScienceEffect ||
-                effect is FreeLeadersEffect )
-            {
-                // nothing to do; this card will be included in the end of game point total, or
-                // - Military cards are used at the end of each age to resolve conflicts
-                // - Science cards are used at the end of the game.
-                // - Free Leaders effects are captured when the cards are put into play
-            }
             else if (effect is PlayDiscardedCardForFreeEffect || effect is PlayDiscardedCardForFree_1VPEffect || effect is PlayDiscardedCardForFree_2VPEffect)
             {
                 playCardFromDiscardPile = true;
@@ -420,10 +409,29 @@ namespace SevenWonders
             {
                 throw new Exception("This ability needs to be dealt with on the end-of-turn action queue.");
             }
+            // any other effects do not require immediate action, they will be dealt with at the end of the turn,
+            // end of the age, or the end of the game.
+            /*
+            else if (
+                effect is ShipOwnersGuildEffect ||
+                effect is ScienceWildEffect ||
+                effect is PlayLastCardInAgeEffect ||
+                effect is CopyGuildFromNeighborEffect ||
+                effect is MilitaryEffect ||
+                effect is ScienceEffect ||
+                effect is FreeLeadersEffect
+                effect is PlatoEffect)
+            {
+                // nothing to do; this card will be included in the end of game point total, or
+                // - Military cards are used at the end of each age to resolve conflicts
+                // - Science cards are used at the end of the game.
+                // - Free Leaders effects are captured when the cards are put into play
+            }
             else
             {
                 throw new Exception("Unexpected effect type in executeActionNow()");
             }
+            */
         }
 
         //Execute actions

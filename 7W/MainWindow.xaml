@@ -20,27 +20,31 @@
         <Grid Grid.Column="0">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="8*"/>
-                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="130"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblPlayMessage"/>
-                <ListBox Grid.Row="1" Name="handPanel" SelectionChanged="handPanel_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
-                <Grid Grid.Row="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"></RowDefinition>
-                        <RowDefinition Height="1*"></RowDefinition>
-                        <RowDefinition Height="1*"></RowDefinition>
-                        <RowDefinition Height="1*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Button Name="btnBuildStructureForFree" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildStructureForFree_Click" Visibility="Hidden" IsEnabled="False"></Button>
-                    <Button Name="btnBuildStructure" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildStructure_Click"></Button>
-                    <Button Name="btnBuildWonderStage" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildWonderStage_Click"></Button>
-                    <Button Name="btnDiscardStructure" Grid.Row="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnDiscardStructure_Click"></Button>
-                </Grid>
+                <Label Grid.Row="1" Content="Drafted leaders:"/>
+                <WrapPanel Grid.Row="2" x:Name="lbLeaderIcons" Background="Transparent" Margin="2">
+                    <!--
+                    <Image Source="Resources/Images/icons/bilkis.png" Height="30"/>
+                    <Image Source="Resources/Images/icons/plato.png" Height="30"/>
+                    <Image Source="Resources/Images/icons/varro.png" Height="30"/>
+                    <Image Source="Resources/Images/icons/tomyris.png" Height="30"/>
+                    -->
+                </WrapPanel>
+                <StackPanel Grid.Row="3" Orientation="Vertical" VerticalAlignment="Bottom">
+                    <Button Name="btnBuildStructureForFree" Height="30" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildStructureForFree_Click" Visibility="Hidden" IsEnabled="False"></Button>
+                    <Button Name="btnBuildStructure" Height="30" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildStructure_Click"></Button>
+                    <Button Name="btnBuildWonderStage" Height="30" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildWonderStage_Click"></Button>
+                    <Button Name="btnDiscardStructure" Height="30" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnDiscardStructure_Click"></Button>
+                </StackPanel>
+                <ListBox Grid.Row="4" Name="handPanel" SelectionChanged="handPanel_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
             </Grid>
         </Grid>
-
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"></RowDefinition>

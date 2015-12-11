@@ -7,7 +7,7 @@ namespace SevenWonders
 {
     public class GameManager
     {
-        enum GamePhase
+        public enum GamePhase
         {
             // WaitingForPlayers,   // not used presently
             // Start,               // not used presently
@@ -59,7 +59,7 @@ namespace SevenWonders
 
         public bool gameConcluded { get; set; }
 
-        GamePhase phase;
+        public GamePhase phase { get; private set; }
 
         /// <summary>
         /// Shared constructor for GameManager and LeadersGameManager
@@ -540,7 +540,15 @@ namespace SevenWonders
         {
             Player p = player[playerNickname];
 
-            Card c = p.hand.Find(x => x.name == cardName);
+            Card c = null;
+            if (phase == GamePhase.LeaderRecruitment)
+            {
+                c = p.draftedLeaders.Find(x => x.name == cardName);
+            }
+            else
+            {
+                c = p.hand.Find(x => x.name == cardName);
+            }
 
             if (c == null)
                 throw new Exception("Received a message from the client to build a card that wasn't in the player's hand.");
@@ -563,7 +571,20 @@ namespace SevenWonders
         /// </summary>
         public void buildStructureFromHand(Player p, Card c, bool wonderStage, bool freeBuild = false, int nLeftCoins = 0, int nRightCoins = 0)
         {
-            p.hand.Remove(c);
+            if (phase == GamePhase.LeaderRecruitment)
+            {
+                p.draftedLeaders.Remove(c);
+            }
+            else
+            {
+                p.hand.Remove(c);
+            }
+
+            if (phase == GamePhase.LeaderDraft)
+            {
+                p.draftedLeaders.Add(c);
+                return;
+            }
 
             if (wonderStage)
             {
@@ -1045,6 +1066,22 @@ namespace SevenWonders
                     // send the list of cards to the player
                     gmCoordinator.sendMessage(p, strLeaderHand);
                 }
+                else if (phase == GamePhase.LeaderRecruitment)
+                {
+                    string strHand = "SetPlyrH";
+
+                    foreach (Card card in p.draftedLeaders)
+                    {
+                        strHand += string.Format("&{0}={1}", card.name, p.isCardBuildable(card).ToString());
+                    }
+
+                    strHand += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
+
+                    strHand += "&Instructions=Leader Recruitment: choose a leader to play, build a wonder stage with, or discard for 3 coins";
+
+                    //send the Card Panel information to that player
+                    gmCoordinator.sendMessage(p, strHand);
+                }
                 else
                 {
                     gmCoordinator.sendMessage(p, strCardsPlayed);
@@ -1098,9 +1135,6 @@ namespace SevenWonders
                             strHand += "&Instructions=Choose a card from the list below to play, build a wonder stage with, or discard";
                         }
                     }
-
-                    //send the Card Panel information to that player
-                    gmCoordinator.sendMessage(p, strHand);
                 }
 
                 //send the timer signal if the current Age is less than 4 (i.e. game is still going)
@@ -1429,6 +1463,16 @@ namespace SevenWonders
                     //increment the turn
                     currentTurn++;
 
+                    if (phase == GamePhase.LeaderDraft)
+                    {
+                        if (currentTurn == 5)
+                        {
+                            currentAge++;
+                            currentTurn = 1;
+                            phase = GamePhase.LeaderRecruitment;
+                        }
+                    }
+
                     //if the current turn is last turn of Age, do end of Age calculation
                     if (currentTurn == 7 && currentAge > 0)
                     {
@@ -1454,6 +1498,7 @@ namespace SevenWonders
             }
         }
 
+        /*
         /// <summary>
         /// A "virtual" function that is of no use to GameManager, and is meant for Leaders to implement
         /// Added here so that GMCoordinator is able to call the Leader's version of it.
@@ -1480,7 +1525,6 @@ namespace SevenWonders
         {
             throw new NotImplementedException();
         }
-
-        
+        */
     }
 }

@@ -78,6 +78,12 @@ namespace SevenWonders
 
             coordinator.sendToHost(string.Format("BldStrct&Structure={0}", entry.Name));
             coordinator.endTurn();
+
+            if (hand.Items.Count == 0)
+            {
+                // if this was the 4th leader to be drafted, close the dialog box.
+                Close();
+            }
         }
 
         private void RecruitedLeaders_SelectionChanged(object sender, SelectionChangedEventArgs e)

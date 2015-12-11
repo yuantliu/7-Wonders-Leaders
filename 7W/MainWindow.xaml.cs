@@ -174,6 +174,37 @@ namespace SevenWonders
 
             canDiscardStructure = true;
 
+            if (coordinator.expansionSet == ExpansionSet.Leaders)
+            {
+                if (lbLeaderIcons.Children.Count == 0)
+                {
+                    foreach (KeyValuePair<string, string> kvp in cardsAndStates)
+                    {
+                        if (kvp.Key.StartsWith("WonderStage") || kvp.Key == "CanDiscard" || kvp.Key == "Instructions")
+                            continue;
+
+                        Card leaderCard = coordinator.FindCard(kvp.Key);
+
+                        BitmapImage bmpImg = new BitmapImage();
+                        bmpImg.BeginInit();
+                        //Item1 of the id_buildable array of Tuples represents the id image
+                        bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/icons/" + leaderCard.iconName + ".png");
+                        bmpImg.EndInit();
+
+                        Image img = new Image();
+                        img.Source = bmpImg;
+                        img.Height = 30;
+
+                        //ListBoxItem entry = new ListBoxItem();
+                        img.ToolTip = string.Format("{0} ({1} coin(s)): {2}", leaderCard.name, leaderCard.cost.coin, leaderCard.description);
+                        img.Name = leaderCard.name;
+                        img.Margin = new Thickness(2);
+
+                        lbLeaderIcons.Children.Add(img);
+                    }
+                }
+            }
+
             hand.Clear();
 
             foreach (KeyValuePair<string, string> kvp in cardsAndStates)
@@ -458,6 +489,17 @@ namespace SevenWonders
             {
                 coordinator.sendToHost("SendComm&WonderStage=0&Structure=" + hand[handPanel.SelectedIndex].Key);     // the server's response will open the Commerce Dialog box
             }
+
+            // Remove the recruited leader from the recruited leader list.
+            foreach (Object obj in lbLeaderIcons.Children)
+            {
+                Image img = obj as Image;
+                if (img.Name == hand[handPanel.SelectedIndex].Key)
+                {
+                    lbLeaderIcons.Children.Remove(img);
+                    break;
+                }
+            }
         }
 
         private void btnBuildWonderStage_Click(object sender, RoutedEventArgs e)
@@ -477,6 +519,17 @@ namespace SevenWonders
             {
                 coordinator.sendToHost("SendComm&WonderStage=1&Structure=" + hand[handPanel.SelectedIndex].Key);     // the server's response will open the Commerce Dialog box
             }
+
+            // Remove the recruited leader from the recruited leader list.
+            foreach (Object obj in lbLeaderIcons.Children)
+            {
+                Image img = obj as Image;
+                if (img.Name == hand[handPanel.SelectedIndex].Key)
+                {
+                    lbLeaderIcons.Children.Remove(img);
+                    break;
+                }
+            }
         }
 
         private void btnDiscardStructure_Click(object sender, RoutedEventArgs e)
@@ -489,6 +542,17 @@ namespace SevenWonders
             // bilkisButton.IsEnabled = false;
             coordinator.sendToHost(string.Format("Discards&Structure={0}", hand[handPanel.SelectedIndex].Key));
             coordinator.endTurn();
+
+            // Remove the recruited leader from the recruited leader list.
+            foreach (Object obj in lbLeaderIcons.Children)
+            {
+                Image img = obj as Image;
+                if (img.Name == hand[handPanel.SelectedIndex].Key)
+                {
+                    lbLeaderIcons.Children.Remove(img);
+                    break;
+                }
+            }
         }
 
         /// <summary>

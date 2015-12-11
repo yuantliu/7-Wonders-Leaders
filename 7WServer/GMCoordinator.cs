@@ -360,6 +360,7 @@ namespace SevenWonders
                 //Leaders only
 
                 //recruit the leader during age 0
+                /*
                 else if (message[0] == 'l')
                 {
                     //id of the selected Leader card
@@ -367,7 +368,6 @@ namespace SevenWonders
 
                     gameManager.recruitLeader(nickname, id);
                 }
-
                 //someone uses Esteban power
                 else if (message == "Esteban")
                 {
@@ -405,6 +405,7 @@ namespace SevenWonders
                     gameManager.playCourtesansGuild(nickname, message.Substring(1));
                     // gameManager.updatePlayedCardPanel(nickname);
                 }
+                */
                 else
                 {
                     // shouldn't get here.
