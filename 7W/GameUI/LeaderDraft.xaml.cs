@@ -43,6 +43,7 @@ namespace SevenWonders
 
                 Image img = new Image();
                 img.Source = bmpImg;
+                img.Height = hand.Height;
 
                 ListBoxItem entry = new ListBoxItem();
                 entry.Name = cardName;
@@ -56,15 +57,32 @@ namespace SevenWonders
 
         private void hand_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            btnDraft.IsEnabled = true;
+            if (hand.SelectedItem != null)
+            {
+                btnDraft.IsEnabled = true;
+                LeaderDescription.Text = coordinator.FindCard(((ListBoxItem)hand.SelectedItem).Name).description;
+            }
+            else
+            {
+                btnDraft.IsEnabled = false;
+                LeaderDescription.Text = null;
+            }
         }
 
         private void btnDraft_Click(object sender, RoutedEventArgs e)
         {
-            RecruitedLeaders.Items.Add(hand.SelectedItem);
+            ListBoxItem entry = hand.SelectedItem as ListBoxItem;
 
-            coordinator.sendToHost(string.Format("BldStrct&Structure={0}", ((ListBoxItem)hand.SelectedItem).Name));
+            hand.Items.Remove(entry);
+            RecruitedLeaders.Items.Add(entry);
+
+            coordinator.sendToHost(string.Format("BldStrct&Structure={0}", entry.Name));
             coordinator.endTurn();
+        }
+
+        private void RecruitedLeaders_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DraftedLeaderDescription.Text = coordinator.FindCard(((ListBoxItem)RecruitedLeaders.SelectedItem).Name).description;
         }
     }
 }

@@ -16,19 +16,23 @@
             <ColumnDefinition Width="4*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0" Grid.Column="0">
-            <TextBlock Margin="10" TextWrapping="Wrap" FontSize="14">Select a leader to draft</TextBlock>
-            <Button Name="btnDraft" IsEnabled="False" Click="btnDraft_Click">Draft this leader</Button>
-            <TextBlock Name="LeaderDescription"></TextBlock>
+            <TextBlock Margin="10" TextWrapping="Wrap" FontSize="14">Choose a leader to draft</TextBlock>
+            <Button Name="btnDraft" IsEnabled="False" Click="btnDraft_Click">Accept</Button>
+            <TextBlock Name="LeaderDescription" TextWrapping="Wrap" FontSize="14"></TextBlock>
         </StackPanel>
-        <ListBox Grid.Row="0" Grid.Column="1" Name="hand" SelectionChanged="hand_SelectionChanged">
+        <ListBox Grid.Row="0" Grid.Column="1" Name="hand" SelectionChanged="hand_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
-        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" FontSize="14">Drafted leaders</TextBlock>
-        <ListBox Grid.Row="1" Grid.Column="1" Name="RecruitedLeaders">
+        <StackPanel Grid.Row="1">
+            <Label FontSize="14">Drafted leaders</Label>
+            <TextBlock FontSize="14" TextWrapping="Wrap" Name="DraftedLeaderDescription"></TextBlock>
+        </StackPanel>
+
+        <ListBox Grid.Row="1" Grid.Column="1" Name="RecruitedLeaders" SelectionChanged="RecruitedLeaders_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>

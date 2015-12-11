@@ -29,6 +29,12 @@ namespace SevenWonders
 
             Console.WriteLine(strOutput);
 
+            if (player.hand[0].structureType == StructureType.Leader)
+            {
+                string [] favouredLeaders = { 216, 220, 222, 232, 200, 208, 205, 221, 214, 236, 213 };
+                // we're in the leader draft phase.  Find a leader to draft
+            }
+
             // Build Guild cards in the 3rd age
             Card c = player.hand.Find(x => x.structureType == StructureType.Guild && player.isCardBuildable(x) == Buildable.True);
 
