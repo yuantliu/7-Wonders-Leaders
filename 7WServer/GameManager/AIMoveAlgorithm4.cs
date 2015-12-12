@@ -19,17 +19,28 @@ namespace SevenWonders
 
             string strOutput = string.Format("{0} hand: [ ", player.nickname);
 
-            foreach (Card card in player.hand)
+            if (gm.phase == GameManager.GamePhase.LeaderRecruitment)
             {
-                strOutput += card.name;
-                strOutput += " ";
+                foreach (Card card in player.hand)
+                {
+                    strOutput += card.name;
+                    strOutput += " ";
+                }
+            }
+            else
+            {
+                foreach (Card card in player.hand)
+                {
+                    strOutput += card.name;
+                    strOutput += " ";
+                }
             }
 
             strOutput += "]";
 
             Console.WriteLine(strOutput);
 
-            if (player.hand[0].structureType == StructureType.Leader)
+            if (gm.phase == GameManager.GamePhase.LeaderDraft || gm.phase == GameManager.GamePhase.LeaderRecruitment)
             {
                 // int[] favouredLeaders = { 216, 220, 222, 232, 200, 208, 205, 221, 214, 236, 213 };
                 string [] favouredLeaders = { "Leonidas", "Nero", "Pericles", "Tomyris", "Alexander", "Hannibal", "Caesar", "Nefertiti", "Cleopatra", "Zenobia", "Justinian" };
@@ -40,7 +51,14 @@ namespace SevenWonders
                 //start looking for the highest rated card, then go down to the next highest, etc.
                 foreach (string leaderName in favouredLeaders)
                 {
-                    bestLeader = player.hand.Find(x => x.name == leaderName);
+                    if (gm.phase == GameManager.GamePhase.LeaderDraft)
+                    {
+                        bestLeader = player.hand.Find(x => x.name == leaderName);
+                    }
+                    else if (gm.phase == GameManager.GamePhase.LeaderRecruitment)
+                    {
+                        bestLeader = player.draftedLeaders.Find(x => x.name == leaderName);
+                    }
 
                     if (bestLeader != null)
                     {
@@ -50,7 +68,8 @@ namespace SevenWonders
 
                 if (bestLeader == null && gm.phase == GameManager.GamePhase.LeaderDraft)
                 {
-                    // In the leaders draft, we cannot disthis hand didn't contain a favoured leader, so just grab the first one in the list.
+                    // this hand didn't contain a favoured leader, so draft the first one in the list.  We cannot
+                    // discard during the draft.  Leaders may only be discarded for 3 coins during recruitment.
                     bestLeader = player.hand[0];
                 }
 
@@ -58,12 +77,11 @@ namespace SevenWonders
                 {
                     Console.WriteLine(player.nickname + "Drafted leader: {0}", bestLeader.name);
                     gm.buildStructureFromHand(player, bestLeader, false, false, 0, 0);
-
                 }
                 else
                 {
-                    Console.WriteLine(player.nickname + " Action: Discard {0}", player.hand[0].name);
-                    gm.discardCardForThreeCoins(player, player.hand[0]);
+                    Console.WriteLine(player.nickname + " Action: Discard {0}", player.draftedLeaders[0].name);
+                    gm.discardCardForThreeCoins(player, player.draftedLeaders[0]);
                 }
 
                 return;

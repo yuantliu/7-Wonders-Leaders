@@ -101,7 +101,11 @@ namespace SevenWonders
                 while (insertionIndex == -1)
                 {
                     if (nResources == 0)
-                        throw new Exception();  // what happened here?
+                    {
+                        // This resource card has fewer resources than any other card already in the resource
+                        // list, so it goes at the top.
+                        break;
+                    }
                     // no entries found with this number of resources.  Add the card after the last level 
                     // where there are some found.
 

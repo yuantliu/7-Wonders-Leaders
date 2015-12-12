@@ -178,6 +178,12 @@ namespace SevenWonders
         //stored actions for the turn
         private List<Effect> actions = new List<Effect>();
 
+        // Many leaders and cities cards have enduring effects.  The list above is just for effects
+        // on this turn.  Actually, I think it's mostly for money exchanges.  If I don't have an
+        // effect list here, then any time a card is played I may need to a search for not just the 
+        // played cards but also check what board is being used.  I think Rome is the only board that
+        // has a very unusual effect though.
+
         //Player's left and right neighbours
         public Player leftNeighbour { get; set; }
 

@@ -550,6 +550,8 @@ namespace SevenWonders
         public string[] chain = new string[2];
         public Effect effect;
 
+        public bool isLeader { get { return structureType == StructureType.Leader; } }
+
         public Card(string[] createParams)
         {
             expansion = (ExpansionSet)Enum.Parse(typeof(ExpansionSet), createParams[0]);

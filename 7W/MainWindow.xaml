@@ -23,7 +23,7 @@
                     <RowDefinition Height="100"/>
                     <RowDefinition Height="25"/>
                     <RowDefinition Height="34"/>
-                    <RowDefinition Height="130"/>
+                    <RowDefinition Height="150"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblPlayMessage"/>
@@ -37,10 +37,10 @@
                     -->
                 </WrapPanel>
                 <StackPanel Grid.Row="3" Orientation="Vertical" VerticalAlignment="Bottom">
-                    <Button Name="btnBuildStructureForFree" Height="30" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildStructureForFree_Click" Visibility="Hidden" IsEnabled="False"></Button>
-                    <Button Name="btnBuildStructure" Height="30" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildStructure_Click"></Button>
-                    <Button Name="btnBuildWonderStage" Height="30" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildWonderStage_Click"></Button>
-                    <Button Name="btnDiscardStructure" Height="30" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnDiscardStructure_Click"></Button>
+                    <Button Name="btnBuildStructureForFree" Height="35" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildStructureForFree_Click" Visibility="Hidden" IsEnabled="False"></Button>
+                    <Button Name="btnBuildStructure" Height="35" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildStructure_Click"></Button>
+                    <Button Name="btnBuildWonderStage" Height="35" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnBuildWonderStage_Click"></Button>
+                    <Button Name="btnDiscardStructure" Height="35" Margin="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="btnDiscardStructure_Click"></Button>
                 </StackPanel>
                 <ListBox Grid.Row="4" Name="handPanel" SelectionChanged="handPanel_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
             </Grid>

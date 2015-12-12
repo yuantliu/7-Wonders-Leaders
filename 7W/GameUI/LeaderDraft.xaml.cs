@@ -26,6 +26,9 @@ namespace SevenWonders
         {
             InitializeComponent();
 
+            //make graphics better
+            RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.Fant);
+
             coordinator = c;
         }
 

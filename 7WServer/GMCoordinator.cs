@@ -218,7 +218,6 @@ namespace SevenWonders
 
                             //set the number of countdowns finished
                             numOfCountdownsFinished = 0;
-                            
                         }
                     }
                 }

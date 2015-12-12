@@ -78,7 +78,7 @@ namespace SevenWonders
             //set the game to not finished, since we are just starting
             gameConcluded = false;
 
-            // If the Leaders expansion pack is enabled, start with turn 0.
+            // If the Leaders expansion pack is enabled, start with age 0 (leaders draft)
             currentAge = gmCoordinator.leadersEnabled ? 0 : 1;
             currentTurn = 1;
 
@@ -434,7 +434,9 @@ namespace SevenWonders
         {
             //shuffle the deck
             Deck deck = deckList.Find(x => x.age == currentAge);
-            deck.shuffle();
+
+            if (currentAge != 0)
+                deck.shuffle();
 
             //if the current deck is 0, then that means we are dealing with the leaders deck
             int numCardsToDeal;
@@ -1135,6 +1137,8 @@ namespace SevenWonders
                             strHand += "&Instructions=Choose a card from the list below to play, build a wonder stage with, or discard";
                         }
                     }
+
+                    gmCoordinator.sendMessage(p, strHand);
                 }
 
                 //send the timer signal if the current Age is less than 4 (i.e. game is still going)
@@ -1457,40 +1461,53 @@ namespace SevenWonders
                     // gettingBabylonExtraCard = false;
                     // playingCardFromDiscardPile = false;
 
-                    //pass the cards to the neighbour
-                    passRemainingCardsToNeighbour();
-
-                    //increment the turn
-                    currentTurn++;
-
-                    if (phase == GamePhase.LeaderDraft)
+                    switch (phase)
                     {
-                        if (currentTurn == 5)
-                        {
-                            currentAge++;
-                            currentTurn = 1;
-                            phase = GamePhase.LeaderRecruitment;
-                        }
-                    }
+                        case GamePhase.LeaderDraft:
+                            passRemainingCardsToNeighbour();
 
-                    //if the current turn is last turn of Age, do end of Age calculation
-                    if (currentTurn == 7 && currentAge > 0)
-                    {
-                        //perform end of Age actions
-                        endOfAgeActions();
-                        currentAge++;
+                            currentTurn++;
 
-                        //if game hasn't ended, then deal deck, reset turn
-                        if (currentAge < 4)
-                        {
-                            dealDeck(currentAge);
-                            currentTurn = 1;
-                        }
-                        //else do end of session actions
-                        else
-                        {
-                            gameConcluded = true;
-                        }
+                            if (currentTurn == 5)
+                            {
+                                phase = GamePhase.LeaderRecruitment;
+                                currentAge = 1;
+                                currentTurn = 1;
+                                dealDeck(currentAge);
+                            }
+                            break;
+
+                        case GamePhase.LeaderRecruitment:
+                            phase = GamePhase.Playing;
+                            break;
+
+                        case GamePhase.Playing:
+                            passRemainingCardsToNeighbour();
+
+                            currentTurn++;
+
+                            //if the current turn is last turn of Age, do end of Age calculation
+                            if (currentTurn == 7)
+                            {
+                                //perform end of Age actions
+                                endOfAgeActions();
+                                currentAge++;
+
+                                //if game hasn't ended, then deal deck, reset turn
+                                if (currentAge < 4)
+                                {
+                                    dealDeck(currentAge);
+                                    if (gmCoordinator.leadersEnabled)
+                                        phase = GamePhase.LeaderRecruitment;
+                                    currentTurn = 1;
+                                }
+                                //else do end of session actions
+                                else
+                                {
+                                    gameConcluded = true;
+                                }
+                            }
+                            break;
                     }
                 }
 

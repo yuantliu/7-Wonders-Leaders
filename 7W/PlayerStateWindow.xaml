@@ -34,6 +34,11 @@
                                 <SolidColorBrush Color="Brown" Opacity="0.5"/>
                             </StackPanel.Background>
                         </StackPanel>
+                        <StackPanel x:Name="LeaderStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
+                            <StackPanel.Background>
+                                <SolidColorBrush Color="White" Opacity="0.5"/>
+                            </StackPanel.Background>
+                        </StackPanel>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
                         <StackPanel x:Name="GuildStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
