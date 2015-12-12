@@ -635,27 +635,20 @@ namespace SevenWonders
             //check if the Card costs money and add the coins paid to the neighbors for their resources
             int costInCoins = c.cost.coin + nLeftCoins + nRightCoins;
 
-            /*
-            for (int i = 0; i < c.cost.Length; i++)
-            {
-                if (c.cost[i] == '$') costInCoins++;
-            }
-            */
-
             if (c.structureType == StructureType.Leader)
             {
-                if (p.playerBoard.name == "Roma (A)" || p.playedStructure.Exists(x => x.name == "Macenas"))
+                if (p.playerBoard.name == "Roma (A)" || p.playedStructure.Exists(x => x.name == "Maecenas"))
                 {
                     costInCoins = 0;
                 }
-
-                if (p.playerBoard.name == "Roma (B)")
+                else if (p.playerBoard.name == "Roma (B)")
                 {
                     costInCoins = Math.Max(0, costInCoins - 2);
                 }
-
-                if (p.rightNeighbour.playerBoard.name == "Roma (B)" || p.leftNeighbour.playerBoard.name == "Roma (B)")
+                else if (p.leftNeighbour.playerBoard.name == "Roma (B)" || p.rightNeighbour.playerBoard.name == "Roma (B)")
+                {
                     costInCoins -= 1;
+                }
             }
 
 #if FALSE
@@ -1080,6 +1073,9 @@ namespace SevenWonders
                 }
                 else if (phase == GamePhase.LeaderRecruitment)
                 {
+                    gmCoordinator.sendMessage(p, strCardsPlayed);
+                    gmCoordinator.sendMessage(p, strUpdateCoinsMessage);
+
                     string strHand = "SetPlyrH";
 
                     foreach (Card card in p.draftedLeaders)

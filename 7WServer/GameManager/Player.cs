@@ -1009,7 +1009,25 @@ namespace SevenWonders
             }
             */
 
-            if (coin < cost.coin)
+            int coinCost = cost.coin;
+
+            if (card.structureType == StructureType.Leader)
+            {
+                if (playerBoard.name == "Roma (A)" || playedStructure.Exists(x => x.name == "Maecenas"))
+                {
+                    coinCost = 0;
+                }
+                else if (playerBoard.name == "Roma (B)")
+                {
+                    coinCost = Math.Max(0, coinCost - 2);
+                }
+                else if (leftNeighbour.playerBoard.name == "Roma (B)" || rightNeighbour.playerBoard.name == "Roma (B)")
+                {
+                    coinCost -= 1;
+                }
+            }
+
+            if (coin < coinCost)
             {
                 // if the card has a coin cost and we don't have enough money, the card is not buildable.
                 return Buildable.InsufficientCoins;
@@ -1023,8 +1041,6 @@ namespace SevenWonders
             if (isCostAffordableWithNeighbours(cost) == Buildable.CommerceRequired)
                 return Buildable.CommerceRequired;
 
-            //absolutely all options have been exhausted
-            //finally return 'F'
             return Buildable.InsufficientResources;
         }
 
