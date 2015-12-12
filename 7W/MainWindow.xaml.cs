@@ -57,7 +57,7 @@ namespace SevenWonders
         public bool playerPlayedHisTurn = false;
         public bool btnBuildStructureForFree_isEnabled = false;
 
-        List<KeyValuePair<string, Buildable>> hand = new List<KeyValuePair<string, Buildable>>();
+        List<KeyValuePair<Card, Buildable>> hand = new List<KeyValuePair<Card, Buildable>>();
 
         Buildable stageBuildable;
 
@@ -227,9 +227,9 @@ namespace SevenWonders
                     default:
                         {
                             // Any other parameters are card names
-                            KeyValuePair<string, Buildable> cardStatus = new KeyValuePair<string, Buildable>(kvp.Key, (Buildable)Enum.Parse(typeof(Buildable), kvp.Value));
+                            KeyValuePair<Card, Buildable> cardStatus = new KeyValuePair<Card, Buildable>(coordinator.FindCard(kvp.Key), (Buildable)Enum.Parse(typeof(Buildable), kvp.Value));
 
-                            if (cardStatus.Key.StartsWith("WonderStage"))
+                            if (cardStatus.Key.structureType == StructureType.WonderStage)
                                 stageBuildable = cardStatus.Value;
                             else
                                 hand.Add(cardStatus);
@@ -240,7 +240,7 @@ namespace SevenWonders
 
             handPanel.Items.Clear();
 
-            foreach (KeyValuePair<string, Buildable> kvp in hand)
+            foreach (KeyValuePair<Card, Buildable> kvp in hand)
             {
                 BitmapImage bmpImg = new BitmapImage();
                 bmpImg.BeginInit();
@@ -338,7 +338,7 @@ namespace SevenWonders
 
             lblDescription.Content = new TextBlock()
             {
-                Text = coordinator.FindCard(hand[handPanel.SelectedIndex].Key).description,
+                Text = hand[handPanel.SelectedIndex].Key.description,
                 TextAlignment = TextAlignment.Center,
                 TextWrapping = TextWrapping.Wrap
             };
@@ -494,7 +494,7 @@ namespace SevenWonders
             foreach (Object obj in lbLeaderIcons.Children)
             {
                 Image img = obj as Image;
-                if (img.Name == hand[handPanel.SelectedIndex].Key)
+                if (img.Name == hand[handPanel.SelectedIndex].Key.name)
                 {
                     lbLeaderIcons.Children.Remove(img);
                     break;
@@ -524,7 +524,7 @@ namespace SevenWonders
             foreach (Object obj in lbLeaderIcons.Children)
             {
                 Image img = obj as Image;
-                if (img.Name == hand[handPanel.SelectedIndex].Key)
+                if (img.Name == hand[handPanel.SelectedIndex].Key.name)
                 {
                     lbLeaderIcons.Children.Remove(img);
                     break;
@@ -547,7 +547,7 @@ namespace SevenWonders
             foreach (Object obj in lbLeaderIcons.Children)
             {
                 Image img = obj as Image;
-                if (img.Name == hand[handPanel.SelectedIndex].Key)
+                if (img.Name == hand[handPanel.SelectedIndex].Key.name)
                 {
                     lbLeaderIcons.Children.Remove(img);
                     break;
