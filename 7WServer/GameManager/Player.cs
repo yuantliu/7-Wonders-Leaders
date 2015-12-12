@@ -550,14 +550,12 @@ namespace SevenWonders
                     sum += rightNeighbour.lossToken * cpe.victoryPointsAtEndOfGameMultiplier;
                 }
 
-                /*
-                // Added for cities.
-                if (cpe.classConsidered == StructureType.MilitaryVictories)
+                // Added for Leaders (Alexander)
+                if (cpe.classConsidered == StructureType.ConflictToken)
                 {
                     sum += (leftNeighbour.conflictTokenOne + leftNeighbour.conflictTokenTwo + leftNeighbour.conflictTokenThree) * cpe.victoryPointsAtEndOfGameMultiplier;
                     sum += (rightNeighbour.conflictTokenOne + rightNeighbour.conflictTokenTwo + rightNeighbour.conflictTokenThree) * cpe.victoryPointsAtEndOfGameMultiplier;
                 }
-                */
 
                 /*
                 if (cpe.classConsidered == StructureType.WonderStage)
@@ -577,13 +575,11 @@ namespace SevenWonders
                     sum += lossToken * cpe.victoryPointsAtEndOfGameMultiplier;
                 }
 
-                /*
-                // Added for cities (Mourner's Guild)
-                if (cpe.classConsidered == StructureType.MilitaryVictories)
+                // Added for Leaders (Alexander)
+                if (cpe.classConsidered == StructureType.ConflictToken)
                 {
                     sum += (conflictTokenOne + conflictTokenTwo + conflictTokenThree) * cpe.victoryPointsAtEndOfGameMultiplier;
                 }
-                */
 
                 /*
                 if (cpe.classConsidered == StructureType.WonderStage)
@@ -766,7 +762,7 @@ namespace SevenWonders
             // Console.WriteLine("  Guilds constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Guild))
             {
-                Console.WriteLine("    {0}", c.name);
+                // Console.WriteLine("    {0}", c.name);
 
                 if (c.effect is CoinsAndPointsEffect)
                 {
@@ -777,6 +773,14 @@ namespace SevenWonders
                 {
                     // Shipowners guild counts 1 point for each Brown, Grey, and Purple card in the players' city.
                     score.guilds += playedStructure.Where(x => x.structureType == StructureType.RawMaterial || x.structureType == StructureType.Goods || x.structureType == StructureType.Guild).Count();
+                }
+            }
+
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Leader))
+            {
+                if (c.effect is CoinsAndPointsEffect)
+                {
+                    score.leaders += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
                 }
             }
 

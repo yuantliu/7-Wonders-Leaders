@@ -642,14 +642,23 @@ namespace SevenWonders
             }
             */
 
-            //if player has card 217: free leaders, then leaders are free. add the appropriate amount of coins first to offset the deduction
-            //OR
-            //if player has Rome A, then leaders are free. (board has D resource (big discount))
-            if ((p.playedStructure.Exists(x => x.name == "Maecenas") == true /* || p.playerBoard.freeResource == 'D'*/) && c.structureType == StructureType.Leader)
+            if (c.structureType == StructureType.Leader)
             {
-                costInCoins -= c.cost.coin;
+                if (p.playerBoard.name == "Roma (A)" || p.playedStructure.Exists(x => x.name == "Macenas"))
+                {
+                    costInCoins = 0;
+                }
+
+                if (p.playerBoard.name == "Roma (B)")
+                {
+                    costInCoins = Math.Max(0, costInCoins - 2);
+                }
+
+                if (p.rightNeighbour.playerBoard.name == "Roma (B)" || p.leftNeighbour.playerBoard.name == "Roma (B)")
+                    costInCoins -= 1;
             }
 
+#if FALSE
             //if player has Rome B, then playing leaders will refund a 2 coin discount
             if (/*p.playerBoard.freeResource == 'd' && */c.structureType == StructureType.Leader)
             {
@@ -668,6 +677,7 @@ namespace SevenWonders
                 }
                 p.storeAction(new CoinEffect(coins));
             }
+#endif
 
             /*
             //if player's neighbour has Rome B, then refund a 1 coin discount instead
