@@ -417,7 +417,7 @@ namespace SevenWonders
             {
                 throw new Exception("This ability needs to be dealt with on the end-of-turn action queue.");
             }
-            else if (effect is DraftFourNewLeaders_5VPEffect)
+            else if (effect is DraftFourNewLeaders_5CoinsEffect)
             {
                 // Roma (B) stage 1: draw 4 more leaders from the pile of unused leaders
                 // to add to the players list of recruitable leaders
@@ -435,8 +435,10 @@ namespace SevenWonders
                 }
 
                 gm.gmCoordinator.sendMessage(this, strMsg);
+
+                storeAction(new CoinEffect(5));
             }
-            else if (effect is PlayALeaderForFreeEffect)
+            else if (effect is PlayALeader_3VPEffect)
             {
                 draftingExtraLeader = true;
             }
@@ -781,6 +783,11 @@ namespace SevenWonders
                 else if (c.effect is Rhodos_B_Stage2Effect)
                 {
                     score.wonders += 4;
+                }
+                else if (c.effect is PlayALeader_3VPEffect)
+                {
+                    // Roma (B) stages 2 & 3 are worth 3 points each.
+                    score.wonders += 3;
                 }
             }
 

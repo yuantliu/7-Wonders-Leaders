@@ -223,8 +223,8 @@ namespace SevenWonders
 
             // From the Leaders expansion pack
             FreeLeaders,                    // Roma (A) board effect, Maecenas effect
-            DraftFourNewLeaders_5VP,
-            PlayALeaderForFree,
+            DraftFourNewLeaders_5Coins,
+            PlayALeader_3VP,
             StructureDiscount,
             Aristotle,
             Bilkis,
@@ -420,11 +420,11 @@ namespace SevenWonders
         // Roma (B) board effect (leaders cost is reduced by 2 for the player, and 1 for the players' neighbors.
     }
 
-    public class DraftFourNewLeaders_5VPEffect : Effect
+    public class DraftFourNewLeaders_5CoinsEffect : Effect
     {
     }
 
-    public class PlayALeaderForFreeEffect : Effect
+    public class PlayALeader_3VPEffect : Effect
     {
     }
 
@@ -681,12 +681,12 @@ namespace SevenWonders
                     effect = new FreeLeadersEffect();
                     break;
 
-                case Effect.Type.DraftFourNewLeaders_5VP:
-                    effect = new DraftFourNewLeaders_5VPEffect();
+                case Effect.Type.DraftFourNewLeaders_5Coins:
+                    effect = new DraftFourNewLeaders_5CoinsEffect();
                     break;
 
-                case Effect.Type.PlayALeaderForFree:
-                    effect = new PlayALeaderForFreeEffect();
+                case Effect.Type.PlayALeader_3VP:
+                    effect = new PlayALeader_3VPEffect();
                     break;
 
                 case Effect.Type.StructureDiscount:
