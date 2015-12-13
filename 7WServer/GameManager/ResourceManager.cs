@@ -255,7 +255,7 @@ namespace SevenWonders
          * Given a resource DAG graph, determine if a cost is affordable
          * @return
          */
-        public bool canAfford(Cost cost)
+        public bool canAfford(Cost cost, int nWildResources)
         {
             foreach (ResourceEffect e in resources)
             {
@@ -271,6 +271,13 @@ namespace SevenWonders
                         return true;
                 }
             }
+
+            // If the number of wild resources (i.e. Bilkis/Archimedes/Leonidas/Imhotep/Hammurabi)
+            // is greater than or equal to the remaining cost after all other resource options have
+            // been spent, the structure is afforable.  I'll remove Bilkis from the list of wilds
+            // if the player doesn't have a coin.
+            if (nWildResources >= cost.Total())
+                return true;
 
             return false;
         }

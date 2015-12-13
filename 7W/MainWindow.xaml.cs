@@ -488,14 +488,17 @@ namespace SevenWonders
                 coordinator.sendToHost("SendComm&WonderStage=0&Structure=" + hand[handPanel.SelectedIndex].Key.name);     // the server's response will open the Commerce Dialog box
             }
 
-            // Remove the recruited leader from the recruited leader list.
-            foreach (Object obj in lbLeaderIcons.Children)
+            if (hand[handPanel.SelectedIndex].Key.structureType == StructureType.Leader)
             {
-                Image img = obj as Image;
-                if (img.Name == hand[handPanel.SelectedIndex].Key.name)
+                // Remove the recruited leader from the recruited leader list.
+                foreach (Object obj in lbLeaderIcons.Children)
                 {
-                    lbLeaderIcons.Children.Remove(img);
-                    break;
+                    Image img = obj as Image;
+                    if (img.Name == hand[handPanel.SelectedIndex].Key.name)
+                    {
+                        lbLeaderIcons.Children.Remove(img);
+                        break;
+                    }
                 }
             }
         }
@@ -518,14 +521,17 @@ namespace SevenWonders
                 coordinator.sendToHost("SendComm&WonderStage=1&Structure=" + hand[handPanel.SelectedIndex].Key.name);     // the server's response will open the Commerce Dialog box
             }
 
-            // Remove the recruited leader from the recruited leader list.
-            foreach (Object obj in lbLeaderIcons.Children)
+            if (hand[handPanel.SelectedIndex].Key.structureType == StructureType.Leader)
             {
-                Image img = obj as Image;
-                if (img.Name == hand[handPanel.SelectedIndex].Key.name)
+                // Remove the recruited leader from the recruited leader list.
+                foreach (Object obj in lbLeaderIcons.Children)
                 {
-                    lbLeaderIcons.Children.Remove(img);
-                    break;
+                    Image img = obj as Image;
+                    if (img.Name == hand[handPanel.SelectedIndex].Key.name)
+                    {
+                        lbLeaderIcons.Children.Remove(img);
+                        break;
+                    }
                 }
             }
         }
@@ -541,14 +547,17 @@ namespace SevenWonders
             coordinator.sendToHost(string.Format("Discards&Structure={0}", hand[handPanel.SelectedIndex].Key.name));
             coordinator.endTurn();
 
-            // Remove the recruited leader from the recruited leader list.
-            foreach (Object obj in lbLeaderIcons.Children)
+            if (hand[handPanel.SelectedIndex].Key.structureType == StructureType.Leader)
             {
-                Image img = obj as Image;
-                if (img.Name == hand[handPanel.SelectedIndex].Key.name)
+                // Remove the recruited leader from the recruited leader list.
+                foreach (Object obj in lbLeaderIcons.Children)
                 {
-                    lbLeaderIcons.Children.Remove(img);
-                    break;
+                    Image img = obj as Image;
+                    if (img.Name == hand[handPanel.SelectedIndex].Key.name)
+                    {
+                        lbLeaderIcons.Children.Remove(img);
+                        break;
+                    }
                 }
             }
         }

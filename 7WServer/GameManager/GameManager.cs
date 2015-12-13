@@ -1365,7 +1365,7 @@ namespace SevenWonders
         }
         */
 
-        string BuildResourceString(string who, Player plyr, bool isSelf)
+        string BuildResourceString(string who, Player plyr, bool isSelf, bool hasDiscountEffect, bool hasBilkis)
         {
             string strRet = string.Format("&{0}Resources=", who);
 
@@ -1373,9 +1373,21 @@ namespace SevenWonders
             {
                 ResourceEffect se = e as ResourceEffect;
 
-                strRet += se.resourceTypes;
+                strRet += se.resourceTypes + ",";
+            }
 
-                strRet += ",";
+            if (hasDiscountEffect)
+            {
+                // add a wild card effect, which has a choice of all 7 resources.  This is free
+                // to use, but can only be used by that type of structure (Wonder/Civilian/Military/Science)
+                strRet += "WSBOCGP,";
+            }
+
+            if (hasBilkis)
+            {
+                // add a wild card effect for Bilkis, which has a choice of all 7 resources, but costs
+                // 1 coin to use.
+                strRet += "WSBOCGP,";
             }
 
             // remove the trailing comma, if necessary
@@ -1414,9 +1426,19 @@ namespace SevenWonders
 
             strCommerce += string.Format("&Structure={0}&WonderStage={1}", strctureName, wonderStage);
 
-            strCommerce += BuildResourceString("Player", p, true);
-            strCommerce += BuildResourceString("Left", p.leftNeighbour, false);
-            strCommerce += BuildResourceString("Right", p.rightNeighbour, false);
+            bool hasDisountEffect = p.playedStructure.Exists(x => x.effect is StructureDiscountEffect && ((StructureDiscountEffect)x.effect).discountedStructureType == fullCardList.Find(y => y.name == strctureName).structureType);
+
+            Card bilkis = p.playedStructure.Find(x => x.name == "Bilkis");
+            if (bilkis != null)
+            {
+                // Tell the commmerce window that the last entry in the resource list for the player is for Bilkis
+                // and isn't due to another leader effect.
+                strCommerce += string.Format("&Bilkis=");
+            }
+
+            strCommerce += BuildResourceString("Player", p, true, hasDisountEffect, bilkis != null);
+            strCommerce += BuildResourceString("Left", p.leftNeighbour, false, false, false);
+            strCommerce += BuildResourceString("Right", p.rightNeighbour, false, false, false);
 
             gmCoordinator.sendMessage(p, strCommerce);
         }

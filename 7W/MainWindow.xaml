@@ -20,10 +20,10 @@
         <Grid Grid.Column="0">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="100"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="54"/>
-                    <RowDefinition Height="150"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblPlayMessage"/>

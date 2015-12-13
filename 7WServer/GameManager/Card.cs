@@ -430,6 +430,12 @@ namespace SevenWonders
 
     public class StructureDiscountEffect : Effect
     {
+        public StructureType discountedStructureType;
+
+        public StructureDiscountEffect(StructureType s)
+        {
+            discountedStructureType = s;
+        }
     }
 
     public class AristotleEffect : Effect
@@ -690,7 +696,7 @@ namespace SevenWonders
                     break;
 
                 case Effect.Type.StructureDiscount:
-                    effect = new StructureDiscountEffect();
+                    effect = new StructureDiscountEffect((StructureType)Enum.Parse(typeof(StructureType), createParams[31]));
                     break;
 
                 case Effect.Type.Aristotle:

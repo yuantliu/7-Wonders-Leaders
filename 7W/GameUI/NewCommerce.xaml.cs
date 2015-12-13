@@ -28,15 +28,11 @@ namespace SevenWonders
         //unfortunately, cant make this value constant.
         int PLAYER_COIN;
 
-        //player's coordinator
         Coordinator coordinator;
 
-        //immutable original string cost
-        // string cardCost;
         Cost cardCost;
 
-        //immutable core card/player information
-        bool hasDiscount;   // i.e. from a leader such as Leonidas or Archimedes
+        bool hasBilkis;
         bool leftRawMarket, rightRawMarket, marketplace;
         string leftName, middleName, rightName;
         string structureName;
@@ -80,9 +76,6 @@ namespace SevenWonders
             InitializeComponent();
 
             this.coordinator = coordinator;
-
-            // Leader discount for the type of card being constructed
-            hasDiscount = false;
 
             leftName = "Left Neighbor";
             middleName = "Player";
@@ -185,15 +178,7 @@ namespace SevenWonders
             leftManuImage.Source = rightManuImage.Source = new BitmapImage(
                 new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/" + (marketplace ? "1m.png" : "2m.png")));
 
-            //set the discount label
-            if (hasDiscount == true)
-            {
-                hasDiscountLabel.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                hasDiscountLabel.Visibility = Visibility.Hidden;
-            }
+            hasBilkis = qscoll["Bilkis"] != null;
 
             //generate mutable elements (DAG buttons, Price representations, currentResources, etc.)
             reset();
@@ -220,10 +205,10 @@ namespace SevenWonders
         /// <summary>
         /// Use the 3 DAGs in the object to generate the necessary Buttons in the UI and add EventHandlers for these newly added Buttons
         /// </summary>
-        private void generateOneDAG(StackPanel p, out Button[,] b, ResourceManager dag, string buttonNamePrefix, bool isDagOwnedByPlayer)
+        private void generateOneDAG(StackPanel pnl, out Button[,] b, ResourceManager dag, string buttonNamePrefix, bool isDagOwnedByPlayer)
         {
             //reset all DAG panels
-            p.Children.Clear();
+            pnl.Children.Clear();
 
             List<ResourceEffect> dagGraphSimple = dag.getResourceList(isDagOwnedByPlayer).ToList();
 
@@ -233,8 +218,6 @@ namespace SevenWonders
 
             //generate the needed amount of buttons
             b = new Button[dagGraphSimple.Count, 7];
-
-
 
             //look at each level of the DAG
             for (int i = 0 ; i < dagGraphSimple.Count; i++)
@@ -270,8 +253,17 @@ namespace SevenWonders
                     // levelPanels[i] has b[i,j] added
                 } // levelPanels[i] has added all the buttons appropriate for that level and its event handlers
 
+                if (hasBilkis && i == dagGraphSimple.Count-1)
+                {
+                    // Insert a label telling the player the Wild resource on
+                    // the next line will cost 1 coin to use
+                    Label bilkisLabel = new Label();
+                    bilkisLabel.Content = "Bilkis (costs 1 coin)";
+                    pnl.Children.Add(bilkisLabel);
+                }
+
                 //add the stack to the parent panel.
-                p.Children.Add(levelPanels[i]);
+                pnl.Children.Add(levelPanels[i]);
             }
         }
 
@@ -317,7 +309,7 @@ namespace SevenWonders
             //If the newResource has the same distance as previous, then we have not gotten closer, and therefore we have just added an unnecessar resource
             //pop out an error to show this.
 
-            if ((resourcesNeeded == 1 && hasDiscount == true) || (resourcesNeeded == 0 && hasDiscount == false))
+            if (resourcesNeeded == 0)
             {
                 MessageBox.Show("You have for all necessary resources already");
                 return;
@@ -526,7 +518,7 @@ namespace SevenWonders
         /// <param name="e"></param>
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            if ((resourcesNeeded == 0 && hasDiscount == false) || (resourcesNeeded == 1 && hasDiscount == true))
+            if (resourcesNeeded == 0)
             {
                 string strResponse = string.Format("BldStrct&WonderStage={0}&Structure={1}&leftCoins={2}&rightCoins={3}", isStage ? "1" : "0", structureName, leftcoin, rightcoin);
                 coordinator.sendToHost(strResponse);

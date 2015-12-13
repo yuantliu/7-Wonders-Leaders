@@ -1028,6 +1028,14 @@ namespace SevenWonders
                 return Buildable.True;
             }
 
+            int nWildResources = 0;
+            if (playedStructure.Exists(x => x.effect is StructureDiscountEffect && ((StructureDiscountEffect)x.effect).discountedStructureType == card.structureType))
+            {
+                // A leader card has been played that matches the structure type being built, so we can add a wild resource
+                // e.g. We're building a science structure while Archimedes is in play for this player, or a military structure
+                // when Leonidas is in play.
+                ++nWildResources;
+            }
             /*
             //202, 207, 216: Discount on green, blue and red respectively
             //If a discount applies, determine if it is possible to play the card
@@ -1066,11 +1074,11 @@ namespace SevenWonders
             }
 
             //can player afford cost with DAG resources?
-            if (isCostAffordableWithDAG(cost) == Buildable.True)
+            if (isCostAffordableWithDAG(cost, nWildResources) == Buildable.True)
                 return Buildable.True;
 
             //can player afford cost by conducting commerce?
-            if (isCostAffordableWithNeighbours(cost) == Buildable.CommerceRequired)
+            if (isCostAffordableWithNeighbours(cost, nWildResources) == Buildable.CommerceRequired)
                 return Buildable.CommerceRequired;
 
             return Buildable.InsufficientResources;
@@ -1083,7 +1091,7 @@ namespace SevenWonders
         /// <param name="card"></param>
         /// <param name="cost"></param>
         /// <returns></returns>
-        private Buildable isCostAffordableWithDAG(Cost cost)
+        private Buildable isCostAffordableWithDAG(Cost cost, int nWildResources)
         {
             // the passed-in cost structure must not be modified.  C# doesn't support const correctness?!?
             // WTF!
@@ -1101,7 +1109,7 @@ namespace SevenWonders
             }
 
             //can I afford the cost with resources in my DAG?
-            if (dag.canAfford(cost)) return Buildable.True;
+            if (dag.canAfford(cost, nWildResources)) return Buildable.True;
 
             return Buildable.InsufficientResources;
         }
@@ -1111,7 +1119,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="card"></param>
         /// <returns></returns>
-        private Buildable isCostAffordableWithNeighbours(Cost cost)
+        private Buildable isCostAffordableWithNeighbours(Cost cost, int nWildResources)
         {
             cost = cost.Copy();
 
@@ -1121,7 +1129,7 @@ namespace SevenWonders
             ResourceManager combinedDAG = ResourceManager.addThreeDAGs(leftNeighbour.dag, dag, rightNeighbour.dag);
 
             //determine if the combined DAG can afford the cost
-            if (combinedDAG.canAfford(cost)) return Buildable.CommerceRequired;
+            if (combinedDAG.canAfford(cost, nWildResources)) return Buildable.CommerceRequired;
 
             return Buildable.InsufficientResources;
         }
@@ -1149,10 +1157,10 @@ namespace SevenWonders
             }
 
             //can player afford cost with DAG resources
-            if (isCostAffordableWithDAG(cost) == Buildable.True) return Buildable.True;
+            if (isCostAffordableWithDAG(cost, 0) == Buildable.True) return Buildable.True;
 
             //can player afford cost by conducting commerce?
-            if (isCostAffordableWithNeighbours(cost) == Buildable.CommerceRequired)
+            if (isCostAffordableWithNeighbours(cost, 0) == Buildable.CommerceRequired)
                 return Buildable.CommerceRequired;
 
             //absolutely all options exhausted. return F
