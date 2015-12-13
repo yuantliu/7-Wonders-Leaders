@@ -16,9 +16,14 @@ namespace SevenWonders
             Playing,                // normal turn
             Babylon,                // Waiting for Babylon to play its last card in the age.
             Halikarnassos,          // Waiting for Halikarnassos to play from the discard pile.
+            RomaB,                  // Waiting  for Roma (B) to play a leader after building 2nd or 3rd wonder stage
             Solomon,                // Waiting for Solomon to play from the discard pile (can coincide with Halikarnassos if Rome B builds its 2nd or 3rd wonder stage and the player plays Solomon)
             End,
         };
+
+        // I have a feeling that we really only need 3 phases: LeaderDraft (drawing 4 leaders before the game), Leader Recruitment, and Playing.
+        // Playing needs I think just two substates: Regular turn or Extra turn.  Extra turn would be any turn where the game has to wait for one
+        // player to choose a card/action (i.e. Babylon B, Halikarnassos, Solomon, Roma B, China)
 
         public int numOfPlayers { get; set; }
         public int numOfAI { get; set; }
@@ -515,8 +520,8 @@ namespace SevenWonders
         protected Board popRandomBoard()
         {
             // int index = (new Random()).Next(0, board.Count);
-            int index = 14;     // Roma (A)
-            // int index = 15;     // Roma (B)
+            // int index = 14;     // Roma (A)
+            int index = 15;     // Roma (B)
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
@@ -543,7 +548,7 @@ namespace SevenWonders
             Player p = player[playerNickname];
 
             Card c = null;
-            if (phase == GamePhase.LeaderRecruitment)
+            if (phase == GamePhase.LeaderRecruitment || phase == GamePhase.RomaB)
             {
                 c = p.draftedLeaders.Find(x => x.name == cardName);
             }
@@ -573,7 +578,7 @@ namespace SevenWonders
         /// </summary>
         public void buildStructureFromHand(Player p, Card c, bool wonderStage, bool freeBuild = false, int nLeftCoins = 0, int nRightCoins = 0)
         {
-            if (phase == GamePhase.LeaderRecruitment)
+            if (phase == GamePhase.LeaderRecruitment || phase == GamePhase.RomaB)
             {
                 p.draftedLeaders.Remove(c);
             }
@@ -980,7 +985,7 @@ namespace SevenWonders
         /// </summary>
         public void executeActionsAtEndOfTurn()
         {
-            if (!gettingBabylonExtraCard && !playingCardFromDiscardPile)
+            if (!gettingBabylonExtraCard && !playingCardFromDiscardPile && phase != GamePhase.RomaB)
             {
                 //make AI moves
                 executeAIActions();
@@ -1071,8 +1076,16 @@ namespace SevenWonders
                     // send the list of cards to the player
                     gmCoordinator.sendMessage(p, strLeaderHand);
                 }
-                else if (phase == GamePhase.LeaderRecruitment)
+                else if (phase == GamePhase.LeaderRecruitment || (phase == GamePhase.RomaB && p.draftingExtraLeader))
                 {
+                    string strLeaderIcons = "LeadrIcn";
+
+                    foreach (Card c in p.draftedLeaders)
+                    {
+                        strLeaderIcons += string.Format("&{0}=", c.name);
+                    }
+
+                    gmCoordinator.sendMessage(p, strLeaderIcons);
                     gmCoordinator.sendMessage(p, strCardsPlayed);
                     gmCoordinator.sendMessage(p, strUpdateCoinsMessage);
 
@@ -1087,7 +1100,6 @@ namespace SevenWonders
 
                     strHand += "&Instructions=Leader Recruitment: choose a leader to play, build a wonder stage with, or discard for 3 coins";
 
-                    //send the Card Panel information to that player
                     gmCoordinator.sendMessage(p, strHand);
                 }
                 else
@@ -1422,7 +1434,7 @@ namespace SevenWonders
 
             numOfPlayersThatHaveTakenTheirTurn++;
 
-            if ((numOfPlayersThatHaveTakenTheirTurn == numOfPlayers) || gettingBabylonExtraCard || playingCardFromDiscardPile)
+            if ((numOfPlayersThatHaveTakenTheirTurn == numOfPlayers) || gettingBabylonExtraCard || playingCardFromDiscardPile || phase == GamePhase.RomaB)
             {
                 //reset the number of players that have taken their turn
                 numOfPlayersThatHaveTakenTheirTurn = 0;
@@ -1461,8 +1473,18 @@ namespace SevenWonders
                     playingCardFromDiscardPile = true;
                 }
 
+                if (phase == GamePhase.RomaB && p.draftingExtraLeader)
+                {
+                    phase = GamePhase.Playing;
+                    p.draftingExtraLeader = false;
+                }
+                else if (p.draftingExtraLeader)
+                {
+                    phase = GamePhase.RomaB;
+                }
+
                 //all players have completed their turn
-                if (!gettingBabylonExtraCard && !playingCardFromDiscardPile)
+                if (!gettingBabylonExtraCard && !playingCardFromDiscardPile && phase != GamePhase.RomaB)
                 {
                     // gettingBabylonExtraCard = false;
                     // playingCardFromDiscardPile = false;

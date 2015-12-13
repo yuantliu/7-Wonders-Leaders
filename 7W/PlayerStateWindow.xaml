@@ -19,48 +19,48 @@
                         <ColumnDefinition Width="1*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
-                        <StackPanel x:Name="CommerceStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
-                            <StackPanel.Background>
+                        <WrapPanel x:Name="CommerceStructures" Margin="1">
+                            <WrapPanel.Background>
                                 <SolidColorBrush Color="Yellow" Opacity="0.5"/>
-                            </StackPanel.Background>
-                        </StackPanel>
-                        <StackPanel x:Name="GoodsStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
-                            <StackPanel.Background>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="GoodsStructures" Margin="1">
+                            <WrapPanel.Background>
                                 <SolidColorBrush Color="Gray" Opacity="0.5"/>
-                            </StackPanel.Background>
-                        </StackPanel>
-                        <StackPanel x:Name="ResourceStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
-                            <StackPanel.Background>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="ResourceStructures" Margin="1">
+                            <WrapPanel.Background>
                                 <SolidColorBrush Color="Brown" Opacity="0.5"/>
-                            </StackPanel.Background>
-                        </StackPanel>
-                        <StackPanel x:Name="LeaderStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
-                            <StackPanel.Background>
-                                <SolidColorBrush Color="White" Opacity="0.5"/>
-                            </StackPanel.Background>
-                        </StackPanel>
+                            </WrapPanel.Background>
+                        </WrapPanel>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
-                        <StackPanel x:Name="GuildStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
-                            <StackPanel.Background>
+                        <WrapPanel x:Name="GuildStructures" Margin="1">
+                            <WrapPanel.Background>
                                 <SolidColorBrush Color="Purple" Opacity="0.5"/>
-                            </StackPanel.Background>
-                        </StackPanel>
-                        <StackPanel x:Name="ScienceStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
-                            <StackPanel.Background>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="ScienceStructures" Margin="1">
+                            <WrapPanel.Background>
                                 <SolidColorBrush Color="Green" Opacity="0.5"/>
-                            </StackPanel.Background>
-                        </StackPanel>
-                        <StackPanel x:Name="MilitaryStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
-                            <StackPanel.Background>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="MilitaryStructures" Margin="1">
+                            <WrapPanel.Background>
                                 <SolidColorBrush Color="Red" Opacity="0.5"/>
-                            </StackPanel.Background>
-                        </StackPanel>
-                        <StackPanel x:Name="CivilianStructures" Orientation="Vertical" VerticalAlignment="Bottom" Margin="1,1,1,1">
-                            <StackPanel.Background>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="CivilianStructures" Margin="1">
+                            <WrapPanel.Background>
                                 <SolidColorBrush Color="Blue" Opacity="0.5"/>
-                            </StackPanel.Background>
-                        </StackPanel>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="LeaderStructures" Margin="1">
+                            <WrapPanel.Background>
+                                <SolidColorBrush Color="White" Opacity="0.5"/>
+                            </WrapPanel.Background>
+                        </WrapPanel>
                     </StackPanel>
                 </Grid>
             </Grid>

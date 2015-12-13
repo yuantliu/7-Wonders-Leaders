@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SevenWonders"
         mc:Ignorable="d"
-        Title="LeaderDraft" Height="400" Width="600">
+        Title="LeaderDraft" Height="540" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"></RowDefinition>
@@ -13,23 +13,23 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"></ColumnDefinition>
-            <ColumnDefinition Width="4*"></ColumnDefinition>
+            <ColumnDefinition Width="6*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Grid.Column="0">
-            <TextBlock Margin="10" TextWrapping="Wrap" FontSize="14">Choose a leader to draft</TextBlock>
-            <Button Name="btnDraft" IsEnabled="False" Click="btnDraft_Click">Accept</Button>
-            <TextBlock Name="LeaderDescription" TextWrapping="Wrap" FontSize="14"></TextBlock>
+        <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Top">
+            <TextBlock Margin="5" TextWrapping="Wrap" FontSize="14">Choose a leader to draft</TextBlock>
+            <!-- <Button Name="btnDraft" IsEnabled="False" Click="btnDraft_Click">Accept</Button> -->
+            <TextBlock Margin="5" FontSize="14" TextWrapping="Wrap" Name="LeaderDescription"></TextBlock>
         </StackPanel>
-        <ListBox Grid.Row="0" Grid.Column="1" Name="hand" SelectionChanged="hand_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+        <ListBox Grid.Row="0" Grid.Column="1" Name="hand" SelectionChanged="hand_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="hand_MouseDoubleClick">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
-        <StackPanel Grid.Row="1">
-            <Label FontSize="14">Drafted leaders</Label>
-            <TextBlock FontSize="14" TextWrapping="Wrap" Name="DraftedLeaderDescription"></TextBlock>
+        <StackPanel Grid.Row="1" VerticalAlignment="Center">
+            <TextBlock Margin="5" TextWrapping="Wrap" FontSize="14">Drafted leaders</TextBlock>
+            <TextBlock Margin="5" FontSize="14" TextWrapping="Wrap" Name="DraftedLeaderDescription"></TextBlock>
         </StackPanel>
 
         <ListBox Grid.Row="1" Grid.Column="1" Name="RecruitedLeaders" SelectionChanged="RecruitedLeaders_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Disabled">

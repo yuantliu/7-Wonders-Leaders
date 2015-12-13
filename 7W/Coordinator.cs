@@ -461,6 +461,15 @@ namespace SevenWonders
                         messageHandled = true;
                         break;
 
+                    case "LeadrIcn":
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            gameUI.updateLeaderIcons(qcoll);
+                        }));
+                        messageHandled = true;
+                        break;
+
                     case "Military":
                         qcoll = HttpUtility.ParseQueryString(message.Substring(9));
 

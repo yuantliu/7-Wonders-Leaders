@@ -171,6 +171,8 @@ namespace SevenWonders
 
         public bool playCardFromDiscardPile = false;
 
+        public bool draftingExtraLeader = false;
+
         //bilkis (0 is nothing, 1 is ore, 2 is stone, 3 is glass, 4 is papyrus, 5 is loom, 6 is wood, 7 is brick
         public byte bilkis;
         public bool hasBilkis;
@@ -414,6 +416,29 @@ namespace SevenWonders
             else if (effect is PlayACardForFreeOncePerAgeEffect)
             {
                 throw new Exception("This ability needs to be dealt with on the end-of-turn action queue.");
+            }
+            else if (effect is DraftFourNewLeaders_5VPEffect)
+            {
+                // Roma (B) stage 1: draw 4 more leaders from the pile of unused leaders
+                // to add to the players list of recruitable leaders
+                for (int i = 0; i < 4; i++)
+                {
+                    Card c = gm.deckList[0].GetTopCard();
+                    draftedLeaders.Add(c);
+                }
+
+                string strMsg = "LeadrIcn";
+
+                foreach (Card c in draftedLeaders)
+                {
+                    strMsg += string.Format("&{0}=", c.name);
+                }
+
+                gm.gmCoordinator.sendMessage(this, strMsg);
+            }
+            else if (effect is PlayALeaderForFreeEffect)
+            {
+                draftingExtraLeader = true;
             }
             // any other effects do not require immediate action, they will be dealt with at the end of the turn,
             // end of the age, or the end of the game.

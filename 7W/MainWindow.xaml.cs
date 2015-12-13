@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -18,7 +19,7 @@ namespace SevenWonders
 {
     public class PlayerState
     {
-        public Dictionary<StructureType, StackPanel> structuresBuilt = new Dictionary<StructureType, StackPanel>(7);
+        public Dictionary<StructureType, WrapPanel> structuresBuilt = new Dictionary<StructureType, WrapPanel>(8);
         public Image lastCardPlayed;
 
         public PlayerStateWindow state;
@@ -48,7 +49,7 @@ namespace SevenWonders
     public partial class MainWindow : Window
     {
         //dimensions for the icons at the Player bars
-        const int ICON_HEIGHT = 30;
+        const int ICON_HEIGHT = 40;
 
         //Client's coordinator
         Coordinator coordinator;
@@ -163,6 +164,32 @@ namespace SevenWonders
             playerState[playerName].state.CoinsLabel.Content = tb;
         }
 
+        public void updateLeaderIcons(NameValueCollection leaderNames)
+        {
+            lbLeaderIcons.Children.Clear();
+
+            foreach (string leaderCardName in leaderNames.Keys)
+            {
+                Card leaderCard = coordinator.FindCard(leaderCardName);
+
+                BitmapImage bmpImg = new BitmapImage();
+                bmpImg.BeginInit();
+                bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/icons/" + leaderCard.iconName + ".png");
+                bmpImg.EndInit();
+
+                Image img = new Image();
+                img.Source = bmpImg;
+                img.Height = ICON_HEIGHT;
+
+                img.ToolTip = string.Format("{0} - cost: {1} coin{2}.  {3}",
+                    leaderCard.name, leaderCard.cost.coin, leaderCard.cost.coin >= 2 ? "(s)" : string.Empty, leaderCard.description);
+                img.Name = leaderCard.name;
+                img.Margin = new Thickness(2);
+
+                lbLeaderIcons.Children.Add(img);
+            }
+        }
+
         /// <summary>
         /// display the Cards in Player's hands and the available actions
         /// </summary>
@@ -172,40 +199,7 @@ namespace SevenWonders
             //the player is in a new turn now because his UI are still updating.
             //Therefore set playerPlayedHisturn to false
             playerPlayedHisTurn = false;
-
             canDiscardStructure = true;
-
-            if (coordinator.expansionSet == ExpansionSet.Leaders)
-            {
-                if (lbLeaderIcons.Children.Count == 0)
-                {
-                    foreach (KeyValuePair<string, string> kvp in cardsAndStates)
-                    {
-                        if (kvp.Key.StartsWith("WonderStage") || kvp.Key == "CanDiscard" || kvp.Key == "Instructions")
-                            continue;
-
-                        Card leaderCard = coordinator.FindCard(kvp.Key);
-
-                        BitmapImage bmpImg = new BitmapImage();
-                        bmpImg.BeginInit();
-                        //Item1 of the id_buildable array of Tuples represents the id image
-                        bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/icons/" + leaderCard.iconName + ".png");
-                        bmpImg.EndInit();
-
-                        Image img = new Image();
-                        img.Source = bmpImg;
-                        img.Height = 30;
-
-                        //ListBoxItem entry = new ListBoxItem();
-                        img.ToolTip = string.Format("{0} - cost: {1} coin{2}.  {3}",
-                            leaderCard.name, leaderCard.cost.coin, leaderCard.cost.coin >= 2 ? "(s)" : string.Empty, leaderCard.description);
-                        img.Name = leaderCard.name;
-                        img.Margin = new Thickness(2);
-
-                        lbLeaderIcons.Children.Add(img);
-                    }
-                }
-            }
 
             hand.Clear();
 
@@ -419,7 +413,7 @@ namespace SevenWonders
 
                 case Buildable.CommerceRequired:
                     btnBuildWonderStage.Content = new TextBlock() {
-                        Text = string.Format("Build a wonder stage with the {0} (commerce required)", hand[handPanel.SelectedIndex].Key.name),
+                        Text = string.Format(card.isLeader ? "Use {0} to build a wonder stage (commerce required)" : "Build a wonder stage with the {0} (commerce required)", card.name),
                         TextAlignment = TextAlignment.Center,
                         TextWrapping = TextWrapping.Wrap
                     };
@@ -651,7 +645,7 @@ namespace SevenWonders
                 }
 
                 iconImage.ToolTip = strToolTip;
-                iconImage.Margin = new Thickness(1, 1, 1, 1);   // keep a 1-pixel margin around each card icon.
+                iconImage.Margin = new Thickness(2);   // keep a 1-pixel margin around each card icon.
                 iconImage.Effect = be;
 
                 playerState[playerName].lastCardPlayed = iconImage;
@@ -685,7 +679,7 @@ namespace SevenWonders
                         {
                             Image image = new Image();
                             image.Source = conflictImageSource;
-                            image.Height = 25;
+                            image.Height = 22;
                             playerState[playerName].state.ConflictTokens.Children.Add(image);
                         }
                         break;
@@ -713,7 +707,7 @@ namespace SevenWonders
                         {
                             Image image = new Image();
                             image.Source = conflictImageSource;
-                            image.Height = 35;
+                            image.Height = 38;
                             playerState[playerName].state.ConflictTokens.Children.Add(image);
                         }
                         break;

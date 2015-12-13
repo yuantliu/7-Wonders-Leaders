@@ -55,19 +55,19 @@ namespace SevenWonders
                 hand.Items.Add(entry);
             }
 
-            btnDraft.IsEnabled = false;
+            // btnDraft.IsEnabled = false;
         }
 
         private void hand_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (hand.SelectedItem != null)
             {
-                btnDraft.IsEnabled = true;
+                // btnDraft.IsEnabled = true;
                 LeaderDescription.Text = coordinator.FindCard(((ListBoxItem)hand.SelectedItem).Name).description;
             }
             else
             {
-                btnDraft.IsEnabled = false;
+                // btnDraft.IsEnabled = false;
                 LeaderDescription.Text = null;
             }
         }
@@ -91,7 +91,31 @@ namespace SevenWonders
 
         private void RecruitedLeaders_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            DraftedLeaderDescription.Text = coordinator.FindCard(((ListBoxItem)RecruitedLeaders.SelectedItem).Name).description;
+            if (RecruitedLeaders.SelectedItem != null)
+            {
+                DraftedLeaderDescription.Text = coordinator.FindCard(((ListBoxItem)RecruitedLeaders.SelectedItem).Name).description;
+            }
+            else
+            {
+                DraftedLeaderDescription.Text = null;
+            }
+        }
+
+        private void hand_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ListBoxItem entry = hand.SelectedItem as ListBoxItem;
+
+            hand.Items.Remove(entry);
+            RecruitedLeaders.Items.Add(entry);
+
+            coordinator.sendToHost(string.Format("BldStrct&Structure={0}", entry.Name));
+            coordinator.endTurn();
+
+            if (hand.Items.Count == 0)
+            {
+                // if this was the 4th leader to be drafted, close the dialog box.
+                Close();
+            }
         }
     }
 }
