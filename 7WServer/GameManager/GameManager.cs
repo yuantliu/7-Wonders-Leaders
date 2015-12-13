@@ -1174,197 +1174,6 @@ namespace SevenWonders
                 endOfSessionActions();
         }
 
-#if FALSE
-        /// <summary>
-        /// Whenever a card becomes "Played", UpdatePlayedCardPanel should be called
-        /// Sends a message to the client so that a newly played card will show up in the PlayedCardPanel
-        /// </summary>
-        public void updatePlayedCardPanel(String nickname)
-        {
-            
-            // bUIRequiresUpdating = true;
-
-            for (int i = 0; i < numOfPlayers + numOfAI; i++)
-            {
-                Player p = player[i];
-
-                if (p.GetNumberOfPlayedCards() > 0)
-                {
-                    string lastPlayedCardInformationString = string.Format("P{0}{1}", i, Marshaller.ObjectToString(p.GetCardPlayed(p.GetNumberOfPlayedCards() - 1)));
-
-                    gmCoordinator.sendMessage(p, lastPlayedCardInformationString);
-                }
-            }
-    }
-
-
-        /// <summary>
-        /// Player hits the Olympia power button
-        /// give the UI information.
-        /// </summary>
-        /// <param name="p"></param>
-        public void sendOlympiaInformation(String nickname)
-        {
-            /*
-            Player p = player[nickname];
-
-            //information to be sent
-            String information = "O";
-
-            information += Marshaller.ObjectToString(new PlayForFreeInformation(p, 'O'));
-
-            //send the information
-            gmCoordinator.sendMessage(p, information);
-            */
-        }
-
-        /// <summary>
-        /// Play a given card id in nickname for free with Olympia
-        /// </summary>
-        /// <param name="nickname"></param>
-        /// <param name="id"></param>
-        public void playCardForFreeWithOlympia(String nickname, string structureName)
-        {
-            Player p = player[nickname];
-
-            //if the structure costed money, reimburse the money
-            //check if the Card costs money
-            int costInCoins = 0;
-
-            Card c = p.hand.Find(x => x.name == structureName);
-            costInCoins = c.cost.coin;
-
-            //store the reimbursement
-            // p.storeAction("1" + costInCoins + "$");
-            p.storeAction(new CoinEffect(c.cost.coin));
-
-            //build the structure
-            buildStructureFromHand(structureName, nickname, null, null, null, null);
-
-            //disable Olympia
-            p.olympiaPowerEnabled = false;
-        }
-
-        /// <summary>
-        /// give the UI information for Halicarnassus
-        /// </summary>
-        /// <param name="p"></param>
-        public void sendHalicarnassusInformation(String nickname)
-        {
-            // test this.
-            throw new NotImplementedException();
-
-            Player p = player[nickname];
-
-            //if there are no cards in the discard pile, send it H0, for nothing
-            if (discardPile.Count == 0)
-            {
-                gmCoordinator.sendMessage(p, "H0");
-                return;
-            }
-
-            //information to be sent
-            String information = "H";
-
-            //gather the necessary information
-            //H_(num of cards)_(id1)&(name)_(id2)&(name)_...(id_last)&(name)|
-
-            information += "_" + discardPile.Count;
-
-            foreach (Card c in discardPile)
-            {
-                // this used to be the Card ID and name.  Now it should just be the card name
-                information += "_" + c.name + "&" + c.name;
-            }
-
-            information += "|";
-
-            //send the information
-            gmCoordinator.sendMessage(p, information);
-        }
-#endif
-        /*
-        /// <summary>
-        /// play the card for free from discard pile with Halicarnassus
-        /// </summary>
-        /// <param name="nickname"></param>
-        /// <param name="id"></param>
-        public void playCardForFreeWithHalicarnassus(string nickname, string structureName)
-        {
-            //build from the discard pile
-            buildStructureFromDiscardPile(structureName, nickname);
-        }
-
-        /// <summary>
-        /// give the UI information for Babylon
-        /// </summary>
-        /// <param name="nickname"></param>
-        public void sendBabylonInformation(string nickname)
-        {
-            Player p = player[nickname];
-
-            /*
-
-            //information to be sent
-            String information = "A";
-
-            //look at the last card in hand.
-            //send the information about it
-            
-            //get the last card
-            Card lastCard = p.hand[0];
-            //get the id
-            information += "_" + lastCard.name + "_";
-            //get if the card is playable from hand
-            information += p.isCardBuildable(lastCard);
-            //get if stage is buildable from hand
-            information += p.isStageBuildable();
-
-            Card lastCard = p.hand[0];
-
-            string babylonBmsg = "BabylonB";
-
-            babylonBmsg += string.Format("&{0}={1}", lastCard.name, p.isCardBuildable(lastCard).ToString());
-
-            babylonBmsg += string.Format("&WonderStage{0}={1}", p.currentStageOfWonder, p.isStageBuildable().ToString());
-
-            //send the information
-            gmCoordinator.sendMessage(p, babylonBmsg);
-        }
-
-        Attempting to build the commerce send string from played cards rather than effects.
-        string BuildResourceString(string who, Player plyr, bool isSelf)
-        {
-            string strRet = string.Format("&{0}Resources=", who);
-
-            foreach (Card c in plyr.playedStructure.Where(x => x.effect is SimpleEffect || (())
-            {
-                strRet += string.Format("{0},", c.name);
-            }
-
-            if (isSelf)
-            {
-                if (plyr.playedStructure.Where(x => x.effect is ResourceChoiceEffect))
-                { }
-
-
-            }
-
-            foreach (ResourceChoiceEffect e in plyr.dag.getChoiceStructures(isSelf))
-            {
-                ResourceChoiceEffect rce = e as ResourceChoiceEffect;
-
-                strRet += string.Format("{0},", rce.strChoiceData);
-            }
-
-            // remove the trailing comma, if necessary
-            if (strRet.EndsWith(","))
-                strRet = strRet.Remove(strRet.Length - 1);
-
-            return strRet;
-        }
-        */
-
         string BuildResourceString(string who, Player plyr, bool isSelf, bool hasDiscountEffect, bool hasBilkis)
         {
             string strRet = string.Format("&{0}Resources=", who);
@@ -1402,8 +1211,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="id"></param>
         /// <param name="nickname"></param>
-//        public void updateCommercePanel(string structureName, string nickname, bool isStage)
-        public void updateCommercePanel(string nickname, string strctureName, string wonderStage)
+        public void updateCommercePanel(string nickname, string structureName, string wonderStage)
         {
             Player p = player[nickname];
 
@@ -1424,9 +1232,20 @@ namespace SevenWonders
 
             strCommerce += string.Format("&wonderInfo={0}/{1}", p.currentStageOfWonder, p.playerBoard.name);
 
-            strCommerce += string.Format("&Structure={0}&WonderStage={1}", strctureName, wonderStage);
+            strCommerce += string.Format("&Structure={0}&WonderStage={1}", structureName, wonderStage);
 
-            bool hasDisountEffect = p.playedStructure.Exists(x => x.effect is StructureDiscountEffect && ((StructureDiscountEffect)x.effect).discountedStructureType == fullCardList.Find(y => y.name == strctureName).structureType);
+            Card card = null;
+
+            if (wonderStage == "0")
+            {
+                card = fullCardList.Find(y => y.name == structureName);
+            }
+            else
+            {
+                card = p.playerBoard.stageCard[p.currentStageOfWonder];
+            }
+
+            bool hasDisountEffect = p.playedStructure.Exists(x => x.effect is StructureDiscountEffect && ((StructureDiscountEffect)x.effect).discountedStructureType == card.structureType);
 
             Card bilkis = p.playedStructure.Find(x => x.name == "Bilkis");
             if (bilkis != null)

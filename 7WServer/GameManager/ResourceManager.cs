@@ -283,32 +283,8 @@ namespace SevenWonders
         }
 
         /// <summary>
-        /// Given a DAG and a cost (without $ in it), determine if the DAG can afford the cost
-        /// </summary>
-        /// <param name="graph">Player's DAG</param>
-        /// <param name="cost">Card cost</param>
-        /// <returns>Whether the DAG can afford the given card cost</returns>
-        public bool canAffordOffByOne(ResourceManager graph, Cost cost)
-        {
-            throw new NotImplementedException();
-
-            /*
-            List<string> generated = graph.generateStrings();
-
-            for (int i = 0; i < generated.Count; i++)
-            {
-                if (eliminate(cost, generated[i]).Length <= 1)
-                {
-                    return true;
-                }
-            }
-            */
-
-            return false;
-        }
-
-        /// <summary>
-        /// Add Three DAGs together to form a mega DAG, used to determine if something is buyable via commerce
+        /// Combine the player's resource list with those of his neighboring cities into a single ResourceList, to see whether a card
+        /// could be afforded using commerce.
         /// </summary>
         /// <param name="A">Left DAG</param>
         /// <param name="B">Centre DAG</param>

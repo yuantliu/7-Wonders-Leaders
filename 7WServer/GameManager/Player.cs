@@ -1147,20 +1147,22 @@ namespace SevenWonders
 
             //retrieve the cost
             Cost cost = playerBoard.stageCard[currentStageOfWonder].cost;
-            
-            //check for the stage discount card (Imhotep)
-            if (playedStructure.Exists(x => x.name == "Imhotep") == true)
-            {
-                bool newCostResult = dag.canAffordOffByOne(dag, cost);
 
-                if (newCostResult == true) return Buildable.True;
+            //check for the stage discount card (Imhotep)
+            int nWildResources = 0;
+            if (playedStructure.Exists(x => x.effect is StructureDiscountEffect && ((StructureDiscountEffect)x.effect).discountedStructureType == StructureType.WonderStage))
+            {
+                // A leader card has been played that matches the structure type being built, so we can add a wild resource
+                // e.g. We're building a science structure while Archimedes is in play for this player, or a military structure
+                // when Leonidas is in play.
+                ++nWildResources;
             }
 
             //can player afford cost with DAG resources
-            if (isCostAffordableWithDAG(cost, 0) == Buildable.True) return Buildable.True;
+            if (isCostAffordableWithDAG(cost, nWildResources) == Buildable.True) return Buildable.True;
 
             //can player afford cost by conducting commerce?
-            if (isCostAffordableWithNeighbours(cost, 0) == Buildable.CommerceRequired)
+            if (isCostAffordableWithNeighbours(cost, nWildResources) == Buildable.CommerceRequired)
                 return Buildable.CommerceRequired;
 
             //absolutely all options exhausted. return F
