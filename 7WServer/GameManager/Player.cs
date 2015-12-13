@@ -625,20 +625,41 @@ namespace SevenWonders
             return sum;
         }
 
-        int CalculateScienceGroupScore(int nCompass, int nGear, int nTablet, int groupMultiplier)
+        struct ScienceScore
         {
-            int score = nCompass * nCompass + nGear * nGear + nTablet * nTablet;
+            // copy the input parameters
+            public int nCompass;
+            public int nGear;
+            public int nTablet;
+            public int groupMultiplier;
 
-            score += Math.Min(Math.Min(nCompass, nGear), nTablet) * groupMultiplier;
+            // calculated values
+            public int baseScore;       // nCompass^2 + nGear^2 + nTablet^2
+            public int nGroups;         // number of complete sets
+            public int TotalPoints;     // total number of points this combination is worth
+        };
 
-            return score;
+        int CalculateScienceGroupScore(int nCompass, int nGear, int nTablet, int groupMultiplier, out ScienceScore ss)
+        {
+            ss.nCompass = nCompass;
+            ss.nGear = nGear;
+            ss.nTablet = nTablet;
+            ss.groupMultiplier = groupMultiplier;
+
+            // Compute output values
+            ss.baseScore = ss.nCompass * ss.nCompass + ss.nGear * ss.nGear + ss.nTablet * ss.nTablet;
+            ss.nGroups = Math.Min(Math.Min(ss.nCompass, ss.nGear), ss.nTablet);
+            ss.TotalPoints = ss.baseScore + ss.nGroups * ss.groupMultiplier;
+
+            return ss.TotalPoints;
         }
 
-        int CalculateSciencePoints(int nScienceWildCards)
+        ScienceScore FindBestScienceWildcard(int nScienceWildCards, int groupMultiplier)
         {
-            int scienceGroupMultiplier = 7;
+            ScienceScore tmpResult = new ScienceScore();
+            ScienceScore bestResult = tmpResult;
+
             int maxScienceScore = 0;
-            // if the Aristotle leader card is in play for this player, change the group multiplier to 10.
 
             // The player can have up to two science wild cards: Babylon wonder and the Scientists' guild.
             // Try every possible combination of these cards and select the one that yields the highest score
@@ -653,14 +674,32 @@ namespace SevenWonders
                 {
                     for (int k = 0; k <= nScienceWildCards - i - j; ++k)
                     {
-                        int score = CalculateScienceGroupScore(nCompass + i, nGear + j, nTablet + k, scienceGroupMultiplier);
+                        int score = CalculateScienceGroupScore(nCompass + i, nGear + j, nTablet + k, groupMultiplier, out tmpResult);
                         if (score > maxScienceScore)
+                        {
                             maxScienceScore = score;
+
+                            bestResult = tmpResult;
+
+                            /*
+                            PointsForScience = CalculateScienceGroupScore(result.nCompass, result.nGear, result.nTablet, 7, out result);
+
+                            // if wild cards are in play, we choose the best combination of wilds to get the maximum overall
+                            // score, with Aristotle's bonus factored in.  In some cases, Aristotle's effect will mean it's
+                            // more beneficial to use the wild card(s) to make more groups rather than like symbols.
+                            // For example: 1/2/5+1.  Without Aristotle, the maximum score is 1/2/6 = 48.
+                            // But with Aristotle's bonus, it's better to use the wild card to make a 3rd set instead
+                            // 1/2/6 = 51 with Aristotle but if you do 2/2/5 you get 53 points because the exta set
+                            // is worth 3 bonus points.
+                            if (usingAristotle)
+                                PointsForAristotle = CalculateScienceGroupScore(nCompass + i, nGear + j, nTablet + k, 10) - PointsForScience;
+                            */
+                        }
                     }
                 }
             }
 
-            return maxScienceScore;
+            return bestResult;
         }
 
         /// <summary>
@@ -713,7 +752,8 @@ namespace SevenWonders
             // if (nScienceWildCards != 0)
             //    Console.WriteLine("  {0} science wild card effect(s)", nScienceWildCards);
 
-            score.science = CalculateSciencePoints(nScienceWildCards);
+            bool hasAristotle = playedStructure.Exists(x => x.name == "Aristotle");
+            ScienceScore scienceScore = FindBestScienceWildcard(nScienceWildCards, hasAristotle ? 10 : 7);
 
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage))
             {
@@ -727,7 +767,7 @@ namespace SevenWonders
                 }
                 else if (c.effect is PlayDiscardedCardForFree_1VPEffect)
                 {
-                    score.science += 1;
+                    score.wonders += 1;
                 }
                 else if (c.effect is CopyGuildFromNeighborEffect)
                 {
@@ -735,6 +775,7 @@ namespace SevenWonders
                     // and pick the one that yields the most number of points to copy.
                     int maxPoints = 0;
                     string copiedGuild = string.Empty;
+                    ScienceScore tmpScienceScore = scienceScore;
 
                     IEnumerable<Card> neighborsGuilds = leftNeighbour.playedStructure.Where(x => x.structureType == StructureType.Guild).Concat(
                         rightNeighbour.playedStructure.Where(x => x.structureType == StructureType.Guild));
@@ -753,7 +794,8 @@ namespace SevenWonders
                         }
                         else if (card.effect is ScienceWildEffect)
                         {
-                            pointsForThisGuild = CalculateSciencePoints(nScienceWildCards + 1) - score.science;
+                            tmpScienceScore = FindBestScienceWildcard(nScienceWildCards + 1, hasAristotle ? 10 : 7);
+                            pointsForThisGuild = tmpScienceScore.TotalPoints - scienceScore.TotalPoints;
                         }
 
                         if (pointsForThisGuild > maxPoints)
@@ -761,6 +803,15 @@ namespace SevenWonders
                             maxPoints = pointsForThisGuild;
                             copiedGuild = card.name;
                         }
+                    }
+
+                    if (copiedGuild == "Scientists Guild")
+                    {
+                        // If the copied guild is the Scientist's Guild, update the overall 
+                        // This gets really messy because we're trying for the overall maximum score while breaking out
+                        // which parts of that score came from different components.  What needs to happen is for the returned
+                        // science score 
+                        scienceScore = tmpScienceScore;
                     }
 
                     /*
@@ -791,6 +842,9 @@ namespace SevenWonders
                 }
             }
 
+            // After the Wonders are done, we can input the science score.
+            score.science = scienceScore.baseScore + scienceScore.nGroups * 7;
+
             // Console.WriteLine("  Guilds constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Guild))
             {
@@ -815,6 +869,9 @@ namespace SevenWonders
                     score.leaders += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
                 }
             }
+
+            if (hasAristotle)
+                score.leaders += scienceScore.nGroups * 3;
 
 #if FALSE
             foreach (Effect act in endOfGameActions)
