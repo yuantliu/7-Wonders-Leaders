@@ -23,18 +23,14 @@ namespace SevenWonders
         {
             this.age = age;
 
-            if (age == 0)
+            // Create the card list for this age & number of players
+            foreach (Card c in cardList.Where(x => x.age == age))
             {
-                // for the leaders, make all the cards available in deck
-                this.cardList = cardList.Where(x => x.age == age).ToList();
-            }
-            else
-            {
-                // Create the card list for this age & number of players
-                foreach (Card c in cardList.Where(x => x.age == age))
+                for (int i = 0; i < c.GetNumCardsAvailable(numOfPlayers); ++i)
                 {
-                    for (int i = 0; i < c.GetNumCardsAvailable(numOfPlayers); ++i)
+                    if (c.expansion == ExpansionSet.Original || c.expansion == ExpansionSet.Leaders)
                     {
+                        // remove the Cities cards for now.
                         this.cardList.Add(c);
                     }
                 }

@@ -725,18 +725,16 @@ namespace SevenWonders
             // Console.WriteLine("  Civilian structures constructed:");
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Civilian))
             {
-                int thisStructurePoints = ((CoinsAndPointsEffect)c.effect).victoryPointsAtEndOfGameMultiplier;
-                Console.WriteLine("    {0} ({1} VP)", c.name, thisStructurePoints);
-                score.civilian += thisStructurePoints;
+                score.civilian += ((CoinsAndPointsEffect)c.effect).victoryPointsAtEndOfGameMultiplier;
+                // Console.WriteLine("    {0} ({1} VP)", c.name, thisStructurePoints);
+                // score.civilian += thisStructurePoints;
             }
 
             // Console.WriteLine("  Commercial structures constructed:");
-            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Commerce))
+            foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.Commerce && x.effect is CoinsAndPointsEffect))
             {
                 // Console.WriteLine("    {0}", c.name);
-
-                if (c.effect is CoinsAndPointsEffect)
-                    score.commerce += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
+                score.commerce += CountVictoryPoints(c.effect as CoinsAndPointsEffect);
             }
 
             /*

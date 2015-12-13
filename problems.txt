@@ -39,8 +39,11 @@ Technical stories:
 - Should probably have a way to distinguish between the table host (creates the game and may add AI players) vs.
   non-hosts - cannot add AI players.
 
-- There's a bug with Halikarnassos not counting its B side wonder points properly.  Also check that the UI is updated
-  before the player needs to select his card.
+- There's a bug with Halikarnassos not counting its B side wonder points properly.  Update 12/12/2015.  I believe I fixed this bug.
+  Also check that the UI is updated before the player needs to select his card.
+
+- Remove all these unique effects.  Instead, have a "SpecialEffect" type. If that's set, we have to look at the card name
+  to determine its effect.
 
 - The list of players (the datagrid) isn't hooked up at the match-making.
 

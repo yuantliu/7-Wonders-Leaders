@@ -566,11 +566,6 @@ namespace SevenWonders
 
             switch (structureType)
             {
-                case StructureType.Leader:
-                    age = 0;
-                    wonderStage = 0;
-                    break;
-
                 case StructureType.WonderStage:
                     age = 0;
                     wonderStage = int.Parse(createParams[30]);
@@ -579,17 +574,13 @@ namespace SevenWonders
                 default:
                     age = int.Parse(createParams[3]);
                     wonderStage = 0;
+                    for (int i = 0, j = 6; i < numAvailableByNumPlayers.Length; ++i, ++j)
+                        numAvailableByNumPlayers[i] = int.Parse(createParams[j]);
                     break;
             }
 
             description = createParams[4];
             iconName = createParams[5];
-
-            if (structureType != StructureType.WonderStage && structureType != StructureType.Leader && structureType != StructureType.City)
-            {
-                for (int i = 0, j = 6; i < numAvailableByNumPlayers.Length;  ++i, ++j)
-                    numAvailableByNumPlayers[i] = int.Parse(createParams[j]);
-            }
 
             // Structure cost
             int.TryParse(createParams[11], out cost.coin);
