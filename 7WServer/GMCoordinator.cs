@@ -117,7 +117,7 @@ namespace SevenWonders
                     {
                         case "BldStrct":
                             qscoll = HttpUtility.ParseQueryString(message.Substring(9));
-                            gameManager.buildStructureFromHand(nickname, qscoll["Structure"], qscoll["WonderStage"], qscoll["FreeBuild"], qscoll["leftCoins"], qscoll["rightCoins"] );
+                            gameManager.buildStructureFromHand(nickname, qscoll["Structure"], qscoll["WonderStage"], qscoll["FreeBuild"], qscoll["leftCoins"], qscoll["rightCoins"], qscoll["Bilkis"]);
                             MessageHandled = true;
                             break;
 

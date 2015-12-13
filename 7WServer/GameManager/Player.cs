@@ -1133,7 +1133,7 @@ namespace SevenWonders
                 return Buildable.True;
 
             //can player afford cost by conducting commerce?
-            if (isCostAffordableWithNeighbours(cost, nWildResources) == Buildable.CommerceRequired)
+            if (isCostAffordableWithCommerce(cost, nWildResources) == Buildable.CommerceRequired)
                 return Buildable.CommerceRequired;
 
             return Buildable.InsufficientResources;
@@ -1174,7 +1174,7 @@ namespace SevenWonders
         /// </summary>
         /// <param name="card"></param>
         /// <returns></returns>
-        private Buildable isCostAffordableWithNeighbours(Cost cost, int nWildResources)
+        private Buildable isCostAffordableWithCommerce(Cost cost, int nWildResources)
         {
             cost = cost.Copy();
 
@@ -1182,6 +1182,11 @@ namespace SevenWonders
 
             //combine the left, centre, and right DAG
             ResourceManager combinedDAG = ResourceManager.addThreeDAGs(leftNeighbour.dag, dag, rightNeighbour.dag);
+
+            if (playedStructure.Exists(x => x.name == "Bilkis"))
+            {
+                combinedDAG.add(new ResourceEffect(false, "WSBOCGP"));
+            }
 
             //determine if the combined DAG can afford the cost
             if (combinedDAG.canAfford(cost, nWildResources)) return Buildable.CommerceRequired;
@@ -1217,7 +1222,7 @@ namespace SevenWonders
             if (isCostAffordableWithDAG(cost, nWildResources) == Buildable.True) return Buildable.True;
 
             //can player afford cost by conducting commerce?
-            if (isCostAffordableWithNeighbours(cost, nWildResources) == Buildable.CommerceRequired)
+            if (isCostAffordableWithCommerce(cost, nWildResources) == Buildable.CommerceRequired)
                 return Buildable.CommerceRequired;
 
             //absolutely all options exhausted. return F

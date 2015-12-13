@@ -33,6 +33,7 @@ namespace SevenWonders
         Cost cardCost;
 
         bool hasBilkis;
+        bool usedBilkis;
         bool leftRawMarket, rightRawMarket, marketplace;
         string leftName, middleName, rightName;
         string structureName;
@@ -180,6 +181,9 @@ namespace SevenWonders
 
             hasBilkis = qscoll["Bilkis"] != null;
 
+            if (hasBilkis)
+                imgBilkisPower.Visibility = Visibility.Visible;
+
             //generate mutable elements (DAG buttons, Price representations, currentResources, etc.)
             reset();
         }
@@ -253,7 +257,7 @@ namespace SevenWonders
                     // levelPanels[i] has b[i,j] added
                 } // levelPanels[i] has added all the buttons appropriate for that level and its event handlers
 
-                if (hasBilkis && i == dagGraphSimple.Count-1)
+                if (isDagOwnedByPlayer && hasBilkis && i == dagGraphSimple.Count-1)
                 {
                     // Insert a label telling the player the Wild resource on
                     // the next line will cost 1 coin to use
@@ -326,7 +330,22 @@ namespace SevenWonders
 
             //add the appropriate amount of coins to the appropriate recepient
             //as well as doing appropriate checks
-            if (location == 'L')
+            if (location == 'M')
+            {
+                if (hasBilkis && level == middleDag.getResourceList(true).Count() - 1)
+                {
+                    // This is Bilkis' resource.
+                    if (PLAYER_COIN == 0)
+                    {
+                        MessageBox.Show("You cannot afford this resource");
+                        return;
+                    }
+
+                    usedBilkis = true;
+                    imgBilkisPower.Opacity = 0.5;
+                }
+            }
+            else if (location == 'L')
             {
                 int coinsRequired = (isResourceRawMaterial && leftRawMarket) || (isResourceGoods && marketplace) ? 1 : 2;
 
@@ -486,7 +505,7 @@ namespace SevenWonders
             //update the subtotals
             leftSubtotalLabel.Content = leftcoin;
             rightSubtotalLabel.Content = rightcoin;
-            subTotalLabel.Content = leftcoin + rightcoin;
+            subTotalLabel.Content = leftcoin + rightcoin + (usedBilkis ? 1 : 0);
         }
 
         /// <summary>
@@ -498,6 +517,8 @@ namespace SevenWonders
             strCurrentResourcesUsed = string.Empty;
             leftcoin = 0;
             rightcoin = 0;
+            usedBilkis = false;
+            imgBilkisPower.Opacity = 1.0;
 
             if (cardCost.coin != 0)
             {
@@ -520,7 +541,13 @@ namespace SevenWonders
         {
             if (resourcesNeeded == 0)
             {
+                // TODO: the response should be what resources were used from each neighbor.  The server should
+                // calculate the cost and exchange coins.
                 string strResponse = string.Format("BldStrct&WonderStage={0}&Structure={1}&leftCoins={2}&rightCoins={3}", isStage ? "1" : "0", structureName, leftcoin, rightcoin);
+                if (usedBilkis)
+                {
+                    strResponse += "&Bilkis=True";
+                }
                 coordinator.sendToHost(strResponse);
 
                 //end turn

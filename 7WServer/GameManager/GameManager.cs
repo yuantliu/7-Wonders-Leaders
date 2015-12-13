@@ -542,7 +542,7 @@ namespace SevenWonders
             return randomBoard.Value;
         }
 
-        public void buildStructureFromHand(string playerNickname, string cardName, string strWonderStage, string strFreeBuild, string strLeftCoins, string strRightCoins)
+        public void buildStructureFromHand(string playerNickname, string cardName, string strWonderStage, string strFreeBuild, string strLeftCoins, string strRightCoins, string strUsedBilkis)
         {
             Player p = player[playerNickname];
 
@@ -569,13 +569,15 @@ namespace SevenWonders
 
             bool freeBuild = strFreeBuild != null && strFreeBuild == "True";
 
-            buildStructureFromHand(p, c, strWonderStage == "1", freeBuild, nLeftCoins, nRightCoins);
+            bool usedBilkis = strUsedBilkis != null && strUsedBilkis == "True";
+
+            buildStructureFromHand(p, c, strWonderStage == "1", freeBuild, nLeftCoins, nRightCoins, usedBilkis);
         }
 
         /// <summary>
         /// build a structure from hand, given the Card id number and the Player
         /// </summary>
-        public void buildStructureFromHand(Player p, Card c, bool wonderStage, bool freeBuild = false, int nLeftCoins = 0, int nRightCoins = 0)
+        public void buildStructureFromHand(Player p, Card c, bool wonderStage, bool freeBuild = false, int nLeftCoins = 0, int nRightCoins = 0, bool usedBilkis = false)
         {
             if (phase == GamePhase.LeaderRecruitment || phase == GamePhase.RomaB)
             {
@@ -637,7 +639,7 @@ namespace SevenWonders
 
             //if the structure played costs money, deduct it
             //check if the Card costs money and add the coins paid to the neighbors for their resources
-            int costInCoins = c.cost.coin + nLeftCoins + nRightCoins;
+            int costInCoins = c.cost.coin + nLeftCoins + nRightCoins + (usedBilkis ? 1 : 0);
 
             if (c.structureType == StructureType.Leader)
             {
