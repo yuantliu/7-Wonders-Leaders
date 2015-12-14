@@ -90,11 +90,11 @@ namespace SevenWonders
             {
                 string[] wonderData = qscoll["wonderInfo"].Split('/');
 
-                cardCost = cardList.Find(x => x.name == wonderData[1] && x.wonderStage == (int.Parse(wonderData[0]) + 1)).cost;
+                cardCost = cardList.Find(x => x.nameAsStr == wonderData[1] && x.wonderStage == (int.Parse(wonderData[0]) + 1)).cost;
             }
             else
             {
-                cardCost = cardList.Find(x => x.name == structureName).cost;
+                cardCost = coordinator.FindCard(structureName).cost;
             }
 
             leftRawMarket = false;

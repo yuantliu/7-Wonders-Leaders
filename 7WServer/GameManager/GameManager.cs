@@ -319,7 +319,7 @@ namespace SevenWonders
 
                     //check if player has played card 220: gain 2 coins for every victory point gained
                     //give 2 coins if so
-                    if (p.playedStructure.Exists(x => x.name == "Nero"))
+                    if (p.playedStructure.Exists(x => x.name == CardName.Nero))
                     {
                         throw new Exception();
                         // fix this.  Likely by making the player.GiveConflictToken into a function and
@@ -330,7 +330,7 @@ namespace SevenWonders
                     //check if right neighbour has played card 232: return conflict loss token received
                     //if no, receive lossToken
                     //if yes, do not get lossToken, instead, give lossToken to winner
-                    if (p.rightNeighbour.playedStructure.Exists(x => x.name == "Tomyris") == false)
+                    if (p.rightNeighbour.playedStructure.Exists(x => x.name == CardName.Tomyris) == false)
                     {
                         p.rightNeighbour.lossToken++;
                     }
@@ -368,7 +368,7 @@ namespace SevenWonders
                     //check if I have played card 232: return conflict loss token received
                     //if no, receive lossToken
                     //if yes, do not get lossToken, instead, give lossToken to rightNeighbour
-                    if (p.playedStructure.Exists(x => x.name == "Tomyris") == false)
+                    if (p.playedStructure.Exists(x => x.name == CardName.Tomyris) == false)
                     {
                         p.lossToken++;
                     }
@@ -505,7 +505,8 @@ namespace SevenWonders
 
                 for (int i = 0; i < b.numOfStages; ++i)
                 {
-                    Card card = fullCardList.Find(c => c.structureType == StructureType.WonderStage && c.name == b.name && c.wonderStage == i + 1);
+                    CardName wonderStageName = Card.CardNameFromStringName(b.name, i + 1);
+                    Card card = fullCardList.Find(c => c.name == wonderStageName);
 
                     fullCardList.Remove(card);
                     b.stageCard.Add(card);
@@ -546,14 +547,16 @@ namespace SevenWonders
         {
             Player p = player[playerNickname];
 
+            CardName cName = Card.CardNameFromStringName(cardName);
+
             Card c = null;
             if (phase == GamePhase.LeaderRecruitment || phase == GamePhase.RomaB)
             {
-                c = p.draftedLeaders.Find(x => x.name == cardName);
+                c = p.draftedLeaders.Find(x => x.name == cName);
             }
             else
             {
-                c = p.hand.Find(x => x.name == cardName);
+                c = p.hand.Find(x => x.name == cName);
             }
 
             if (c == null)
@@ -643,7 +646,7 @@ namespace SevenWonders
 
             if (c.structureType == StructureType.Leader)
             {
-                if (p.playerBoard.name == "Roma (A)" || p.playedStructure.Exists(x => x.name == "Maecenas"))
+                if (p.playerBoard.name == "Roma (A)" || p.playedStructure.Exists(x => x.name == CardName.Maecenas))
                 {
                     costInCoins = 0;
                 }
@@ -913,7 +916,7 @@ namespace SevenWonders
         {
             Player p = player[nickname];
 
-            discardCardForThreeCoins(p, p.hand.Find(x => x.name == name));
+            discardCardForThreeCoins(p, p.hand.Find(x => x.name == Card.CardNameFromStringName(name)));
         }
 
         /// <summary>
@@ -1239,7 +1242,7 @@ namespace SevenWonders
 
             if (wonderStage == "0")
             {
-                card = fullCardList.Find(y => y.name == structureName);
+                card = fullCardList.Find(y => y.name == Card.CardNameFromStringName(structureName));
             }
             else
             {
@@ -1248,7 +1251,7 @@ namespace SevenWonders
 
             bool hasDisountEffect = p.playedStructure.Exists(x => x.effect is StructureDiscountEffect && ((StructureDiscountEffect)x.effect).discountedStructureType == card.structureType);
 
-            Card bilkis = p.playedStructure.Find(x => x.name == "Bilkis");
+            Card bilkis = p.playedStructure.Find(x => x.name == CardName.Bilkis);
             if (bilkis != null)
             {
                 // Tell the commmerce window that the last entry in the resource list for the player is for Bilkis

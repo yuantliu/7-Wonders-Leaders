@@ -43,13 +43,13 @@ namespace SevenWonders
             if (gm.phase == GameManager.GamePhase.LeaderDraft || gm.phase == GameManager.GamePhase.LeaderRecruitment)
             {
                 // int[] favouredLeaders = { 216, 220, 222, 232, 200, 208, 205, 221, 214, 236, 213 };
-                string [] favouredLeaders = { "Leonidas", "Nero", "Pericles", "Tomyris", "Alexander", "Hannibal", "Caesar", "Nefertiti", "Cleopatra", "Zenobia", "Justinian" };
+                CardName [] favouredLeaders = { CardName.Leonidas, CardName.Nero, CardName.Pericles, CardName.Tomyris, CardName.Alexander, CardName.Hannibal, CardName.Caesar, CardName.Nefertiti, CardName.Cleopatra, CardName.Zenobia, CardName.Justinian };
 
                 Card bestLeader = null;
 
                 //try to find the highest rated card in hand
                 //start looking for the highest rated card, then go down to the next highest, etc.
-                foreach (string leaderName in favouredLeaders)
+                foreach (CardName leaderName in favouredLeaders)
                 {
                     if (gm.phase == GameManager.GamePhase.LeaderDraft)
                     {

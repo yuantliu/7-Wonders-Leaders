@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SevenWonders
 {
-    public enum StrctureName
+    public enum CardName
     {
         Lumber_Yard,
         Stone_Pit,
@@ -18,9 +18,9 @@ namespace SevenWonders
         Forest_Cave,
         Mine,
         Loom,
-        Glassworks_1,
-        Press_1,
-        Pawnshop_2,
+        Glassworks,
+        Press,
+        Pawnshop,
         Baths,
         Altar,
         Theatre,
@@ -38,9 +38,6 @@ namespace SevenWonders
         Quarry,
         Brickyard,
         Foundry,
-        Loom_2,
-        Glassworks_2,
-        Press_2,
         Aqueduct,
         Temple,
         Statue,
@@ -69,22 +66,145 @@ namespace SevenWonders
         Fortifications,
         Circus,
         Arsenal,
-        Seige_Workshop,
+        Siege_Workshop,
         Lodge,
         Observatory,
         University,
         Academy,
         Study,
         Workers_Guild,
-        Craftmens_Guild,
+        Craftsmens_Guild,
         Traders_Guild,
         Philosophers_Guild,
-        Spy_Guild,
-        Strategy_Guild,
+        Spies_Guild,
+        Strategists_Guild,
         Shipowners_Guild,
         Scientists_Guild,
         Magistrates_Guild,
         Builders_Guild,
+        Alexandria_A_s1,
+        Alexandria_A_s2,
+        Alexandria_A_s3,
+        Alexandria_B_s1,
+        Alexandria_B_s2,
+        Alexandria_B_s3,
+        Babylon_A_s1,
+        Babylon_A_s2,
+        Babylon_A_s3,
+        Babylon_B_s1,
+        Babylon_B_s2,
+        Babylon_B_s3,
+        Ephesos_A_s1,
+        Ephesos_A_s2,
+        Ephesos_A_s3,
+        Ephesos_B_s1,
+        Ephesos_B_s2,
+        Ephesos_B_s3,
+        Giza_A_s1,
+        Giza_A_s2,
+        Giza_A_s3,
+        Giza_B_s1,
+        Giza_B_s2,
+        Giza_B_s3,
+        Giza_B_s4,
+        Halikarnassos_A_s1,
+        Halikarnassos_A_s2,
+        Halikarnassos_A_s3,
+        Halikarnassos_B_s1,
+        Halikarnassos_B_s2,
+        Halikarnassos_B_s3,
+        Olympia_A_s1,
+        Olympia_A_s2,
+        Olympia_A_s3,
+        Olympia_B_s1,
+        Olympia_B_s2,
+        Olympia_B_s3,
+        Rhodos_A_s1,
+        Rhodos_A_s2,
+        Rhodos_A_s3,
+        Rhodos_B_s1,
+        Rhodos_B_s2,
+        Roma_A_s1,
+        Roma_A_s2,
+        Roma_B_s1,
+        Roma_B_s2,
+        Roma_B_s3,
+        Alexander,
+        Amytis,
+        Archimedes,
+        Aristotle,
+        Bilkis,
+        Caesar,
+        Cleopatra,
+        Croeseus,
+        Euclid,
+        Hammurabi,
+        Hannibal,
+        Hatshepsut,
+        Hiram,
+        Hypatia,
+        Imhotep,
+        Justinian,
+        Leonidas,
+        Maecenas,
+        Midas,
+        Nebuchadnezzar,
+        Nefertiti,
+        Nero,
+        Pericles,
+        Phidias,
+        Plato,
+        Praxiteles,
+        Ptolemy,
+        Pythagoras,
+        Ramses,
+        Sappho,
+        Solomon,
+        Tomyris,
+        Varro,
+        Vitruvius,
+        Xenophon,
+        Zenobia,
+        Gamers_Guild,
+        Courtesans_Guild,
+        Diplomats_Guild,
+        Architects_Guild,
+        Pigeon_Loft,
+        Militia,
+        Hideout,
+        Residence,
+        Gambling_Den,
+        Clandestine_Dock_West,
+        Clandestine_Dock_East,
+        Secret_Warehouse,
+        Gates_of_the_City,
+        Spy_Ring,
+        Mercenaries,
+        Lair,
+        Consulate,
+        Gambling_House,
+        Black_Market,
+        Sepulcher,
+        Architect_Cabinet,
+        Tabularium,
+        Builders_Union,
+        Torture_Chamber,
+        Contingent,
+        Brotherhood,
+        Embassy,
+        Cenotaph,
+        Secret_Society,
+        Slave_Market,
+        Capitol,
+        Bernice,
+        Darius,
+        Caligula,
+        Aspasia,
+        Diocletian,
+        Semiramis,
+        Counterfeiters_Guild,
+        Guild_of_Shadows,
+        Mourners_Guild,
     };
 
     // will be used for Wonder stages as well as card structures
@@ -541,7 +661,9 @@ namespace SevenWonders
 
         // Name Age Type Description Icon	3 players	4 players	5 players	6 players	7 players Cost(coins)    Cost(wood) Cost(stone)    Cost(clay) Cost(ore)  Cost(cloth)    Cost(glass)    Cost(papyrus)  Chains to(1)   Chains to(2)   Effect Category Category 1 multiplier Category 1 effect Catgory 2 symbol Category 3 effect Category 4 effect Category 5: Multiplier(P = player, N = neighbours, B = both player & neighbours)   Category 5: Card/token type Category 5: coins given when card enters play multiplier Category 5: End of game VP granted
 
-        public string name { get; private set; }    // TODO: make this an enum
+        public CardName name { get; private set; }
+
+        public string nameAsStr { get; private set; }
 
         public StructureType structureType { get; private set; }
 
@@ -561,7 +683,8 @@ namespace SevenWonders
         public Card(string[] createParams)
         {
             expansion = (ExpansionSet)Enum.Parse(typeof(ExpansionSet), createParams[0]);
-            name = createParams[1];
+            nameAsStr = createParams[1];
+
             structureType = (StructureType)Enum.Parse(typeof(StructureType), createParams[2]);
 
             switch (structureType)
@@ -578,6 +701,8 @@ namespace SevenWonders
                         numAvailableByNumPlayers[i] = int.Parse(createParams[j]);
                     break;
             }
+
+            name = CardNameFromStringName(nameAsStr, wonderStage);
 
             description = createParams[4];
             iconName = createParams[5];
@@ -795,6 +920,20 @@ namespace SevenWonders
         public int GetNumCardsAvailable(int numPlayers)
         {
             return numAvailableByNumPlayers[numPlayers - 3];
+        }
+
+        public static CardName CardNameFromStringName(string nameAsString, int wonderStage = 0)
+        {
+            nameAsString = nameAsString.Replace("(", string.Empty);
+            nameAsString = nameAsString.Replace(")", string.Empty);
+            nameAsString = nameAsString.Replace(" ", "_");
+
+            if (wonderStage != 0)
+            {
+                nameAsString += "_s" + wonderStage.ToString();
+            }
+
+            return (CardName)Enum.Parse(typeof(CardName), nameAsString);
         }
     }
 }

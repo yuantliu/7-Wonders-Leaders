@@ -705,7 +705,7 @@ namespace SevenWonders
 
         public Card FindCard(string name)
         {
-            return fullCardList.Find(x => x.name == name);
+            return fullCardList.Find(x => x.name == (CardName)Enum.Parse(typeof(CardName), name));
         }
     }
 }

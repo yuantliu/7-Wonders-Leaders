@@ -750,7 +750,7 @@ namespace SevenWonders
             // if (nScienceWildCards != 0)
             //    Console.WriteLine("  {0} science wild card effect(s)", nScienceWildCards);
 
-            bool hasAristotle = playedStructure.Exists(x => x.name == "Aristotle");
+            bool hasAristotle = playedStructure.Exists(x => x.name == CardName.Aristotle);
             ScienceScore scienceScore = FindBestScienceWildcard(nScienceWildCards, hasAristotle ? 10 : 7);
 
             foreach (Card c in playedStructure.Where(x => x.structureType == StructureType.WonderStage))
@@ -772,7 +772,7 @@ namespace SevenWonders
                     // Olympia B 3rd stage.  Check each guild card built by neighboring cities
                     // and pick the one that yields the most number of points to copy.
                     int maxPoints = 0;
-                    string copiedGuild = string.Empty;
+                    CardName copiedGuild = CardName.Lumber_Yard;    // needs to be initialized to avoid compiler error.
                     ScienceScore tmpScienceScore = scienceScore;
 
                     IEnumerable<Card> neighborsGuilds = leftNeighbour.playedStructure.Where(x => x.structureType == StructureType.Guild).Concat(
@@ -803,7 +803,7 @@ namespace SevenWonders
                         }
                     }
 
-                    if (copiedGuild == "Scientists Guild")
+                    if (copiedGuild == CardName.Scientists_Guild)
                     {
                         // If the copied guild is the Scientist's Guild, update the overall 
                         // This gets really messy because we're trying for the overall maximum score while breaking out
@@ -1048,7 +1048,7 @@ namespace SevenWonders
             }
 
             //if the player owns the prerequiste, Return T immediately
-            if (playedStructure.Exists(x => (x.chain[0] == card.name) || (x.chain[1] == card.name)))
+            if (playedStructure.Exists(x => (x.chain[0] == card.nameAsStr) || (x.chain[1] == card.nameAsStr)))
                 return Buildable.True;
 
             //if the owner has built card 217: free leader cards
@@ -1078,7 +1078,7 @@ namespace SevenWonders
 
             //if the owner has built card 228: free guild cards
             //return T if the card is purple
-            if (card.structureType == StructureType.Guild && playedStructure.Exists(x => x.name == "Ramses"))
+            if (card.structureType == StructureType.Guild && playedStructure.Exists(x => x.name == CardName.Ramses))
             {
                 return Buildable.True;
             }
@@ -1108,7 +1108,7 @@ namespace SevenWonders
 
             if (card.structureType == StructureType.Leader)
             {
-                if (playerBoard.name == "Roma (A)" || playedStructure.Exists(x => x.name == "Maecenas"))
+                if (playerBoard.name == "Roma (A)" || playedStructure.Exists(x => x.name == CardName.Maecenas))
                 {
                     coinCost = 0;
                 }
@@ -1183,7 +1183,7 @@ namespace SevenWonders
             //combine the left, centre, and right DAG
             ResourceManager combinedDAG = ResourceManager.addThreeDAGs(leftNeighbour.dag, dag, rightNeighbour.dag);
 
-            if (playedStructure.Exists(x => x.name == "Bilkis"))
+            if (playedStructure.Exists(x => x.name == CardName.Bilkis))
             {
                 combinedDAG.add(new ResourceEffect(false, "WSBOCGP"));
             }

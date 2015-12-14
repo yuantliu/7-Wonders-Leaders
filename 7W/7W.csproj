@@ -404,76 +404,50 @@
     <Resource Include="Resources\Images\cards\Altar.jpg" />
     <Resource Include="Resources\Images\cards\Apothecary.jpg" />
     <Resource Include="Resources\Images\cards\Aqueduct.jpg" />
-    <Resource Include="Resources\Images\cards\Archery Range.jpg" />
     <Resource Include="Resources\Images\cards\Arena.jpg" />
     <Resource Include="Resources\Images\cards\Arsenal.jpg" />
     <Resource Include="Resources\Images\cards\Barracks.jpg" />
     <Resource Include="Resources\Images\cards\Baths.jpg" />
     <Resource Include="Resources\Images\cards\Bazar.jpg" />
     <Resource Include="Resources\Images\cards\Brickyard.jpg" />
-    <Resource Include="Resources\Images\cards\Builders Guild.jpg" />
     <Resource Include="Resources\Images\cards\Caravansery.jpg" />
-    <Resource Include="Resources\Images\cards\Chamber of Commerce.jpg" />
     <Resource Include="Resources\Images\cards\Circus.jpg" />
-    <Resource Include="Resources\Images\cards\Clay Pit.jpg" />
-    <Resource Include="Resources\Images\cards\Clay Pool.jpg" />
     <Resource Include="Resources\Images\cards\Courthouse.jpg" />
-    <Resource Include="Resources\Images\cards\Craftsmens Guild.jpg" />
     <Resource Include="Resources\Images\cards\Dispensary.jpg" />
-    <Resource Include="Resources\Images\cards\East Trading Post.jpg" />
     <Resource Include="Resources\Images\cards\Excavation.jpg" />
-    <Resource Include="Resources\Images\cards\Forest Cave.jpg" />
     <Resource Include="Resources\Images\cards\Fortifications.jpg" />
     <Resource Include="Resources\Images\cards\Forum.jpg" />
     <Resource Include="Resources\Images\cards\Foundry.jpg" />
     <Resource Include="Resources\Images\cards\Gardens.jpg" />
     <Resource Include="Resources\Images\cards\Glassworks.jpg" />
-    <Resource Include="Resources\Images\cards\Guard Tower.jpg" />
     <Resource Include="Resources\Images\cards\Haven.jpg" />
     <Resource Include="Resources\Images\cards\Laboratory.jpg" />
     <Resource Include="Resources\Images\cards\Library.jpg" />
     <Resource Include="Resources\Images\cards\Lighthouse.jpg" />
     <Resource Include="Resources\Images\cards\Lodge.jpg" />
     <Resource Include="Resources\Images\cards\Loom.jpg" />
-    <Resource Include="Resources\Images\cards\Lumber Yard.jpg" />
-    <Resource Include="Resources\Images\cards\Magistrates Guild.jpg" />
     <Resource Include="Resources\Images\cards\Marketplace.jpg" />
     <Resource Include="Resources\Images\cards\Mine.jpg" />
     <Resource Include="Resources\Images\cards\Observatory.jpg" />
-    <Resource Include="Resources\Images\cards\Ore Vein.jpg" />
     <Resource Include="Resources\Images\cards\Palace.jpg" />
     <Resource Include="Resources\Images\cards\Pantheon.jpg" />
     <Resource Include="Resources\Images\cards\Pawnshop.jpg" />
-    <Resource Include="Resources\Images\cards\Philosophers Guild.jpg" />
     <Resource Include="Resources\Images\cards\Press.jpg" />
     <Resource Include="Resources\Images\cards\Quarry.jpg" />
     <Resource Include="Resources\Images\cards\Sawmill.jpg" />
     <Resource Include="Resources\Images\cards\School.jpg" />
-    <Resource Include="Resources\Images\cards\Scientists Guild.jpg" />
     <Resource Include="Resources\Images\cards\Scriptorium.jpg" />
     <Resource Include="Resources\Images\cards\Senate.jpg" />
-    <Resource Include="Resources\Images\cards\Shipowners Guild.jpg" />
-    <Resource Include="Resources\Images\cards\Siege Workshop.jpg" />
-    <Resource Include="Resources\Images\cards\Spies Guild.jpg" />
     <Resource Include="Resources\Images\cards\Stables.jpg" />
     <Resource Include="Resources\Images\cards\Statue.jpg" />
     <Resource Include="Resources\Images\cards\Stockade.jpg" />
-    <Resource Include="Resources\Images\cards\Stone Pit.jpg" />
-    <Resource Include="Resources\Images\cards\Strategists Guild.jpg" />
     <Resource Include="Resources\Images\cards\Study.jpg" />
     <Resource Include="Resources\Images\cards\Tavern.jpg" />
     <Resource Include="Resources\Images\cards\Temple.jpg" />
     <Resource Include="Resources\Images\cards\Theatre.jpg" />
-    <Resource Include="Resources\Images\cards\Timber Yard.jpg" />
-    <Resource Include="Resources\Images\cards\Town Hall.jpg" />
-    <Resource Include="Resources\Images\cards\Traders Guild.jpg" />
-    <Resource Include="Resources\Images\cards\Training Ground.jpg" />
-    <Resource Include="Resources\Images\cards\Tree Farm.jpg" />
     <Resource Include="Resources\Images\cards\University.jpg" />
     <Resource Include="Resources\Images\cards\Vineyard.jpg" />
     <Resource Include="Resources\Images\cards\Walls.jpg" />
-    <Resource Include="Resources\Images\cards\West Trading Post.jpg" />
-    <Resource Include="Resources\Images\cards\Workers Guild.jpg" />
     <Resource Include="Resources\Images\cards\Workshop.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -525,18 +499,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\indexbg4x3.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\cards\Architects Guild.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\cards\Courtesans Guild.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\cards\Diplomats Guild.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\cards\Gamers Guild.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\cards\Alexander.jpg" />
@@ -613,6 +575,38 @@
     <Resource Include="Resources\Images\Icons\Vitruvius.png" />
     <Resource Include="Resources\Images\Icons\Xenophon.png" />
     <Resource Include="Resources\Images\Icons\Zenobia.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\cards\Archery_Range.jpg" />
+    <Resource Include="Resources\Images\cards\Architects_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Builders_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Chamber_of_Commerce.jpg" />
+    <Resource Include="Resources\Images\cards\Clay_Pit.jpg" />
+    <Resource Include="Resources\Images\cards\Clay_Pool.jpg" />
+    <Resource Include="Resources\Images\cards\Courtesans_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Craftsmens_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Diplomats_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\East_Trading_Post.jpg" />
+    <Resource Include="Resources\Images\cards\Forest_Cave.jpg" />
+    <Resource Include="Resources\Images\cards\Gamers_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Guard_Tower.jpg" />
+    <Resource Include="Resources\Images\cards\Lumber_Yard.jpg" />
+    <Resource Include="Resources\Images\cards\Magistrates_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Ore_Vein.jpg" />
+    <Resource Include="Resources\Images\cards\Philosophers_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Scientists_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Shipowners_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Siege_Workshop.jpg" />
+    <Resource Include="Resources\Images\cards\Spies_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Stone_Pit.jpg" />
+    <Resource Include="Resources\Images\cards\Strategists_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Timber_Yard.jpg" />
+    <Resource Include="Resources\Images\cards\Town_Hall.jpg" />
+    <Resource Include="Resources\Images\cards\Traders_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Training_Ground.jpg" />
+    <Resource Include="Resources\Images\cards\Tree_Farm.jpg" />
+    <Resource Include="Resources\Images\cards\West_Trading_Post.jpg" />
+    <Resource Include="Resources\Images\cards\Workers_Guild.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
