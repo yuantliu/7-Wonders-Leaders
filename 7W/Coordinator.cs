@@ -423,7 +423,7 @@ namespace SevenWonders
                         Application.Current.Dispatcher.Invoke(new Action(delegate
                         {
                             //gameUI.showCommerceUI(s);
-                            NewCommerce commerce = new NewCommerce(this, fullCardList, qcoll);
+                            NewCommerce commerce = new NewCommerce(this, qcoll);
 
                             commerce.ShowDialog();
                         }));

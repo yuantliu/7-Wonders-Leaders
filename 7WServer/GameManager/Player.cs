@@ -16,7 +16,7 @@ namespace SevenWonders
 
         public Board playerBoard { get; set; }
 
-        //current Stage of wonder
+        // Last Wonder Stage that has been built (add 1 to get the next wonder stage to be built)
         public int currentStageOfWonder { get; set; }
 
         //resources

@@ -71,7 +71,7 @@ namespace SevenWonders
         /// <summary>
         /// Set the coordinator and handle CommerceInformation, which contains all necessary UI data, from GameManager
         /// </summary>
-        public NewCommerce(Coordinator coordinator, List<Card> cardList, /*string cardName, int wonderStage,*/ NameValueCollection qscoll)
+        public NewCommerce(Coordinator coordinator, /* List<Card> cardList, */ /*string cardName, int wonderStage,*/ NameValueCollection qscoll)
         {
             //intialise all the UI components in the xaml file (labels, etc.) to avoid null pointer
             InitializeComponent();
@@ -84,13 +84,13 @@ namespace SevenWonders
 
             structureName = qscoll["Structure"];
 
-            isStage = qscoll["WonderStage"] != "0";
+            isStage = qscoll["WonderStage"] == "True";
 
             if (isStage)
             {
-                string[] wonderData = qscoll["wonderInfo"].Split('/');
+                string strWonderName = qscoll["wonderCard"];
 
-                cardCost = cardList.Find(x => x.nameAsStr == wonderData[1] && x.wonderStage == (int.Parse(wonderData[0]) + 1)).cost;
+                cardCost = coordinator.FindCard(strWonderName).cost;
             }
             else
             {
@@ -543,7 +543,7 @@ namespace SevenWonders
             {
                 // TODO: the response should be what resources were used from each neighbor.  The server should
                 // calculate the cost and exchange coins.
-                string strResponse = string.Format("BldStrct&WonderStage={0}&Structure={1}&leftCoins={2}&rightCoins={3}", isStage ? "1" : "0", structureName, leftcoin, rightcoin);
+                string strResponse = string.Format("BldStrct&WonderStage={0}&Structure={1}&leftCoins={2}&rightCoins={3}", isStage ? "True" : "False", structureName, leftcoin, rightcoin);
                 if (usedBilkis)
                 {
                     strResponse += "&Bilkis=True";

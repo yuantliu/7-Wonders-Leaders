@@ -465,7 +465,7 @@ namespace SevenWonders
             btnBuildStructureForFree_isEnabled = false;
             playerPlayedHisTurn = true;
             // bilkisButton.IsEnabled = false;
-            coordinator.sendToHost(string.Format("BldStrct&WonderStage=0&FreeBuild=True&Structure={0}", hand[handPanel.SelectedIndex].Key.name));
+            coordinator.sendToHost(string.Format("BldStrct&WonderStage=False&FreeBuild=True&Structure={0}", hand[handPanel.SelectedIndex].Key.name));
             coordinator.endTurn();
 
         }
@@ -480,12 +480,12 @@ namespace SevenWonders
                 ((Button)sender).IsEnabled = false;
                 playerPlayedHisTurn = true;
                 // bilkisButton.IsEnabled = false;
-                coordinator.sendToHost(string.Format("BldStrct&WonderStage=0&Structure={0}", hand[handPanel.SelectedIndex].Key.name));
+                coordinator.sendToHost(string.Format("BldStrct&WonderStage=False&Structure={0}", hand[handPanel.SelectedIndex].Key.name));
                 coordinator.endTurn();
             }
             else
             {
-                coordinator.sendToHost("SendComm&WonderStage=0&Structure=" + hand[handPanel.SelectedIndex].Key.name);     // the server's response will open the Commerce Dialog box
+                coordinator.sendToHost("SendComm&WonderStage=False&Structure=" + hand[handPanel.SelectedIndex].Key.name);     // the server's response will open the Commerce Dialog box
             }
 
             if (hand[handPanel.SelectedIndex].Key.structureType == StructureType.Leader)
@@ -513,12 +513,12 @@ namespace SevenWonders
                 ((Button)sender).IsEnabled = false;
                 playerPlayedHisTurn = true;
                 // bilkisButton.IsEnabled = false;
-                coordinator.sendToHost(string.Format("BldStrct&WonderStage=1&Structure={0}", hand[handPanel.SelectedIndex].Key.name));
+                coordinator.sendToHost(string.Format("BldStrct&WonderStage=True&Structure={0}", hand[handPanel.SelectedIndex].Key.name));
                 coordinator.endTurn();
             }
             else
             {
-                coordinator.sendToHost("SendComm&WonderStage=1&Structure=" + hand[handPanel.SelectedIndex].Key.name);     // the server's response will open the Commerce Dialog box
+                coordinator.sendToHost("SendComm&WonderStage=True&Structure=" + hand[handPanel.SelectedIndex].Key.name);     // the server's response will open the Commerce Dialog box
             }
 
             if (hand[handPanel.SelectedIndex].Key.structureType == StructureType.Leader)
@@ -643,7 +643,7 @@ namespace SevenWonders
                 Image iconImage = new Image();
                 iconImage.Source = bmi;
                 iconImage.Height = ICON_HEIGHT;                 // limit the height of each card icon to 30 pixels.
-                string strToolTip = string.Format("{0}: {1}", lastPlayedCard.name, lastPlayedCard.description);
+                string strToolTip = string.Format("{0}: {1}", lastPlayedCard.nameAsStr, lastPlayedCard.description);
                 if (lastPlayedCard.chain[0] != string.Empty)
                 {
                     strToolTip += "  Chains to: " + lastPlayedCard.chain[0];

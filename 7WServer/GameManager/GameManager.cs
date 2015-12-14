@@ -521,7 +521,7 @@ namespace SevenWonders
         protected Board popRandomBoard()
         {
             // int index = (new Random()).Next(0, board.Count);
-            int index = 14;
+            int index = 0;
 
             KeyValuePair<Board.Wonder, Board> randomBoard = board.ElementAt(index);
 
@@ -574,7 +574,7 @@ namespace SevenWonders
 
             bool usedBilkis = strUsedBilkis != null && strUsedBilkis == "True";
 
-            buildStructureFromHand(p, c, strWonderStage == "1", freeBuild, nLeftCoins, nRightCoins, usedBilkis);
+            buildStructureFromHand(p, c, strWonderStage == "True", freeBuild, nLeftCoins, nRightCoins, usedBilkis);
         }
 
         /// <summary>
@@ -1234,19 +1234,20 @@ namespace SevenWonders
             strCommerce += string.Format("&resourceDiscount={0}", p.rawMaterialsDiscount.ToString());
             strCommerce += string.Format("&goodsDiscount={0}", p.goodsDiscount.ToString());
 
-            strCommerce += string.Format("&wonderInfo={0}/{1}", p.currentStageOfWonder, p.playerBoard.name);
+            if (wonderStage == "True")
+                strCommerce += string.Format("&wonderCard={0}", Card.CardNameFromStringName(p.playerBoard.name, p.currentStageOfWonder+1));
 
             strCommerce += string.Format("&Structure={0}&WonderStage={1}", structureName, wonderStage);
 
             Card card = null;
 
-            if (wonderStage == "0")
+            if (wonderStage == "True")
             {
-                card = fullCardList.Find(y => y.name == Card.CardNameFromStringName(structureName));
+                card = p.playerBoard.stageCard[p.currentStageOfWonder];
             }
             else
             {
-                card = p.playerBoard.stageCard[p.currentStageOfWonder];
+                card = fullCardList.Find(y => y.name == (CardName)Enum.Parse(typeof(CardName), structureName));
             }
 
             bool hasDisountEffect = p.playedStructure.Exists(x => x.effect is StructureDiscountEffect && ((StructureDiscountEffect)x.effect).discountedStructureType == card.structureType);
