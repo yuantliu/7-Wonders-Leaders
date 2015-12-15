@@ -9,6 +9,7 @@ using System.Net;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Data;
+using System.Windows;
 
 namespace SevenWonders
 {
@@ -53,9 +54,9 @@ namespace SevenWonders
                 swSender = new StreamWriter(tcpUser.GetStream());
                 srReceiver = new StreamReader(tcpUser.GetStream());
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine("Client.InitializeConnection: could not connect to the server at the IP address");
+                MessageBox.Show(string.Format("Fatal error: a connection to the server on {0}:{1} could not be established.  Quitting", ipAddr, 1989), "7 Wonders");
                 return;
             }
 
@@ -112,8 +113,9 @@ namespace SevenWonders
                         break;
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
+                    System.Diagnostics.Debug.WriteLine(ex.ToString());
                     Connected = false;
                 }
             }
@@ -133,14 +135,14 @@ namespace SevenWonders
         // Closes a current connection
         public void CloseConnection()
         {
-            //Tell the server that 
-
-            // Close the objects
-            Connected = false;
-            thrMessaging.Abort();
-            swSender.Close();
-            srReceiver.Close();
-            tcpUser.Close();
+            if (Connected)
+            {
+                Connected = false;
+                thrMessaging.Abort();
+                swSender.Close();
+                srReceiver.Close();
+                tcpUser.Close();
+            }
         }
     }
 }

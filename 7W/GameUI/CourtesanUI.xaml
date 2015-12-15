@@ -4,7 +4,7 @@
         Title="Courtesan's Guild" Height="303" Width="229" Closing="Window_Closing">
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="/7W;component/bin/Debug/Images/courtesan_bg.png" Opacity="0.15"/>
+            <ImageBrush ImageSource="../Resources/Images/courtesan_bg.png" Opacity="0.15"/>
         </Grid.Background>
         <Image Height="193" HorizontalAlignment="Left" Margin="47,33,0,0" Name="leaderCardImage" Stretch="Fill" VerticalAlignment="Top" Width="125" />
         <Label Content="Copy a Leader" Height="27" HorizontalAlignment="Left" Name="label1" VerticalAlignment="Top" Width="88" Margin="63,0,0,0" />

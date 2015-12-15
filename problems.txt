@@ -1,3 +1,56 @@
+
+Added by James Fairweather
+UI problems:
+  - UI is too crowded.  Change it to be a scrollable horizontal panel with one player state in each panel that's much larger.  Should be large enough to show complete state of plus both neighbors.
+  - Can we use other nicknames?
+  - it would be nice if PlayerStatePanels were created dynamically so we maximized our use of space on the Main Window.
+    The current behavior is that all 8 panels are created statically and only the ones in use are activated.
+
+Commerce issues:
+	- I am not sure that the either/or first age cards are working correctly.  I need to do a detailed analysis of how the resources are walked.  The algorithm should look like:
+		* if the card cost is zero, or the parent was built, the card can be built for free
+		* if not, check the resources of the player.  Starting with the singles, then the doubles, then the either/or, then the forum/caravansery, the Leader who give a resource-1 cost for that card type.
+		* if still not, commerce is required.  Combine the players plus the two neighbor's resources into one list.
+		  as with the single player, go through the singles, doubles, either/or cards, caravansery/forum, then bilkis.  The either/or cards are the most challenging
+		  as every possible combination must be checked before the cost is said to be impossible.  I.e. using the first resource of an either/or might make it not possible
+		  to afford it but choosing the other one could mean the structure _is_ affordable.  So every possible combination must be checked before the isCardAffordable returns
+		  false, and I don't think it's checking every possible combination.
+	- Submit data from client should look like: BldStrct&Structure=<Card Name>&CommerceData=true&Player=W/Clay Pit&Player=S/Quarry&Player=S/Quarry&Left=W/Tree Farm&Right=G/Glassworks
+		- Commerce Data is only required for structures that require it.
+		- The card name can be WonderStagen, n { 1, 2, 3, 4 }
+	- We're currently using the effects, which in some ways is better (simpler), but the real weakness is that the client just sends back "build this structure and pay my left neighbor 1 coin and my right one 3 coins"
+	  If I want to be serious about this, that's not an appropriate response.  Client must include which cards were used so the server can validate the transaction.  Still, I suppose you could just pass back which
+	  resources were used on either side rather than a few coins.  It would still be fairly easy to calculate what's going on.
+
+AI players
+	- Could be improved a lot without much effort
+	- Take advantage of commerce ability
+	- Don't overplay military
+	- Go for sets in science
+	- Take advantage of Wonder effects.
+	- Look at what other cards have been played to guess what's coming in the next hand.
+
+Technical stories:
+
+- There is a problem when Babylon B's power is activated and Halikarnassos builds a free build wonder stage
+  with their 6th card.  Babylon B must play first, then Halikarnassos can play.  Will need to use a 2nd client
+  to run through this logic.
+
+- Should probably have a way to distinguish between the table host (creates the game and may add AI players) vs.
+  non-hosts - cannot add AI players.
+
+- There's a bug with Halikarnassos not counting its B side wonder points properly.  Update 12/12/2015.  I believe I fixed this bug.
+  Also check that the UI is updated before the player needs to select his card.
+
+- Remove all these unique effects.  Instead, have a "SpecialEffect" type. If that's set, we have to look at the card name
+  to determine its effect.
+
+- The list of players (the datagrid) isn't hooked up at the match-making.
+
+- it would be nice to use data binding, if I can figure it out.
+
+Original text below:
+
 MainWindow constructor
 
 - create Coordinator

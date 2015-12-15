@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -25,8 +26,9 @@ namespace SevenWonders
     /// </summary>
     public partial class TableUI : Window
     {
+        Coordinator coordinator;
 
-        Coordinator coordinator { get; set; }
+        private ObservableCollection<string> players = new ObservableCollection<string>();
 
         /// <summary>
         /// Initialise the Table UI
@@ -44,6 +46,8 @@ namespace SevenWonders
 
             //empty the chatTextBox
             chatTextBox.Text = "";
+
+            playerList.ItemsSource = players;
         }
 
         /// <summary>
@@ -60,12 +64,6 @@ namespace SevenWonders
                 coordinator.hasGame = false;
 
                 coordinator.client.CloseConnection();
-
-                //shut down the server if coordinator contains a gmCoordinator(and therefore must be a server)
-                if (coordinator.isServer() == true)
-                {
-                    coordinator.stopServer();
-                }
             }
         }
 
@@ -95,7 +93,7 @@ namespace SevenWonders
         /// <param name="e"></param>
         public void dataGrid1_SourceUpdated(object sender, DataTransferEventArgs e)
         {
-            //dataGrid1.ItemsSource = Server.clients;
+            // dataGrid1.ItemsSource = "User1";// Server.htUsers;
         }
 
         /// <summary>
@@ -118,6 +116,12 @@ namespace SevenWonders
         /// <param name="e"></param>
         private void addAIButton_Click(object sender, RoutedEventArgs e)
         {
+            // Add "difficult" AI
+            coordinator.sendToHost("aa4");
+
+            players.Add("aslkjasdf");
+            /*
+            JDF commented out in the interests of speeding up the game start.
             //Add a Leaders AI
             if (leaders_Checkbox.IsChecked == true)
             {
@@ -128,6 +132,7 @@ namespace SevenWonders
             {
                 coordinator.newAIUI('V');
             }
+            */
         }
 
         /// <summary>
@@ -183,6 +188,7 @@ namespace SevenWonders
         /// <returns></returns>
         private String local()
         {
+            /*
             String localIP = "";
             IPHostEntry host;
 
@@ -196,6 +202,23 @@ namespace SevenWonders
                 }
             }
             return localIP;
+            */
+
+            return IPAddress.Loopback.ToString();
+        }
+
+        private void leaders_Checkbox_Click(object sender, RoutedEventArgs e)
+        {
+            if ((bool)leaders_Checkbox.IsChecked)
+            {
+                coordinator.expansionSet = ExpansionSet.Leaders;
+                coordinator.sendToHost("mL");       // mode Leaders
+            }
+            else
+            {
+                coordinator.expansionSet = ExpansionSet.Original;
+                coordinator.sendToHost("mV");       // mode Vanilla
+            }
         }
     }
 }

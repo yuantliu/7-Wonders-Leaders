@@ -34,25 +34,6 @@ namespace SevenWonders
             //Add vanilla strats to AIStrategy UI combobox
             if (mode == 'V')
             {
-                ComboBoxItem item0 = new ComboBoxItem();
-                item0.Content = "Discard random card (Vanilla)";
-                strategyBox.Items.Add(item0);
-
-                ComboBoxItem item1 = new ComboBoxItem();
-                item1.Content = "Build anything that's buildable (Vanilla)";
-                strategyBox.Items.Add(item1);
-
-                ComboBoxItem item2 = new ComboBoxItem();
-                item2.Content = "Prefer Victory Points (Vanilla)";
-                strategyBox.Items.Add(item2);
-
-                ComboBoxItem item3 = new ComboBoxItem();
-                item3.Content = "Prefer Military (Vanilla) ";
-                strategyBox.Items.Add(item3);
-
-                ComboBoxItem item4 = new ComboBoxItem();
-                item4.Content = "\"Difficult\" (Vanilla)";
-                strategyBox.Items.Add(item4);
             }
             else if (mode == 'L')
             {

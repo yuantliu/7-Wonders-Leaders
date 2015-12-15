@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,40 +11,59 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Effects;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace SevenWonders
 {
+    public class PlayerState
+    {
+        public Dictionary<StructureType, WrapPanel> structuresBuilt = new Dictionary<StructureType, WrapPanel>(8);
+        public Image lastCardPlayed;
+
+        public PlayerStateWindow state;
+
+        public PlayerState(PlayerStateWindow plyr, string name)
+        {
+            state = plyr;
+
+            structuresBuilt[StructureType.RawMaterial] = plyr.ResourceStructures;
+            structuresBuilt[StructureType.Goods] = plyr.GoodsStructures;
+            structuresBuilt[StructureType.Commerce] = plyr.CommerceStructures;
+            structuresBuilt[StructureType.Military] = plyr.MilitaryStructures;
+            structuresBuilt[StructureType.Science] = plyr.ScienceStructures;
+            structuresBuilt[StructureType.Civilian] = plyr.CivilianStructures;
+            structuresBuilt[StructureType.Guild] = plyr.GuildStructures;
+            structuresBuilt[StructureType.Leader] = plyr.LeaderStructures;
+
+            plyr.CoinsImage.Visibility = Visibility.Visible;
+
+            plyr.PlayerName.Content = name;
+        }
+    };
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-
         //dimensions for the icons at the Player bars
-        public const int ICON_WIDTH = 25;
-        public const int CARD_WIDTH = 112;
-        public const int CARD_HEIGHT = 206;
+        const int ICON_HEIGHT = 40;
 
         //Client's coordinator
         Coordinator coordinator;
 
-        //Current directory
-        String currentPath = Environment.CurrentDirectory;
-
-        //Individual Player bar panel
-        StackPanel[] playerBarPanel;
-
-        //Buttons
-        public Button[] buildStructureButton;
-        Button[] buildStageButton;
-        Button[] discardButton;
+        Dictionary<string, PlayerState> playerState = new Dictionary<string, PlayerState>();
 
         public bool playerPlayedHisTurn = false;
-        //variable that represent the button that was pressed in the cardActionPanel
-        Button playedButton = new Button();
+        public bool btnBuildStructureForFree_isEnabled = false;
 
+        List<KeyValuePair<Card, Buildable>> hand = new List<KeyValuePair<Card, Buildable>>();
+
+        Buildable stageBuildable;
+
+        bool canDiscardStructure;
 
         //constructor: create the UI. create the Coordinator object
         public MainWindow()
@@ -54,17 +75,48 @@ namespace SevenWonders
 
             //make graphics better
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.Fant);
+
+            JoinTableUI joinGameDlg = new JoinTableUI(coordinator);
+            joinGameDlg.ShowDialog();
+
+            // Maybe I should have the ability to choose between Joining and Creating?
+            // Original code allowed the creator to add AI and select the leaders.
+            coordinator.joinGame(joinGameDlg.userName, IPAddress.Parse(joinGameDlg.ipAddressAsText));
+
+            // coordinator.createGame();
+
+            if (!coordinator.client.Connected)
+            {
+                Close();
+                return;
+            }
+
+            PlayerStateWindow[,] seatMap = new PlayerStateWindow[,] {
+                { SeatA, SeatF, SeatD, null, null, null, null, null },      // 3 players
+                { SeatA, SeatG, SeatE, SeatC, null, null, null, null },     // 4 players
+                { SeatA, SeatG, SeatF, SeatD, SeatC, null, null, null },    // 5 players
+                { SeatA, SeatH, SeatF, SeatE, SeatD, SeatB, null, null },   // 6 players
+                { SeatA, SeatH, SeatG, SeatF, SeatD, SeatC, SeatB, null},   // 7 players
+                { SeatA, SeatH, SeatG, SeatF, SeatE, SeatD, SeatC, SeatB }, // 8 players
+           };
+
+            for (int i = 0; i < coordinator.playerNames.Length; ++i)
+            {
+                playerState.Add(coordinator.playerNames[i], new PlayerState(seatMap[coordinator.playerNames.Length - 3, i], coordinator.playerNames[i]));
+            }
+
+            coordinator.sendToHost("U");
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Menu UI event handlers
 
+#if FALSE
         //Event handlers for clicking the Create Table button
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
             //tell the coordinator that create game Button is pressed
             //UC-01 R01
-            coordinator.createGame();
         }
 
         //Event handler for clicking the Join Table button
@@ -85,8 +137,8 @@ namespace SevenWonders
 
             this.Close();
         }
+#endif
 
-     
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // UI Updates
@@ -97,698 +149,597 @@ namespace SevenWonders
         /// Display the Player Bar Panel information, given the String from Coordinator
         /// </summary>
         /// <param name="playerBarPanelInformation"></param>
-        public void showPlayerBarPanel(String playerBarPanelInformation)
-        {          
-
-            //clear the PlayerPanel of its current contents
-            playerPanel.Children.Clear();
-
-            PlayerBarInformation playerBarInformation = (PlayerBarInformation)Marshaller.StringToObject(playerBarPanelInformation);
-
-            //if Player has no money, then disable Bilkis
-
-            //get the number of players
-            int numberOfPlayers = playerBarInformation.numOfPlayers;            
-
-            //initialize the icons
-            //Static icon images used in Player Bar Panel
-            Image[] brickIcon, oreIcon, stoneIcon, woodIcon, glassIcon, loomIcon, papyrusIcon, bearTrapIcon, sextantIcon, tabletIcon,
-                victoryIcon, shieldIcon, coinIcon, conflictIcon, conflictTokensCountIcon, lossIcon;
-            brickIcon = new Image[numberOfPlayers];
-            oreIcon = new Image[numberOfPlayers];
-            stoneIcon = new Image[numberOfPlayers];
-            woodIcon = new Image[numberOfPlayers];
-            glassIcon = new Image[numberOfPlayers];
-            loomIcon = new Image[numberOfPlayers];
-            papyrusIcon = new Image[numberOfPlayers];
-            bearTrapIcon = new Image[numberOfPlayers];
-            sextantIcon = new Image[numberOfPlayers];
-            tabletIcon = new Image[numberOfPlayers];
-            victoryIcon = new Image[numberOfPlayers];
-            shieldIcon = new Image[numberOfPlayers];
-            coinIcon = new Image[numberOfPlayers];
-            conflictIcon = new Image[numberOfPlayers];
-            conflictTokensCountIcon = new Image[numberOfPlayers];
-            lossIcon = new Image[numberOfPlayers];
-
-
-            //display the information
-            //create the appropriate amount of bars and add the elements to each bar
-            playerBarPanel = new StackPanel[numberOfPlayers];
-
-            Button[] viewDetails = new Button[numberOfPlayers];
-
-            //initilize the labels which will display the amounts
-            Label[] playerLabel = new Label[numberOfPlayers];
-            Label[] brickLabel = new Label[numberOfPlayers];
-            Label[] oreLabel = new Label[numberOfPlayers];
-            Label[] stoneLabel = new Label[numberOfPlayers];
-            Label[] woodLabel = new Label[numberOfPlayers];
-            Label[] glassLabel = new Label[numberOfPlayers];
-            Label[] loomLabel = new Label[numberOfPlayers];
-            Label[] papyrusLabel = new Label[numberOfPlayers];
-            Label[] bearTrapLabel = new Label[numberOfPlayers];
-            Label[] sextantLabel = new Label[numberOfPlayers];
-            Label[] tabletLabel = new Label[numberOfPlayers];
-            Label[] victoryLabel = new Label[numberOfPlayers];
-            Label[] shieldLabel = new Label[numberOfPlayers];
-            Label[] coinLabel = new Label[numberOfPlayers];
-            Label[] conflictLabel = new Label[numberOfPlayers];
-            Label[] conflictTokensCountLabel = new Label[numberOfPlayers];
-            Label[] lossLabel = new Label[numberOfPlayers];
-
-
-            for (int i = 0; i < numberOfPlayers; i++)
+        public void showPlayerBarPanel(string playerName, string strCoins)
+        {
+            TextBlock tb = new TextBlock()
             {
-                //create the icons
-                //create the view detail buttons
-                viewDetails[i] = new Button();
-                BitmapImage viewDetailsImageSource = new BitmapImage();
-                viewDetailsImageSource.BeginInit();
-                viewDetailsImageSource.UriSource = new Uri(currentPath + "\\Images\\details.png");
-                viewDetailsImageSource.EndInit();
-                viewDetails[i].Background = new ImageBrush(viewDetailsImageSource);
-                viewDetails[i].Width = ICON_WIDTH;
-                viewDetails[i].Height = ICON_WIDTH;
-                //add that player's name as the tag
-                viewDetails[i].Name = playerBarInformation.playerInfo[i].nickname;
+                Text = "x " + strCoins,
+                TextAlignment = TextAlignment.Center,
+                TextWrapping = TextWrapping.Wrap,
+                FontFamily = new FontFamily("Lucida Handwriting"),
+                FontSize = 18,
+                Foreground = new SolidColorBrush(Colors.White),
+            };
 
-                //create the brick pictures
-                brickIcon[i] = new Image();
-                BitmapImage brickIconImageSource = new BitmapImage();
-                brickIconImageSource.BeginInit();
-                brickIconImageSource.UriSource = new Uri(currentPath + "\\Images\\brick.png");
-                brickIconImageSource.EndInit();
-                brickIcon[i].Source = brickIconImageSource;
-                brickIcon[i].Width = ICON_WIDTH;
-                brickIcon[i].Height = ICON_WIDTH;
+            playerState[playerName].state.CoinsLabel.Content = tb;
+        }
 
-                //create the ore pictures
-                oreIcon[i] = new Image();
-                BitmapImage oreIconImageSource = new BitmapImage();
-                oreIconImageSource.BeginInit();
-                oreIconImageSource.UriSource = new Uri(currentPath + "\\Images\\ore.png");
-                oreIconImageSource.EndInit();
-                oreIcon[i].Source = oreIconImageSource;
-                oreIcon[i].Width = ICON_WIDTH;
-                oreIcon[i].Height = ICON_WIDTH;
+        public void updateLeaderIcons(NameValueCollection leaderNames)
+        {
+            lbLeaderIcons.Children.Clear();
 
-                //create the stone pictures
-                stoneIcon[i] = new Image();
-                BitmapImage stoneIconImageSource = new BitmapImage();
-                stoneIconImageSource.BeginInit();
-                stoneIconImageSource.UriSource = new Uri(currentPath + "\\Images\\stone.png");
-                stoneIconImageSource.EndInit();
-                stoneIcon[i].Source = stoneIconImageSource;
-                stoneIcon[i].Width = ICON_WIDTH;
-                stoneIcon[i].Height = ICON_WIDTH;
+            foreach (string leaderCardName in leaderNames.Keys)
+            {
+                Card leaderCard = coordinator.FindCard(leaderCardName);
 
-                //create the wood picture
-                woodIcon[i] = new Image();
-                BitmapImage woodIconImageSource = new BitmapImage();
-                woodIconImageSource.BeginInit();
-                woodIconImageSource.UriSource = new Uri(currentPath + "\\Images\\wood.png");
-                woodIconImageSource.EndInit();
-                woodIcon[i].Source = woodIconImageSource;
-                woodIcon[i].Width = ICON_WIDTH;
-                woodIcon[i].Height = ICON_WIDTH;
+                BitmapImage bmpImg = new BitmapImage();
+                bmpImg.BeginInit();
+                bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/icons/" + leaderCard.iconName + ".png");
+                bmpImg.EndInit();
 
-                //create the glass pictures
-                glassIcon[i] = new Image();
-                BitmapImage glassIconImageSource = new BitmapImage();
-                glassIconImageSource.BeginInit();
-                glassIconImageSource.UriSource = new Uri(currentPath + "\\Images\\glass.png");
-                glassIconImageSource.EndInit();
-                glassIcon[i].Source = glassIconImageSource;
-                glassIcon[i].Width = ICON_WIDTH;
-                glassIcon[i].Height = ICON_WIDTH;
+                Image img = new Image();
+                img.Source = bmpImg;
+                img.Height = ICON_HEIGHT;
 
-                //create the loom pictures
-                loomIcon[i] = new Image();
-                BitmapImage loomIconImageSource = new BitmapImage();
-                loomIconImageSource.BeginInit();
-                loomIconImageSource.UriSource = new Uri(currentPath + "\\Images\\loom.png");
-                loomIconImageSource.EndInit();
-                loomIcon[i].Source = loomIconImageSource;
-                loomIcon[i].Width = ICON_WIDTH;
-                loomIcon[i].Height = ICON_WIDTH;
+                img.ToolTip = string.Format("{0} - cost: {1} coin{2}.  {3}",
+                    leaderCard.Id, leaderCard.cost.coin, leaderCard.cost.coin >= 2 ? "(s)" : string.Empty, leaderCard.description);
+                img.Name = leaderCard.strName;
+                img.Margin = new Thickness(2);
 
-                //create the papyrus pictures
-                papyrusIcon[i] = new Image();
-                BitmapImage papyrusIconImageSource = new BitmapImage();
-                papyrusIconImageSource.BeginInit();
-                papyrusIconImageSource.UriSource = new Uri(currentPath + "\\Images\\papyrus.png");
-                papyrusIconImageSource.EndInit();
-                papyrusIcon[i].Source = papyrusIconImageSource;
-                papyrusIcon[i].Width = ICON_WIDTH;
-                papyrusIcon[i].Height = ICON_WIDTH;
-
-                //create the science pictures
-                bearTrapIcon[i] = new Image();
-                BitmapImage bearTrapIconImageSource = new BitmapImage();
-                bearTrapIconImageSource.BeginInit();
-                bearTrapIconImageSource.UriSource = new Uri(currentPath + "\\Images\\bearTrap.png");
-                bearTrapIconImageSource.EndInit();
-                bearTrapIcon[i].Source = bearTrapIconImageSource;
-                bearTrapIcon[i].Width = ICON_WIDTH;
-                bearTrapIcon[i].Height = ICON_WIDTH;
-
-                sextantIcon[i] = new Image();
-                BitmapImage sextantIconImageSource = new BitmapImage();
-                sextantIconImageSource.BeginInit();
-                sextantIconImageSource.UriSource = new Uri(currentPath + "\\Images\\sextant.png");
-                sextantIconImageSource.EndInit();
-                sextantIcon[i].Source = sextantIconImageSource;
-                sextantIcon[i].Width = ICON_WIDTH;
-                sextantIcon[i].Height = ICON_WIDTH;
-
-                tabletIcon[i] = new Image();
-                BitmapImage tabletIconImageSource = new BitmapImage();
-                tabletIconImageSource.BeginInit();
-                tabletIconImageSource.UriSource = new Uri(currentPath + "\\Images\\tablet.jpg");
-                tabletIconImageSource.EndInit();
-                tabletIcon[i].Source = tabletIconImageSource;
-                tabletIcon[i].Width = ICON_WIDTH;
-                tabletIcon[i].Height = ICON_WIDTH;
-
-                //create the victory pictures
-                victoryIcon[i] = new Image();
-                BitmapImage victoryIconImageSource = new BitmapImage();
-                victoryIconImageSource.BeginInit();
-                victoryIconImageSource.UriSource = new Uri(currentPath + "\\Images\\victory.png");
-                victoryIconImageSource.EndInit();
-                victoryIcon[i].Source = victoryIconImageSource;
-                victoryIcon[i].Width = ICON_WIDTH;
-                victoryIcon[i].Height = ICON_WIDTH;
-
-                //create the shield points pictures
-                shieldIcon[i] = new Image();
-                BitmapImage shieldIconImageSource = new BitmapImage();
-                shieldIconImageSource.BeginInit();
-                shieldIconImageSource.UriSource = new Uri(currentPath + "\\Images\\shield.jpg");
-                shieldIconImageSource.EndInit();
-                shieldIcon[i].Source = shieldIconImageSource;
-                shieldIcon[i].Width = ICON_WIDTH;
-                shieldIcon[i].Height = ICON_WIDTH;
-
-                //create the coin pictures
-                coinIcon[i] = new Image();
-                BitmapImage coinIconImageSource = new BitmapImage();
-                coinIconImageSource.BeginInit();
-                coinIconImageSource.UriSource = new Uri(currentPath + "\\Images\\coin.png");
-                coinIconImageSource.EndInit();
-                coinIcon[i].Source = coinIconImageSource;
-                coinIcon[i].Width = ICON_WIDTH;
-                coinIcon[i].Height = ICON_WIDTH;
-
-                //create the conflict pictures (total points from conflict)
-                conflictIcon[i] = new Image();
-                BitmapImage conflictIconImageSource = new BitmapImage();
-                conflictIconImageSource.BeginInit();
-                conflictIconImageSource.UriSource = new Uri(currentPath + "\\Images\\fight1.png");
-                conflictIconImageSource.EndInit();
-                conflictIcon[i].Source = conflictIconImageSource;
-                conflictIcon[i].Width = ICON_WIDTH;
-                conflictIcon[i].Height = ICON_WIDTH;
-
-                //number of conflict tokens present (from 0 - 6)
-                conflictTokensCountIcon[i] = new Image();
-                BitmapImage conflictTokensCountSource = new BitmapImage();
-                conflictTokensCountSource.BeginInit();
-                conflictTokensCountSource.UriSource = new Uri(currentPath + "\\Images\\fight2.png");
-                conflictTokensCountSource.EndInit();
-                conflictTokensCountIcon[i].Source = conflictTokensCountSource;
-                conflictTokensCountIcon[i].Width = ICON_WIDTH;
-                conflictTokensCountIcon[i].Height = ICON_WIDTH;
-
-                //create the loss pictures
-                lossIcon[i] = new Image();
-                BitmapImage lossIconImageSource = new BitmapImage();
-                lossIconImageSource.BeginInit();
-                lossIconImageSource.UriSource = new Uri(currentPath + "\\Images\\fight0.png");
-                lossIconImageSource.EndInit();
-                lossIcon[i].Source = lossIconImageSource;
-                lossIcon[i].Width = ICON_WIDTH;
-                lossIcon[i].Height = ICON_WIDTH;
-
-                //create and add each player's bar
-                playerBarPanel[i] = new StackPanel();
-                playerBarPanel[i].Orientation = Orientation.Horizontal;
-                playerPanel.Children.Add(playerBarPanel[i]);
-
-                //add the Magnifying buttons
-                playerBarPanel[i].Children.Add(viewDetails[i]);
-                //add the action listeners
-                viewDetails[i].Click += viewDetailsButtonPressed;
-
-                //the player's name label
-                playerLabel[i] = new Label();
-                playerLabel[i].Content = playerBarInformation.playerInfo[i].nickname;
-                playerLabel[i].Width = 50;
-                playerBarPanel[i].Children.Add(playerLabel[i]);
-
-                //brick icon
-                playerBarPanel[i].Children.Add(brickIcon[i]);
-                //brick label
-                brickLabel[i] = new Label();
-                brickLabel[i].Content = playerBarInformation.playerInfo[i].brick;
-                playerBarPanel[i].Children.Add(brickLabel[i]);
-
-                //ore icon
-                playerBarPanel[i].Children.Add(oreIcon[i]);
-                //ore label
-                oreLabel[i] = new Label();
-                oreLabel[i].Content = playerBarInformation.playerInfo[i].ore;
-                playerBarPanel[i].Children.Add(oreLabel[i]);
-
-                //stone icon
-                playerBarPanel[i].Children.Add(stoneIcon[i]);
-                //stone label
-                stoneLabel[i] = new Label();
-                stoneLabel[i].Content = playerBarInformation.playerInfo[i].stone;
-                playerBarPanel[i].Children.Add(stoneLabel[i]);
-
-                //wood icon
-                playerBarPanel[i].Children.Add(woodIcon[i]);
-                //wood label
-                woodLabel[i] = new Label();
-                woodLabel[i].Content = playerBarInformation.playerInfo[i].wood;
-                playerBarPanel[i].Children.Add(woodLabel[i]);
-
-
-                //glass icon
-                playerBarPanel[i].Children.Add(glassIcon[i]);
-                //glass label
-                glassLabel[i] = new Label();
-                glassLabel[i].Content = playerBarInformation.playerInfo[i].glass;
-                playerBarPanel[i].Children.Add(glassLabel[i]);
-
-                //papyrus icon
-                playerBarPanel[i].Children.Add(papyrusIcon[i]);
-                //papyrus label
-                papyrusLabel[i] = new Label();
-                papyrusLabel[i].Content = playerBarInformation.playerInfo[i].papyrus;
-                playerBarPanel[i].Children.Add(papyrusLabel[i]);
-
-                //loom icon
-                playerBarPanel[i].Children.Add(loomIcon[i]);
-                //loom label
-                loomLabel[i] = new Label();
-                loomLabel[i].Content = playerBarInformation.playerInfo[i].loom;
-                playerBarPanel[i].Children.Add(loomLabel[i]);
-
-                //science icons
-                playerBarPanel[i].Children.Add(bearTrapIcon[i]);
-                bearTrapLabel[i] = new Label();
-                bearTrapLabel[i].Content = playerBarInformation.playerInfo[i].bear;
-                playerBarPanel[i].Children.Add(bearTrapLabel[i]);
-
-                playerBarPanel[i].Children.Add(sextantIcon[i]);
-                sextantLabel[i] = new Label();
-                sextantLabel[i].Content = playerBarInformation.playerInfo[i].sextant;
-                playerBarPanel[i].Children.Add(sextantLabel[i]);
-
-                playerBarPanel[i].Children.Add(tabletIcon[i]);
-                tabletLabel[i] = new Label();
-                tabletLabel[i].Content = playerBarInformation.playerInfo[i].tablet;
-                playerBarPanel[i].Children.Add(tabletLabel[i]);
-
-                //victory icons
-                playerBarPanel[i].Children.Add(victoryIcon[i]);
-                victoryLabel[i] = new Label();
-                victoryLabel[i].Content = playerBarInformation.playerInfo[i].victory;
-                playerBarPanel[i].Children.Add(victoryLabel[i]);
-
-                //shield icons
-                playerBarPanel[i].Children.Add(shieldIcon[i]);
-                shieldLabel[i] = new Label();
-                shieldLabel[i].Content = playerBarInformation.playerInfo[i].shield;
-                playerBarPanel[i].Children.Add(shieldLabel[i]);
-
-                //coin icons
-                playerBarPanel[i].Children.Add(coinIcon[i]);
-                coinLabel[i] = new Label();
-                coinLabel[i].Content = playerBarInformation.playerInfo[i].coin;
-                playerBarPanel[i].Children.Add(coinLabel[i]);
-
-                //conflict icons
-                playerBarPanel[i].Children.Add(conflictIcon[i]);
-                conflictLabel[i] = new Label();
-                conflictLabel[i].Content = playerBarInformation.playerInfo[i].conflict;
-                playerBarPanel[i].Children.Add(conflictLabel[i]);
-
-                //conflict tokens count icons
-                playerBarPanel[i].Children.Add(conflictTokensCountIcon[i]);
-                conflictTokensCountLabel[i] = new Label();
-                conflictTokensCountLabel[i].Content = playerBarInformation.playerInfo[i].conflictTokensCount;
-                playerBarPanel[i].Children.Add(conflictTokensCountLabel[i]);
-
-                //loss icons
-                playerBarPanel[i].Children.Add(lossIcon[i]);
-                lossLabel[i] = new Label();
-                lossLabel[i].Content = playerBarInformation.playerInfo[i].loss;
-                playerBarPanel[i].Children.Add(lossLabel[i]);
+                lbLeaderIcons.Children.Add(img);
             }
-        }
-
-        /// <summary>
-        /// Action handler for the view details buttons
-        /// Send a request for information to the server
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void viewDetailsButtonPressed(object sender, RoutedEventArgs e)
-        {
-            Button viewDetailsButton = sender as Button;
-
-            //store the name of the player that is being inspected
-            String inspectedPlayerName = viewDetailsButton.Name;
-            
-            //send the information to the server
-            coordinator.sendToHost("V" + inspectedPlayerName);
-        }
-
-        /// <summary>
-        /// Create a new View Details UI
-        /// </summary>
-        /// <param name="information"></param>
-        public void handleViewDetails(String information)
-        {
-            ViewDetails detailUI = new ViewDetails(information.Substring(1));
         }
 
         /// <summary>
         /// display the Cards in Player's hands and the available actions
         /// </summary>
         /// <param name="information"></param>
-        public void showHandPanel(String information)
+        public void showHandPanel(IList<KeyValuePair<string, string>> cardsAndStates/*String information*/)
         {
             //the player is in a new turn now because his UI are still updating.
             //Therefore set playerPlayedHisturn to false
             playerPlayedHisTurn = false;
+            canDiscardStructure = true;
 
-            //convert the String to an HandPanelInformation object
-            HandPanelInformation handPanelInformation = (HandPanelInformation)Marshaller.StringToObject(information);
+            hand.Clear();
 
-            //Update the Age label
-            //since this method is only used in Age 1, 2, and 3, therefore, just show the age number
-            //Age 0 is handled in showHandLeadersPhase(String information)
-
-            currentAge.Content = handPanelInformation.currentAge;
-
-            //update Images
-
-
-            //get the number of cards
-            int numberOfCards = handPanelInformation.id_buildable.Length;
-
-            //create the appropriate image source files
-            BitmapImage[] cardImageSource = new BitmapImage[numberOfCards];
-            for (int i = 0; i < numberOfCards; i++)
+            foreach (KeyValuePair<string, string> kvp in cardsAndStates)
             {
-                cardImageSource[i] = new BitmapImage();
-                cardImageSource[i].BeginInit();
+                switch (kvp.Key)
+                {
+                    case "CanDiscard":
+                        canDiscardStructure = kvp.Value == "True";
+                        break;
+
+                    case "Instructions":
+                        lblPlayMessage.Content = new TextBlock()
+                        {
+                            Text = kvp.Value,
+                            TextWrapping = TextWrapping.Wrap,
+                            FontSize = 14,
+                        };
+                        break;
+
+                    default:
+                        // Any other parameters are card names
+                        if (kvp.Key.StartsWith("WonderStage"))
+                        {
+                            stageBuildable = (Buildable)Enum.Parse(typeof(Buildable), kvp.Value);
+                        }
+                        else
+                        {
+                            hand.Add(new KeyValuePair<Card, Buildable>(coordinator.FindCard(kvp.Key), (Buildable)Enum.Parse(typeof(Buildable), kvp.Value)));
+                        }
+                    break;
+                }
+            }
+
+            handPanel.Items.Clear();
+
+            foreach (KeyValuePair<Card, Buildable> kvp in hand)
+            {
+                BitmapImage bmpImg = new BitmapImage();
+                bmpImg.BeginInit();
                 //Item1 of the id_buildable array of Tuples represents the id image
-                cardImageSource[i].UriSource = new Uri(currentPath + "\\Images\\cards\\" + handPanelInformation.id_buildable[i].Item1 + ".jpg");
-                cardImageSource[i].EndInit();
-            }
+                bmpImg.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/cards/" + kvp.Key.Id + ".jpg");
+                bmpImg.EndInit();
 
-            //Card Images
-            //create the appropriate amount of Images
-            //add them to the Card panel
-            handPanel.Children.Clear();
-            Image[] card = new Image[numberOfCards];
-            for (int i = 0; i < numberOfCards; i++)
-            {
-                card[i] = new Image();
-                card[i].Source = cardImageSource[i];
-                card[i].Width = CARD_WIDTH;
-                card[i].Height = CARD_HEIGHT;
-                handPanel.Children.Add(card[i]);
-            }
+                Image img = new Image();
+                img.Source = bmpImg;
 
-            //set the Stage of Wonder buildability
-            String name = "Stage", content = "Build Stage";
-            bool buildableStage = false;
-            if (handPanelInformation.stageBuildable == 'T') { buildableStage = true; }
-            else if (handPanelInformation.stageBuildable == 'C') { buildableStage = true; name = "StageCommerce"; content = "Commerce"; }
+                ListBoxItem entry = new ListBoxItem();
+                //entry.Name = kvp.Key.name;
+                entry.Content = img;
+                entry.BorderThickness = new Thickness(6);
 
-            //Names of the buttons
-            //Contents (the word that will be shown in the UI) of the buttons
-            String[] names = new String[numberOfCards];
-            String[] contents = new String[numberOfCards];
-
-            for (int i = 0; i < numberOfCards; i++)
-            {
-                contents[i] = "Build Structure";
-                if (handPanelInformation.id_buildable[i].Item2 == 'T' || handPanelInformation.id_buildable[i].Item2 == 'F')
+                switch (kvp.Value)
                 {
-                    names[i] = "Build";
+                    case Buildable.True:
+                        entry.BorderBrush = new SolidColorBrush(Colors.Green);
+                        break;
+
+                    case Buildable.CommerceRequired:
+                        entry.BorderBrush = new SolidColorBrush(Colors.Yellow);
+                        break;
+
+                    default:
+                        entry.BorderBrush = new SolidColorBrush(Colors.Red);
+                        break;
                 }
-                else if (handPanelInformation.id_buildable[i].Item2 == 'C')
-                {
-                    names[i] = "BuildCommerce";
-                    contents[i] = "Commerce";
-                }
+
+                handPanel.Items.Add(entry);
             }
 
-            //add the appropriate buttons
-            actionBuildPanel.Children.Clear();
-            actionStagePanel.Children.Clear();
-            actionDiscardPanel.Children.Clear();
+            // A card must be selected before the action buttons are activated.
+            btnBuildStructure.IsEnabled = false;
+            btnBuildWonderStage.IsEnabled = false;
+            btnDiscardStructure.IsEnabled = false;
+            btnBuildStructureForFree.IsEnabled = false;
 
-            buildStructureButton = new Button[numberOfCards];
-            buildStageButton = new Button[numberOfCards];
-            discardButton = new Button[numberOfCards];
+            btnBuildStructure.Content = null;
+            btnBuildStructureForFree.Content = null;
 
-
-            //display the action Buttons
-            for (int i = 0; i < numberOfCards; i++)
+            if (canDiscardStructure)
             {
-                buildStructureButton[i] = new Button();
-                buildStructureButton[i].Content = contents[i];
-                buildStructureButton[i].Width = CARD_WIDTH;
-                buildStructureButton[i].Height = ICON_WIDTH;
-                buildStructureButton[i].Name = names[i] + "_" + handPanelInformation.id_buildable[i].Item1;
-                buildStructureButton[i].IsEnabled = (handPanelInformation.id_buildable[i].Item2 == 'T' || handPanelInformation.id_buildable[i].Item2 == 'C');
-                buildStructureButton[i].Click += cardActionButtonPressed;
-                actionBuildPanel.Children.Add(buildStructureButton[i]);
-
-                buildStageButton[i] = new Button();
-                buildStageButton[i].Content = content;
-                buildStageButton[i].Width = CARD_WIDTH;
-                buildStageButton[i].Height = ICON_WIDTH;
-                buildStageButton[i].Name = name + "_" + handPanelInformation.id_buildable[i].Item1;
-                buildStageButton[i].IsEnabled = buildableStage;
-                buildStageButton[i].Click += cardActionButtonPressed;
-                actionStagePanel.Children.Add(buildStageButton[i]);
-
-                discardButton[i] = new Button();
-                discardButton[i].Content = "Discard Card";
-                discardButton[i].Width = CARD_WIDTH;
-                discardButton[i].Height = ICON_WIDTH;
-                discardButton[i].Name = "Discard_" + handPanelInformation.id_buildable[i].Item1;
-                discardButton[i].IsEnabled = true;
-                discardButton[i].Click += cardActionButtonPressed;
-                actionDiscardPanel.Children.Add(discardButton[i]);
+                btnBuildWonderStage.Content = null;
+                btnDiscardStructure.Content = null;
+            }
+            else
+            {
+                btnBuildWonderStage.Content = new TextBlock()
+                {
+                    Text = "A free build card cannot be used to constructed a wonder stage",
+                            TextAlignment = TextAlignment.Center,
+                            TextWrapping = TextWrapping.Wrap
+                };
+                btnDiscardStructure.Content = new TextBlock()
+                {
+                    Text = string.Format("A free build card cannot be discarded"),
+                    TextAlignment = TextAlignment.Center,
+                    TextWrapping = TextWrapping.Wrap
+                };
             }
         }
 
+        private void handPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (handPanel.SelectedIndex < 0)
+                return;
 
-        
+            if (btnBuildStructureForFree_isEnabled)
+            {
+                if (hand[handPanel.SelectedIndex].Value != Buildable.StructureAlreadyBuilt)
+                {
+                    btnBuildStructureForFree.Content = new TextBlock()
+                    {
+                        Text = string.Format("Build this structure for free."),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    btnBuildStructureForFree.IsEnabled = true;
+                }
+                else
+                {
+                    btnBuildStructureForFree.Content = new TextBlock()
+                    {
+                        Text = string.Format("You have already built the {0}", hand[handPanel.SelectedIndex].Key.strName),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    btnBuildStructureForFree.IsEnabled = false;
+                }
+            }
+
+            lblDescription.Content = new TextBlock()
+            {
+                Text = hand[handPanel.SelectedIndex].Key.description,
+                TextAlignment = TextAlignment.Center,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            Card card = hand[handPanel.SelectedIndex].Key;
+
+            // Update the status of the build buttons when a card is selected.
+            switch (hand[handPanel.SelectedIndex].Value)
+            {
+                case Buildable.True:
+                    btnBuildStructure.Content = new TextBlock()
+                    {
+                        Text = string.Format(card.isLeader ? "Recruit {0}" : "Build the {0}", card.strName),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    btnBuildStructure.IsEnabled = true;
+                    break;
+
+                case Buildable.CommerceRequired:
+                    btnBuildStructure.Content = new TextBlock()
+                    {
+                        Text = string.Format("Build the {0} (commerce required)", card.strName),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    btnBuildStructure.IsEnabled = true;
+                    break;
+
+                case Buildable.InsufficientResources:
+                    btnBuildStructure.Content = new TextBlock()
+                    {
+                        Text = string.Format("You do not have enough resources to build the {0}", card.strName),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    btnBuildStructure.IsEnabled = false;
+                    break;
+
+                case Buildable.InsufficientCoins:
+                    btnBuildStructure.Content = new TextBlock()
+                    {
+                        Text = string.Format(card.isLeader ? "You do not have enough coins to recruit {0}" : "You don't have enough coins to buy the {0}", card.strName),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    btnBuildStructure.IsEnabled = false;
+                    break;
+
+                case Buildable.StructureAlreadyBuilt:
+                    btnBuildStructure.Content = new TextBlock()
+                    {
+                        Text = string.Format("You have already built the {0}", card.Id),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    btnBuildStructure.IsEnabled = false;
+                    break;
+            }
+
+            if (!canDiscardStructure)
+                return;
+
+            switch (stageBuildable)
+            {
+                case Buildable.True:
+                    //                    btnBuildWonderStage.Content = new TextBlock() { new Run(string.Format("Build a wonder stage with the {0}", hand[handPanel.SelectedIndex].Key)));
+                    btnBuildWonderStage.Content = new TextBlock()
+                    {
+                        Text = string.Format(card.isLeader ? "Use {0} to build a wonder stage" : "Build a wonder stage with the {0}", card.strName),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    btnBuildWonderStage.IsEnabled = true;
+                    break;
+
+                case Buildable.CommerceRequired:
+                    btnBuildWonderStage.Content = new TextBlock() {
+                        Text = string.Format(card.isLeader ? "Use {0} to build a wonder stage (commerce required)" : "Build a wonder stage with the {0} (commerce required)", card.strName),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    btnBuildWonderStage.IsEnabled = true;
+                    break;
+
+                case Buildable.InsufficientCoins:
+                case Buildable.InsufficientResources:
+                    btnBuildWonderStage.Content = new TextBlock()
+                    {
+                        Text = "Insufficient resources available to build the next wonder stage",
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    btnBuildWonderStage.IsEnabled = false;
+                    break;
+
+                case Buildable.StructureAlreadyBuilt:
+                    btnBuildWonderStage.Content = new TextBlock()
+                    {
+                        Text = "All wonder stages have been built",
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    btnBuildWonderStage.IsEnabled = false;
+                    break;
+            }
+
+            btnDiscardStructure.IsEnabled = true;
+            btnDiscardStructure.Content = new TextBlock()
+            {
+                Text = string.Format(card.isLeader ? "Discard {0} for 3 coins" : "Discard the {0} for 3 coins", card.strName),
+                TextAlignment = TextAlignment.Center,
+                TextWrapping = TextWrapping.Wrap
+            };
+        }
+
         /// <summary>
         /// Event handler for the Card Action Buttons created in showActionPanel
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void cardActionButtonPressed(object sender, RoutedEventArgs e)
+        private void btnBuildStructureForFree_Click(object sender, RoutedEventArgs e)
         {
+            if (playerPlayedHisTurn)
+                return;
 
-            if (!playerPlayedHisTurn)
+            ((Button)sender).IsEnabled = false;
+            btnBuildStructureForFree_isEnabled = false;
+            playerPlayedHisTurn = true;
+            // bilkisButton.IsEnabled = false;
+            coordinator.sendToHost(string.Format("BldStrct&WonderStage=False&FreeBuild=True&Structure={0}", hand[handPanel.SelectedIndex].Key.Id));
+            coordinator.endTurn();
+
+        }
+
+        private void btnBuildStructure_Click(object sender, RoutedEventArgs e)
+        {
+            if (playerPlayedHisTurn)
+                return;
+
+            if (hand[handPanel.SelectedIndex].Value == Buildable.True)
             {
-                playedButton = sender as Button;
-                String s = playedButton.Name;
+                ((Button)sender).IsEnabled = false;
+                playerPlayedHisTurn = true;
+                // bilkisButton.IsEnabled = false;
+                coordinator.sendToHost(string.Format("BldStrct&WonderStage=False&Structure={0}", hand[handPanel.SelectedIndex].Key.Id));
+                coordinator.endTurn();
+            }
+            else
+            {
+                coordinator.sendToHost("SendComm&WonderStage=False&Structure=" + hand[handPanel.SelectedIndex].Key.Id);     // the server's response will open the Commerce Dialog box
+            }
 
-                //send to the server the Action selected
-                if (s.StartsWith("Build_"))
+            if (hand[handPanel.SelectedIndex].Key.structureType == StructureType.Leader)
+            {
+                // Remove the recruited leader from the recruited leader list.
+                foreach (Object obj in lbLeaderIcons.Children)
                 {
-                    playedButton.IsEnabled = false;
-                    playerPlayedHisTurn = true;
-                    bilkisButton.IsEnabled = false;
-                    coordinator.sendToHost("B" + s.Substring(6));
-                    coordinator.endTurn();
-                }
-                else if (s.StartsWith("Stage_"))
-                {
-                    playedButton.IsEnabled = false;
-                    playerPlayedHisTurn = true;
-                    bilkisButton.IsEnabled = false;
-                    coordinator.sendToHost("S" + s.Substring(6));
-                    coordinator.endTurn();
-                }
-                else if (s.StartsWith("Discard_"))
-                {
-                    playedButton.IsEnabled = false;
-                    playerPlayedHisTurn = true;
-                    bilkisButton.IsEnabled = false;
-                    coordinator.sendToHost("D" + s.Substring(8));
-                    coordinator.endTurn();
-                }
-
-                else if (s.StartsWith("BuildCommerce_"))
-                {
-                    coordinator.sendToHost("Cb" + s.Substring(14));
-                }
-
-                else if (s.StartsWith("StageCommerce_"))
-                {
-                    coordinator.sendToHost("Cs" + s.Substring(14));
-                }
-
-                else if (s.StartsWith("Recruit_"))
-                {
-                    playedButton.IsEnabled = false;
-                    playerPlayedHisTurn = true;
-                    bilkisButton.IsEnabled = false;
-                    coordinator.sendToHost("l" + s.Substring(8));
-                    coordinator.endTurn();
-                }
-                else
-                {
-                    throw new Exception();
+                    Image img = obj as Image;
+                    if (img.Name == hand[handPanel.SelectedIndex].Key.strName)
+                    {
+                        lbLeaderIcons.Children.Remove(img);
+                        break;
+                    }
                 }
             }
         }
 
-        
+        private void btnBuildWonderStage_Click(object sender, RoutedEventArgs e)
+        {
+            if (playerPlayedHisTurn)
+                return;
+
+            if (stageBuildable == Buildable.True)
+            {
+                ((Button)sender).IsEnabled = false;
+                playerPlayedHisTurn = true;
+                // bilkisButton.IsEnabled = false;
+                coordinator.sendToHost(string.Format("BldStrct&WonderStage=True&Structure={0}", hand[handPanel.SelectedIndex].Key.Id));
+                coordinator.endTurn();
+            }
+            else
+            {
+                coordinator.sendToHost("SendComm&WonderStage=True&Structure=" + hand[handPanel.SelectedIndex].Key.Id);     // the server's response will open the Commerce Dialog box
+            }
+
+            if (hand[handPanel.SelectedIndex].Key.structureType == StructureType.Leader)
+            {
+                // Remove the recruited leader from the recruited leader list.
+                foreach (Object obj in lbLeaderIcons.Children)
+                {
+                    Image img = obj as Image;
+                    if (img.Name == hand[handPanel.SelectedIndex].Key.strName)
+                    {
+                        lbLeaderIcons.Children.Remove(img);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void btnDiscardStructure_Click(object sender, RoutedEventArgs e)
+        {
+            if (playerPlayedHisTurn)
+                return;
+
+            ((Button)sender).IsEnabled = false;
+            playerPlayedHisTurn = true;
+            // bilkisButton.IsEnabled = false;
+            coordinator.sendToHost(string.Format("Discards&Structure={0}", hand[handPanel.SelectedIndex].Key.Id));
+            coordinator.endTurn();
+
+            if (hand[handPanel.SelectedIndex].Key.structureType == StructureType.Leader)
+            {
+                // Remove the recruited leader from the recruited leader list.
+                foreach (Object obj in lbLeaderIcons.Children)
+                {
+                    Image img = obj as Image;
+                    if (img.Name == hand[handPanel.SelectedIndex].Key.strName)
+                    {
+                        lbLeaderIcons.Children.Remove(img);
+                        break;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// display the Board, given the String from Coordinator
         /// </summary>
         /// <param name="information"></param>
-        public void showBoardImage(String information)
+        public void showBoardImage(string player, String boardInformation)
         {
             //information holds the board image file name
             BitmapImage boardImageSource = new BitmapImage();
             boardImageSource.BeginInit();
-            boardImageSource.UriSource = new Uri(currentPath + "\\Images\\boards\\" + information + ".jpg");
+            boardImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/boards/" + boardInformation.Substring(2) + ".jpg");
             boardImageSource.EndInit();
 
-            boardImage.Source = boardImageSource;
+            playerState[player].state.PlayerBoard.Source = boardImageSource;
+
+            int nWonderStages = Int32.Parse(boardInformation.Substring(0, 1));
+
+            for (int i = 0; i < nWonderStages; ++i)
+            {
+                ColumnDefinition cd = new ColumnDefinition();
+                cd.Width = new GridLength(1, GridUnitType.Star);
+
+                playerState[player].state.WonderStage.ColumnDefinitions.Add(cd);
+            }
+
+            for (int i = 0; i < nWonderStages; ++i)
+            {
+                Label b = new Label();
+
+                b.Background = new SolidColorBrush(Colors.Azure);
+                Grid.SetColumn(b, i);
+                playerState[player].state.WonderStage.Children.Add(b);
+            }
         }
 
         /// <summary>
         /// display the Played Cards combo boxes, given the String from Coordinator
         /// </summary>
-        /// <param name="information"></param>
-        public void showPlayedCardsPanel(String information)
+        /// <param name="player">Player ID (0..7)</param>
+        /// <param name="cardName">Name of the card</param>
+        public void updateCardsPlayed(string playerName, string cardName)
         {
-            //extract the colour
-            //the name
-            //the id number
+            // some of these functions should be in the PlayerState class.
+            if (cardName.Length == 12 && cardName.Substring(0, 11) == "WonderStage")
+            {
+                int stage = int.Parse(cardName.Substring(11));
 
-            LastPlayedCardInformation lastPlayedCard = (LastPlayedCardInformation)Marshaller.StringToObject(information);
+                Label l = playerState[playerName].state.WonderStage.Children[stage - 1] as Label;
 
-            string colour = lastPlayedCard.colour;
-            string name = lastPlayedCard.name;
-            int id = lastPlayedCard.id;
-            
-            //add a selection to the appropriate drop down menu
-            ComboBoxItem combo = new ComboBoxItem();
-            combo.Tag = id;
-            combo.Content = name;
-
-            if(colour == "Blue")
-            {
-                bluePlayedCards.Items.Add(combo);
+                l.Content = string.Format("Stage {0}", stage);
+                l.Background = new SolidColorBrush(Colors.Yellow);
             }
-            else if(colour == "Brown")
+            else if (cardName == "Discarded")
             {
-                brownPlayedCards.Items.Add(combo);
-            }
-            else if (colour == "Green")
-            {
-                greenPlayedCards.Items.Add(combo);
-            }
-            else if (colour == "Grey")
-            {
-                greyPlayedCards.Items.Add(combo);
-            }
-            else if (colour == "Purple")
-            {
-                purplePlayedCards.Items.Add(combo);
-            }
-            else if (colour == "Red")
-            {
-                redPlayedCards.Items.Add(combo);
-            }
-            else if (colour == "Yellow")
-            {
-                yellowPlayedCards.Items.Add(combo);
-            }
-            else if (colour == "White")
-            {
-                whitePlayedCards.Items.Add(combo);
+                if (playerState[playerName].lastCardPlayed != null)
+                {
+                    playerState[playerName].lastCardPlayed.Effect = null;
+                    playerState[playerName].lastCardPlayed = null;
+                }
             }
             else
             {
-                throw new NotImplementedException();
+                Card lastPlayedCard = coordinator.FindCard(cardName);
+
+                StructureType colour = lastPlayedCard.structureType;
+
+                if (playerState[playerName].lastCardPlayed != null)
+                    playerState[playerName].lastCardPlayed.Effect = null;
+
+                // Create a halo around the last card each player played to make it obvious.
+                DropShadowEffect be = new DropShadowEffect();
+                be.ShadowDepth = 0;
+                be.BlurRadius = 25;
+                be.Color = Colors.Blue;
+
+                BitmapImage bmi = new BitmapImage();
+                bmi.BeginInit();
+                bmi.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/Icons/" + lastPlayedCard.iconName + ".png");
+                bmi.EndInit();
+                Image iconImage = new Image();
+                iconImage.Source = bmi;
+                iconImage.Height = ICON_HEIGHT;                 // limit the height of each card icon to 30 pixels.
+                string strToolTip = string.Format("{0}: {1}", lastPlayedCard.strName, lastPlayedCard.description);
+                if (lastPlayedCard.chain[0] != string.Empty)
+                {
+                    strToolTip += "  Chains to: " + lastPlayedCard.chain[0];
+                    if (lastPlayedCard.chain[1] != string.Empty)
+                    {
+                        strToolTip += ", " + lastPlayedCard.chain[1];
+                    }
+                }
+
+                iconImage.ToolTip = strToolTip;
+                iconImage.Margin = new Thickness(2);   // keep a 1-pixel margin around each card icon.
+                iconImage.Effect = be;
+
+                playerState[playerName].lastCardPlayed = iconImage;
+                playerState[playerName].structuresBuilt[lastPlayedCard.structureType].Children.Add(iconImage);
             }
         }
 
-        //handler for the ComboBoxItems in Played Cards panel
-        private void playedCards_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public void updateMilitaryTokens(string playerName, string strConflictData)
         {
-            ComboBox ca = e.Source as ComboBox;
+            // string should be age/victories in this age/total losses
+            string[] s = strConflictData.Split('/');
 
-            ComboBoxItem caaa = ca.SelectedItem as ComboBoxItem;
+            if (s.Length != 3)
+                throw new Exception();
 
-            //have the card Image change
-            showCardImage(currentPath + "\\Images\\cards\\" + caaa.Tag + ".jpg");
-        }
+            int age = int.Parse(s[0]);
+            int victoriesInThisAge = int.Parse(s[1]);
+            int totalLossTokens = int.Parse(s[2]);
+            BitmapImage conflictImageSource = new BitmapImage();
 
-        /// <summary>
-        /// Show the highlighted card's image from the Played Cards combobox
-        /// </summary>
-        /// <param name="path"></param>
-        public void showCardImage(String path)
-        {
-            BitmapImage cardImageSource = new BitmapImage();
-            cardImageSource.BeginInit();
-            cardImageSource.UriSource = new Uri(path);
-            cardImageSource.EndInit();
-            cardImage.Source = cardImageSource;
-        }
+            if (victoriesInThisAge != 0)
+            {
+                switch (age)
+                {
+                    case 1:
+                        conflictImageSource.BeginInit();
+                        conflictImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/ConflictAge1.png");
+                        conflictImageSource.EndInit();
 
-        /// <summary>
-        /// Send a chat message to the Coordinator
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void sendButton_Click(object sender, RoutedEventArgs e)
-        {
-            coordinator.sendChat();
-        }
+                        for (int i = 0; i < victoriesInThisAge; ++i)
+                        {
+                            Image image = new Image();
+                            image.Source = conflictImageSource;
+                            image.Height = 22;
+                            playerState[playerName].state.ConflictTokens.Children.Add(image);
+                        }
+                        break;
 
-        /// <summary>
-        /// Handle the Olympia power button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void olympiaButton_Click(object sender, RoutedEventArgs e)
-        {
-            coordinator.olympiaButtonClicked();
-        }
+                    case 2:
+                        conflictImageSource.BeginInit();
+                        conflictImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/ConflictAge2.png");
+                        conflictImageSource.EndInit();
 
-        public void discardCommerce()
-        {
-            playerPlayedHisTurn = false;
-            playedButton.IsEnabled = true;
-        }
+                        for (int i = 0; i < victoriesInThisAge; ++i)
+                        {
+                            Image image = new Image();
+                            image.Source = conflictImageSource;
+                            image.Height = 30;
+                            playerState[playerName].state.ConflictTokens.Children.Add(image);
+                        }
+                        break;
 
-        private void image8_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            coordinator.createGame();
+                    case 3:
+                        conflictImageSource.BeginInit();
+                        conflictImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/ConflictAge3.png");
+                        conflictImageSource.EndInit();
+
+                        for (int i = 0; i < victoriesInThisAge; ++i)
+                        {
+                            Image image = new Image();
+                            image.Source = conflictImageSource;
+                            image.Height = 38;
+                            playerState[playerName].state.ConflictTokens.Children.Add(image);
+                        }
+                        break;
+                }
+            }
+
+            if (totalLossTokens != playerState[playerName].state.MilitaryLosses.Children.Count)
+            {
+                BitmapImage lossImageSource = new BitmapImage();
+
+                lossImageSource.BeginInit();
+                lossImageSource.UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/ConflictLoss.png");
+                lossImageSource.EndInit();
+
+                for (int i = playerState[playerName].state.MilitaryLosses.Children.Count; i < totalLossTokens; ++i)
+                {
+                    Image image = new Image();
+                    image.Source = lossImageSource;
+                    image.Height = 30;
+
+                    playerState[playerName].state.MilitaryLosses.Children.Add(image);
+                }
+            }
         }
 
         private void chatTextField_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -796,6 +747,7 @@ namespace SevenWonders
             if (e.Key == Key.Return) coordinator.sendChat(); 
         }
 
+#if FALSE
         private void joinGameIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             coordinator.displayJoinGameUI();
@@ -810,7 +762,7 @@ namespace SevenWonders
         {
             Help helpUI = new Help();
         }
-
+#endif
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //If there is an ongoing game, then coordinator must quit the game first
@@ -822,6 +774,7 @@ namespace SevenWonders
 
         public void showHandPanelLeadersPhase(string information)
         {
+            /*
             //the player is in a new turn now because his UI are still updating.
             //Therefore set playerPlayedHisturn to false
             playerPlayedHisTurn = false;
@@ -833,7 +786,7 @@ namespace SevenWonders
             //since this method is only used in Age 0, it shall say Leaders phase
             //Age 0 is handled in showHandLeadersPhase(String information)
 
-            currentAge.Content = "Leaders Phase";
+            // currentAge.Content = "Leaders Phase";
 
 
             //get the number of cards
@@ -846,7 +799,7 @@ namespace SevenWonders
                 cardImageSource[i] = new BitmapImage();
                 cardImageSource[i].BeginInit();
                 //Item1 of the id_buildable array of Tuples represents the id image
-                cardImageSource[i].UriSource = new Uri(currentPath + "\\Images\\cards\\" + handPanelInformation.ids[i] + ".jpg");
+                cardImageSource[i].UriSource = new Uri(currentPath + @"\Resources\Images\cards\" + handPanelInformation.ids[i] + ".jpg");
                 cardImageSource[i].EndInit();
             }
 
@@ -875,14 +828,15 @@ namespace SevenWonders
                 names[i] = "Recruit";
                 contents[i] = "Recruit";
             }
-
+            */
             //add the appropriate buttons
-            actionBuildPanel.Children.Clear();
-            actionStagePanel.Children.Clear();
-            actionDiscardPanel.Children.Clear();
+            //actionBuildPanel.Children.Clear();
+            //actionStagePanel.Children.Clear();
+            //actionDiscardPanel.Children.Clear();
 
             //Build structure button will say "Recruit" instead for this phase
             //other ones will not say anything
+            /*
             buildStructureButton = new Button[numberOfCards];
 
             //display the action Buttons
@@ -895,8 +849,9 @@ namespace SevenWonders
                 buildStructureButton[i].Name = names[i] + "_" + handPanelInformation.ids[i];
                 buildStructureButton[i].IsEnabled = true;
                 buildStructureButton[i].Click += cardActionButtonPressed;
-                actionBuildPanel.Children.Add(buildStructureButton[i]);
+               // actionBuildPanel.Children.Add(buildStructureButton[i]);
             }
+            */
         }
 
         /// <summary>
@@ -913,7 +868,7 @@ namespace SevenWonders
             coordinator.sendToHost("#" + coordinator.nickname + " uses Esteban to freeze the next turn!");
 
             //disable Esteban button now
-            estebanButton.IsEnabled = false;
+            // estebanButton.IsEnabled = false;
         }
 
         /// <summary>

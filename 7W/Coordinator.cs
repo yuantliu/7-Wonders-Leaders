@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -18,6 +19,7 @@ using System.Threading;
 using System.IO;
 using System.Data;
 using System.Timers;
+using System.Web;
 
 namespace SevenWonders
 {
@@ -29,24 +31,23 @@ namespace SevenWonders
         //The various UI that Coordinator keeps track of
         public MainWindow gameUI;
         TableUI tableUI;
-        JoinTableUI joinTableUI;
-        OlympiaUI olympiaUI;
-        HalicarnassusUI halicarnassusUI;
-        BabylonUI babylonUI;
-
-        //If this application will be the server, then gmCoordinator and gameManager must be initialized
-        GMCoordinator gmCoordinator = null;
+        //JoinTableUI joinTableUI;
+        LeaderDraft leaderDraftWindow;
 
         //The client that the application will use to interact with the server.
-        public Client client { get; set;  }
+        public Client client { get; private set; }
 
         //User's nickname
         public string nickname;
 
+        public string[] playerNames;
+
+        public ExpansionSet expansionSet = ExpansionSet.Original;
+
         //Timer
-        int timeElapsed;
-        private const int MAX_TIME = 120;
-        private System.Windows.Threading.DispatcherTimer timer;
+        // int timeElapsed;
+        // private const int MAX_TIME = 120;
+        // private System.Windows.Threading.DispatcherTimer timer;
 
         //current turn
         int currentTurn;
@@ -54,43 +55,40 @@ namespace SevenWonders
         //Leaders
         BilkisUI bilkisUI;
 
+        List<Card> fullCardList = new List<Card>();
+
         public Coordinator(MainWindow gameUI)
         {
             this.gameUI = gameUI;
+
             nickname = "";
 
             hasGame = false;
 
+            /*
             //prepare the timer
             timer = new System.Windows.Threading.DispatcherTimer();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = new TimeSpan(0, 0, 1);
+            */
+            // load the card list
+            using (System.IO.StreamReader file = new System.IO.StreamReader(System.Reflection.Assembly.Load("GameManager").
+                GetManifestResourceStream("GameManager.7 Wonders Card list.csv")))
+            {
+                // skip the header line
+                file.ReadLine();
+
+                String line = file.ReadLine();
+
+                while (line != null && line != String.Empty)
+                {
+                    fullCardList.Add(new Card(line.Split(',')));
+                    line = file.ReadLine();
+                }
+            }
         }
 
-        /// <summary>
-        /// Return whether this client is also the server
-        /// </summary>
-        /// <returns></returns>
-        public bool isServer()
-        {
-            if (gmCoordinator == null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        public void stopServer()
-        {
-            if (isServer() == true)
-            {
-                gmCoordinator.host.stopListening();
-            }
-        }
-        
+        /*
         //Update the 100 Second timer field
         public void timer_Tick(object sender, EventArgs e)
         {
@@ -110,28 +108,11 @@ namespace SevenWonders
                 }
             }));
         }
-
-        /// <summary>
-        /// Discard card in first hand position
-        /// </summary>
-        public void discardRandomCard()
-        {
-            //grab the id number of the first Card to the right by accessing the name
-            if (gameUI.buildStructureButton[0].Name.StartsWith("BuildCommerce_"))
-            {
-                sendToHost("D" + gameUI.buildStructureButton[0].Name.Substring(14));
-            }
-            else
-            {
-                sendToHost("D" + gameUI.buildStructureButton[0].Name.Substring(6));
-            }
-
-            endTurn();
-        }
-
+        */
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if FALSE
         /// <summary>
         /// Update the current stage of wonder label
         /// Start up the timer at this point
@@ -158,16 +139,8 @@ namespace SevenWonders
             timeElapsed = 0;
             timer.Start();
         }
+#endif
 
-        public void updateCardImage(string s)
-        {
-            gameUI.showCardImage(s);
-        }
-
-        public void updatePlayedCardsPanel(string s)
-        {
-            gameUI.showPlayedCardsPanel(s);
-        }
 
         /// <summary>
         /// Update the Chat logs
@@ -179,13 +152,12 @@ namespace SevenWonders
 
             Application.Current.Dispatcher.Invoke(new Action(delegate
             {
-                gameUI.chatTextBox.Text += s;
+                // gameUI.chatTextBox.Text += s;
                 tableUI.chatTextBox.Text += s;
 
-                gameUI.scroll.ScrollToEnd();
+                // gameUI.scroll.ScrollToEnd();
                 tableUI.scroll.ScrollToEnd();
             }));
-
         }
 
         /// <summary>
@@ -194,24 +166,19 @@ namespace SevenWonders
         public void quit()
         {
             //If the client is not a server, then send to the host the close connection signal.
-            if (gmCoordinator != null)
+            //if (gmCoordinator != null)
             {
                 sendToHost("L");
                 client.CloseConnection();
             }
+
             //If the client is a server, send the 
         }
 
         public void endTurn()
         {
-            timer.Stop();
+            // timer.Stop();
             sendToHost("t");
-        }
-
-        public void olympiaButtonClicked()
-        {
-            //send the request for Olympia power
-            sendToHost("O");
         }
 
         /// <summary>
@@ -222,44 +189,13 @@ namespace SevenWonders
         /// <param name="gameMode"></param>
         public void iAmReady()
         {
-            //Grey out the Ready button
+            // Disable the ready button now that we've indicated we are ready to start.
             Application.Current.Dispatcher.Invoke(new Action(delegate
             {
                 tableUI.readyButton.IsEnabled = false;
             }));
 
-            initGameUI();
-            
             sendToHost("R");
-        }
-
-        /// <summary>
-        /// All players are ready. Initialise the game UI elements.
-        /// </summary>
-        private void initGameUI()
-        {
-            string currentPath = Environment.CurrentDirectory;
-            ImageBrush back = new ImageBrush();
-            BitmapImage source = new BitmapImage();
-            source.BeginInit();
-            source.UriSource = new Uri(currentPath + "\\Images\\background.jpg");
-            source.EndInit();
-            back.ImageSource = source;
-
-            gameUI.mainGrid.Background = null;
-            gameUI.mainGrid.Background = back;
-            gameUI.chatTextField.Visibility = Visibility.Visible;
-            gameUI.sendButton.Visibility = Visibility.Visible;
-            gameUI.scroll.Visibility = Visibility.Visible;
-            gameUI.timerTextBox.Visibility = Visibility.Visible;
-            gameUI.olympiaButton.Visibility = Visibility.Visible;
-            gameUI.estebanButton.Visibility = Visibility.Visible;
-            gameUI.bilkisButton.Visibility = Visibility.Visible;
-            gameUI.currentAgeLabel.Visibility = Visibility.Visible;
-            gameUI.currentAge.Visibility = Visibility.Visible;
-            gameUI.stackPanel1.Visibility = Visibility.Visible;
-            gameUI.canvas1.Visibility = Visibility.Hidden;
-            gameUI.helpButton.Visibility = Visibility.Visible;
         }
 
         public void sendChat()
@@ -268,11 +204,11 @@ namespace SevenWonders
 
             //determine the textfield that is non-empty and send that
             //this should not be necessary later on, when the UI is better
-            if (gameUI.chatTextField.Text.Length != 0)
-            {
-                message = gameUI.chatTextField.Text;
-            }
-            else
+            // if (gameUI.chatTextField.Text.Length != 0)
+            // {
+            //     message = gameUI.chatTextField.Text;
+            // }
+            // else
             {
                 message = tableUI.chatTextField.Text;
             }
@@ -285,7 +221,7 @@ namespace SevenWonders
             }
 
             //reset the textfields
-            gameUI.chatTextField.Text = "";
+            // gameUI.chatTextField.Text = "";
             tableUI.chatTextField.Text = "";
         }
 
@@ -314,6 +250,7 @@ namespace SevenWonders
             }));
         }
 
+#if TRUE
         /*
          * Send the Join Game request to the Server.
          */
@@ -334,23 +271,30 @@ namespace SevenWonders
             //UC-02 R06
 
             tableUI = new TableUI(this);
+            /*
+            I commented these lines out.  Previously, they were only enabled if you were the creator.  Which kind of makes sense.
             tableUI.addAIButton.IsEnabled = false;
             tableUI.removeAIButton.IsEnabled = false;
-            tableUI.disbandButton.IsEnabled = false;
             tableUI.leaders_Checkbox.IsEnabled = false;
+            */
             tableUI.ShowDialog();
+
+            if (expansionSet == ExpansionSet.Leaders)
+                leaderDraftWindow = new LeaderDraft(this);
         }
 
         /*
          * Display the join table UI
          * UC-02 R02
          */
-        public void displayJoinGameUI()
-        {
-            joinTableUI = new JoinTableUI(this);
-            joinTableUI.ShowDialog();
-        }
-
+        /*
+       public void displayJoinGameUI()
+       {
+           joinTableUI = new JoinTableUI(this);
+           joinTableUI.ShowDialog();
+       }
+       */
+#endif
 
         /**
          * Function called by MainWindow for creating a new game
@@ -359,7 +303,8 @@ namespace SevenWonders
         public void createGame()
         {
             //create a GM Coordinator
-            gmCoordinator = new GMCoordinator();
+            // JDF - this shouldn't be needed any more, the GMCoordinator has moved to a separate process.
+            // gmCoordinator = new GMCoordinator();
 
             hasGame = true;
 
@@ -375,45 +320,18 @@ namespace SevenWonders
             //create the TCP Client
             client = new Client(this, nickname);
 
-            client.InitializeConnection(myIPAddress());
-          
-            
+            client.InitializeConnection(myIP);
+
+            if (!client.Connected)
+                return;
+
             //display the TableUI
             tableUI = new TableUI(this);
             //join the game as a player
             //UC-01 R03
-            
 
             sendToHost("J" + nickname);
             tableUI.ShowDialog();
-        }
-
-        /// <summary>
-        /// Invoke the halicarnassus screen at the end of the Age
-        /// </summary>
-        /// <param name="information"></param>
-        private void receiveHalicarnassus(string information)
-        {
-            //open the halicarnssus window
-            Application.Current.Dispatcher.Invoke(new Action(delegate
-            {
-                halicarnassusUI = new HalicarnassusUI(this, information);
-                halicarnassusUI.ShowDialog();
-            }));
-        }
-
-        /// <summary>
-        /// Invoke the Babylon screen at the end of the Age
-        /// </summary>
-        /// <param name="information"></param>
-        private void receiveBabylon(string information)
-        {
-            //open the babylon window
-            Application.Current.Dispatcher.Invoke(new Action(delegate
-            {
-                babylonUI = new BabylonUI(this, information);
-                babylonUI.ShowDialog();
-            }));
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,6 +343,7 @@ namespace SevenWonders
 
         private IPAddress myIPAddress()
         {
+#if TRUE
             IPAddress localIP = null;
             IPHostEntry host;
 
@@ -439,6 +358,9 @@ namespace SevenWonders
             }
 
             return localIP;
+#else
+            return IPAddress.Loopback;
+#endif
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -456,7 +378,7 @@ namespace SevenWonders
         /// <param name="s"></param>
         public void sendToHost(string s)
         {
-            if(client != null)
+            if (client != null && client.Connected)
                 client.SendMessageToServer(s);
         }
 
@@ -474,6 +396,183 @@ namespace SevenWonders
             //J --------------- a player has joined the table. Add a player to the Game Manager
             //S --------------- the all ready signal. 5 second count down, then the join table window closes.
 
+            if (message.Length >= 8)
+            {
+                bool messageHandled = false;
+
+                NameValueCollection qcoll;
+
+                switch (message.Substring(0, 8))
+                {
+                    case "CardPlay":
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+
+                        foreach (string s in qcoll.Keys)
+                        {
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                gameUI.updateCardsPlayed(s, qcoll[s]);
+                            }));
+                        }
+                        messageHandled = true;
+                        break;
+
+                    case "CommData":        // Commerce data
+
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            //gameUI.showCommerceUI(s);
+                            NewCommerce commerce = new NewCommerce(this, qcoll);
+
+                            commerce.ShowDialog();
+                        }));
+                        messageHandled = true;
+                        break;
+
+                    case "EnableFB":
+
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            gameUI.btnBuildStructureForFree.Visibility = Visibility.Visible;
+                            gameUI.btnBuildStructureForFree_isEnabled = true;
+                        }));
+                        messageHandled = true;
+                        break;
+
+                    case "FinalSco":
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            FinalScore fs = new FinalScore(qcoll);
+                            fs.Show();
+                        }));
+                        messageHandled = true;
+                        break;
+
+                    case "LdrDraft":
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            leaderDraftWindow.UpdateUI(qcoll);
+                            leaderDraftWindow.Show();
+                        }));
+                        messageHandled = true;
+                        break;
+
+                    case "LeadrIcn":
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+                        Application.Current.Dispatcher.Invoke(new Action(delegate
+                        {
+                            gameUI.updateLeaderIcons(qcoll);
+                        }));
+                        messageHandled = true;
+                        break;
+
+                    case "Military":
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+
+                        foreach (string s in qcoll.Keys)
+                        {
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                gameUI.updateMilitaryTokens(s, qcoll[s]);
+                            }));
+                        }
+                        messageHandled = true;
+                        break;
+
+                    case "StrtGame":
+                        //Handle when game cannot start
+                        if (message[1] == '0')
+                        {
+                            //re-enable the ready button
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                tableUI.readyButton.IsEnabled = true;
+                            }));
+                        }
+                        //game is starting
+                        else
+                        {
+                            //tell the server UI initialisation is done
+                            // sendToHost("r"); // JDF - moved to another location until after the gameUI is created.
+
+                            // find out the number of players.
+                            int nPlayers = int.Parse(message.Substring(8, 1));
+
+                            // I may be able to set this to playerNames, but I'm not sure about thread safety.
+                            playerNames = message.Substring(10).Split(',');
+
+                            if (playerNames.Length != nPlayers)
+                            {
+                                throw new Exception(string.Format("Server said there were {0} players, but sent {1} names.", nPlayers, playerNames.Length));
+                            }
+
+                            //close the TableUI
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                tableUI.Close();
+                            }));
+                        }
+                        messageHandled = true;
+                        break;
+
+                    case "SetBoard":
+                        // Parse the query string variables into a NameValueCollection.
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+
+                        foreach (string s in qcoll.Keys)
+                        {
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                gameUI.showBoardImage(s, qcoll[s]);
+                            }));
+                        }
+
+                        // Tell game server this client is ready to receive its first UI update, which will
+                        // include coins and hand of cards.
+                        sendToHost("r");
+
+                        messageHandled = true;
+                        break;
+
+                    case "SetCoins":
+                        qcoll = HttpUtility.ParseQueryString(message.Substring(9));
+
+                        foreach (string s in qcoll.Keys)
+                        {
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                gameUI.showPlayerBarPanel(s, qcoll[s]);
+                            }));
+                        }
+                        messageHandled = true;
+
+                        break;
+
+                    case "SetPlyrH":        // Set player hand
+                        {
+                            // we cannot use the nicer NameValuePair because there may be two of the same
+                            // card in the hand and these would be duplicate keys.  So we have to use a data
+                            // structure 
+                            IList<KeyValuePair<string, string>> qscoll = UriExtensions.ParseQueryString(message.Substring(8));
+
+                            Application.Current.Dispatcher.Invoke(new Action(delegate
+                            {
+                                gameUI.showHandPanel(qscoll);
+                            }));
+                        }
+
+                        messageHandled = true;
+                        break;
+                }
+
+                if (messageHandled)
+                    return;
+            }
+
             //chat
             if (message[0] == '#')
             {
@@ -484,8 +583,11 @@ namespace SevenWonders
             //S1 means game cannot (because of insufficient players)
             else if (message[0] == 'S')
             {
+                // S[0|n] message is no longer used.
+                throw new Exception();
+                /*
                 //Handle when game cannot start
-                if (message[1] == '1')
+                if (message[1] == '0')
                 {
                     //re-enable the ready button
                     Application.Current.Dispatcher.Invoke(new Action(delegate
@@ -494,10 +596,15 @@ namespace SevenWonders
                     }));
                 }
                 //game is starting
-                else if (message[1] == '0')
+                else
                 {
                     //tell the server UI initialisation is done
-                    sendToHost("r");
+                    // sendToHost("r"); // JDF - moved to another location until after the gameUI is created.
+
+                    // find out the number of players.
+                    string strNumPlayers = message.Substring(1);
+
+                    numPlayers = int.Parse(strNumPlayers);
 
                     //close the TableUI
                     Application.Current.Dispatcher.Invoke(new Action(delegate
@@ -505,111 +612,25 @@ namespace SevenWonders
                         tableUI.Close();
                     }));
                 }
-            }
-            //update the Hand cards and Action panel
-            else if (message[0] == 'U')
-            {
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    //update the hand panel with the information
-                    gameUI.showHandPanel(message.Substring(1));
-                }));
-            }
-            //update the Player Bar panel
-            //also start up the timer
-            else if (message[0] == 'B')
-            {
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    gameUI.showPlayerBarPanel(message.Substring(1));
-                }));
+                */
             }
             //update the current stage of wonder information
             else if (message[0] == 's')
             {
-                updateCurrentStageLabelAndStartTimer(message);
-            }
-            //update the board panel
-            else if (message[0] == 'b')
-            {
-                //"b_(name)"
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    gameUI.showBoardImage(message.Substring(1));
-                }));
-            }
-            //update the played cards panel
-            else if (message[0] == 'P')
-            {
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    gameUI.showPlayedCardsPanel(message.Substring(1));
-                }));
+                // updateCurrentStageLabelAndStartTimer(message);
             }
             //indicate to client to start timer
             else if (message[0] == 't')
             {
-                startTimer();
-            }
-            //create the commerce if necessary 
-            else if (message[0] == 'C')
-            {
-                createAndUpdateCommerce(message.Substring(1));
-            }
-            //enable the Olympia button
-            else if (message == "EO")
-            {
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    gameUI.olympiaButton.IsEnabled = true;
-                }));
+                // startTimer();
             }
             //enable Olympia power OR Rome power
             //activate the Olympia UI
-            else if (message[0] == 'O')
-            {
-                //create new Olympia UI
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    olympiaUI = new OlympiaUI(this, message.Substring(1));
-                }));
-            }
             //receive the information on the current turn
             else if (message[0] == 'T')
             {
                 //get the current turn information
                 currentTurn = int.Parse(message[1] + "");
-            }
-
-            //receive halicarnassus or babylon information
-            else if (message[0] == 'H' || message[0] == 'A')
-            {
-                if (message[0] == 'A')
-                {
-                    receiveBabylon(message);
-                }
-                else
-                {
-                    //No card in the discard pile, therefore Halicarnassus cannot be played
-                    //just send back the end turn signal
-                    if (message == "H0")
-                    {
-                        endTurn();
-                    }
-                    else
-                    {
-                        receiveHalicarnassus(message);
-                    }
-                }
-            }
-            //receive the information on view details for player
-            else if (message[0] == 'V')
-            {
-                Application.Current.Dispatcher.Invoke(new Action(delegate
-                {
-                    //pass this information to handleViewDetails in GameUI
-                    gameUI.handleViewDetails(message);
-                }));
             }
             //received an unable to join message from the server
             //UC-02 R07
@@ -619,7 +640,7 @@ namespace SevenWonders
 
                 tableUI.Close();
 
-                displayJoinGameUI();
+                // displayJoinGameUI();
             }
 
             //leaders: received Recruitment phase turn display (Age 0 turn)
@@ -630,6 +651,7 @@ namespace SevenWonders
                     gameUI.showHandPanelLeadersPhase(message.Substring(1));
                 }));
             }
+            /*
             //enable the Esteban button
             else if (message == "EE")
             {
@@ -655,22 +677,21 @@ namespace SevenWonders
                     courtUI.ShowDialog();
                 }));
             }
+            */
             //receive the end of game signal
             else if (message[0] == 'e')
             {
-                timer.Stop();
+                // timer.Stop();
             }
-        }
-
-        public void createAndUpdateCommerce(string s)
-        {
-            Application.Current.Dispatcher.Invoke(new Action(delegate
+            else if (message[0] == '1')
             {
-                //gameUI.showCommerceUI(s);
-                NewCommerce commerce = new NewCommerce(this, s);
-
-                commerce.ShowDialog();
-            }));
+                // don't do anything
+            }
+            else
+            {
+                // recieved a message from the server that the client cannot handle.
+                throw new Exception();
+            }
         }
 
         /// <summary>
@@ -680,6 +701,11 @@ namespace SevenWonders
         {
             if (currentTurn > 4) return true;
             else return false;
+        }
+
+        public Card FindCard(string name)
+        {
+            return fullCardList.Find(x => x.Id == (CardId)Enum.Parse(typeof(CardId), name));
         }
     }
 }

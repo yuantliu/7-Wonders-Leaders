@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -10,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Web;
 
 namespace SevenWonders
 {
@@ -26,28 +28,27 @@ namespace SevenWonders
         //unfortunately, cant make this value constant.
         int PLAYER_COIN;
 
-        //player's coordinator
-        Coordinator c;
+        Coordinator coordinator;
 
-        //immutable original string cost
-        string cardCost;
+        Cost cardCost;
 
-        //immutable core card/player information
-        bool hasDiscount;
-        bool leftRawMarket, leftManuMarket, rightRawMarket, rightManuMarket;
+        bool hasBilkis;
+        bool usedBilkis;
+        bool leftRawMarket, rightRawMarket, marketplace;
         string leftName, middleName, rightName;
-        int ID;
+        string structureName;
+        // int ID;
         bool isStage;
 
         //current accumulated resources
-        string currentResource = "";
+        string strCurrentResourcesUsed = "";
         //how much coin to pay to left and right
         int leftcoin = 0, rightcoin = 0;
         //how many resources are still needed. 0 means no more resources are needed
         int resourcesNeeded;
 
-        //DAGs
-        DAG leftDag, middleDag, rightDag;
+        // Resource Managers
+        ResourceManager leftDag = new ResourceManager(), middleDag = new ResourceManager(), rightDag = new ResourceManager();
 
         //DAG buttons. [level][number]
         //e.g. For a DAG that has only 1 level, consisting of WBO, to get O, use [0][2]
@@ -57,42 +58,76 @@ namespace SevenWonders
         //Order: BOTW-GLP
         BitmapImage[] resourceIcons = new BitmapImage[7];
 
+        void CreateDag(ResourceManager d, string sourceStr)
+        {
+            string[] playerEffectsSplit = sourceStr.Split(',');
+
+            for (int i = 0; i < playerEffectsSplit.Length; ++i)
+            {
+                d.add(new ResourceEffect(true, playerEffectsSplit[i]));
+            }
+        }
+
         /// <summary>
         /// Set the coordinator and handle CommerceInformation, which contains all necessary UI data, from GameManager
         /// </summary>
-        public NewCommerce(Coordinator c, string data)
+        public NewCommerce(Coordinator coordinator, /* List<Card> cardList, */ /*string cardName, int wonderStage,*/ NameValueCollection qscoll)
         {
             //intialise all the UI components in the xaml file (labels, etc.) to avoid null pointer
             InitializeComponent();
 
-            this.c = c;
-            CommerceInformation commerceData = (CommerceInformation)Marshaller.StringToObject(data);
+            this.coordinator = coordinator;
 
-            //gather necessary UI information
-            this.cardCost = commerceData.cardCost;
-            this.hasDiscount = commerceData.hasDiscount;
-            this.leftRawMarket = commerceData.leftRawMarket;
-            this.rightRawMarket = commerceData.rightRawMarket;
-            this.leftManuMarket = commerceData.leftManuMarket;
-            this.rightManuMarket = commerceData.rightManuMarket;
-            this.leftName = commerceData.playerCommerceInfo[0].name;
-            this.middleName = commerceData.playerCommerceInfo[1].name;
-            this.rightName = commerceData.playerCommerceInfo[2].name;
+            leftName = "Left Neighbor";
+            middleName = "Player";
+            rightName = "Right Neighbor";
 
-            this.PLAYER_COIN = commerceData.playerCoins;
+            structureName = qscoll["Structure"];
 
-            this.ID = commerceData.id;
-            this.isStage = commerceData.isStage;
+            isStage = qscoll["WonderStage"] == "True";
 
-            leftDag = commerceData.playerCommerceInfo[0].dag;
-            middleDag = commerceData.playerCommerceInfo[1].dag;
-            rightDag = commerceData.playerCommerceInfo[2].dag;
-            //all necessary UI information gathered
+            if (isStage)
+            {
+                string strWonderName = qscoll["wonderCard"];
 
-            //construct the UI
+                cardCost = coordinator.FindCard(strWonderName).cost;
+            }
+            else
+            {
+                cardCost = coordinator.FindCard(structureName).cost;
+            }
+
+            leftRawMarket = false;
+            rightRawMarket = false;
+
+            CommercialDiscountEffect.RawMaterials rawMaterialsDiscount = (CommercialDiscountEffect.RawMaterials)
+                Enum.Parse(typeof(CommercialDiscountEffect.RawMaterials), qscoll["resourceDiscount"]);
+
+            switch (rawMaterialsDiscount)
+            {
+                case CommercialDiscountEffect.RawMaterials.BothNeighbors:
+                    leftRawMarket = rightRawMarket = true;
+                    break;
+
+                case CommercialDiscountEffect.RawMaterials.LeftNeighbor:
+                    leftRawMarket = true;
+                    break;
+
+                case CommercialDiscountEffect.RawMaterials.RightNeighbor:
+                    rightRawMarket = true;
+                    break;
+            }
+
+            marketplace = ((CommercialDiscountEffect.Goods)
+                Enum.Parse(typeof(CommercialDiscountEffect.Goods), qscoll["goodsDiscount"]) == CommercialDiscountEffect.Goods.BothNeighbors);
+
+            PLAYER_COIN = int.Parse(qscoll["coin"]);
+
+            CreateDag(middleDag, qscoll["PlayerResources"]);
+            CreateDag(leftDag, qscoll["LeftResources"]);
+            CreateDag(rightDag, qscoll["RightResources"]);
 
             //initialise images
-            string currentPath = Environment.CurrentDirectory;
             for (int i = 0; i < 7; i++)
             {
                 resourceIcons[i] = new BitmapImage();
@@ -124,7 +159,7 @@ namespace SevenWonders
                         break;
                 }
 
-                resourceIcons[i].UriSource = new Uri(currentPath + "\\Images\\" + filename + ".png");
+                resourceIcons[i].UriSource = new Uri("pack://application:,,,/7W;component/Resources/Images/" + filename + ".png");
                 resourceIcons[i].EndInit();
             }
 
@@ -137,268 +172,110 @@ namespace SevenWonders
             playerCoinsLabel.Content = PLAYER_COIN;
 
             //set the market images
-            if(leftRawMarket == true)
-                leftRawImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\Commerce\\1r.png"));
-            else
-                leftRawImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\Commerce\\2r.png"));
-            if(leftManuMarket == true)
-                leftManuImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\Commerce\\1m.png"));
-            else
-                leftManuImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\Commerce\\2m.png"));
-            if (rightRawMarket == true)
-                rightRawImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\Commerce\\1r.png"));
-            else
-                rightRawImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\Commerce\\2r.png"));
-            if (rightManuMarket == true)
-                rightManuImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\Commerce\\1m.png"));
-            else
-                rightManuImage.Source = new BitmapImage(new Uri(currentPath + "\\Images\\Commerce\\2m.png"));
+            leftRawImage.Source = new BitmapImage(
+                new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/" + (leftRawMarket ? "1r.png" : "2r.png")));
+            rightRawImage.Source = new BitmapImage(
+                new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/" + (rightRawMarket ? "1r.png" : "2r.png")));
+            leftManuImage.Source = rightManuImage.Source = new BitmapImage(
+                new Uri("pack://application:,,,/7W;component/Resources/Images/Commerce/" + (marketplace ? "1m.png" : "2m.png")));
 
-            //set the discount label
-            if (hasDiscount == true)
-            {
-                hasDiscountLabel.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                hasDiscountLabel.Visibility = Visibility.Hidden;
-            }
+            hasBilkis = qscoll["Bilkis"] != null;
+
+            if (hasBilkis)
+                imgBilkisPower.Visibility = Visibility.Visible;
 
             //generate mutable elements (DAG buttons, Price representations, currentResources, etc.)
             reset();
         }
 
+        BitmapImage GetButtonIcon(char resource)
+        {
+            int resourceIconIndex = -1;
+
+            switch(resource)
+            {
+                case 'B': resourceIconIndex = 0; break;
+                case 'O': resourceIconIndex = 1; break;
+                case 'S': resourceIconIndex = 2; break;
+                case 'W': resourceIconIndex = 3; break;
+                case 'G': resourceIconIndex = 4; break;
+                case 'C': resourceIconIndex = 5; break;
+                case 'P': resourceIconIndex = 6; break;
+            }
+
+            return resourceIcons[resourceIconIndex];
+        }
+
         /// <summary>
         /// Use the 3 DAGs in the object to generate the necessary Buttons in the UI and add EventHandlers for these newly added Buttons
         /// </summary>
-        private void generateDAGs()
+        private void generateOneDAG(StackPanel pnl, out Button[,] b, ResourceManager dag, string buttonNamePrefix, bool isDagOwnedByPlayer)
         {
             //reset all DAG panels
-            leftDagPanel.Children.Clear();
+            pnl.Children.Clear();
 
-            //generate left DAG
+            List<ResourceEffect> dagGraphSimple = dag.getResourceList(isDagOwnedByPlayer).ToList();
+
+            //generate a DAG for self or a neighbor
             //generate the needed amount of stackPanels, each representing a level
-            StackPanel[] leftLevelPanels = new StackPanel[leftDag.getGraph().Count];
-            //generate the needed amount of buttons
-            leftDagButton = new Button[leftDag.getGraph().Count, 7];
+            StackPanel[] levelPanels = new StackPanel[dagGraphSimple.Count];
 
-            //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
-            List<char[]> leftDagGraph = leftDag.getGraph();
+            //generate the needed amount of buttons
+            b = new Button[dagGraphSimple.Count, 7];
 
             //look at each level of the DAG
-            for (int i = 0; i < leftDagGraph.Count; i++)
+            for (int i = 0 ; i < dagGraphSimple.Count; i++)
             {
                 //initialise a StackPanels for the current level
-                leftLevelPanels[i] = new StackPanel();
-                leftLevelPanels[i].Orientation = Orientation.Horizontal;
-                leftLevelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
+                levelPanels[i] = new StackPanel();
+                levelPanels[i].Orientation = Orientation.Horizontal;
+                levelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
 
                 //add to the StackPanels the appropriate buttons
-                for (int j = 0; j < leftDagGraph[i].Length; j++)
+                for (int j = 0; j < dagGraphSimple[i].resourceTypes.Length; j++)
                 {
-                    leftDagButton[i, j] = new Button();
-                    leftDagButton[i, j].Content = leftDagGraph[i][j] + "";
-                    leftDagButton[i, j].FontSize = 1;
+                    b[i, j] = new Button();
+                    b[i, j].Content = dagGraphSimple[i];
+                    b[i, j].FontSize = 1;
 
                     //set the Button's image to correspond with the resource
-                    switch (leftDagGraph[i][j])
-                    {
-                        case 'B':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[0]);
-                            break;
-                        case 'O':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[1]);
-                            break;
-                        case 'T':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[2]);
-                            break;
-                        case 'W':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[3]);
-                            break;
-                        case 'G':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[4]);
-                            break;
-                        case 'L':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[5]);
-                            break;
-                        case 'P':
-                            leftDagButton[i, j].Background = new ImageBrush(resourceIcons[6]);
-                            break;
-                    }
+                    b[i, j].Background = new ImageBrush(GetButtonIcon(dagGraphSimple[i].resourceTypes[j]));
 
-                    leftDagButton[i, j].Width = DAG_BUTTON_WIDTH;
-                    leftDagButton[i, j].Height = DAG_BUTTON_WIDTH;
+                    b[i, j].Width = DAG_BUTTON_WIDTH;
+                    b[i, j].Height = DAG_BUTTON_WIDTH;
 
                     //set the name of the Button for eventHandler purposes
                     //Format: L_(level number)
-                    leftDagButton[i, j].Name = "L_" + i;
+                    b[i, j].Name = buttonNamePrefix + i + j;
 
-                    leftDagButton[i, j].IsEnabled = true;
+                    b[i, j].IsEnabled = true;
 
                     //set action listener and add the button to the appropriate panel
-                    leftDagButton[i, j].Click += dagResourceButtonPressed;
-                    leftLevelPanels[i].Children.Add(leftDagButton[i, j]);
+                    b[i, j].Click += dagResourceButtonPressed;
+                    levelPanels[i].Children.Add(b[i, j]);
 
-                    //leftLevelPanels[i] has leftDagButton[i,j] added
-                } //leftLevelPanels[i] has added all the buttons appropriate for that level and its event handlers
+                    // levelPanels[i] has b[i,j] added
+                } // levelPanels[i] has added all the buttons appropriate for that level and its event handlers
 
-                //add leftLevelPanels[i]
-                leftDagPanel.Children.Add(leftLevelPanels[i]);
-            }
-
-            ////////////////////////////////////////////////////////////////////////////////
-
-            //Same for middle DAG
-
-            //reset all DAG panels
-            middleDagPanel.Children.Clear();
-
-            //generate middle DAG
-            //generate the needed amount of stackPanels, each representing a level
-            StackPanel[] middleLevelPanels = new StackPanel[middleDag.getGraph().Count];
-            //generate the needed amount of buttons
-            middleDagButton = new Button[middleDag.getGraph().Count, 7];
-
-            //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
-            List<char[]> middleDagGraph = middleDag.getGraph();
-
-            //look at each level of the DAG
-            for (int i = 0; i < middleDag.getGraph().Count; i++)
-            {
-                //initialise a StackPanels for the current level
-                middleLevelPanels[i] = new StackPanel();
-                middleLevelPanels[i].Orientation = Orientation.Horizontal;
-                middleLevelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
-
-                //add to the StackPanels the appropriate buttons
-                for (int j = 0; j < middleDagGraph[i].Length; j++)
+                if (isDagOwnedByPlayer && hasBilkis && i == dagGraphSimple.Count-1)
                 {
-                    middleDagButton[i, j] = new Button();
-                    middleDagButton[i, j].Content = middleDagGraph[i][j] + "";
-                    middleDagButton[i, j].FontSize = 1;
+                    // Insert a label telling the player the Wild resource on
+                    // the next line will cost 1 coin to use
+                    Label bilkisLabel = new Label();
+                    bilkisLabel.Content = "Bilkis (costs 1 coin)";
+                    pnl.Children.Add(bilkisLabel);
+                }
 
-                    //set the Button's image to correspond with the resource
-                    switch (middleDagGraph[i][j])
-                    {
-                        case 'B':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[0]);
-                            break;
-                        case 'O':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[1]);
-                            break;
-                        case 'T':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[2]);
-                            break;
-                        case 'W':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[3]);
-                            break;
-                        case 'G':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[4]);
-                            break;
-                        case 'L':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[5]);
-                            break;
-                        case 'P':
-                            middleDagButton[i, j].Background = new ImageBrush(resourceIcons[6]);
-                            break;
-                    }
-
-                    middleDagButton[i, j].Width = DAG_BUTTON_WIDTH;
-                    middleDagButton[i, j].Height = DAG_BUTTON_WIDTH;
-
-                    //set the name of the Button for eventHandler purposes
-                    //Format: M_(level)
-                    middleDagButton[i, j].Name = "M_" + i;
-
-                    middleDagButton[i, j].IsEnabled = true;
-
-                    //set action listener and add the button to the appropriate panel
-                    middleDagButton[i, j].Click += dagResourceButtonPressed;
-                    middleLevelPanels[i].Children.Add(middleDagButton[i, j]);
-
-                    //middleLevelPanels[i] has middleDagButton[i,j] added
-                } //middleLevelPanels[i] has added all the buttons appropriate for that level and its event handlers
-
-                //add middleLevelPanels[i]
-                middleDagPanel.Children.Add(middleLevelPanels[i]);
+                //add the stack to the parent panel.
+                pnl.Children.Add(levelPanels[i]);
             }
+        }
 
-            /////////////////////////////////////////////////////////////////////////
-
-            //same for right DAG
-
-            //reset all DAG panels
-            rightDagPanel.Children.Clear();
-
-            //generate right DAG
-            //generate the needed amount of stackPanels, each representing a level
-            StackPanel[] rightLevelPanels = new StackPanel[rightDag.getGraph().Count];
-            //generate the needed amount of buttons
-            rightDagButton = new Button[rightDag.getGraph().Count, 7];
-
-            //extract the graph (List of char arrays) from the DAG and store locally to reduce function calls
-            List<char[]> rightDagGraph = rightDag.getGraph();
-
-            //look at each level of the DAG
-            for (int i = 0; i < rightDag.getGraph().Count; i++)
-            {
-                //initialise a StackPanels for the current level
-                rightLevelPanels[i] = new StackPanel();
-                rightLevelPanels[i].Orientation = Orientation.Horizontal;
-                rightLevelPanels[i].HorizontalAlignment = HorizontalAlignment.Center;
-
-                //add to the StackPanels the appropriate buttons
-                for (int j = 0; j < rightDagGraph[i].Length; j++)
-                {
-                    rightDagButton[i, j] = new Button();
-                    rightDagButton[i, j].Content = rightDagGraph[i][j] + "";
-                    rightDagButton[i, j].FontSize = 1;
-
-                    //set the Button's image to correspond with the resource
-                    switch (rightDagGraph[i][j])
-                    {
-                        case 'B':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[0]);
-                            break;
-                        case 'O':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[1]);
-                            break;
-                        case 'T':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[2]);
-                            break;
-                        case 'W':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[3]);
-                            break;
-                        case 'G':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[4]);
-                            break;
-                        case 'L':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[5]);
-                            break;
-                        case 'P':
-                            rightDagButton[i, j].Background = new ImageBrush(resourceIcons[6]);
-                            break;
-                    }
-
-                    rightDagButton[i, j].Width = DAG_BUTTON_WIDTH;
-                    rightDagButton[i, j].Height = DAG_BUTTON_WIDTH;
-
-                    //set the name of the Button for eventHandler purposes
-                    //Format: R_(level)
-                    rightDagButton[i, j].Name = "R_" + i;
-
-                    rightDagButton[i, j].IsEnabled = true;
-
-                    //set action listener and add the button to the appropriate panel
-                    rightDagButton[i, j].Click += dagResourceButtonPressed;
-                    rightLevelPanels[i].Children.Add(rightDagButton[i, j]);
-
-                    //rightLevelPanels[i] has rightDagButton[i,j] added
-                } //rightLevelPanels[i] has added all the buttons appropriate for that level and its event handlers
-
-                //add rightLevelPanels[i]
-                rightDagPanel.Children.Add(rightLevelPanels[i]);
-            }
+        private void generateDAGs()
+        {
+            generateOneDAG(leftDagPanel, out leftDagButton, leftDag, "L_", false);
+            generateOneDAG(middleDagPanel, out middleDagButton, middleDag, "M_", true);
+            generateOneDAG(rightDagPanel, out rightDagButton, rightDag, "R_", false);
         }
 
         /// <summary>
@@ -413,168 +290,136 @@ namespace SevenWonders
             string s = pressed.Name;
 
             //determine some information about the pressed button
-            
+
             //level of the resource
-            int level = Convert.ToInt32(s.Substring(2));
-            //resource obtained
-            char resource = ((string)pressed.Content)[0];
+            int level = Convert.ToInt32(s.Substring(2,1));
             //the location of the button (whether left, right, or middle)
             char location = s[0];
+
+            //resource obtained
+            ResourceEffect rce = pressed.Content as ResourceEffect;
+
+            int resourceStringIndex = Convert.ToInt32(s.Substring(3));
+
+            char resource = rce.resourceTypes[resourceStringIndex];
 
             //remember the current resource obtained amount for comparison with new resource obtained amount later
             int previous = resourcesNeeded;
 
             //add to the currentResources
-            string newResource = currentResource + resource;
+            string strPossibleNewResourceList = strCurrentResourcesUsed + resource;
 
             //check if the newResource gets us closer to paying the cost.
             //If the newResource has the same distance as previous, then we have not gotten closer, and therefore we have just added an unnecessar resource
             //pop out an error to show this.
 
-            if ((resourcesNeeded == 1 && hasDiscount == true) || (resourcesNeeded == 0 && hasDiscount == false))
+            if (resourcesNeeded == 0)
             {
                 MessageBox.Show("You have for all necessary resources already");
                 return;
             }
-            else if (DAG.eliminate(cardCost, newResource).Length == previous)
+            // else if (ResourceManager.eliminate(cardCost.Copy(), false, strPossibleNewResourceList).Total() == previous)
+            else if (middleDag.eliminate(cardCost.Copy(), false, strPossibleNewResourceList).Total() == previous)
             {
                 MessageBox.Show("This resource will not help you pay for your cost");
                 return;
             }
 
+            bool isResourceRawMaterial = (resource == 'B' || resource == 'O' || resource == 'S' || resource == 'W');
+            bool isResourceGoods = (resource == 'G' || resource == 'C' || resource == 'P');
+
             //add the appropriate amount of coins to the appropriate recepient
             //as well as doing appropriate checks
-            if (location == 'L')
+            if (location == 'M')
             {
-                if (leftRawMarket == true && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
+                if (hasBilkis && level == middleDag.getResourceList(true).Count() - 1)
                 {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
-                    {
-                        leftcoin++;
-                    }
-                    else
+                    // This is Bilkis' resource.
+                    if (PLAYER_COIN == 0)
                     {
                         MessageBox.Show("You cannot afford this resource");
                         return;
                     }
+
+                    usedBilkis = true;
+                    imgBilkisPower.Opacity = 0.5;
                 }
-                else if (leftRawMarket == false && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
+            }
+            else if (location == 'L')
+            {
+                int coinsRequired = (isResourceRawMaterial && leftRawMarket) || (isResourceGoods && marketplace) ? 1 : 2;
+
+                if ((PLAYER_COIN - (leftcoin + rightcoin)) < coinsRequired)
                 {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
-                    {
-                        leftcoin += 2;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
+                    MessageBox.Show("You cannot afford this resource");
+                    return;
                 }
-                else if (leftManuMarket == true && (resource == 'G' || resource == 'L' || resource == 'P'))
-                {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
-                    {
-                        leftcoin++;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
-                }
-                else if (leftManuMarket == false && (resource == 'G' || resource == 'L' || resource == 'P'))
-                {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
-                    {
-                        leftcoin += 2;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
-                }
+
+                leftcoin += coinsRequired;
             }
             else if (location == 'R')
             {
-                if (rightRawMarket == true && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
+                int coinsRequired = (isResourceRawMaterial && rightRawMarket) || (isResourceGoods && marketplace) ? 1 : 2;
+
+                if ((PLAYER_COIN - (leftcoin + rightcoin)) < coinsRequired)
                 {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
-                    {
-                        rightcoin++;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
+                    MessageBox.Show("You cannot afford this resource");
+                    return;
                 }
-                else if (rightRawMarket == false && (resource == 'B' || resource == 'O' || resource == 'T' || resource == 'W'))
-                {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
-                    {
-                        rightcoin += 2;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
-                }
-                else if (rightManuMarket == true && (resource == 'G' || resource == 'L' || resource == 'P'))
-                {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 0)
-                    {
-                        rightcoin++;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
-                }
-                else if (rightManuMarket == false && (resource == 'G' || resource == 'L' || resource == 'P'))
-                {
-                    if ((PLAYER_COIN - (leftcoin + rightcoin)) > 1)
-                    {
-                        rightcoin += 2;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot afford this resource");
-                        return;
-                    }
-                }
+
+                rightcoin += coinsRequired;
             }
 
-            //We have gotten closer to paying for the resource
-            //set the new values
+            // The resource chosen is good: it is required and affordable.
             resourcesNeeded--;
-            currentResource = newResource;
+            strCurrentResourcesUsed = strPossibleNewResourceList;
 
-            //disable (make hidden) all buttons on the same level
             if (location == 'L')
             {
-                for (int i = 0; i < leftDag.getGraph()[level].Length; i++)
+                if (rce.IsDoubleResource())
                 {
-                    //hide the buttons
-                    leftDagButton[level, i].Visibility = Visibility.Hidden;
+                    // Only hide the pressed button
+                    pressed.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    // Hide the other buttons on the same level 
+                    for (int i = 0; i < leftDag.getResourceList(false).ToList()[level].resourceTypes.Length; i++)
+                    {
+                        leftDagButton[level, i].Visibility = Visibility.Hidden;
+                    }
                 }
             }
             else if (location == 'M')
             {
-                for (int i = 0; i < middleDag.getGraph()[level].Length; i++)
+                if (rce.IsDoubleResource())
                 {
-                    //hide the buttons
-                    middleDagButton[level, i].Visibility = Visibility.Hidden;
+                    // Only hide the pressed button
+                    pressed.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    for (int i = 0; i < middleDag.getResourceList(true).ToList()[level].resourceTypes.Length; i++)
+                    {
+                        // Hide the other buttons on the same level 
+                        middleDagButton[level, i].Visibility = Visibility.Hidden;
+                    }
                 }
             }
             else if (location == 'R')
             {
-                for (int i = 0; i < rightDag.getGraph()[level].Length; i++)
+                if (rce.IsDoubleResource())
                 {
-                    //hide the buttons
-                    rightDagButton[level, i].Visibility = Visibility.Hidden;
+                    // Only hide the pressed button
+                    pressed.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    for (int i = 0; i < rightDag.getResourceList(false).ToList()[level].resourceTypes.Length; i++)
+                    {
+                        // Hide the other buttons on the same level 
+                        rightDagButton[level, i].Visibility = Visibility.Hidden;
+                    }
                 }
             }
 
@@ -587,46 +432,64 @@ namespace SevenWonders
         /// </summary>
         private void generateCostPanel()
         {
-            generateCostPanelAndUpdateSubtotal(DAG.eliminate(cardCost, currentResource));
+            generateCostPanelAndUpdateSubtotal(middleDag.eliminate(cardCost.Copy(), false, strCurrentResourcesUsed));
         }
 
         /// <summary>
         /// Construct the labels at the cost panel, given a cost
         /// </summary>
         /// <param name="cost"></param>
-        private void generateCostPanelAndUpdateSubtotal(string cost)
+        private void generateCostPanelAndUpdateSubtotal(Cost cost)
         {
             costPanel.Children.Clear();
-            Label[] costLabels = new Label[cost.Length];
+            Label[] costLabels = new Label[resourcesNeeded];
+
+            Cost cpyCost = cost.Copy();
 
             //fill the labels with the appropriate image
-            for (int i = 0; i < cost.Length; i++)
+            for (int i = 0; i < resourcesNeeded; i++)
             {
                 BitmapImage iconImage = null;
 
-                switch (cost[i])
+                if (cpyCost.wood != 0)
                 {
-                    case 'B':
-                        iconImage = resourceIcons[0];
-                        break;
-                    case 'O':
-                        iconImage = resourceIcons[1];
-                        break;
-                    case 'T':
-                        iconImage = resourceIcons[2];
-                        break;
-                    case 'W':
-                        iconImage = resourceIcons[3];
-                        break;
-                    case 'G':
-                        iconImage = resourceIcons[4];
-                        break;
-                    case 'L':
-                        iconImage = resourceIcons[5];
-                        break;
-                    case 'P':
-                        iconImage = resourceIcons[6];
-                        break;
+                    iconImage = GetButtonIcon('W');
+                    --cpyCost.wood;
+                }
+                else if (cpyCost.stone != 0)
+                {
+                    iconImage = GetButtonIcon('S');
+                    --cpyCost.stone;
+                }
+                else if (cpyCost.clay != 0)
+                {
+                    iconImage = GetButtonIcon('B');
+                    --cpyCost.clay;
+                }
+                else if (cpyCost.ore != 0)
+                {
+                    iconImage = GetButtonIcon('O');
+                    --cpyCost.ore;
+                }
+                else if (cpyCost.cloth != 0)
+                {
+                    iconImage = GetButtonIcon('C');
+                    --cpyCost.cloth;
+                }
+                else if (cpyCost.glass != 0)
+                {
+                    iconImage = GetButtonIcon('G');
+                    --cpyCost.glass;
+                }
+                else if (cpyCost.papyrus != 0)
+                {
+                    iconImage = GetButtonIcon('P');
+                    --cpyCost.papyrus;
+                }
+                else
+                {
+                    // something went wrong
+                    throw new Exception();
                 }
 
                 costLabels[i] = new Label();
@@ -642,7 +505,7 @@ namespace SevenWonders
             //update the subtotals
             leftSubtotalLabel.Content = leftcoin;
             rightSubtotalLabel.Content = rightcoin;
-            subTotalLabel.Content = leftcoin + rightcoin;
+            subTotalLabel.Content = leftcoin + rightcoin + (usedBilkis ? 1 : 0);
         }
 
         /// <summary>
@@ -651,13 +514,22 @@ namespace SevenWonders
         /// </summary>
         private void reset()
         {
-            currentResource = "";
+            strCurrentResourcesUsed = string.Empty;
             leftcoin = 0;
             rightcoin = 0;
+            usedBilkis = false;
+            imgBilkisPower.Opacity = 1.0;
+
+            if (cardCost.coin != 0)
+            {
+                // not sure whether this will work or not.
+                throw new NotImplementedException();
+            }
+
+            resourcesNeeded = cardCost.Total();
 
             generateCostPanel();
             generateDAGs();
-            resourcesNeeded = cardCost.Length;
         }
 
         /// <summary>
@@ -667,33 +539,22 @@ namespace SevenWonders
         /// <param name="e"></param>
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            if ((resourcesNeeded == 0 && hasDiscount == false) || (resourcesNeeded == 1 && hasDiscount == true))
+            if (resourcesNeeded == 0)
             {
-                //construct the information
-                CommerceClientToServerResponse response = new CommerceClientToServerResponse();
-                response.leftCoins = leftcoin;
-                response.rightCoins = rightcoin;
-                response.id = ID;
-
-                string serializedResponse = Marshaller.ObjectToString(response);
-
-                //send the appropriate information
-                if (isStage == true)
+                // TODO: the response should be what resources were used from each neighbor.  The server should
+                // calculate the cost and exchange coins.
+                string strResponse = string.Format("BldStrct&WonderStage={0}&Structure={1}&leftCoins={2}&rightCoins={3}", isStage ? "True" : "False", structureName, leftcoin, rightcoin);
+                if (usedBilkis)
                 {
-                    //stage
-                    c.sendToHost("CS" + serializedResponse);
+                    strResponse += "&Bilkis=True";
                 }
-                else
-                {
-                    //build struct
-                    c.sendToHost("CB" + serializedResponse);
-                }
+                coordinator.sendToHost(strResponse);
 
                 //end turn
-                c.endTurn();
+                coordinator.endTurn();
 
                 //signify to MainWindow that turn has been played
-                c.gameUI.playerPlayedHisTurn = true;
+                coordinator.gameUI.playerPlayedHisTurn = true;
 
                 Close();
             }

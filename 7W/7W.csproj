@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SevenWonders</RootNamespace>
     <AssemblyName>7W</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -41,6 +42,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -50,6 +52,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -66,6 +69,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -82,9 +86,10 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>50F4B4B859CF2D66B1B60B604D0D67EC05D6C31B</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>DB8D3DD681BEC1B05D8E4CFC22ECDCEF61AEB57A</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>7W_TemporaryKey.pfx</ManifestKeyFile>
@@ -93,15 +98,20 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>7WondersIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GameManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\GameManager.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -120,30 +130,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="GameManager\AI-LEADERS-BLACKLIST.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithm0.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithm1.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithm2.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithm3.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithm4.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithmLeaders0.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithmLeaders1.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithmLeaders2.cs" />
-    <Compile Include="GameManager\AIMoveAlgorithmsLeaders3.cs" />
-    <Compile Include="GameManager\AIMoveBehaviour.cs" />
-    <Compile Include="GameManager\DAG.cs" />
-    <Compile Include="GameManager\LeadersAIMoveBehaviour.cs" />
-    <Compile Include="GameManager\LeadersGameManager.cs" />
     <Compile Include="GameUI\AIStrategy.xaml.cs">
       <DependentUpon>AIStrategy.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GameManager\Card.cs" />
-    <Compile Include="Connection.cs" />
-    <Compile Include="GameManager\Board.cs" />
-    <Compile Include="GameManager\GameManager.cs" />
-    <Compile Include="GameManager\Player.cs" />
-    <Compile Include="GameUI\BabylonUI.xaml.cs">
-      <DependentUpon>BabylonUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="GameUI\BilkisUI.xaml.cs">
       <DependentUpon>BilkisUI.xaml</DependentUpon>
@@ -152,30 +140,22 @@
       <DependentUpon>changeNicknameUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="Coordinator.cs" />
-    <Compile Include="GameManager\Deck.cs" />
     <Compile Include="GameUI\CourtesanUI.xaml.cs">
       <DependentUpon>CourtesanUI.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GameUI\HalicarnassusUI.xaml.cs">
-      <DependentUpon>HalicarnassusUI.xaml</DependentUpon>
+    <Compile Include="GameUI\FinalScore.xaml.cs">
+      <DependentUpon>FinalScore.xaml</DependentUpon>
     </Compile>
     <Compile Include="GameUI\Help.xaml.cs">
       <DependentUpon>Help.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameUI\LeaderDraft.xaml.cs">
+      <DependentUpon>LeaderDraft.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameUI\NewCommerce.xaml.cs">
       <DependentUpon>NewCommerce.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GameUI\OlympiaUI.xaml.cs">
-      <DependentUpon>OlympiaUI.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GameUI\ViewDetails.xaml.cs">
-      <DependentUpon>ViewDetails.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GMCoordinator.cs" />
-    <Compile Include="Serializer.cs" />
-    <Compile Include="Server.cs" />
     <Compile Include="Client.cs" />
-    <Compile Include="StatusChangedEventArgs.cs" />
     <Compile Include="GameUI\TableUI.xaml.cs">
       <DependentUpon>TableUI.xaml</DependentUpon>
     </Compile>
@@ -183,10 +163,6 @@
       <DependentUpon>JoinTableUI.xaml</DependentUpon>
     </Compile>
     <Page Include="GameUI\AIStrategy.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GameUI\BabylonUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -202,7 +178,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GameUI\HalicarnassusUI.xaml">
+    <Page Include="GameUI\FinalScore.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -210,15 +186,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="GameUI\LeaderDraft.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GameUI\NewCommerce.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GameUI\OlympiaUI.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GameUI\ViewDetails.xaml">
+    <Page Include="PlayerStateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -248,6 +224,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PlayerStateWindow.xaml.cs">
+      <DependentUpon>PlayerStateWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -267,6 +246,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="7W_TemporaryKey.pfx" />
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -274,130 +254,76 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\HelpSlides\right.png" />
+    <Resource Include="Resources\Images\HelpSlides\right.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\brick.png" />
+    <Resource Include="Resources\Images\brick.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\ore.png" />
+    <Resource Include="Resources\Images\ore.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\stone.png" />
+    <Resource Include="Resources\Images\stone.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\wood.png" />
+    <Resource Include="Resources\Images\wood.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\glass.png" />
+    <Resource Include="Resources\Images\glass.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\loom.gif" />
+    <Resource Include="Resources\Images\loom.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\brick1.png" />
+    <Resource Include="Resources\Images\papyrus.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\loom.png" />
+    <Resource Include="Resources\Images\victory.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\papyrus.png" />
+    <Resource Include="Resources\Images\coin.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\bearTrap.png" />
+    <Resource Include="Resources\Images\quit.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\sextant.png" />
+    <Resource Include="Resources\Images\joinGame.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\tablet.jpg" />
+    <Resource Include="Resources\Images\newGame.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\victory.png" />
+    <Resource Include="Resources\Images\background.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\shield.jpg" />
+    <Resource Include="Resources\Images\HelpSlides\next.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\coin.png" />
+    <Resource Include="Resources\Images\HelpSlides\left.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\blue.png" />
+    <Resource Include="Resources\Images\stage.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\brown.png" />
+    <Resource Include="Resources\Images\leader.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\grey.png" />
+    <Resource Include="Resources\Images\estebanpowerbutton.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\green.png" />
+    <Resource Include="Resources\Images\bilkispowerbutton.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\purple.png" />
+    <Resource Include="Resources\Images\bilkisbackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\red.png" />
+    <Resource Include="Resources\Images\bilkisbackgroundUI.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\yellow.png" />
+    <Resource Include="Resources\Images\romebackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Images\indexbg4x3.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\Untitled-1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\quit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\joinGame.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\newGame.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\background.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\questionMark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\HelpSlides\next.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\HelpSlides\left.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\stage.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\white.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\leader.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\olympiapowerbutton.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\estebanpowerbutton.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\bilkispowerbutton.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\bilkisbackground.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\bilkisbackgroundUI.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\romebackground.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="bin\Debug\Images\courtesan_bg.png" />
+    <Resource Include="Resources\Images\courtesan_bg.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -423,6 +349,264 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="7WondersIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GameManager\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Help.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Commerce\1m.png" />
+    <Resource Include="Resources\Images\Commerce\1r.png" />
+    <Resource Include="Resources\Images\Commerce\2m.png" />
+    <Resource Include="Resources\Images\Commerce\2r.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\2VP.png" />
+    <Resource Include="Resources\Images\Icons\3vp.png" />
+    <Resource Include="Resources\Images\Icons\4vp.png" />
+    <Resource Include="Resources\Images\Icons\5VP.png" />
+    <Resource Include="Resources\Images\Icons\6VP.png" />
+    <Resource Include="Resources\Images\Icons\7VP.png" />
+    <Resource Include="Resources\Images\Icons\8VP.png" />
+    <Resource Include="Resources\Images\Icons\caravansery.png" />
+    <Resource Include="Resources\Images\Icons\clay_1.png" />
+    <Resource Include="Resources\Images\Icons\clay_2.png" />
+    <Resource Include="Resources\Images\Icons\clay_ore.png" />
+    <Resource Include="Resources\Images\Icons\cloth.png" />
+    <Resource Include="Resources\Images\Icons\compass.png" />
+    <Resource Include="Resources\Images\Icons\east_trading_post.png" />
+    <Resource Include="Resources\Images\Icons\forum.png" />
+    <Resource Include="Resources\Images\Icons\gear.png" />
+    <Resource Include="Resources\Images\Icons\glass.png" />
+    <Resource Include="Resources\Images\Icons\marketplace.png" />
+    <Resource Include="Resources\Images\Icons\ore_1.png" />
+    <Resource Include="Resources\Images\Icons\ore_2.png" />
+    <Resource Include="Resources\Images\Icons\papyrus.png" />
+    <Resource Include="Resources\Images\Icons\shield_1.png" />
+    <Resource Include="Resources\Images\Icons\shield_2.png" />
+    <Resource Include="Resources\Images\Icons\shield_3.png" />
+    <Resource Include="Resources\Images\Icons\stone_1.png" />
+    <Resource Include="Resources\Images\Icons\stone_2.png" />
+    <Resource Include="Resources\Images\Icons\stone_clay.png" />
+    <Resource Include="Resources\Images\Icons\stone_ore.png" />
+    <Resource Include="Resources\Images\Icons\stone_wood.png" />
+    <Resource Include="Resources\Images\Icons\tablet.png" />
+    <Resource Include="Resources\Images\Icons\west_trading_post.png" />
+    <Resource Include="Resources\Images\Icons\wood_1.png" />
+    <Resource Include="Resources\Images\Icons\wood_2.png" />
+    <Resource Include="Resources\Images\Icons\wood_clay.png" />
+    <Resource Include="Resources\Images\Icons\wood_ore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\cards\Academy.jpg" />
+    <Resource Include="Resources\Images\cards\Altar.jpg" />
+    <Resource Include="Resources\Images\cards\Apothecary.jpg" />
+    <Resource Include="Resources\Images\cards\Aqueduct.jpg" />
+    <Resource Include="Resources\Images\cards\Arena.jpg" />
+    <Resource Include="Resources\Images\cards\Arsenal.jpg" />
+    <Resource Include="Resources\Images\cards\Barracks.jpg" />
+    <Resource Include="Resources\Images\cards\Baths.jpg" />
+    <Resource Include="Resources\Images\cards\Bazar.jpg" />
+    <Resource Include="Resources\Images\cards\Brickyard.jpg" />
+    <Resource Include="Resources\Images\cards\Caravansery.jpg" />
+    <Resource Include="Resources\Images\cards\Circus.jpg" />
+    <Resource Include="Resources\Images\cards\Courthouse.jpg" />
+    <Resource Include="Resources\Images\cards\Dispensary.jpg" />
+    <Resource Include="Resources\Images\cards\Excavation.jpg" />
+    <Resource Include="Resources\Images\cards\Fortifications.jpg" />
+    <Resource Include="Resources\Images\cards\Forum.jpg" />
+    <Resource Include="Resources\Images\cards\Foundry.jpg" />
+    <Resource Include="Resources\Images\cards\Gardens.jpg" />
+    <Resource Include="Resources\Images\cards\Glassworks.jpg" />
+    <Resource Include="Resources\Images\cards\Haven.jpg" />
+    <Resource Include="Resources\Images\cards\Laboratory.jpg" />
+    <Resource Include="Resources\Images\cards\Library.jpg" />
+    <Resource Include="Resources\Images\cards\Lighthouse.jpg" />
+    <Resource Include="Resources\Images\cards\Lodge.jpg" />
+    <Resource Include="Resources\Images\cards\Loom.jpg" />
+    <Resource Include="Resources\Images\cards\Marketplace.jpg" />
+    <Resource Include="Resources\Images\cards\Mine.jpg" />
+    <Resource Include="Resources\Images\cards\Observatory.jpg" />
+    <Resource Include="Resources\Images\cards\Palace.jpg" />
+    <Resource Include="Resources\Images\cards\Pantheon.jpg" />
+    <Resource Include="Resources\Images\cards\Pawnshop.jpg" />
+    <Resource Include="Resources\Images\cards\Press.jpg" />
+    <Resource Include="Resources\Images\cards\Quarry.jpg" />
+    <Resource Include="Resources\Images\cards\Sawmill.jpg" />
+    <Resource Include="Resources\Images\cards\School.jpg" />
+    <Resource Include="Resources\Images\cards\Scriptorium.jpg" />
+    <Resource Include="Resources\Images\cards\Senate.jpg" />
+    <Resource Include="Resources\Images\cards\Stables.jpg" />
+    <Resource Include="Resources\Images\cards\Statue.jpg" />
+    <Resource Include="Resources\Images\cards\Stockade.jpg" />
+    <Resource Include="Resources\Images\cards\Study.jpg" />
+    <Resource Include="Resources\Images\cards\Tavern.jpg" />
+    <Resource Include="Resources\Images\cards\Temple.jpg" />
+    <Resource Include="Resources\Images\cards\Theatre.jpg" />
+    <Resource Include="Resources\Images\cards\University.jpg" />
+    <Resource Include="Resources\Images\cards\Vineyard.jpg" />
+    <Resource Include="Resources\Images\cards\Walls.jpg" />
+    <Resource Include="Resources\Images\cards\Workshop.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\boards\Alexandria %28A%29.jpg" />
+    <Resource Include="Resources\Images\boards\Alexandria %28B%29.jpg" />
+    <Resource Include="Resources\Images\boards\Babylon %28A%29.jpg" />
+    <Resource Include="Resources\Images\boards\Babylon %28B%29.jpg" />
+    <Resource Include="Resources\Images\boards\Ephesos %28A%29.jpg" />
+    <Resource Include="Resources\Images\boards\Ephesos %28B%29.jpg" />
+    <Resource Include="Resources\Images\boards\Giza %28A%29.jpg" />
+    <Resource Include="Resources\Images\boards\Giza %28B%29.jpg" />
+    <Resource Include="Resources\Images\boards\Halikarnassos %28A%29.jpg" />
+    <Resource Include="Resources\Images\boards\Halikarnassos %28B%29.jpg" />
+    <Resource Include="Resources\Images\boards\Olympia %28A%29.jpg" />
+    <Resource Include="Resources\Images\boards\Olympia %28B%29.jpg" />
+    <Resource Include="Resources\Images\boards\Rhodos %28A%29.jpg" />
+    <Resource Include="Resources\Images\boards\Rhodos %28B%29.jpg" />
+    <Resource Include="Resources\Images\boards\Roma %28A%29.jpg" />
+    <Resource Include="Resources\Images\boards\Roma %28B%29.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\arena.png" />
+    <Resource Include="Resources\Images\Icons\Bazar.png" />
+    <Resource Include="Resources\Images\Icons\builders_guild.png" />
+    <Resource Include="Resources\Images\Icons\chamber_of_commerce.png" />
+    <Resource Include="Resources\Images\Icons\craftsmens_guild.png" />
+    <Resource Include="Resources\Images\Icons\Haven.png" />
+    <Resource Include="Resources\Images\Icons\Lighthouse.png" />
+    <Resource Include="Resources\Images\Icons\magistrates_guild.png" />
+    <Resource Include="Resources\Images\Icons\philosophers_guild.png" />
+    <Resource Include="Resources\Images\Icons\scientists_guild.png" />
+    <Resource Include="Resources\Images\Icons\shipowners_guild.png" />
+    <Resource Include="Resources\Images\Icons\spies_guild.png" />
+    <Resource Include="Resources\Images\Icons\strategists_guild.png" />
+    <Resource Include="Resources\Images\Icons\Tavern.png" />
+    <Resource Include="Resources\Images\Icons\traders_guild.png" />
+    <Resource Include="Resources\Images\Icons\Vineyard.png" />
+    <Resource Include="Resources\Images\Icons\workers_guild.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\ScoreSheet.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\coin-2.png" />
+    <Resource Include="Resources\Images\ConflictAge1.png" />
+    <Resource Include="Resources\Images\ConflictAge2.png" />
+    <Resource Include="Resources\Images\ConflictAge3.png" />
+    <Resource Include="Resources\Images\ConflictLoss.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\indexbg4x3.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\cards\Alexander.jpg" />
+    <Resource Include="Resources\Images\cards\Amytis.jpg" />
+    <Resource Include="Resources\Images\cards\Archimedes.jpg" />
+    <Resource Include="Resources\Images\cards\Aristotle.jpg" />
+    <Resource Include="Resources\Images\cards\Bilkis.jpg" />
+    <Resource Include="Resources\Images\cards\Caesar.jpg" />
+    <Resource Include="Resources\Images\cards\Cleopatra.jpg" />
+    <Resource Include="Resources\Images\cards\Croeseus.jpg" />
+    <Resource Include="Resources\Images\cards\Euclid.jpg" />
+    <Resource Include="Resources\Images\cards\Hammurabi.jpg" />
+    <Resource Include="Resources\Images\cards\Hannibal.jpg" />
+    <Resource Include="Resources\Images\cards\Hatshepsut.jpg" />
+    <Resource Include="Resources\Images\cards\Hiram.jpg" />
+    <Resource Include="Resources\Images\cards\Hypatia.jpg" />
+    <Resource Include="Resources\Images\cards\Imhotep.jpg" />
+    <Resource Include="Resources\Images\cards\Justinian.jpg" />
+    <Resource Include="Resources\Images\cards\Leonidas.jpg" />
+    <Resource Include="Resources\Images\cards\Maecenas.jpg" />
+    <Resource Include="Resources\Images\cards\Midas.jpg" />
+    <Resource Include="Resources\Images\cards\Nebuchadnezzar.jpg" />
+    <Resource Include="Resources\Images\cards\Nefertiti.jpg" />
+    <Resource Include="Resources\Images\cards\Nero.jpg" />
+    <Resource Include="Resources\Images\cards\Pericles.jpg" />
+    <Resource Include="Resources\Images\cards\Phidias.jpg" />
+    <Resource Include="Resources\Images\cards\Plato.jpg" />
+    <Resource Include="Resources\Images\cards\Praxiteles.jpg" />
+    <Resource Include="Resources\Images\cards\Ptolemy.jpg" />
+    <Resource Include="Resources\Images\cards\Pythagoras.jpg" />
+    <Resource Include="Resources\Images\cards\Ramses.jpg" />
+    <Resource Include="Resources\Images\cards\Sappho.jpg" />
+    <Resource Include="Resources\Images\cards\Solomon.jpg" />
+    <Resource Include="Resources\Images\cards\Tomyris.jpg" />
+    <Resource Include="Resources\Images\cards\Varro.jpg" />
+    <Resource Include="Resources\Images\cards\Vitruvius.jpg" />
+    <Resource Include="Resources\Images\cards\Xenophon.jpg" />
+    <Resource Include="Resources\Images\cards\Zenobia.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\Alexander.png" />
+    <Resource Include="Resources\Images\Icons\Amytis.png" />
+    <Resource Include="Resources\Images\Icons\Archimedes.png" />
+    <Resource Include="Resources\Images\Icons\architects_guild.png" />
+    <Resource Include="Resources\Images\Icons\Aristotle.png" />
+    <Resource Include="Resources\Images\Icons\Bilkis.png" />
+    <Resource Include="Resources\Images\Icons\Bilkis2.png" />
+    <Resource Include="Resources\Images\Icons\Cleopatra.png" />
+    <Resource Include="Resources\Images\Icons\courtesans_guild.png" />
+    <Resource Include="Resources\Images\Icons\Croeseus.png" />
+    <Resource Include="Resources\Images\Icons\diplomats_guild.png" />
+    <Resource Include="Resources\Images\Icons\gamers_guild.png" />
+    <Resource Include="Resources\Images\Icons\Hammurabi.png" />
+    <Resource Include="Resources\Images\Icons\Hatshepsut.png" />
+    <Resource Include="Resources\Images\Icons\Hiram.png" />
+    <Resource Include="Resources\Images\Icons\Hypatia.png" />
+    <Resource Include="Resources\Images\Icons\Imhotep.png" />
+    <Resource Include="Resources\Images\Icons\Justinian.png" />
+    <Resource Include="Resources\Images\Icons\Leonidas.png" />
+    <Resource Include="Resources\Images\Icons\Maecenas.png" />
+    <Resource Include="Resources\Images\Icons\Midas.png" />
+    <Resource Include="Resources\Images\Icons\Nebuchadnezzar.png" />
+    <Resource Include="Resources\Images\Icons\Nefertiti.png" />
+    <Resource Include="Resources\Images\Icons\Nero.png" />
+    <Resource Include="Resources\Images\Icons\Pericles.png" />
+    <Resource Include="Resources\Images\Icons\Phidias.png" />
+    <Resource Include="Resources\Images\Icons\Plato.png" />
+    <Resource Include="Resources\Images\Icons\Praxiteles.png" />
+    <Resource Include="Resources\Images\Icons\Ramses.png" />
+    <Resource Include="Resources\Images\Icons\Sappho.png" />
+    <Resource Include="Resources\Images\Icons\Solomon.png" />
+    <Resource Include="Resources\Images\Icons\Tomyris.png" />
+    <Resource Include="Resources\Images\Icons\Varro.png" />
+    <Resource Include="Resources\Images\Icons\Vitruvius.png" />
+    <Resource Include="Resources\Images\Icons\Xenophon.png" />
+    <Resource Include="Resources\Images\Icons\Zenobia.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\cards\Archery_Range.jpg" />
+    <Resource Include="Resources\Images\cards\Architects_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Builders_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Chamber_of_Commerce.jpg" />
+    <Resource Include="Resources\Images\cards\Clay_Pit.jpg" />
+    <Resource Include="Resources\Images\cards\Clay_Pool.jpg" />
+    <Resource Include="Resources\Images\cards\Courtesans_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Craftsmens_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Diplomats_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\East_Trading_Post.jpg" />
+    <Resource Include="Resources\Images\cards\Forest_Cave.jpg" />
+    <Resource Include="Resources\Images\cards\Gamers_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Guard_Tower.jpg" />
+    <Resource Include="Resources\Images\cards\Lumber_Yard.jpg" />
+    <Resource Include="Resources\Images\cards\Magistrates_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Ore_Vein.jpg" />
+    <Resource Include="Resources\Images\cards\Philosophers_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Scientists_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Shipowners_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Siege_Workshop.jpg" />
+    <Resource Include="Resources\Images\cards\Spies_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Stone_Pit.jpg" />
+    <Resource Include="Resources\Images\cards\Strategists_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Timber_Yard.jpg" />
+    <Resource Include="Resources\Images\cards\Town_Hall.jpg" />
+    <Resource Include="Resources\Images\cards\Traders_Guild.jpg" />
+    <Resource Include="Resources\Images\cards\Training_Ground.jpg" />
+    <Resource Include="Resources\Images\cards\Tree_Farm.jpg" />
+    <Resource Include="Resources\Images\cards\West_Trading_Post.jpg" />
+    <Resource Include="Resources\Images\cards\Workers_Guild.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="SevenWonders.PlayerStateWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SevenWonders"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="300">
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="15*"/>
+                <RowDefinition Height="6*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="11*"></ColumnDefinition>
+                        <ColumnDefinition Width="9*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <WrapPanel x:Name="CommerceStructures" Margin="1">
+                            <WrapPanel.Background>
+                                <SolidColorBrush Color="Yellow" Opacity="0.5"/>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="GoodsStructures" Margin="1">
+                            <WrapPanel.Background>
+                                <SolidColorBrush Color="Gray" Opacity="0.5"/>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="ResourceStructures" Margin="1">
+                            <WrapPanel.Background>
+                                <SolidColorBrush Color="Brown" Opacity="0.5"/>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <WrapPanel x:Name="GuildStructures" Margin="1">
+                            <WrapPanel.Background>
+                                <SolidColorBrush Color="Purple" Opacity="0.5"/>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="ScienceStructures" Margin="1">
+                            <WrapPanel.Background>
+                                <SolidColorBrush Color="Green" Opacity="0.5"/>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="MilitaryStructures" Margin="1">
+                            <WrapPanel.Background>
+                                <SolidColorBrush Color="Red" Opacity="0.5"/>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="CivilianStructures" Margin="1">
+                            <WrapPanel.Background>
+                                <SolidColorBrush Color="Blue" Opacity="0.5"/>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                        <WrapPanel x:Name="LeaderStructures" Margin="1">
+                            <WrapPanel.Background>
+                                <SolidColorBrush Color="White" Opacity="0.5"/>
+                            </WrapPanel.Background>
+                        </WrapPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Image x:Name="PlayerBoard" Stretch="Fill" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="6*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"></RowDefinition>
+                            <RowDefinition Height="3*"></RowDefinition>
+                            <RowDefinition Height="1*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Label x:Name="PlayerName" Grid.Row="0" HorizontalAlignment="Center" FontFamily="Lucida Handwriting" FontSize="12" Foreground="White" Background="Transparent" BorderThickness="0"></Label>
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="15,0,0,0" Grid.Row="1">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                                <Image x:Name="CoinsImage" VerticalAlignment="Center" Height="30" Source="Resources/Images/Coin.png" Visibility="Hidden"/>
+                                <Label x:Name="CoinsLabel" VerticalAlignment="Center"/>
+                                <StackPanel x:Name="MilitaryLosses" Orientation="Horizontal"></StackPanel>
+                            </StackPanel>
+                            <StackPanel x:Name="ConflictTokens" Orientation="Horizontal" VerticalAlignment="Top">
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid x:Name="WonderStage"/>
+                <!-- Grid size created programmatically depending on the number of wonder stages the board has. -->
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>
